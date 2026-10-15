@@ -2,7 +2,7 @@
 
 实际 FastAPI + React 应用，支持课表草稿确认、截图作业校对、可编辑步骤、确定性日程与 Deep Agents 聊天。默认本地个人模式，无需助手账号登录；学校登录由本人在浏览器完成。模型通过本人配置的在线服务调用。
 
-## 双击打开（A方案）
+## 双击打开
 
 - 当前macOS项目：双击根目录 `启动课间助手.command`，使用已构建的带Python运行环境桌面程序，保留本项目 `.env` 和数据，浏览器打开本地助手。
 - 分发版：macOS双击 `dist/desktop/课间助手.app`；Windows需在Windows原生构建后双击 `CampusCompanion.exe`。分发版使用系统个人资料目录，与项目入口分开。
@@ -53,6 +53,6 @@ npm --prefix extension test
 
 ## 开源复用
 
-FastAPI Users 提供密码哈希、注册和持久 cookie 登录；SQLAlchemy/Alembic 提供持久化与迁移；Deep Agents/LangChain/LangGraph 提供工具循环、确认中断和 SQLite 检查点；FullCalendar 标准版提供日历；assistant-ui 提供聊天组件，自定义薄 runtime 接 FastAPI SSE；TanStack Query、React Hook Form、shadcn/ui 风格的按钮与Radix Dialog组件提供界面基础；WXT/WebExtension/@webext-core/messaging 提供扩展与消息；DOMPurify、pandas/lxml 提供受限课表解析。
+SQLAlchemy/Alembic 提供持久化与迁移；Deep Agents/LangChain/LangGraph 提供工具循环、确认中断和 SQLite 检查点；FullCalendar 标准版提供日历；assistant-ui 提供聊天组件，自定义薄 runtime 接 FastAPI SSE；TanStack Query、React Hook Form、shadcn/ui 风格的按钮与Radix Dialog组件提供界面基础；WXT/WebExtension/@webext-core/messaging 提供扩展与消息；DOMPurify、pandas/lxml 提供受限课表解析。
 
 自写部分集中在华工实测 DOM 适配、学生任务服务、版本/幂等连接与确定性排程。SQLite 首版只支持一个后端进程，不启用多 worker。
