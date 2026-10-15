@@ -1,0 +1,1 @@
+{"version":"test-fixture-v1","verified":true,"entry_url":"https://fixture.scut.edu.cn/","school_origin":"https://fixture.scut.edu.cn","container_selector":"#fixture-timetable","semester_selector":"#semester","loading_selector":".loading","columns":{"name":"课程","weekday":"星期","weeks":"周次","periods":"节次","location":"地点"},"full_capture":false}

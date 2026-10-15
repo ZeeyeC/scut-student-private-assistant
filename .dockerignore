@@ -1,0 +1,10 @@
+**/node_modules
+**/.venv
+**/.output
+**/.wxt
+**/dist
+**/__pycache__
+data
+.env
+frontend/test-results
+frontend/playwright-report

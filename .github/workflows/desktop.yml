@@ -1,0 +1,31 @@
+name: Desktop native build
+on: workflow_dispatch
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.19'
+      - run: uv sync --project backend --locked --python 3.12 --group desktop
+      - run: uv run --project backend --no-sync python scripts/build-desktop.py
+      - name: Backend verification
+        run: uv run --project backend --no-sync pytest backend/tests -q
+      - name: Native bundle smoke test (Windows)
+        if: runner.os == 'Windows'
+        run: uv run --project backend --no-sync python scripts/verify-desktop.py dist/desktop/CampusCompanion/CampusCompanion.exe
+      - name: Native bundle smoke test (macOS)
+        if: runner.os == 'macOS'
+        run: uv run --project backend --no-sync python scripts/verify-desktop.py "dist/desktop/课间助手.app/Contents/MacOS/CampusCompanion"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: campus-${{ matrix.os }}
+          path: dist/desktop/*.zip

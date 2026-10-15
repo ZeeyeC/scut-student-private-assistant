@@ -1,0 +1,24 @@
+{
+  "version": "test-scut-list-v1",
+  "verified": true,
+  "kind": "scut-zf-list",
+  "entry_url": "https://fixture.scut.edu.cn/",
+  "school_origin": "https://fixture.scut.edu.cn",
+  "container_selector": "#kblist_table",
+  "visibility_selector": "#kbgrid_table_0, #kblist_table",
+  "semester_selector": "#kblist_table .timetable_title .pull-left",
+  "loading_selector": "",
+  "route_pattern": "^/$",
+  "columns": {
+    "name": "课程",
+    "weekday": "星期",
+    "weeks": "周次",
+    "periods": "节次",
+    "location": "地点",
+    "teacher": "教师",
+    "campus": "校区",
+    "source_id": "教学班"
+  },
+  "full_capture": false,
+  "verification_scope": "TEST ONLY: measured structure with fictional courses"
+}
