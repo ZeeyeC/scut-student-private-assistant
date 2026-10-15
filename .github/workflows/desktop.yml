@@ -5,26 +5,38 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, windows-latest]
+        os: [macos-14, macos-15-intel, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - uses: astral-sh/setup-uv@v6
-        with:
-          version: '0.11.19'
-      - run: uv sync --project backend --locked --python 3.12 --group desktop
-      - run: uv run --project backend --no-sync python scripts/build-desktop.py
+      - name: macOS initializer tests
+        if: runner.os == 'macOS'
+        run: python3 -m unittest discover -s scripts/tests -p 'test_initialize_macos.py'
+      - name: First macOS initialization without developer tools on PATH
+        if: runner.os == 'macOS'
+        run: env PATH=/usr/bin:/bin:/usr/sbin:/sbin /bin/bash scripts/initialize-macos.sh --no-launch
+      - name: Windows initializer tests
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./scripts/test-initialize-windows.ps1
+      - name: First Windows initialization without developer tools on PATH
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot;$PSHOME"
+          ./scripts/initialize-windows.ps1 -NoLaunch
       - name: Backend verification
-        run: uv run --project backend --no-sync pytest backend/tests -q
+        if: runner.os != 'Windows'
+        run: ./backend/.venv/bin/python -m pytest backend/tests -q
+      - name: Windows backend verification
+        if: runner.os == 'Windows'
+        run: ./backend/.venv/Scripts/python.exe -m pytest backend/tests -q
       - name: Native bundle smoke test (Windows)
         if: runner.os == 'Windows'
-        run: uv run --project backend --no-sync python scripts/verify-desktop.py dist/desktop/CampusCompanion/CampusCompanion.exe
+        run: ./backend/.venv/Scripts/python.exe scripts/verify-desktop.py dist/desktop/CampusCompanion/CampusCompanion.exe
       - name: Native bundle smoke test (macOS)
         if: runner.os == 'macOS'
-        run: uv run --project backend --no-sync python scripts/verify-desktop.py "dist/desktop/课间助手.app/Contents/MacOS/CampusCompanion"
+        run: ./backend/.venv/bin/python scripts/verify-desktop.py "dist/desktop/课间助手.app/Contents/MacOS/CampusCompanion"
       - uses: actions/upload-artifact@v4
         with:
           name: campus-${{ matrix.os }}

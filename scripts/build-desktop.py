@@ -39,17 +39,21 @@ for resource in (
 ):
     if not resource.is_file():
         raise SystemExit(f"Missing built resource: {resource}")
+# Rebuild dependency analysis too: stale TOCs can retain results from missing
+# hooks even after the packaging entrypoint has been corrected.
+workpath = root / "build/desktop"
+if workpath.exists():
+    shutil.rmtree(workpath)
 subprocess.run(
     [
         sys.executable,
-        "-m",
-        "PyInstaller",
+        str(root / "scripts/package-desktop.py"),
         "--noconfirm",
         "--clean",
         "--distpath",
         str(root / "dist/desktop"),
         "--workpath",
-        str(root / "build/desktop"),
+        str(workpath),
         str(root / "scripts/desktop.spec"),
     ],
     cwd=root,

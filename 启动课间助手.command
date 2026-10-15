@@ -1,11 +1,14 @@
 #!/bin/sh
 set -eu
 cd "$(dirname "$0")"
-if [ -x "dist/desktop/课间助手.app/Contents/MacOS/CampusCompanion" ]; then
-  exec "dist/desktop/课间助手.app/Contents/MacOS/CampusCompanion" --data-dir "$PWD" --project
+if /bin/bash scripts/initialize-macos.sh "$@"; then
+  exit 0
+else
+  status=$?
+  printf '%s\n' '启动或初始化失败，请查看上方报错及 .tools/macos-initialize.log。'
+  if [ -t 0 ]; then
+    printf '%s' '按回车关闭窗口。'
+    read -r answer || true
+  fi
+  exit "$status"
 fi
-if [ -x backend/.venv/bin/python ]; then
-  exec backend/.venv/bin/python scripts/start-local.py
-fi
-printf '%s\n' '尚未构建桌面包，请先按 README 完成一次构建。'
-read -r answer

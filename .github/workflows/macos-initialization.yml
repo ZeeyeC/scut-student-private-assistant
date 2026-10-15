@@ -1,0 +1,36 @@
+name: macOS initialization tests
+on:
+  push:
+    paths:
+      - 'scripts/initialize-macos.sh'
+      - 'scripts/package-desktop.py'
+      - 'scripts/build-desktop.py'
+      - 'scripts/desktop.spec'
+      - 'scripts/tests/test_initialize_macos.py'
+      - '启动课间助手.command'
+      - '.github/workflows/macos-initialization.yml'
+  pull_request:
+    paths:
+      - 'scripts/initialize-macos.sh'
+      - 'scripts/package-desktop.py'
+      - 'scripts/build-desktop.py'
+      - 'scripts/desktop.spec'
+      - 'scripts/tests/test_initialize_macos.py'
+      - '启动课间助手.command'
+      - '.github/workflows/macos-initialization.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check system shell syntax
+        run: |
+          /bin/bash -n scripts/initialize-macos.sh
+          /bin/sh -n 启动课间助手.command
+      - name: Exercise initialization with isolated fixtures
+        run: python3 -m unittest discover -s scripts/tests -p 'test_initialize_macos.py'

@@ -1,0 +1,23 @@
+name: Windows initialization tests
+on:
+  push:
+    paths:
+      - 'scripts/initialize-windows.ps1'
+      - 'scripts/test-initialize-windows.ps1'
+      - '启动课间助手.cmd'
+      - '.github/workflows/windows-initialization.yml'
+  pull_request:
+    paths:
+      - 'scripts/initialize-windows.ps1'
+      - 'scripts/test-initialize-windows.ps1'
+      - '启动课间助手.cmd'
+      - '.github/workflows/windows-initialization.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exercise initialization with Windows PowerShell 5.1
+        shell: powershell
+        run: ./scripts/test-initialize-windows.ps1
