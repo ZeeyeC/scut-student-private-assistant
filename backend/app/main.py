@@ -14,6 +14,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app import store
+from app.after_class import after_class_router
 from app.agent import agent_router, pending_approval
 from app.assignments import assignment_router
 from app.auth import UserCreate, UserRead, build_auth
@@ -263,6 +264,7 @@ def create_app(config=None):
     app.include_router(planner_router(get_db, current_user))
     app.include_router(agent_router(get_db, current_user))
     app.include_router(data_router(get_db, current_user))
+    app.include_router(after_class_router(get_db, current_user))
 
     dist = resource_root() / "frontend" / "dist"
     if dist.is_dir():

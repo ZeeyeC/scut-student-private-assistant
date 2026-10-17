@@ -931,6 +931,75 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/after-class/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Preferences */
+        get: operations["get_preferences_api_after_class_preferences_get"];
+        /** Update Preferences */
+        put: operations["update_preferences_api_after_class_preferences_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/after-class/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Open Review */
+        post: operations["open_review_api_after_class_open_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/after-class/{rid}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit */
+        post: operations["submit_api_after_class__rid__submit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/after-class/{rid}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save Draft */
+        put: operations["save_draft_api_after_class__rid__draft_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1086,6 +1155,20 @@ export interface components {
             /** Fragments */
             fragments: string[];
         };
+        /** CheckinDraft */
+        CheckinDraft: {
+            /** Revision */
+            revision: number;
+            /** Answers */
+            answers: components["schemas"]["DraftAnswer"][];
+        };
+        /** CheckinSubmission */
+        CheckinSubmission: {
+            /** Revision */
+            revision: number;
+            /** Answers */
+            answers: components["schemas"]["CourseAnswer"][];
+        };
         /** Confirm */
         Confirm: {
             /** Revision */
@@ -1110,6 +1193,18 @@ export interface components {
             /** Periods */
             periods: number[];
         };
+        /** CourseAnswer */
+        CourseAnswer: {
+            /** Course Key */
+            course_key: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "none" | "homework";
+            /** Items */
+            items?: components["schemas"]["HomeworkItem"][];
+        };
         /** Decision */
         Decision: {
             /** Approval Id */
@@ -1122,6 +1217,18 @@ export interface components {
              */
             decision: "approve" | "reject";
         };
+        /** DraftAnswer */
+        DraftAnswer: {
+            /** Course Key */
+            course_key: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "none" | "homework";
+            /** Items */
+            items?: components["schemas"]["DraftHomeworkItem"][];
+        };
         /** DraftEdit */
         DraftEdit: {
             /** Revision */
@@ -1130,6 +1237,15 @@ export interface components {
             payload: {
                 [key: string]: unknown;
             };
+        };
+        /** DraftHomeworkItem */
+        DraftHomeworkItem: {
+            /** Content */
+            content: string;
+            /** Estimated Minutes */
+            estimated_minutes: number;
+            /** Due At */
+            due_at?: string | null;
         };
         /** EmptyAction */
         EmptyAction: Record<string, never>;
@@ -1166,6 +1282,15 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HomeworkItem */
+        HomeworkItem: {
+            /** Content */
+            content: string;
+            /** Estimated Minutes */
+            estimated_minutes: number;
+            /** Due At */
+            due_at?: string | null;
         };
         /** ImportEvent */
         ImportEvent: {
@@ -1215,6 +1340,21 @@ export interface components {
              * @default 7
              */
             horizon_days: number;
+        };
+        /** PreferencesUpdate */
+        PreferencesUpdate: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /**
+             * Delay Minutes
+             * @default 30
+             */
+            delay_minutes: number;
+            /** Revision */
+            revision: number;
         };
         /** ProfileChoice */
         ProfileChoice: {
@@ -3399,6 +3539,155 @@ export interface operations {
                 "application/json": {
                     [key: string]: unknown;
                 };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_preferences_api_after_class_preferences_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    update_preferences_api_after_class_preferences_put: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreferencesUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    open_review_api_after_class_open_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    submit_api_after_class__rid__submit_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckinSubmission"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_draft_api_after_class__rid__draft_put: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckinDraft"];
             };
         };
         responses: {

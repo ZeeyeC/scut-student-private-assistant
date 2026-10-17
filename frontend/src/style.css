@@ -511,3 +511,17 @@ small {
     padding: 16px;
   }
 }
+
+.after-class-dialog { width: min(680px, calc(100vw - 24px)); }
+.after-class-course { margin: 18px 0; padding: 18px; }
+.after-class-course h3 { margin-top: 0; }
+.after-class-item { border: 1px solid #dce5e0; border-radius: 12px; padding: 14px; margin: 14px 0; min-width: 0; }
+.after-class-item textarea { width: 100%; box-sizing: border-box; resize: vertical; }
+.after-class-item input, .after-class-course select { min-width: 0; width: 100%; box-sizing: border-box; }
+.after-class-result .step { padding-block: 10px; }
+.after-class-result [role="alert"] { background: #fff4df; padding: 16px; border-radius: 12px; }
+
+.course-slot-dialog { width: min(600px, calc(100vw - 24px)); }
+.course-slot-dialog .card { margin-bottom: 0; }
+.fc .fc-timegrid-col { cursor: pointer; }
+.fc .fc-event { cursor: pointer; }
