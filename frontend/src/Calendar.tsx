@@ -4,13 +4,16 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import luxonPlugin from "@fullcalendar/luxon3";
+import interactionPlugin from "@fullcalendar/interaction";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "./components/ui/button";
 import { api } from "./api";
-import type { Resource, Course } from "./types";
+import type { Resource, Course, SettingsData } from "./types";
 import { DraftReview } from "./DraftReview";
 import { ChatPage } from "./Chat";
 import { TodoList } from "./TodoList";
 import type { ScheduleEvent } from "./schedule";
+import { courseSlot, type CourseSlot } from "./course-slot";
 
 export function CalendarPage({focusDate}: {focusDate?: string}) {
   const calendar = useRef<FullCalendar>(null);
@@ -33,10 +36,30 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
     queryKey: ["drafts"],
     queryFn: () => api<Resource[]>("/drafts"),
   });
-  const [error, setError] = useState("");
   const [manual, setManual] = useState(false);
   const [chat, setChat] = useState(false);
   const [selected, setSelected] = useState<ScheduleEvent | null>(null);
+  const [slot, setSlot] = useState<CourseSlot | null>(null);
+  const [newDraft, setNewDraft] = useState("");
+  useEffect(() => {
+    if (!newDraft) return;
+    const element = document.getElementById(`timetable-draft-${newDraft}`);
+    if (element) {
+      element.scrollIntoView({ block: "center" });
+      element.focus({ preventScroll: true });
+      setNewDraft("");
+    }
+  }, [newDraft, drafts.data]);
+  async function saveCourse(course: Course) {
+    const draft = await api<Resource>("/drafts/timetable", {
+      method: "POST",
+      body: JSON.stringify({ courses: [course], semester_label: "手工录入", completeness: "partial" }),
+    });
+    setSlot(null);
+    setManual(false);
+    setNewDraft(draft.id);
+    await q.invalidateQueries({ queryKey: ["drafts"] });
+  }
   return (
     <>
       <div className="page-head">
@@ -53,11 +76,10 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
       </div>
       <Button onClick={() => setChat(!chat)}>{chat ? "收起事项对话" : "用 AI 添加事项"}</Button>
       {chat && <ChatPage embedded />}
-      <p>蓝色：课程 · 紫色：固定事项 · 绿色：学习安排。点击日历条目查看详情。</p>
+      <p>蓝色：课程 · 紫色：固定事项 · 绿色：学习安排。点击日历条目查看详情，点击周视图的空白时间格添加课程；列表视图可切换到“周”。</p>
       <p>
         已适配本人实测的华工个人课表。请先在设置中校对开学周一、学期周数和节次时间。
       </p>
-      {error && <p role="alert">{error}</p>}
       <div className="card">
         {events.error && <p role="alert">{String(events.error)}</p>}
         {events.isPending && <p role="status">正在读取日程…</p>}
@@ -66,7 +88,7 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
           ref={calendar}
           initialDate={focusDate}
           firstDay={1}
-          plugins={[timeGridPlugin, listPlugin, luxonPlugin]}
+          plugins={[timeGridPlugin, listPlugin, luxonPlugin, interactionPlugin]}
           timeZone={settings.data?.data.timezone ?? "Asia/Shanghai"}
           initialView={window.innerWidth < 768 ? "listWeek" : "timeGridWeek"}
           headerToolbar={{
@@ -81,6 +103,12 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
           scrollTime={focusDate ? new Date(focusDate).toLocaleTimeString("en-GB", {timeZone: settings.data?.data.timezone ?? "Asia/Shanghai", hour12: false}) : "07:00:00"}
           slotMinTime="00:00:00"
           slotMaxTime="24:00:00"
+          slotDuration="00:30:00"
+          dateClick={info => {
+            if (info.allDay || info.view.type !== "timeGridWeek") return;
+            setSlot(courseSlot(info.dateStr, settings.data?.data as SettingsData | undefined));
+            setSelected(null);
+          }}
           events={(events.data?.events ?? []).map((e) => ({
             ...e,
             title: e.title + (e.location ? " · " + e.location : ""),
@@ -99,7 +127,7 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
           }
         />
         {events.data?.events.length === 0 && (
-          <p>本周还没有课程或事项。可导入课表，或点击“用 AI 添加事项”。</p>
+          <p>本周还没有课程或事项。可点击周视图的空白时间格添加课程，也可导入课表或使用“用 AI 添加事项”。</p>
         )}
       </div>
       {selected && <section className="card" aria-label="日程详情">
@@ -112,52 +140,56 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
       <Button variant="outline" onClick={() => setManual(!manual)}>
         手工添加课程
       </Button>
-      {manual && (
-        <CourseForm
-          onSave={async (course) => {
-            try {
-              await api("/drafts/timetable", {
-                method: "POST",
-                body: JSON.stringify({
-                  courses: [course],
-                  semester_label: "手工录入",
-                  completeness: "partial",
-                }),
-              });
-              setManual(false);
-              q.invalidateQueries({ queryKey: ["drafts"] });
-            } catch (e) {
-              setError(String(e));
-            }
-          }}
-        />
-      )}{" "}
+      {manual && <CourseForm onSave={saveCourse} />}
+      <Dialog.Root open={slot !== null} onOpenChange={open => { if (!open) setSlot(null); }}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialog-overlay" />
+          <Dialog.Content className="import-dialog course-slot-dialog" onOpenAutoFocus={event => {
+            event.preventDefault();
+            document.querySelector<HTMLInputElement>('.course-slot-dialog input[name="name"]')?.focus();
+          }}>
+            <header>
+              <Dialog.Title>添加课程</Dialog.Title>
+              <Dialog.Close asChild><Button variant="outline">取消</Button></Dialog.Close>
+            </header>
+            <Dialog.Description>
+              已选择 {slot?.date} {slot?.time}（{settings.data?.data.timezone ?? "Asia/Shanghai"}）。默认仅添加到所选教学周，可修改周次和节次。
+            </Dialog.Description>
+            {slot?.notice && <p role="status">{slot.notice}</p>}
+            {slot && <CourseForm key={`${slot.date}-${slot.time}`} initial={slot} onSave={saveCourse} />}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
       {drafts.data
         ?.filter((d) => d.data.draft_kind === "timetable")
         .map((d) => (
-          <DraftReview key={d.id} draft={d} />
+          <div key={d.id} id={`timetable-draft-${d.id}`} tabIndex={-1}><DraftReview draft={d} /></div>
         ))}
     </>
   );
 }
-function CourseForm({ onSave }: { onSave: (c: Course) => void }) {
+function CourseForm({ onSave, initial }: { onSave: (c: Course) => Promise<void>; initial?: CourseSlot }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   return (
     <form
       className="card"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        if (busy) return;
         const f = new FormData(e.currentTarget);
-        onSave({
+        setBusy(true); setError("");
+        try { await onSave({
           source_key: crypto.randomUUID(),
           name: String(f.get("name")),
           weekday: Number(f.get("weekday")),
           weeks: String(f.get("weeks")).split(",").map(Number),
           periods: String(f.get("periods")).split(",").map(Number),
           location: String(f.get("location")),
-        });
+        }); } catch (e) { setError(String(e)); } finally { setBusy(false); }
       }}
     >
-      <h2>添加一门课程</h2>
+      {!initial && <h2>添加一门课程</h2>}
       <label>
         课程名称
         <input name="name" required />
@@ -165,7 +197,7 @@ function CourseForm({ onSave }: { onSave: (c: Course) => void }) {
       <div className="grid2">
         <label>
           星期
-          <select name="weekday">
+          <select name="weekday" defaultValue={initial?.weekday ?? 1}>
             {["一", "二", "三", "四", "五", "六", "日"].map((n, i) => (
               <option key={n} value={i + 1}>
                 星期{n}
@@ -179,14 +211,15 @@ function CourseForm({ onSave }: { onSave: (c: Course) => void }) {
         </label>
         <label>
           周次（逗号分隔）
-          <input name="weeks" required placeholder="1,3,5,7" />
+          <input name="weeks" required placeholder="1,3,5,7" defaultValue={initial?.weeks ?? ""} />
         </label>
         <label>
           节次（逗号分隔）
-          <input name="periods" required placeholder="1,2" />
+          <input name="periods" required placeholder="1,2" defaultValue={initial?.periods ?? ""} />
         </label>
       </div>
-      <Button>生成校对草稿</Button>
+      {error && <p role="alert">{error}</p>}
+      <Button disabled={busy}>{busy ? "正在生成…" : "生成校对草稿"}</Button>
     </form>
   );
 }

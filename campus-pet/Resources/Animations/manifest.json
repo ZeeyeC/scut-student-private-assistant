@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "fps": 20,
+  "canvas": [
+    320,
+    320
+  ],
+  "source": "https://www.bilibili.com/video/BV1uSe16KEfi/",
+  "clips": [
+    {
+      "id": "flash-step",
+      "title": "闪身步",
+      "start": 2.1,
+      "end": 5.25,
+      "frameCount": 63
+    },
+    {
+      "id": "arm-swing",
+      "title": "大抡臂",
+      "start": 11.05,
+      "end": 15.35,
+      "frameCount": 86
+    },
+    {
+      "id": "bear-shake",
+      "title": "狗熊哆嗦毛",
+      "start": 25.6,
+      "end": 28.9,
+      "frameCount": 66
+    }
+  ],
+  "sourceSHA256": "97a9387d1025db6058bdbe338bf14b85096b34f30e22b91593df471d9276d629"
+}

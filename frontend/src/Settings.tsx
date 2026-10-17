@@ -5,6 +5,7 @@ import { api } from "./api";
 import { Button } from "./components/ui/button";
 import { LocalSettings } from "./LocalMode";
 import type { Resource } from "./types";
+import { AfterClassPreferences } from "./AfterClass";
 type Form = {
   timezone: string;
   semester_name: string;
@@ -219,6 +220,7 @@ export function Settings({ local = false }: { local?: boolean }) {
         {status && <p role="status">{status}</p>}
         {error && <p role="alert">{error}</p>}
       </form>
+      <AfterClassPreferences />
       {local && <LocalSettings />}
       <FixedEvents />
       <section className="card">

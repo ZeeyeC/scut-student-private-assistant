@@ -13,6 +13,10 @@
 
 详细步骤、资料位置、Windows PowerShell/macOS构建命令、扩展安装和备份见 [桌面使用说明](docs/desktop.md)。当前已实际构建并验证macOS arm64包，无需终端Python/Node运行环境；Windows/Intel Mac尚未原生验收，没有开发者签名、公证或公开发布。
 
+## Mac 助手桌宠
+
+新增可选的原生 Mac 桌宠入口，支持角色动作、助手面板和课后作业询问。原启动方式继续保留，构建步骤见 [桌宠说明](campus-pet/README.md)。在课表周视图点击空白时间格，也可添加课程并校对保存。
+
 ## 源码开发
 
 开发者需Python3.12、uv、Node22（22.12+），保留已有 `.env`：

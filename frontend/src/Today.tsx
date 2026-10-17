@@ -94,6 +94,9 @@ export function TodayPage() {
         </Button>
       </div>
       {error && <p role="alert">{error}</p>}
+      <section className="card"><h2>课后作业</h2><p>当天课程结束、达到设置的等待时间后，打开奶娃时一起记下各门课的作业。</p>
+        <Button variant="outline" onClick={() => window.dispatchEvent(new CustomEvent("campus-after-class-open", { detail: { manual: true } }))}>查看课后作业询问</Button>
+      </section>
       <div className="grid2">
         <section className="card">
           <h2>今日课程</h2>
