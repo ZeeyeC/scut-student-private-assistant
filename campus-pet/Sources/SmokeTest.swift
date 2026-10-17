@@ -14,6 +14,14 @@ extension AppDelegate {
         throw ServiceError.message("原生窗口验收等待超时：\(expression)")
     }
 
+    func waitForMood(_ mood: PetMood) async throws {
+        for _ in 0..<100 {
+            if pet.mood == mood { return }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        throw ServiceError.message("桌宠状态同步超时：\(mood.rawValue)，当前 \(pet.mood.rawValue)")
+    }
+
     func saveImage(_ image: NSImage, to url: URL) throws {
         guard let tiff = image.tiffRepresentation, let bitmap = NSBitmapImageRep(data: tiff),
               let png = bitmap.representation(using: .png, properties: [:]) else {
@@ -67,7 +75,13 @@ extension AppDelegate {
                 guard label as? String == "compact" else { throw ServiceError.message("桌宠紧凑面板未生效") }
                 try await sendSmokeMessage("流式测试")
                 try await waitFor("document.querySelector('.message.assistant')?.textContent.includes('第一段')")
-                guard pet.mood == .replying else { throw ServiceError.message("真实流式回复未驱动桌宠状态") }
+                try await waitForMood(.replying)
+                do {
+                    try await stopBackend()
+                    throw ServiceError.message("后台忙碌时错误地接受了停止请求")
+                } catch {
+                    guard error.localizedDescription.contains("仍在处理"), ready, !stoppingService else { throw error }
+                }
                 try await waitFor("document.querySelector('.message.assistant')?.textContent.includes('第一段第二段')")
                 try await waitFor("document.querySelector('.chat-toolbar button')?.disabled === false")
                 try await sendSmokeMessage("帮我增加一个任务：明天阅读文献")
@@ -79,9 +93,18 @@ extension AppDelegate {
                 guard let draftID = pending as? String else { throw ServiceError.message("模型未生成真实草稿") }
                 try await sendSmokeMessage("commit:" + draftID)
                 try await waitFor("document.querySelector('.confirm')?.textContent.includes('批准并执行')")
-                guard pet.mood == .approval else { throw ServiceError.message("真实审批未驱动桌宠状态") }
+                try await waitForMood(.approval)
+                showAssistant(page: "设置")
+                try await waitFor("document.body.textContent.includes('模型连接')")
+                try await Task.sleep(nanoseconds: 1_300_000_000)
+                guard pet.mood == .approval else { throw ServiceError.message("切换页面后审批状态丢失") }
+                toggleSleep()
+                try await Task.sleep(nanoseconds: 1_100_000_000)
+                guard pet.mood == .sleeping else { throw ServiceError.message("暂停期间状态更新不应唤醒动画") }
+                toggleSleep()
+                guard pet.mood == .approval else { throw ServiceError.message("恢复后未保留审批状态") }
                 showReview()
-                try await waitFor("document.querySelector('.review-panel').getBoundingClientRect().top < innerHeight / 2")
+                try await waitFor("document.querySelector('.review-panel')?.getBoundingClientRect().top < innerHeight / 2")
                 let pendingSnapshot = try await webView.takeSnapshot(configuration: nil)
                 try saveImage(pendingSnapshot, to: output.appendingPathComponent("approval.png"))
                 _ = try await js("[...document.querySelectorAll('.confirm button')].find(b => b.textContent.trim() === '批准并执行').click(); return true;")
@@ -115,6 +138,21 @@ extension AppDelegate {
                 try saveImage(snapshot, to: output.appendingPathComponent("assistant.png"))
                 closePanel()
                 guard !assistant.isVisible, panel.isVisible else { throw ServiceError.message("关闭面板不应退出桌宠") }
+                // Exercise the real secondary menu and cancel its native sheet.
+                guard petMenu().item(withTitle: "关闭与退出")?.submenu?.item(withTitle: "停止后台并退出…") != nil else {
+                    throw ServiceError.message("关闭与退出二级菜单缺失")
+                }
+                stopServiceAndQuit()
+                guard let confirmation = exitConfirmation else { throw ServiceError.message("停止服务前没有确认框") }
+                confirmation.buttons[1].performClick(nil)
+                for _ in 0..<20 where exitConfirmation != nil { try await Task.sleep(nanoseconds: 50_000_000) }
+                guard exitConfirmation == nil, !stoppingService, ready else { throw ServiceError.message("取消停止不应退出或改变服务状态") }
+                try await service.verifyHealth()
+                // A second web session uses the same test backend before shutdown.
+                let peer = try await URLSession.shared.data(from: assistantOrigin.appendingPathComponent("api/healthz"))
+                guard (peer.1 as? HTTPURLResponse)?.statusCode == 200 else { throw ServiceError.message("共享后台检查失败") }
+                try await stopBackend()
+                guard !ready else { throw ServiceError.message("停止后台后仍标记为已连接") }
                 finishSmoke(error: nil)
             } catch { finishSmoke(error: error.localizedDescription) }
         }
@@ -298,7 +336,7 @@ extension AppDelegate {
     func finishSmoke(error: String?) {
         if let output = options.smokeDirectory {
             try? FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
-            let result: [String: Any] = ["passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["local session", "chat composer", "real draft confirmation", "task/settings navigation", "compact layout", "streaming chat", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "DOM status animation bridge", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "three video action assets", "20 fps playback and completion", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots"]]
+            let result: [String: Any] = ["passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["local session", "chat composer", "real draft confirmation", "task/settings navigation", "compact layout", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "three video action assets", "20 fps playback and completion", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown"]]
             if let data = try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]) {
                 try? data.write(to: output.appendingPathComponent("result.json"))
             }

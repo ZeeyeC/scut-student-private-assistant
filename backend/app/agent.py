@@ -468,7 +468,8 @@ propose_decomposition_service = propose_decomposition
 async def emit(db, owner, rid, kind, payload):
     run = await store.owned(db, owner, rid, "agent_run")
     seq = run.data.get("event_counter", 0) + 1
-    run.data = {**run.data, "event_counter": seq}
+    phase = {"message_delta": "replying", "tool_started": "thinking"}.get(kind)
+    run.data = {**run.data, "event_counter": seq, **({"pet_phase": phase} if phase else {})}
     run.revision += 1
     db.add(
         Resource(
@@ -533,7 +534,7 @@ async def execute_run(app, owner, rid, resume=False):
         async with transaction(app) as db:
             r = await store.owned(db, owner, rid, "agent_run")
             data = dict(r.data)
-            r.data = {**data, "status": "running"}
+            r.data = {**data, "status": "running", "pet_phase": "thinking"}
         graph = student_agent(app, owner)
         cfg = {"configurable": {"thread_id": data["thread_id"]}, "recursion_limit": 40}
         if resume:

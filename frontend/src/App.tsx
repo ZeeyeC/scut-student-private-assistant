@@ -53,6 +53,8 @@ function Workspace({ local = false }: { local?: boolean }) {
   const [register, setRegister] = useState(false);
   const [page, setPage] = useState("今日");
   const [calendarDate, setCalendarDate] = useState<string>();
+  const [reviewThread, setReviewThread] = useState<string>();
+  const [reviewRequest, setReviewRequest] = useState(0);
   useEffect(() => {
     const listener = (event: Event) => {
       const page = (event as CustomEvent<string>).detail;
@@ -62,11 +64,19 @@ function Workspace({ local = false }: { local?: boolean }) {
       setCalendarDate((event as CustomEvent<string>).detail);
       setPage("课表");
     };
+    const review = (event: Event) => {
+      const threadId = (event as CustomEvent<{ threadId?: string }>).detail?.threadId;
+      setReviewThread(typeof threadId === "string" ? threadId : undefined);
+      setReviewRequest(value => value + 1);
+      setCalendarDate(undefined); setPage("助手");
+    };
     window.addEventListener("campus-navigate", listener);
     window.addEventListener("campus-calendar-saved", saved);
+    window.addEventListener("campus-pet-review", review);
     return () => {
       window.removeEventListener("campus-navigate", listener);
       window.removeEventListener("campus-calendar-saved", saved);
+      window.removeEventListener("campus-pet-review", review);
     };
   }, []);
   const form = useForm<{ email: string; password: string }>();
@@ -183,7 +193,7 @@ function Workspace({ local = false }: { local?: boolean }) {
           ) : page === "作业" ? (
             <AssignmentsPage />
           ) : page === "助手" ? (
-            <ChatPage />
+            <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
           ) : (
             <Settings local={local} />
           )}

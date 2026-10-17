@@ -1,10 +1,10 @@
 """Isolated real API; deliberately no model configuration or personal data."""
 import os
+from datetime import datetime
 from pathlib import Path
 
-from app.main import create_app
 from app import after_class
-from datetime import datetime
+from app.main import create_app
 from tests.test_agent import ToolModel
 from tests.test_agent_streaming import ChatFlowModel
 
@@ -29,3 +29,11 @@ app.state.agent_model_factory = lambda: PetTestModel()
 # Fixed academic clock only in this explicitly isolated verification server.
 # Production uses the real server clock and exposes no override endpoint.
 after_class.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
+
+
+if __name__ == "__main__":
+    import uvicorn
+    server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=5189))
+    # Only this disposable verification server can be stopped by the native test.
+    app.state.request_shutdown = lambda: setattr(server, "should_exit", True)
+    server.run()

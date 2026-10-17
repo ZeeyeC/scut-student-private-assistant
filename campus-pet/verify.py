@@ -27,7 +27,7 @@ with tempfile.TemporaryDirectory(prefix="campus-pet-smoke-") as temporary:
     (data / ".pet-smoke-isolated").touch()
     environment = {**os.environ, "PET_TEST_DATA": str(data), "PYTHONPATH": str(project / "backend") + os.pathsep + str(root / "tests")}
     with (output / "server.log").open("w") as server_log, (output / "native.log").open("w") as native_log:
-        server = subprocess.Popen([str(python), "-m", "uvicorn", "smoke_server:app", "--host", "127.0.0.1", "--port", "5189"], cwd=root, env=environment, stdout=server_log, stderr=subprocess.STDOUT)
+        server = subprocess.Popen([str(python), str(root / "tests/smoke_server.py")], cwd=root, env=environment, stdout=server_log, stderr=subprocess.STDOUT)
         native = None
         try:
             for _ in range(100):
@@ -50,4 +50,6 @@ with tempfile.TemporaryDirectory(prefix="campus-pet-smoke-") as temporary:
         finally:
             if native is not None and native.poll() is None:
                 native.terminate(); native.wait(timeout=10)
-            server.terminate(); server.wait(timeout=15)
+            if server.poll() is None:
+                server.terminate()
+            server.wait(timeout=15)

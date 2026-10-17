@@ -897,6 +897,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/agent/pet-state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Status */
+        get: operations["status_api_agent_pet_state_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/data-export": {
         parameters: {
             query?: never;
@@ -1330,6 +1347,16 @@ export interface components {
              * @default
              */
             model_api_key: string;
+        };
+        /** PetStatus */
+        PetStatus: {
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "idle" | "thinking" | "replying" | "approval";
+            /** Review Thread Id */
+            review_thread_id?: string | null;
         };
         /** PlanRequest */
         PlanRequest: {
@@ -3501,6 +3528,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    status_api_agent_pet_state_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetStatus"];
                 };
             };
         };

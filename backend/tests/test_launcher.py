@@ -7,6 +7,7 @@ import pytest
 from app.launcher import (
     desktop_config,
     launch_arguments,
+    same_service,
     service_identity,
     stage_extension,
 )
@@ -77,3 +78,22 @@ def test_source_launch_never_replaces_extension_source_tree(tmp_path):
     result = stage_extension(tmp_path, tmp_path)
     assert (source / "wxt.config.ts").is_file()
     assert result != source
+
+
+def test_reuse_keeps_database_identity_checks_even_with_pet_capabilities(tmp_path, monkeypatch):
+    import app.launcher as launcher
+    config = desktop_config(tmp_path, tmp_path, project=False)
+    identity = service_identity(config)
+    monkeypatch.setattr(launcher, "probe", lambda: {**identity, "capabilities": ["pet-state"]})
+    assert same_service(config)
+    monkeypatch.setattr(launcher, "probe", lambda: {**identity, "database_id": "other-profile", "capabilities": ["pet-state"]})
+    with pytest.raises(RuntimeError, match="另一份资料"):
+        same_service(config)
+
+
+def test_health_advertises_pet_features(tmp_path):
+    from tests.test_foundation import make_client
+    with make_client(tmp_path) as c:
+        response = c.get("/api/healthz")
+        assert response.status_code == 200
+        assert set(response.json().get("capabilities", [])) >= {"after-class-checkin", "calendar-course-entry", "pet-state"}

@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -223,3 +224,27 @@ def test_model_settings_replay_and_stale_form_do_not_overwrite(tmp_path):
             == 409
         )
         assert c.get("/api/local/model-settings").json()["text_model"] == "new-model"
+
+
+def test_shutdown_requires_session_csrf_and_idle_launcher_service(tmp_path):
+    with local_client(tmp_path) as c:
+        h = headers(c)
+        assert c.post("/api/local/shutdown", json={}, headers=h).status_code == 401
+        c.post("/api/local/session", json={}, headers=h)
+        assert c.post("/api/local/shutdown", json={}).status_code == 403
+        terminal = c.post("/api/local/shutdown", json={}, headers=h)
+        assert terminal.status_code == 409 and "终端" in terminal.text
+        stopped = []
+        c.app.state.request_shutdown = lambda: stopped.append(True)
+        marker = object()
+        c.app.state.running_tasks.add(marker)
+        busy = c.post("/api/local/shutdown", json={}, headers=h)
+        c.app.state.running_tasks.remove(marker)
+        assert busy.status_code == 409 and "处理" in busy.text
+        assert stopped == []
+        assert c.post("/api/local/shutdown", json={}, headers=h).json() == {"stopping": True}
+        for _ in range(20):
+            if stopped:
+                break
+            time.sleep(0.05)
+        assert stopped == [True]

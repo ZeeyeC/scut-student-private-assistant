@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var statusItem: NSStatusItem!
     var timer: Timer?
     var sleeping = false
+    var latestAssistantMood: PetMood = .starting
     var ready = false
     var starting = false
     var compact = true
@@ -21,6 +22,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var segments: NSSegmentedControl!
     var smokeStarted = false
     var automaticActions = true
+    var stoppingService = false
+    var exitConfirmation: NSAlert?
     var nextPerformanceAt = ProcessInfo.processInfo.systemUptime + 20
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -68,7 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         pet.onClick = { [weak self] in
             guard let self else { return }
             self.scheduleNextPerformance()
-            if self.sleeping { self.sleeping = false; self.pet.mood = .idle }
+            if self.sleeping { self.toggleSleep() }
             if self.pet.mood == .approval { self.showReview() }
             else { self.showAssistant() }
         }
@@ -146,7 +149,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         menu.addItem(item("显示桌宠", #selector(showPet), "0"))
         menu.addItem(.separator())
         menu.addItem(item("关闭助手面板", #selector(closePanel), "w"))
-        menu.addItem(item("退出课间桌宠", #selector(quit), "q"))
+        menu.addItem(item("仅退出桌宠（后台继续运行）", #selector(quit), "q"))
         appItem.submenu = menu
         let editItem = NSMenuItem(title: "编辑", action: nil, keyEquivalent: "")
         let edit = NSMenu(title: "编辑")
@@ -192,22 +195,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         menu.addItem(.separator())
         menu.addItem(item("在浏览器中打开完整助手", #selector(openBrowser)))
         menu.addItem(item("重新连接本机服务", #selector(reconnect)))
-        menu.addItem(item("退出桌宠（保留后台助手）", #selector(quit)))
+        let exit = NSMenuItem(title: "关闭与退出", action: nil, keyEquivalent: "")
+        let exits = NSMenu(title: "关闭与退出")
+        exits.addItem(item("仅退出桌宠（后台继续运行）", #selector(quit)))
+        exits.addItem(item("停止后台并退出…", #selector(stopServiceAndQuit)))
+        exit.submenu = exits; menu.addItem(exit)
         return menu
     }
 
     func beginService() {
         guard !starting else { return }
-        starting = true; ready = false; pet.mood = .starting
+        starting = true; ready = false; receiveAssistantMood(.starting)
         let startingHTML = "<html lang='zh'><meta charset='utf-8'><body style='font:15px -apple-system;padding:36px;background:#f5f8f3;color:#24453c'><h2>课间，陪你一起完成。</h2><p>正在连接本机助手…</p><p>双击桌宠打开面板，拖动移动，右键或菜单栏管理。</p></body></html>"
         webView.loadHTMLString(startingHTML, baseURL: nil)
         Task {
             do {
                 try await service.start()
-                ready = true; starting = false; pet.mood = sleeping ? .sleeping : .idle
+                ready = true; starting = false; receiveAssistantMood(.idle)
                 webView.load(URLRequest(url: assistantOrigin))
             } catch {
-                starting = false; pet.mood = .error
+                starting = false; receiveAssistantMood(.error)
                 let safe = error.localizedDescription.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;")
                 webView.loadHTMLString("<meta charset='utf-8'><body style='font:15px -apple-system;padding:32px'><h2>暂时没有连接成功</h2><p>\(safe)</p><p>处理后，点击菜单栏「重新连接本机服务」。</p></body>", baseURL: nil)
                 showAssistant()
@@ -278,16 +285,74 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     @objc func openSettings() { showAssistant(page: "设置") }
     @objc func showReview() {
         showAssistant(page: "助手")
-        webView.evaluateJavaScript("setTimeout(() => document.querySelector('.review-panel')?.scrollIntoView({behavior:'smooth', block:'start'}), 150);")
+        webView.evaluateJavaScript("window.__campusPet?.showReview();")
     }
     @objc func showPet() { panel.orderFrontRegardless(); constrainAndSave(); scheduleNextPerformance() }
     @objc func hidePet() { panel.orderOut(nil) }
     @objc func closePanel() { assistant.orderOut(nil) }
     @objc func quit() { NSApp.terminate(nil) }
+    @objc func stopServiceAndQuit() {
+        guard !stoppingService, exitConfirmation == nil else { return }
+        guard ready, trusted(webView?.url) else {
+            showStopError(starting ? "正在启动后台，请稍后重试；也可以选择仅退出桌宠。" : "尚未连接本机助手。请先重新连接，或选择仅退出桌宠。")
+            return
+        }
+        let alert = NSAlert()
+        alert.messageText = "停止后台并退出桌宠？"
+        alert.informativeText = "浏览器中的 Web UI 也会断开。请先保存正在编辑或校对的内容。个人资料和模型配置会保留。"
+        alert.addButton(withTitle: "停止后台并退出")
+        alert.addButton(withTitle: "取消")
+        // Cancelling, including Escape or closing the sheet, is side-effect free.
+        alert.buttons.last?.keyEquivalent = "\u{1b}"
+        exitConfirmation = alert
+        NSApp.activate(ignoringOtherApps: true)
+        assistant.makeKeyAndOrderFront(nil)
+        alert.beginSheetModal(for: assistant) { [weak self] response in
+            guard let self else { return }
+            self.exitConfirmation = nil
+            guard response == .alertFirstButtonReturn else { return }
+            Task {
+                do { try await self.stopBackend(); self.quit() }
+                catch { self.showStopError(error.localizedDescription) }
+            }
+        }
+    }
+    func stopBackend() async throws {
+        guard !stoppingService else { throw ServiceError.message("正在停止后台，请稍候。") }
+        guard ready, trusted(webView?.url) else { throw ServiceError.message("尚未连接本机助手，请先重新连接。") }
+        stoppingService = true
+        defer { stoppingService = false }
+        let result: Any?
+        do {
+            result = try await webView.callAsyncJavaScript(ServiceController.shutdownJavaScript, arguments: [:], in: nil, contentWorld: .page)
+        } catch {
+            throw ServiceError.message("停止请求未能完成。请检查助手连接后重试；桌宠已保留，也可选择仅退出桌宠。")
+        }
+        guard let reply = result as? [String: Any], reply["stopping"] as? Bool == true else {
+            throw ServiceError.message((result as? [String: Any])?["reason"] as? String ?? "后台没有接受停止请求，请稍后重试。")
+        }
+        try await service.waitUntilStopped()
+        ready = false
+    }
+    func showStopError(_ message: String) {
+        let alert = NSAlert()
+        alert.messageText = "未能停止后台"
+        alert.informativeText = message
+        alert.addButton(withTitle: "知道了")
+        NSApp.activate(ignoringOtherApps: true)
+        assistant.makeKeyAndOrderFront(nil)
+        alert.beginSheetModal(for: assistant) { _ in }
+    }
     @objc func reconnect() { beginService() }
     @objc func toggleSleep() {
-        sleeping.toggle(); pet.mood = sleeping ? .sleeping : .idle
+        if !sleeping { latestAssistantMood = pet.mood }
+        sleeping.toggle(); pet.mood = sleeping ? .sleeping : latestAssistantMood
         scheduleNextPerformance()
+    }
+    func receiveAssistantMood(_ mood: PetMood) {
+        latestAssistantMood = mood
+        if mood != .idle { pet.stopAction(); scheduleNextPerformance() }
+        if !sleeping { pet.mood = mood }
     }
     func scheduleNextPerformance() {
         nextPerformanceAt = ProcessInfo.processInfo.systemUptime + Double.random(in: 18...32)
@@ -364,10 +429,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             requestedPage = "课表"; segments.selectedSegment = 2; return
         }
         guard let mood = PetMood(rawValue: value) else { return }
-        if !sleeping {
-            if mood != .idle { pet.stopAction(); scheduleNextPerformance() }
-            pet.mood = mood
-        }
+        receiveAssistantMood(mood)
     }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         guard trusted(webView.url) else { return }
@@ -376,9 +438,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         if options.smokeDirectory != nil && !smokeStarted { smokeStarted = true; runSmoke() }
     }
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        if (error as NSError).code != NSURLErrorCancelled { pet.mood = .error }
+        if (error as NSError).code != NSURLErrorCancelled { receiveAssistantMood(.error) }
     }
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { pet.mood = .error; webView.reload() }
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { receiveAssistantMood(.error); webView.reload() }
     func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
         let alert = NSAlert(); alert.messageText = message
         alert.addButton(withTitle: "确认"); alert.addButton(withTitle: "取消")

@@ -48,6 +48,45 @@ final class ServiceController {
     private var launcher: Process?
     init(options: LaunchOptions) { self.options = options }
 
+    // Runs in the trusted WKWebView so the existing selected profile, cookies,
+    // Origin and CSRF protections apply exactly as they do in the web settings.
+    static let shutdownJavaScript = """
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+        try {
+          const csrf = await fetch('/api/csrf', {credentials:'same-origin', signal:controller.signal});
+          if (!csrf.ok) return {stopping:false, reason:'无法获取会话，请先重新连接助手。'};
+          const token = (await csrf.json()).csrf_token;
+          const response = await fetch('/api/local/shutdown', {
+            method:'POST', credentials:'same-origin', signal:controller.signal,
+            headers:{'Content-Type':'application/json', 'X-CSRF-Token':token}, body:'{}'
+          });
+          const result = await response.json();
+          return {stopping:response.ok && result.stopping === true,
+            reason:typeof result.detail === 'string' ? result.detail : '无法停止后台，请确认已进入本机资料。'};
+        } finally { clearTimeout(timeout); }
+        """
+
+    func waitUntilStopped() async throws {
+        let deadline = ProcessInfo.processInfo.systemUptime + 10
+        var refused = 0
+        while ProcessInfo.processInfo.systemUptime < deadline {
+            var request = URLRequest(url: assistantOrigin.appendingPathComponent("api/healthz"), cachePolicy: .reloadIgnoringLocalCacheData)
+            request.timeoutInterval = 1
+            do {
+                _ = try await URLSession.shared.data(for: request)
+                refused = 0
+            } catch let error as URLError where error.code == .cannotConnectToHost || error.code == .networkConnectionLost {
+                refused += 1
+                if refused >= 2 { return }
+            } catch {
+                throw ServiceError.message("无法确认后台是否已停止。请检查连接后重试，或选择仅退出桌宠。")
+            }
+            try await Task.sleep(nanoseconds: 250_000_000)
+        }
+        throw ServiceError.message("后台尚未停止，可能仍在结束任务。请稍后重试，或选择仅退出桌宠。")
+    }
+
     func start() async throws {
         if options.externalService { try await verifyHealth(); return }
         guard let executable = Bundle.main.resourceURL?.appendingPathComponent("service/CampusCompanion"),
@@ -90,11 +129,21 @@ final class ServiceController {
         var request = URLRequest(url: assistantOrigin.appendingPathComponent("api/healthz"))
         request.timeoutInterval = 3
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard (response as? HTTPURLResponse)?.statusCode == 200,
-              let body = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+        guard let body = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw ServiceError.message("本机端口返回了无法识别的服务。")
+        }
+        try Self.validateHealth(status: (response as? HTTPURLResponse)?.statusCode ?? 0, body: body)
+    }
+
+    nonisolated static func validateHealth(status: Int, body: [String: Any]) throws {
+        guard status == 200,
               body["application"] as? String == "campus-companion",
               body["mode"] as? String == "local" else {
             throw ServiceError.message("5173 端口不是本机个人助手。请先关闭冲突服务。")
+        }
+        let required: Set<String> = ["after-class-checkin", "calendar-course-entry", "pet-state"]
+        guard let available = body["capabilities"] as? [String], required.isSubset(of: Set(available)) else {
+            throw ServiceError.message("检测到旧版后台，缺少新版桌宠功能。请在旧助手设置中停止服务，再点击「重新连接本机服务」。浏览器和桌宠仍可共用升级后的后台，个人资料无需删除。")
         }
     }
 }

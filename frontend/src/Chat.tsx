@@ -35,9 +35,9 @@ const labels: Record<string, string> = {
   set_task_status: "更新作业状态",
   set_task_deadline: "更新截止时间",
 };
-export function ChatPage({ embedded = false }: { embedded?: boolean }) {
+export function ChatPage({ embedded = false, focusThreadId, focusRequest = 0 }: { embedded?: boolean; focusThreadId?: string; focusRequest?: number }) {
   const q = useQueryClient(),
-    [threadId, setThreadId] = useState(""),
+    [threadId, setThreadId] = useState(focusThreadId ?? ""),
     [runId, setRunId] = useState(""),
     [messages, setMessages] = useState<Message[]>([]),
     [running, setRunning] = useState(false),
@@ -54,6 +54,15 @@ export function ChatPage({ embedded = false }: { embedded?: boolean }) {
     queryKey: ["drafts"],
     queryFn: () => api<Resource[]>("/drafts"),
   });
+  useEffect(() => {
+    if (!focusThreadId) return;
+    setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
+    cursors.current = {};
+    setThreadId(focusThreadId); setEpoch(value => value + 1);
+  }, [focusThreadId, focusRequest]);
+  useEffect(() => {
+    if (focusThreadId) document.querySelector(".review-panel")?.scrollIntoView({ block: "start" });
+  }, [focusThreadId, focusRequest, approvalId, drafts.data]);
   const apply = (event: PublicEvent) => {
     if (event.seq <= (cursors.current[event.run_id] ?? 0)) return;
     cursors.current[event.run_id] = event.seq;
@@ -98,8 +107,10 @@ export function ChatPage({ embedded = false }: { embedded?: boolean }) {
     if (!threadId) return;
     const abort = new AbortController();
     (async () => {
-      const runs = await api<Resource[]>(`/agent/threads/${threadId}/runs`);
+      const runs = await api<Resource[]>(`/agent/threads/${threadId}/runs`, { signal: abort.signal });
+      if (abort.signal.aborted) return;
       for (const r of runs) {
+        if (abort.signal.aborted) return;
         const active = ["queued", "running", "resume_queued", "waiting_approval"].includes(r.data.status);
         if (active) {
           setRunId(r.id);
@@ -108,12 +119,12 @@ export function ChatPage({ embedded = false }: { embedded?: boolean }) {
         await replayEvents(
           r.id,
           cursors.current[r.id] ?? 0,
-          apply,
+          event => { if (!abort.signal.aborted) apply(event); },
           abort.signal,
         );
         if (active) {
           // The run may have finished while history was replaying.
-          const latest = await api<Resource>(`/agent/runs/${r.id}`);
+          const latest = await api<Resource>(`/agent/runs/${r.id}`, { signal: abort.signal });
           if (abort.signal.aborted) return;
           setRunning(["queued", "running", "resume_queued"].includes(latest.data.status));
           setApprovalId(latest.data.status === "waiting_approval" ? latest.data.approval_id ?? "" : "");

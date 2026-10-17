@@ -24,6 +24,7 @@ from app.contracts import SettingsUpdate
 from app.data_routes import data_router
 from app.model_gateway import ModelGateway
 from app.paths import resource_root
+from app.pet_status import pet_router
 from app.planner import planner_router
 from app.processes import process_alive
 from app.routes import business_router
@@ -220,6 +221,7 @@ def create_app(config=None):
         return {
             **service_identity(config),
             "status": "ok",
+            "capabilities": ["after-class-checkin", "calendar-course-entry", "pet-state"],
             "model_configured": bool(config.text_model and config.model_api_key),
             "vision_configured": bool(config.vision_model and config.model_api_key),
             "scut_verified": bool(config.scut_adapter_path),
@@ -263,6 +265,7 @@ def create_app(config=None):
     app.include_router(task_router(get_db, current_user))
     app.include_router(planner_router(get_db, current_user))
     app.include_router(agent_router(get_db, current_user))
+    app.include_router(pet_router(get_db, current_user))
     app.include_router(data_router(get_db, current_user))
     app.include_router(after_class_router(get_db, current_user))
 

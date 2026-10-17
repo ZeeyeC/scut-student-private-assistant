@@ -1,20 +1,20 @@
-# 本地桌面入口（A方案）
+# 本地桌面初始化与构建（开发参考）
 
 ## 本项目现在怎么打开
 
-macOS 双击项目根目录的 `启动课间助手.command`。已有完整桌面包时直接运行 `dist/desktop/课间助手.app` 中的原生程序；首次下载源码时自动准备工具、安装依赖并构建，再启动助手。使用项目原有 `.env` 和数据库，不需要预先安装 Python/Node 或 Homebrew。终端显示首次构建进度，成功后在 Chrome/Edge 打开 `http://127.0.0.1:5173`。若没有这两种浏览器，使用系统默认浏览器，课表导入时仍需切换到 Chrome/Edge。
+当前 Mac 日常使用请双击 `campus-pet/dist/课间桌宠.app` 或 `campus-pet/启动课间桌宠.command`，详见 [桌宠说明](../campus-pet/README.md)。桌宠与浏览器共用后台，无需额外启动原网页助手。根目录两个旧“启动课间助手”脚本和旧 `dist/desktop` 打包副本已清理。
 
-Windows 源码入口：下载完整仓库并解压到本地可写目录，双击根目录 `启动课间助手.cmd`。首次会自动初始化并构建，成功后运行 `dist/desktop/CampusCompanion/CampusCompanion.exe` 并使用项目资料；已有完整桌面包时直接启动，无需联网重新安装依赖。初始化脚本、自动化测试和原生 CI 已提供；当前开发机为 macOS，尚无本次 Windows 实机/产物验收。
+下文保留原网页助手的开发初始化与独立打包说明，供源码开发和 Windows 构建使用；这些命令可能重新生成原网页助手包，不作为当前 Mac 的日常启动步骤。Windows 尚无本次实机/产物验收。
 
 助手直接进入“今日”，不再要求注册登录。若旧库有账号，首次选择要继续使用的资料或新建独立资料；旧资料保留，不自动合并删除。选定后保持相同身份。学校统一认证仍由本人登录。
 
 关闭浏览器页面后本地助手仍运行。在“设置 → 模型连接”下方点击“停止助手”可停止服务；有正在处理的请求会拒绝停止。再次双击入口会重新启动。运行中重复打开只打开现有服务；若5173被别的服务或另一份资料占用，会显示错误，不杀其他程序。错误文件为资料目录下 `desktop-error.txt`，运行日志为 `desktop.log`。
 
-## macOS 首次一键初始化
+## macOS 源码初始化（原网页助手）
 
-完整解压仓库到本机可写目录后，双击 `启动课间助手.command`。首次需要能访问 Node.js、Astral、npm 和 Python 包源的网络，下载及构建可能持续数分钟；后续启动复用完整桌面包，可离线打开本地界面，在线模型功能仍需要网络。
+完整解压仓库到本机可写目录后，在项目根目录执行 `/bin/bash scripts/initialize-macos.sh --no-launch`，只准备依赖和构建原网页助手，不启动后台。首次需要能访问 Node.js、Astral、npm 和 Python 包源的网络，下载及构建可能持续数分钟。之后按 [桌宠说明](../campus-pet/README.md#开发与构建) 构建桌宠。
 
-入口调用 `scripts/initialize-macos.sh`，兼容系统自带 Bash 3.2：
+`scripts/initialize-macos.sh` 兼容系统自带 Bash 3.2，流程如下（`--no-launch` 跳过启动）：
 
 1. 检查 `.app` 的可执行程序、Python 动态库、前端和扩展；已有完整产物时直接启动。
 2. 按 Mac 当前运行架构选择 Apple Silicon（arm64）或 Intel（x64）工具。优先复用 Node.js 22（至少 22.12）和 uv（至少 0.11.19）；缺少时从官方地址下载固定版本 Node.js 22.23.3、uv 0.11.19，并验证 SHA256 后解压到 `.tools/macos/`。
@@ -22,7 +22,7 @@ Windows 源码入口：下载完整仓库并解压到本地可写目录，双击
 4. 调用已有 `scripts/build-desktop.py` 构建正式前端、华工扩展、当前架构的 `.app` 和 ZIP；以不含 Node/Python 的 PATH 执行程序 `--help` 及内置时间工具的空输入检查，确认打包程序能运行后才报告初始化成功。仅在 `.env` 缺失时从模板创建，不覆盖已有配置、个人数据或备份。
 5. 成功后启动助手，扩展由启动器准备到 `desktop-extension/`。浏览器中首次“加载已解压的扩展程序”仍需本人操作。
 
-失败窗口会保留提示，完整日志在 `.tools/macos-initialize.log`。下载失败自动重试三次；构建中断会留下未完成标记，下次双击重新初始化。系统文件锁防止并行构建，进程退出后自动释放，可直接重试。初始化不登录学校账号或调用模型。
+完整日志在 `.tools/macos-initialize.log`。下载失败自动重试三次；构建中断会留下未完成标记，下次重新执行命令继续初始化。系统文件锁防止并行构建，进程退出后自动释放，可直接重试。初始化不登录学校账号或调用模型。
 
 源码更新后，先在助手 GUI 中停止服务，再在项目根目录终端重新构建并启动：
 
@@ -36,15 +36,15 @@ Windows 源码入口：下载完整仓库并解压到本地可写目录，双击
 /bin/bash scripts/initialize-macos.sh --no-launch
 ```
 
-如果下载工具没有保留 `.command` 的执行权限，可在项目目录执行一次 `chmod +x 启动课间助手.command`；若系统要求确认打开下载的脚本，请通过 Finder 右键“打开”按系统提示处理。脚本不会移除系统隔离标记。
+通过 `/bin/bash` 调用初始化脚本，无需给它添加执行权限。脚本不会移除系统隔离标记。
 
 工具来源：[Node.js 官方发布目录](https://nodejs.org/dist/v22.23.3/)、[uv 官方发布](https://github.com/astral-sh/uv/releases/tag/0.11.19)。Apple Silicon 与 Intel 分别原生构建；本机验证结果和 CI 的实际运行结果应分别确认，不能用一种架构的测试代替另一种。
 
 ## Windows 首次一键初始化
 
-需要 Windows 10/11 的 x64 环境、系统自带 Windows PowerShell 5.1，以及访问 Node.js、Astral、npm 和 Python 包源的网络。请先完整解压项目，例如放在 `C:\CampusCompanion`，再双击启动文件；不要直接在 ZIP 内运行。网络下载、依赖安装和打包首次可能持续数分钟，请等待完成。
+需要 Windows 10/11 的 x64 环境、系统自带 Windows PowerShell 5.1，以及访问 Node.js、Astral、npm 和 Python 包源的网络。请先完整解压项目，例如放在 `C:\CampusCompanion`，再在项目根目录运行下方命令；不要直接在 ZIP 内运行。网络下载、依赖安装和打包首次可能持续数分钟，请等待完成。
 
-`启动课间助手.cmd` 调用 `scripts/initialize-windows.ps1`，依次执行：
+在 PowerShell 执行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\initialize-windows.ps1`，依次执行：
 
 1. 检查完整桌面包。已存在则直接启动；首次或构建未完成时进入初始化。
 2. 优先复用可用的 Node.js 22（至少 22.12）和 uv（至少 0.11.19）。缺少时从官方地址下载固定版本 Node.js 22.23.3 和 uv 0.11.19，校验 SHA256 后解压到 `.tools/windows/`；仅修改当前进程 PATH，不需要管理员权限或修改系统环境。
@@ -52,12 +52,12 @@ Windows 源码入口：下载完整仓库并解压到本地可写目录，双击
 4. 调用现有 `scripts/build-desktop.py`，按 npm 锁文件构建正式前端与华工扩展，再构建当前 Windows 架构的桌面程序。
 5. 仅在 `.env` 不存在时复制 `.env.example`。已有 `.env`、`model.env`、`data/` 和 `backups/` 不覆盖。成功后自动打开助手，在“设置 → 模型连接”填写自己的模型配置。
 
-`.tools/`、运行数据和构建产物都在 Git 忽略规则中。初始化日志为 `.tools/initialize.log`；下载失败会自动重试三次，仍失败或安装/构建失败时窗口保留报错，修正网络或文件权限后再次双击即可。中断的初始化保留未完成标记，下一次会继续初始化，不会把不完整程序当作成功产物。避免同时运行两个初始化窗口。
+`.tools/`、运行数据和构建产物都在 Git 忽略规则中。初始化日志为 `.tools/initialize.log`；下载失败会自动重试三次，仍失败或安装/构建失败时会输出报错，修正网络或文件权限后重新执行命令即可。中断的初始化保留未完成标记，下一次会继续初始化，不会把不完整程序当作成功产物。避免同时运行两个初始化窗口。
 
 源码更新后，需要先在 GUI 停止助手，再在项目根目录的 PowerShell 执行强制重新构建：
 
 ```powershell
-.\启动课间助手.cmd -Rebuild
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\initialize-windows.ps1 -Rebuild
 ```
 
 只初始化、不自动启动（例如 CI）：
@@ -83,7 +83,7 @@ Windows：在Windows原生构建后分发整个 `CampusCompanion` 文件夹，�
 
 该目录存放 `data/campus.db`、`data/agent.db`、`data/uploads`、`model.env`、`desktop-extension` 和日志。扩展复制到稳定目录；升级程序不删除个人数据库。不要把扩展安装到临时解压目录或 `.app` 内部。
 
-源码项目入口使用项目根目录，扩展稳定副本为 `desktop-extension`，原 `extension/` 源码完整保留。两种入口属于不同资料位置，不自动同步；当前本人已有配置请使用项目根目录双击入口。切换时先从GUI停止正在运行的另一实例。
+原源码初始化脚本使用项目根目录，扩展稳定副本为 `desktop-extension`，原 `extension/` 源码完整保留。独立网页助手包与源码初始化脚本使用不同资料位置，不自动同步；当前桌宠构建的资料选择规则见 [桌宠说明](../campus-pet/README.md#资料与运行方式)。切换时先从 GUI 停止正在运行的另一实例。
 
 ## 模型配置
 
