@@ -1,0 +1,59 @@
+import { test, expect } from '@playwright/test';
+
+test('fixed timetable is separate; smart schedule includes courses and never moves them', async ({page})=>{
+  await page.goto('/');
+  await page.getByRole('button',{name:'创建账号',exact:true}).click();
+  await page.getByLabel('邮箱').fill(`split-${crypto.randomUUID()}@example.com`);
+  await page.getByLabel('密码').fill('Student!Password2026');
+  await page.getByRole('button',{name:'注册并登录'}).click();
+  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  const before=await page.evaluate(async()=>{
+    const csrf=(await (await fetch('/api/csrf')).json()).csrf_token;
+    const write=async(path:string,body:unknown,method='POST')=>{
+      const r=await fetch('/api'+path,{method,headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify(body)});
+      if(!r.ok) throw new Error(await r.text()); return r.json();
+    };
+    const settings=await (await fetch('/api/settings')).json();
+    settings.data={...settings.data,week1_monday:'2026-10-12',periods:{'1':{start:'09:00',end:'10:00'}},study_windows:[{start:'09:00',end:'12:00'}]};
+    await write('/settings',settings,'PUT');
+    const course=await write('/drafts/timetable',{semester_label:'固定课表',courses:[{source_key:'fixed',name:'固定高数课',weekday:4,weeks:[1],periods:[1]}]});
+    await write(`/drafts/${course.id}/confirm`,{revision:course.revision});
+    await write('/fixed-events',{title:'单独固定事项',starts_at:'2026-10-15T10:30:00+08:00',ends_at:'2026-10-15T11:00:00+08:00'});
+    const task=await write('/drafts/assignment',{items:[{title:'智能排程任务'}]});
+    await write(`/drafts/${task.id}/confirm`,{revision:task.revision});
+    const saved=(await (await fetch('/api/tasks')).json())[0];
+    const steps=await write(`/tasks/${saved.id}/step-drafts`,{task_revision:saved.revision,steps:[{key:'s',title:'完成练习',description:'完成练习要求',estimated_minutes:30,dependency_keys:[],acceptance_criteria:['完成']}]});
+    await write(`/drafts/${steps.id}/confirm`,{revision:steps.revision});
+    return (await (await fetch('/api/courses')).json());
+  });
+  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'课表',exact:true})).toBeVisible();
+  await expect(page.locator('.fc-event').filter({hasText:'固定高数课'})).toHaveCount(1);
+  await expect(page.locator('.fc-event').filter({hasText:'单独固定事项'})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'智能安排未来 7 天'})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toBeVisible();
+  await page.screenshot({path:'/private/tmp/demo21-fixed-timetable.png',fullPage:true});
+  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'待办与日程',exact:true})).toBeVisible();
+  await expect(page.locator('.fc-event').filter({hasText:'固定高数课'})).toHaveCount(1);
+  await expect(page.locator('.fc-event').filter({hasText:'单独固定事项'})).toHaveCount(1);
+  await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'智能安排未来 7 天'}).click();
+  await expect(page.getByRole('heading',{name:'未来 7 天计划'})).toBeVisible();
+  const drafts=await (await page.request.get('/api/drafts')).json();
+  const plan=drafts.find((d:any)=>d.data.draft_kind==='plan').data.payload;
+  expect(plan.blocks.length).toBeGreaterThan(0);
+  for(const b of plan.blocks) for(const fixed of plan.fixed_agenda) {
+    expect(new Date(b.ends_at)<=new Date(fixed.starts_at) || new Date(b.starts_at)>=new Date(fixed.ends_at)).toBeTruthy();
+  }
+  expect(await (await page.request.get('/api/plan-blocks')).json()).toHaveLength(0);
+  await page.getByRole('region',{name:'智能安排'}).getByRole('button',{name:'校对完成，准备保存'}).click();
+  await page.getByRole('button',{name:'确认保存',exact:true}).click();
+  await expect.poll(async()=> (await (await page.request.get('/api/plan-blocks')).json()).length).toBeGreaterThan(0);
+  expect(await (await page.request.get('/api/courses')).json()).toEqual(before);
+  await page.screenshot({path:'/private/tmp/demo21-todos-schedule.png',fullPage:true});
+  await expect(page.locator('.fc-event').filter({hasText:'智能排程任务'})).toHaveCount(1);
+  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await expect(page.locator('.fc-event').filter({hasText:'智能排程任务'})).toHaveCount(0);
+  await expect(page.locator('.fc-event').filter({hasText:'固定高数课'})).toHaveCount(1);
+});

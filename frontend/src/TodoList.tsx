@@ -12,7 +12,7 @@ export function TodoList() {
   const pending = drafts.data?.filter(d=>d.data.draft_kind==='assignment').length ?? 0;
   return <section aria-label="我的待办" className="card">
     <h2>我的待办</h2>
-    <p>已保存的待办列在这里；有固定起止时间的活动请到课表用 AI 添加事项。</p>
+    <p>已保存的待办列在这里；有固定起止时间的活动请到待办与日程添加固定事项。</p>
     {tasks.isPending && <p role="status">正在读取待办…</p>}
     {tasks.error && <p role="alert">{String(tasks.error)}</p>}
     {!tasks.isPending && !open.length && <p>还没有已保存的待办。</p>}

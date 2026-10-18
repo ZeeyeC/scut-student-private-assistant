@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { api } from "./api";
 import { Button } from "./components/ui/button";
-import { AssignmentsPage } from "./Assignments";
 import { TodayPage } from "./Today";
 import { Settings } from "./Settings";
 import { LocalEntry } from "./LocalMode";
@@ -56,13 +55,21 @@ function Workspace({ local = false }: { local?: boolean }) {
   const [reviewThread, setReviewThread] = useState<string>();
   const [reviewRequest, setReviewRequest] = useState(0);
   useEffect(() => {
+    const refresh = () => { void q.invalidateQueries(); };
+    window.addEventListener("campus-task-updated", refresh);
+    return () => window.removeEventListener("campus-task-updated", refresh);
+  }, [q]);
+  useEffect(() => {
     const listener = (event: Event) => {
       const page = (event as CustomEvent<string>).detail;
       if (["今日", "课表", "作业", "助手", "设置"].includes(page)) {setCalendarDate(undefined); setPage(page);}
     };
     const saved = (event: Event) => {
       setCalendarDate((event as CustomEvent<string>).detail);
-      setPage("课表");
+      setPage("作业");
+    };
+    const focusTimetable = (event: Event) => {
+      setCalendarDate((event as CustomEvent<string>).detail); setPage("课表");
     };
     const review = (event: Event) => {
       const threadId = (event as CustomEvent<{ threadId?: string }>).detail?.threadId;
@@ -70,10 +77,12 @@ function Workspace({ local = false }: { local?: boolean }) {
       setReviewRequest(value => value + 1);
       setCalendarDate(undefined); setPage("助手");
     };
+    window.addEventListener("campus-timetable-focus", focusTimetable);
     window.addEventListener("campus-navigate", listener);
     window.addEventListener("campus-calendar-saved", saved);
     window.addEventListener("campus-pet-review", review);
     return () => {
+      window.removeEventListener("campus-timetable-focus", focusTimetable);
       window.removeEventListener("campus-navigate", listener);
       window.removeEventListener("campus-calendar-saved", saved);
       window.removeEventListener("campus-pet-review", review);
@@ -162,7 +171,7 @@ function Workspace({ local = false }: { local?: boolean }) {
               variant={page === n ? "default" : "outline"}
               onClick={() => {setCalendarDate(undefined); setPage(n);}}
             >
-              {n === "作业" ? "待办 / 作业" : n}
+              {n === "作业" ? "待办与日程" : n}
             </Button>
           ))}
         </nav>
@@ -189,9 +198,9 @@ function Workspace({ local = false }: { local?: boolean }) {
           {page === "今日" ? (
             <TodayPage />
           ) : page === "课表" ? (
-            <CalendarPage focusDate={calendarDate} />
+            <CalendarPage key="timetable" focusDate={calendarDate} />
           ) : page === "作业" ? (
-            <AssignmentsPage />
+            <CalendarPage key="schedule" mode="schedule" focusDate={calendarDate} />
           ) : page === "助手" ? (
             <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
           ) : (

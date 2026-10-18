@@ -28,7 +28,7 @@
     if (!pages.includes(page)) return false;
     desiredPage = page;
     const button = [...document.querySelectorAll('.shell > aside nav button')]
-      .find((b) => b.textContent.trim() === (page === '作业' ? '待办 / 作业' : page));
+      .find((b) => b.textContent.trim() === (page === '作业' ? '待办与日程' : page));
     if (!button) return false;
     button.click(); desiredPage = null;
     return true;

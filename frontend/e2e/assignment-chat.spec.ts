@@ -10,7 +10,7 @@ test("test vision draft needs review and agent write needs explicit approval", a
   await page.getByLabel("邮箱").fill(`vision-${Date.now()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button", { name: "注册并登录" }).click();
-  await page.getByRole("button", { name: "待办 / 作业", exact: true }).click();
+  await page.getByRole("button", { name: "待办与日程", exact: true }).click();
   await page
     .getByLabel("作业截图")
     .setInputFiles(path.resolve("e2e/fixtures/synthetic-test.png"));
@@ -58,7 +58,7 @@ test("test vision draft needs review and agent write needs explicit approval", a
     page.getByText("业务工具执行完毕", { exact: true }),
   ).toBeVisible();
   await page.reload();
-  await page.getByRole("button", { name: "待办 / 作业", exact: true }).click();
+  await page.getByRole("button", { name: "待办与日程", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Agent 确认测试", exact: true }),
   ).toHaveCount(1);

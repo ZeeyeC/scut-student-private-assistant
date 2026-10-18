@@ -30,10 +30,10 @@ test("stream appears before completion, replays after refresh, natural task need
   expect(await (await page.request.get("/api/tasks")).json()).toHaveLength(0);
   await review.getByRole("button", { name: "确认保存", exact: true }).click();
   await expect(review).toHaveCount(0);
-  await page.getByRole("button", { name: "待办 / 作业", exact: true }).click();
+  await page.getByRole("button", { name: "待办与日程", exact: true }).click();
   await expect(page.getByRole("heading", { name: "阅读两篇文献", exact: true })).toHaveCount(1);
   await page.reload();
-  await page.getByRole("button", { name: "待办 / 作业", exact: true }).click();
+  await page.getByRole("button", { name: "待办与日程", exact: true }).click();
   await expect(page.getByRole("heading", { name: "阅读两篇文献", exact: true })).toHaveCount(1);
   const tasks = await (await page.request.get("/api/tasks")).json();
   expect(tasks).toHaveLength(1);

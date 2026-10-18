@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('natural language updates a saved task deadline only after approval and survives refresh', async ({page}) => {
   await page.setViewportSize({width:390, height:950});
   await page.goto('/');
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await page.getByLabel('作业标题').fill('截止测试报告');
   await page.getByRole('button', {name:'生成校对草稿', exact:true}).click();
   await page.getByRole('button', {name:'校对完成，准备保存'}).click();
@@ -24,7 +24,7 @@ test('natural language updates a saved task deadline only after approval and sur
   await page.screenshot({path:'/private/tmp/campus-deadline-approval-mobile.png',fullPage:true});
   await page.getByRole('button', {name:'批准并执行'}).click();
   await expect(page.getByRole('heading', {name:'这一步需要你确认'})).toHaveCount(0);
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   const task = page.locator('article').filter({has:page.getByRole('heading',{name:'截止测试报告',exact:true})});
   await expect(task.locator('p').filter({hasText:/^截止 /})).toContainText('20:00');
   const tasks = await (await page.request.get('/api/tasks')).json();
@@ -35,7 +35,7 @@ test('natural language updates a saved task deadline only after approval and sur
   await page.getByRole('button', {name:'助手', exact:true}).click();
   await expect(page.getByText('已按确认更新截止时间；已有学习安排请重新规划。', {exact:true})).toBeVisible();
   await expect(page.getByRole('heading', {name:'这一步需要你确认'})).toHaveCount(0);
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await expect(task.locator('p').filter({hasText:/^截止 /})).toContainText('20:00');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth + 2)).toBe(true);
 });

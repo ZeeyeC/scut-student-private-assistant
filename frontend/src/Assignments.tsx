@@ -7,7 +7,7 @@ import { DraftReview } from "./DraftReview";
 import { TaskDetail } from "./TaskDetail";
 import { navigate } from "./drafts";
 import { DeleteButton } from "./DeleteButton";
-export function AssignmentsPage() {
+export function AssignmentsPage({embedded = false}: {embedded?: boolean}) {
   const q = useQueryClient(),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
@@ -34,7 +34,7 @@ export function AssignmentsPage() {
   return (
     <>
       <p className="eyebrow">ONE THING AT A TIME</p>
-      <h1>待办与作业</h1>
+      {embedded ? <h2>添加与管理待办</h2> : <h1>待办与作业</h1>}
       <p>先校对内容，再把大作业变成可以开始的小步骤。</p>
       <section className="card">
         <h2>已保存的待办与作业</h2>
@@ -390,7 +390,7 @@ export function DraftActions({
     <Button type="button" onClick={() => setAsk(true)}>校对完成，准备保存</Button>
   ) : (
     <div className="confirm">
-      <p>确认保存以上内容？保存后才会参与课表、作业或学习安排。</p>
+      <p>{draft.data.draft_kind === "timetable" ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
       <Button
         type="button"
         disabled={busy}

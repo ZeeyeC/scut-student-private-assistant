@@ -6,8 +6,8 @@ test('calendar conversation creates confirmed event, todos are visible, seven-da
   await page.getByRole('button', {name:'助手', exact:true}).click();
   await expect(page.getByRole('heading',{name:'学习助手'})).toBeVisible();
   await expect(page.getByText('点击导入可查看分步引导。', {exact:false})).toHaveCount(0);
-  await page.getByRole('button', {name:'课表', exact:true}).click();
-  await page.getByRole('button', {name:'用 AI 添加事项', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
+  await page.getByRole('button', {name:'用 AI 添加固定事项', exact:true}).click();
   await page.getByLabel('给助手的消息').fill('明天下午5:30到7:00参加院运会彩排');
   await page.getByRole('button', {name:'发送', exact:true}).click();
   const review = page.locator('section').filter({has:page.getByRole('heading', {name:'核对日程事项'})});
@@ -18,9 +18,9 @@ test('calendar conversation creates confirmed event, todos are visible, seven-da
   await expect(review).toHaveCount(0);
   await expect(page.locator('.fc').getByText('参加院运会彩排', {exact:true})).toBeVisible();
   await page.reload();
-  await page.getByRole('button', {name:'课表',exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程',exact:true}).click();
   await expect(page.locator('.fc').getByText('参加院运会彩排', {exact:true})).toBeVisible();
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await page.getByLabel('作业标题').fill('阅读文献');
   await page.getByRole('button', {name:'生成校对草稿',exact:true}).click();
   await page.getByRole('button', {name:'校对完成，准备保存'}).click();
@@ -35,7 +35,7 @@ test('calendar conversation creates confirmed event, todos are visible, seven-da
   await expect(page.getByRole('button', {name:'校对完成，准备保存'})).toHaveCount(0);
   await page.getByRole('button', {name:'规划未来 7 天'}).click();
   await expect(page.getByRole('heading', {name:'未来 7 天计划'})).toHaveCount(1);
-  await page.getByRole('button', {name:'待办 / 作业',exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程',exact:true}).click();
   const card = page.locator('article').filter({has:page.getByRole('heading',{name:'阅读文献',exact:true})});
   await card.getByLabel('预计耗时（分钟）').fill('45');
   await card.getByRole('button',{name:'生成排程步骤草稿'}).click();
@@ -48,7 +48,7 @@ test('calendar conversation creates confirmed event, todos are visible, seven-da
   await plan.screenshot({path:'/private/tmp/campus-seven-day-plan.png'});
   await plan.getByRole('button',{name:'校对完成，准备保存'}).click();
   await plan.getByRole('button',{name:'确认保存',exact:true}).click();
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
   await expect(page.locator('.fc').getByText('阅读文献 · 阅读文献',{exact:true})).toBeVisible();
   await page.screenshot({path:'/private/tmp/campus-calendar-todos.png',fullPage:true});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth+2)).toBe(true);
@@ -64,7 +64,7 @@ test('saving a future activity from assistant opens its calendar week', async ({
   await expect(review).toBeVisible();
   await review.getByRole('button',{name:'校对完成，准备保存'}).click();
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'课表',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'待办与日程',exact:true})).toBeVisible();
   await expect(page.locator('.fc').getByText('参加院运会彩排',{exact:true})).toBeVisible();
-  await expect(page.getByRole('button',{name:'用 AI 添加事项',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'用 AI 添加固定事项',exact:true})).toBeVisible();
 });
