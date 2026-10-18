@@ -4,7 +4,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from app import after_class
+from app import after_class, planner
 from app.main import create_app
 from tests.test_agent import ToolModel
 
@@ -25,4 +25,5 @@ app = create_app(
     }
 )
 after_class.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
+planner.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
 app.state.agent_model_factory = lambda: ToolModel()

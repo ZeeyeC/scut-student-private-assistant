@@ -1,0 +1,10 @@
+{
+  "recorded": true,
+  "recorder": "macOS screencapture -v",
+  "movie": "Demo2.2-raw.mov",
+  "bytes": 13976853,
+  "elapsed_seconds": 60.25,
+  "isolated_data": true,
+  "audio": false,
+  "guided_flow_passed": true
+}

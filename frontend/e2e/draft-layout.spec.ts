@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('drafts use available width; chat has compact toolbar and full composer at every size', async ({page}) => {
   await page.goto('/');
-  await page.getByRole('button', {name:'待办 / 作业',exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程',exact:true}).click();
   for (const title of ['布局草稿一','布局草稿二']) {
     await page.getByLabel('作业标题').fill(title);
     await page.getByRole('button',{name:'生成校对草稿',exact:true}).click();

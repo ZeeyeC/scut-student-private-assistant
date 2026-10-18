@@ -28,6 +28,6 @@ test('month/day before fills the existing review field; user can save without a 
   expect(tasks).toHaveLength(1);
   expect(tasks[0].data.due_at).toBe(`${year}-11-01T00:00:00+08:00`);
   await page.reload();
-  await page.getByRole('button',{name:'待办 / 作业',exact:true}).click();
+  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
   await expect(page.getByRole('heading',{name:'月日边界验收',exact:true})).toHaveCount(1);
 });

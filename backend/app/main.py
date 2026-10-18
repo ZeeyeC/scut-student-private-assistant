@@ -29,6 +29,7 @@ from app.planner import planner_router
 from app.processes import process_alive
 from app.routes import business_router
 from app.tasks import task_router
+from app.schedule_reminders import reminder_router
 
 
 def create_app(config=None):
@@ -221,7 +222,7 @@ def create_app(config=None):
         return {
             **service_identity(config),
             "status": "ok",
-            "capabilities": ["after-class-checkin", "calendar-course-entry", "pet-state"],
+            "capabilities": ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders"],
             "model_configured": bool(config.text_model and config.model_api_key),
             "vision_configured": bool(config.vision_model and config.model_api_key),
             "scut_verified": bool(config.scut_adapter_path),
@@ -266,6 +267,7 @@ def create_app(config=None):
     app.include_router(planner_router(get_db, current_user))
     app.include_router(agent_router(get_db, current_user))
     app.include_router(pet_router(get_db, current_user))
+    app.include_router(reminder_router(get_db, current_user))
     app.include_router(data_router(get_db, current_user))
     app.include_router(after_class_router(get_db, current_user))
 

@@ -13,7 +13,7 @@ async function write(page: Page, method: string, url: string, data: unknown) {
 test('delete pending and empty plan drafts, then remove a todo and its calendar blocks after confirmation', async ({page}) => {
   await page.setViewportSize({width: 390, height: 950});
   await page.goto('/');
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await page.getByLabel('作业标题').fill('丢弃的草稿');
   await page.getByRole('button', {name:'生成校对草稿', exact:true}).click();
   await page.getByRole('button', {name:'删除草稿', exact:true}).click();
@@ -25,7 +25,7 @@ test('delete pending and empty plan drafts, then remove a todo and its calendar 
   await dialog.getByRole('button', {name:'确认删除', exact:true}).click();
   await expect(page.getByRole('button', {name:'删除草稿', exact:true})).toHaveCount(0);
   await page.reload();
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await expect(page.getByRole('button', {name:'删除草稿', exact:true})).toHaveCount(0);
 
   await page.getByLabel('作业标题').fill('删除测试阅读待办');
@@ -42,7 +42,7 @@ test('delete pending and empty plan drafts, then remove a todo and its calendar 
   const plan = page.locator('section').filter({has:page.getByRole('heading', {name:'未来 7 天计划'})});
   await plan.getByRole('button', {name:'校对完成，准备保存'}).click();
   await plan.getByRole('button', {name:'确认保存', exact:true}).click();
-  await page.getByRole('button', {name:'课表', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await expect(page.locator('.fc').getByText('删除测试阅读待办 · 删除测试阅读待办', {exact:true})).toBeVisible();
   card = page.locator('article').filter({has:page.getByRole('heading', {name:'删除测试阅读待办', exact:true})});
   await card.getByRole('button', {name:'删除待办', exact:true}).click();
@@ -63,17 +63,17 @@ test('delete pending and empty plan drafts, then remove a todo and its calendar 
   await expect(plan).toHaveCount(0);
   await page.reload();
   await expect(page.getByRole('heading', {name:'未来 7 天计划'})).toHaveCount(0);
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await expect(page.getByRole('heading', {name:'删除测试阅读待办', exact:true})).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth + 2)).toBe(true);
 });
 
 test('stale delete cannot remove another version; refresh then explicitly confirm again', async ({page}) => {
   await page.goto('/');
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   const draft = await write(page, 'POST', '/drafts/assignment', {items:[{title:'旧版本草稿'}]});
   await page.reload();
-  await page.getByRole('button', {name:'待办 / 作业', exact:true}).click();
+  await page.getByRole('button', {name:'待办与日程', exact:true}).click();
   await page.getByRole('button', {name:'删除草稿', exact:true}).click();
   await write(page, 'PUT', '/drafts/' + draft.id, {revision:draft.revision, payload:{...draft.data.payload, items:[{...draft.data.payload.items[0], title:'另一端修改后的草稿'}]}});
   const dialog = page.getByRole('dialog');

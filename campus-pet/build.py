@@ -9,6 +9,7 @@ import subprocess
 from pathlib import Path
 
 root = Path(__file__).resolve().parent
+version = (root / "VERSION").read_text(encoding="utf8").strip()
 parser = argparse.ArgumentParser()
 parser.add_argument("--reuse-service", action="store_true", help="Reuse this project's previously built service")
 args = parser.parse_args()
@@ -87,8 +88,8 @@ with (contents / "Info.plist").open("wb") as handle:
     plistlib.dump({
         "CFBundleExecutable": "CampusPet", "CFBundleIdentifier": "cn.campuscompanion.pet",
         "CFBundleName": "课间桌宠", "CFBundleDisplayName": "课间桌宠",
-        "CFBundlePackageType": "APPL", "CFBundleShortVersionString": "0.1.0",
-        "CFBundleVersion": "1", "LSMinimumSystemVersion": "13.0", "LSUIElement": True,
+        "CFBundlePackageType": "APPL", "CFBundleShortVersionString": version,
+        "CFBundleVersion": version, "LSMinimumSystemVersion": "13.0", "LSUIElement": True,
         "CFBundleIconFile": "AppIcon",
         "NSHighResolutionCapable": True,
         "NSAppTransportSecurity": {"NSAllowsArbitraryLoads": True},

@@ -181,7 +181,7 @@ export function TodayPage() {
         {events.error && <p role="alert">{String(events.error)}</p>}
         {events.data?.events.filter(e=>e.kind === "fixed_event").length === 0 && <p>今天没有固定事项。</p>}
         {events.data?.events.filter(e=>e.kind === "fixed_event").map(e=><div key={e.id} className="step"><strong>{clock(e.starts_at,tz)}–{clock(e.ends_at,tz)}</strong><h3>{e.title}</h3></div>)}
-        <Button variant="outline" onClick={()=>navigate("课表")}>去课表添加事项</Button>
+        <Button variant="outline" onClick={()=>navigate("作业")}>去待办与日程添加事项</Button>
       </section>
       <TodoList />
       {visibleDrafts(drafts.data)

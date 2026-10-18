@@ -22,7 +22,7 @@ for (const width of [390, 768, 1440]) {
     await page.reload();
     await page.getByRole("button", { name: "设置", exact: true }).click();
     await expect(page.getByLabel("学期名称")).toHaveValue("真实 API 测试学期");
-    await page.getByRole("button", { name: "待办 / 作业", exact: true }).click();
+    await page.getByRole("button", { name: "待办与日程", exact: true }).click();
     await page.getByLabel("作业标题").fill("写一篇实验报告");
     await page.getByLabel("要求（一行一项）").fill("解释实验结果");
     await page

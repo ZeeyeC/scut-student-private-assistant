@@ -8,10 +8,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     lazy var service = ServiceController(options: options)
     let pet = PetView(frame: NSRect(x: 0, y: 0, width: 190, height: 210))
     var panel: PetPanel!
+    var taskRingOpen = false
+    var taskBubbleWindows: [String: PetTaskBubblePanel] = [:]
+    var ringFrames: [NSRect] = []
+    var ringSlots: [String?] = []
+    var todayTasks: [PetScheduledTask] = []
+    var taskTimezone = "Asia/Shanghai"
+    var ringGeneration = 0
+    var loadingTaskRing = false
+    var completingTasks = Set<String>()
+    var taskDetails: TaskDetailsWindow?
+    var demoStage: NSWindow?
+    var bubbleLocalMonitor: Any?
+    var bubbleGlobalMonitor: Any?
+    var browserOpener: (URL) -> Bool = { NSWorkspace.shared.open($0) }
     var assistant: NSWindow!
     var webView: WKWebView!
     var statusItem: NSStatusItem!
     var timer: Timer?
+    var reminderTimer: Timer?
+    var pendingReminders: [ScheduleReminder] = []
+    var announcedReminders = Set<String>()
+    var dismissedReminders = Set<String>()
+    var checkingReminders = false
+    var openingReminder = false
     var sleeping = false
     var latestAssistantMood: PetMood = .starting
     var ready = false
@@ -53,6 +73,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         timer = Timer.scheduledTimer(withTimeInterval: 1.0 / 20.0, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.animate() }
         }
+        reminderTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                await self?.refreshReminders()
+                await self?.refreshTaskRing()
+            }
+        }
         beginService()
     }
 
@@ -67,18 +93,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         panel.contentView = pet
         pet.setAccessibilityElement(true)
         pet.setAccessibilityRole(.button)
-        pet.setAccessibilityLabel("课间桌宠，点击聊天，拖动移动，右键打开菜单")
+        pet.setAccessibilityLabel("奶蛙，点击环形展开今天已安排的待办，左击任务查看详细，右击任务完成，拖动移动，紫色时点击肚皮打开任务")
         pet.onClick = { [weak self] in
             guard let self else { return }
             self.scheduleNextPerformance()
             if self.sleeping { self.toggleSleep() }
-            if self.pet.mood == .approval { self.showReview() }
-            else { self.showAssistant() }
+            self.togglePetBubbles()
         }
+        pet.onReminderClick = { [weak self] in self?.openScheduleReminder() }
         pet.onMenu = { [weak self] event in
             guard let self else { return }
+            self.hidePetBubbles()
             NSMenu.popUpContextMenu(self.petMenu(), with: event, for: self.pet)
         }
+        pet.onDragStart = { [weak self] in self?.hidePetBubbles() }
         pet.onMove = { [weak self] in self?.constrainAndSave(); self?.scheduleNextPerformance() }
         if options.smokeDirectory == nil, let stored = UserDefaults.standard.string(forKey: "petOrigin") {
             panel.setFrameOrigin(NSPointFromString(stored))
@@ -115,7 +143,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         let bar = NSStackView()
         bar.orientation = .horizontal; bar.spacing = 8
         bar.translatesAutoresizingMaskIntoConstraints = false
-        segments = NSSegmentedControl(labels: ["助手", "今日", "课表", "待办", "设置"], trackingMode: .selectOne, target: self, action: #selector(changePage))
+        segments = NSSegmentedControl(labels: ["助手", "今日", "课表", "待办与日程", "设置"], trackingMode: .selectOne, target: self, action: #selector(changePage))
         segments.selectedSegment = 0
         bar.addArrangedSubview(segments)
         let expand = NSButton(title: "展开", target: self, action: #selector(toggleLayout))
@@ -206,7 +234,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func beginService() {
         guard !starting else { return }
         starting = true; ready = false; receiveAssistantMood(.starting)
-        let startingHTML = "<html lang='zh'><meta charset='utf-8'><body style='font:15px -apple-system;padding:36px;background:#f5f8f3;color:#24453c'><h2>课间，陪你一起完成。</h2><p>正在连接本机助手…</p><p>双击桌宠打开面板，拖动移动，右键或菜单栏管理。</p></body></html>"
+        let startingHTML = "<html lang='zh'><meta charset='utf-8'><body style='font:15px -apple-system;padding:36px;background:#f5f8f3;color:#24453c'><h2>课间，陪你一起完成。</h2><p>正在连接本机助手…</p><p>点击奶蛙环形展开今日已安排的待办，左击任务查看详细，右击任务完成。</p></body></html>"
         webView.loadHTMLString(startingHTML, baseURL: nil)
         Task {
             do {
@@ -224,6 +252,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
 
     func showAssistant(page: String? = nil) {
+        hidePetBubbles()
         if let page { requestedPage = page }
         NSApp.activate(ignoringOtherApps: true)
         assistant.makeKeyAndOrderFront(nil)
@@ -245,7 +274,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         if pet.reducedMotion, pet.activeAction != nil { pet.stopAction() }
         if !sleeping && !pet.reducedMotion {
             pet.advanceAnimation(by: 0.05)
-            if automaticActions, pet.mood == .idle, pet.activeAction == nil,
+            if automaticActions, !taskRingOpen, pet.reminderText == nil, pet.mood == .idle, pet.activeAction == nil,
                NSEvent.pressedMouseButtons == 0,
                ProcessInfo.processInfo.systemUptime >= nextPerformanceAt {
                 if let action = PetAction.allCases.randomElement() { pet.play(action) }
@@ -257,6 +286,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         let point = panel.convertPoint(fromScreen: NSEvent.mouseLocation)
         if NSEvent.pressedMouseButtons == 0 {
             panel.ignoresMouseEvents = !pet.isInteractive(point)
+            for window in taskBubbleWindows.values {
+                let local = window.convertPoint(fromScreen: NSEvent.mouseLocation)
+                window.ignoresMouseEvents = !window.button.containsCircle(local)
+            }
         }
     }
 
@@ -273,7 +306,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         }
     }
 
-    @objc func screenChanged() { constrainAndSave() }
+    @objc func screenChanged() { hidePetBubbles(); constrainAndSave() }
     @objc func openChat() { showAssistant(page: "助手") }
     @objc func openToday() { showAssistant(page: "今日") }
     @objc func openHomework() { showAssistant(page: "今日"); checkAfterClass(manual: true) }
@@ -288,7 +321,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         webView.evaluateJavaScript("window.__campusPet?.showReview();")
     }
     @objc func showPet() { panel.orderFrontRegardless(); constrainAndSave(); scheduleNextPerformance() }
-    @objc func hidePet() { panel.orderOut(nil) }
+    @objc func hidePet() { hidePetBubbles(); panel.orderOut(nil) }
     @objc func closePanel() { assistant.orderOut(nil) }
     @objc func quit() { NSApp.terminate(nil) }
     @objc func stopServiceAndQuit() {
@@ -391,8 +424,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         assistant.setFrame(frame, display: true, animate: true)
     }
     @objc func openBrowser() {
+        hidePetBubbles()
         // WebKit does not run the existing Chrome/Edge timetable extension.
-        NSWorkspace.shared.open(assistantOrigin)
+        _ = browserOpener(assistantOrigin)
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -401,6 +435,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
     func applicationWillTerminate(_ notification: Notification) {
         timer?.invalidate()
+        reminderTimer?.invalidate()
+        hidePetBubbles()
         // The service may be shared with the original app/browser. Do not kill it.
     }
     func windowShouldClose(_ sender: NSWindow) -> Bool { sender.orderOut(nil); return false }
@@ -422,11 +458,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.frameInfo.isMainFrame, trusted(message.frameInfo.request.url),
               let value = message.body as? String else { return }
+        if value == "choose-reminder-file" { chooseReminderFile(); return }
         if value == "after-class-due" {
             pet.stopAction(); showAssistant(); return
         }
         if value == "calendar-saved" {
-            requestedPage = "课表"; segments.selectedSegment = 2; return
+            requestedPage = "作业"; segments.selectedSegment = 3; return
         }
         guard let mood = PetMood(rawValue: value) else { return }
         receiveAssistantMood(mood)
@@ -435,6 +472,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         guard trusted(webView.url) else { return }
         navigate()
         webView.evaluateJavaScript("window.__campusPet?.layout(\(compact));")
+        if taskRingOpen { Task { await refreshTaskRing() } }
         if options.smokeDirectory != nil && !smokeStarted { smokeStarted = true; runSmoke() }
     }
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {

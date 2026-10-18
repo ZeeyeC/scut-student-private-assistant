@@ -43,6 +43,7 @@ extension AppDelegate {
     }
 
     func runSmoke() {
+        if CommandLine.arguments.contains("--record-demo") { prepareRecordedDemo(); return }
         showAssistant(page: "助手")
         Task {
             do {
@@ -138,6 +139,7 @@ extension AppDelegate {
                 try saveImage(snapshot, to: output.appendingPathComponent("assistant.png"))
                 closePanel()
                 guard !assistant.isVisible, panel.isVisible else { throw ServiceError.message("关闭面板不应退出桌宠") }
+                try await verifyPetBubbles(output: output)
                 // Exercise the real secondary menu and cancel its native sheet.
                 guard petMenu().item(withTitle: "关闭与退出")?.submenu?.item(withTitle: "停止后台并退出…") != nil else {
                     throw ServiceError.message("关闭与退出二级菜单缺失")
@@ -151,11 +153,133 @@ extension AppDelegate {
                 // A second web session uses the same test backend before shutdown.
                 let peer = try await URLSession.shared.data(from: assistantOrigin.appendingPathComponent("api/healthz"))
                 guard (peer.1 as? HTTPURLResponse)?.statusCode == 200 else { throw ServiceError.message("共享后台检查失败") }
+                try await verifyScheduleReminder(output: output)
                 try await stopBackend()
                 guard !ready else { throw ServiceError.message("停止后台后仍标记为已连接") }
                 finishSmoke(error: nil)
             } catch { finishSmoke(error: error.localizedDescription) }
         }
+    }
+
+    func waitForNative(_ reason: String, _ predicate: () -> Bool) async throws {
+        for _ in 0..<100 {
+            if predicate() { return }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        throw ServiceError.message("原生任务气泡验收超时：" + reason)
+    }
+
+    func saveTaskRing(to output: URL, name: String) throws {
+        let views: [(NSView, NSRect)] = [(pet, panel.frame)] + taskBubbleWindows.values.map { ($0.button, $0.frame) }
+        let union = views.reduce(panel.frame) { $0.union($1.1) }
+        let preview = NSImage(size: union.size)
+        preview.lockFocus()
+        for (view, frame) in views {
+            if let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
+                view.cacheDisplay(in: view.bounds, to: bitmap)
+                bitmap.draw(in: NSRect(x: frame.minX - union.minX, y: frame.minY - union.minY, width: frame.width, height: frame.height))
+            }
+        }
+        preview.unlockFocus()
+        try saveImage(preview, to: output.appendingPathComponent(name))
+    }
+
+    func verifyPetBubbles(output: URL) async throws {
+        _ = try await js("""
+            const token=(await (await fetch('/api/csrf')).json()).csrf_token;
+            const r=await fetch('/__test__/task-ring',{method:'POST',headers:{'X-CSRF-Token':token}});
+            if(!r.ok) throw new Error(await r.text()); return await r.json();
+            """)
+        func clickPet() {
+            let event = NSEvent.mouseEvent(with: .leftMouseUp, location: NSPoint(x: 95, y: 185), modifierFlags: [], timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: panel.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 0)!
+            pet.mouseUp(with: event)
+        }
+        func rightClick(_ window: PetTaskBubblePanel) {
+            for type in [NSEvent.EventType.rightMouseDown, .rightMouseUp] {
+                let event = NSEvent.mouseEvent(with: type, location: NSPoint(x: 27, y: 27), modifierFlags: [], timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 0)!
+                if type == .rightMouseDown { window.button.rightMouseDown(with: event) }
+                else { window.button.rightMouseUp(with: event) }
+            }
+        }
+        closePanel(); hidePetBubbles(); pet.mood = .approval
+        let origin = panel.frame.origin
+        defer { hidePetBubbles(); taskDetails?.orderOut(nil); panel.setFrameOrigin(origin) }
+        let visible = panel.screen!.visibleFrame
+        panel.setFrameOrigin(NSPoint(x: visible.midX - 95, y: visible.midY - 105))
+        clickPet()
+        try await waitForNative("八项任务和六个气泡") { !loadingTaskRing && todayTasks.count == 8 && taskBubbleWindows.count == 6 }
+        guard !assistant.isVisible, taskRingOpen,
+              Set(todayTasks.map(\.id)) == Set((0..<8).map { "ring-task-" + String($0) }),
+              todayTasks.first?.blocks.count == 2,
+              taskBubbleWindows.values.allSatisfy({ (1...2).contains($0.button.title.count) && visible.contains($0.frame) }) else {
+            throw ServiceError.message("任务环应只显示今天已安排的未完成任务，同任务去重，最多六个圆形缩写")
+        }
+        try saveTaskRing(to: output, name: "task-ring.png")
+        clickPet()
+        guard !taskRingOpen, taskBubbleWindows.isEmpty, !assistant.isVisible, bubbleLocalMonitor == nil, bubbleGlobalMonitor == nil else {
+            throw ServiceError.message("再次点击未收起任务环")
+        }
+        clickPet()
+        try await waitForNative("再次读取任务环") { !loadingTaskRing && taskBubbleWindows.count == 6 }
+        taskBubbleWindows["ring-task-0"]!.button.performClick(nil)
+        try await waitForNative("任务详情读取") { taskDetails?.isVisible == true && taskDetails?.textView.string.contains("任务要求验收") == true }
+        guard !taskRingOpen, !assistant.isVisible,
+              taskDetails!.textView.string.contains("高数习题"), taskDetails!.textView.string.contains("核对答案与记录") else {
+            throw ServiceError.message("左击气泡未展示对应任务与步骤详情")
+        }
+        if let view = taskDetails?.contentView, let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
+            view.cacheDisplay(in: view.bounds, to: bitmap)
+            try bitmap.representation(using: .png, properties: [:])!.write(to: output.appendingPathComponent("task-ring-details.png"))
+        }
+        taskDetails?.orderOut(nil)
+        showAssistant(page: "作业")
+        try await waitFor("[...document.querySelectorAll('article.card h2')].some(e=>e.textContent==='高数习题')")
+        closePanel(); clickPet()
+        try await waitForNative("完成前读取") { !loadingTaskRing && taskBubbleWindows.count == 6 }
+        let originalSlots = ringSlots
+        let first = taskBubbleWindows["ring-task-0"]!
+        rightClick(first); rightClick(first)
+        try await waitForNative("完成写入和补位") { !completingTasks.contains("ring-task-0") && !loadingTaskRing && taskBubbleWindows["ring-task-6"] != nil }
+        guard taskBubbleWindows["ring-task-0"] == nil, taskBubbleWindows.count == 6,
+              ringSlots[0] == "ring-task-6", Array(ringSlots.dropFirst()) == Array(originalSlots.dropFirst()) else {
+            throw ServiceError.message("右击完成后应只补空位，其他气泡不能重排")
+        }
+        try await waitFor("[...document.querySelectorAll('article.card')].find(e=>e.querySelector('h2')?.textContent==='高数习题')?.textContent.includes('已完成')")
+        let saved = try await js("return (await (await fetch('/api/tasks/ring-task-0')).json()).data.status;")
+        guard saved as? String == "completed" else { throw ServiceError.message("右击没有真实保存任务完成状态") }
+        try saveTaskRing(to: output, name: "task-ring-refilled.png")
+        // A competing edit must fail safely, retain the task, and reload its revision.
+        _ = try await js("""
+            const task=await (await fetch('/api/tasks/ring-task-1')).json();
+            const token=(await (await fetch('/api/csrf')).json()).csrf_token;
+            const r=await fetch('/api/tasks/'+task.id,{method:'PATCH',headers:{'Content-Type':'application/json','X-CSRF-Token':token,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({revision:task.revision,priority:3})});
+            if(!r.ok) throw new Error(await r.text()); return true;
+            """)
+        rightClick(taskBubbleWindows["ring-task-1"]!)
+        try await waitForNative("冲突后刷新") { !completingTasks.contains("ring-task-1") && !loadingTaskRing }
+        guard taskBubbleWindows["ring-task-1"] != nil,
+              todayTasks.first(where: { $0.id == "ring-task-1" })?.revision == 2 else {
+            throw ServiceError.message("版本冲突不能把任务误标完成或吞掉气泡")
+        }
+        let unchanged = try await js("return (await (await fetch('/api/tasks/ring-task-1')).json()).data.status;")
+        guard unchanged as? String == "open" else { throw ServiceError.message("冲突覆盖了并行修改") }
+        while let window = taskBubbleWindows.values.first {
+            let id = window.taskID
+            rightClick(window)
+            try await waitForNative("依次完成 " + id) { !completingTasks.contains(id) && !loadingTaskRing && taskBubbleWindows[id] == nil }
+        }
+        guard todayTasks.isEmpty, pet.taskRingText == "今天没有待办安排" else { throw ServiceError.message("全部完成后应显示空状态") }
+        let untouched = try await js("return (await (await fetch('/api/tasks')).json()).filter(t=>['ring-task-8','ring-task-9','ring-task-11'].includes(t.id)).every(t=>t.data.status==='open');")
+        guard untouched as? Bool == true else { throw ServiceError.message("当日环不应完成未来、仅截止或已记录时段的任务") }
+        clickPet(); clickPet(); pet.onDragStart?()
+        guard !taskRingOpen else { throw ServiceError.message("拖动没有收起气泡") }
+        clickPet(); hidePet()
+        guard !taskRingOpen else { throw ServiceError.message("隐藏没有收起气泡") }
+        showPet(); showAssistant(page: "课表"); clickPet()
+        let outside = NSEvent.mouseEvent(with: .leftMouseDown, location: NSPoint(x: 2, y: 2), modifierFlags: [], timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: assistant.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 0)!
+        NSApp.postEvent(outside, atStart: false)
+        try await waitForNative("外部点击收起") { !taskRingOpen }
+        closePanel(); pet.mood = .idle
     }
 
     func verifyAfterClass(output: URL) async throws {
@@ -217,9 +341,12 @@ extension AppDelegate {
     }
 
     func verifyCourseCell(output: URL) async throws {
+        // The fixture writes settings directly, so wait for React Query to refresh.
+        showAssistant(page: "设置")
+        try await waitFor("document.querySelector('[name=week1_monday]')?.value === '2026-10-12'")
         showAssistant(page: "课表")
         try await waitFor("document.querySelector('.fc')")
-        _ = try await js("window.dispatchEvent(new CustomEvent('campus-calendar-saved', {detail:'2026-10-15T09:00:00+08:00'})); return true;")
+        _ = try await js("window.dispatchEvent(new CustomEvent('campus-timetable-focus', {detail:'2026-10-15T09:00:00+08:00'})); return true;")
         try await waitFor("document.querySelector('.fc-timeGridWeek-button')")
         _ = try await js("document.querySelector('.fc-timeGridWeek-button').click(); return true;")
         try await waitFor("document.querySelector('.fc-timegrid-col[data-date=\"2026-10-15\"]')")
@@ -333,10 +460,43 @@ extension AppDelegate {
         pet.mood = .idle; automaticActions = false
     }
 
+    func verifyScheduleReminder(output: URL) async throws {
+        let identifier = try await js("""
+            const token = (await (await fetch('/api/csrf')).json()).csrf_token;
+            const start = new Date(Date.now()+240000), end = new Date(start.getTime()+3600000);
+            const r = await fetch('/api/fixed-events', {method:'POST', headers:{'Content-Type':'application/json','X-CSRF-Token':token,'Idempotency-Key':crypto.randomUUID()}, body:JSON.stringify({title:'紫色提醒验收',starts_at:start.toISOString(),ends_at:end.toISOString()})});
+            if(!r.ok) throw new Error(await r.text());
+            const event = await r.json();
+            window.__reminderFixture = {event_id:event.id,starts_at:start.toISOString(),revision:0,enabled:true,target_kind:'file',target:'/tmp/验收文件.pdf'};
+            const saved=await fetch('/api/schedule-shortcut',{method:'PUT',headers:{'Content-Type':'application/json','X-CSRF-Token':token},body:JSON.stringify(window.__reminderFixture)});
+            if(!saved.ok) throw new Error(await saved.text());
+            window.__reminderFixture.revision=(await saved.json()).revision;
+            return event.id;
+            """)
+        guard identifier is String else { throw ServiceError.message("提醒验收日程创建失败") }
+        await refreshReminders()
+        guard pendingReminders.contains(where: { $0.title == "紫色提醒验收" }), pet.reminderText != nil,
+              pet.isReminderBelly(NSPoint(x:95,y:70)), !pet.isReminderBelly(NSPoint(x:95,y:185)) else {
+            throw ServiceError.message("紫色提醒或肚皮点击区域未生效")
+        }
+        guard let bitmap = pet.bitmapImageRepForCachingDisplay(in: pet.bounds) else { throw ServiceError.message("提醒截图失败") }
+        pet.cacheDisplay(in: pet.bounds, to: bitmap)
+        try bitmap.representation(using:.png,properties:[:])!.write(to:output.appendingPathComponent("reminder-purple.png"))
+        _ = try await js("""
+            const token=(await (await fetch('/api/csrf')).json()).csrf_token;
+            const r=await fetch('/api/schedule-shortcut',{method:'PUT',headers:{'Content-Type':'application/json','X-CSRF-Token':token},body:JSON.stringify({...window.__reminderFixture,enabled:false})});
+            if(!r.ok) throw new Error(await r.text()); return true;
+            """)
+        await refreshReminders()
+        guard !pendingReminders.contains(where: { $0.title == "紫色提醒验收" }), pet.reminderText == nil else {
+            throw ServiceError.message("关闭提醒后未恢复原形象")
+        }
+    }
+
     func finishSmoke(error: String?) {
         if let output = options.smokeDirectory {
             try? FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
-            let result: [String: Any] = ["passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["local session", "chat composer", "real draft confirmation", "task/settings navigation", "compact layout", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "three video action assets", "20 fps playback and completion", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown"]]
+            let result: [String: Any] = ["passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["local session", "chat composer", "real draft confirmation", "task/settings navigation", "compact layout", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "three video action assets", "20 fps playback and completion", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown", "silent purple schedule reminder", "belly-only shortcut hit target", "disabled reminder restores yellow", "pet click opens only today task orbit", "scheduled tasks only and task deduplication", "six round abbreviation bubbles and overflow", "repeat click collapses task orbit", "left click reads current task details and steps", "right click persists completion once", "completion synchronizes existing task UI", "stable slots refill hidden tasks", "revision conflict retains task and reloads", "complete remaining tasks and empty state", "future and due-only tasks remain unchanged", "drag and hide collapse task orbit", "outside click collapses task orbit"]]
             if let data = try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]) {
                 try? data.write(to: output.appendingPathComponent("result.json"))
             }

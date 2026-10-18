@@ -11,11 +11,14 @@ import { api } from "./api";
 import type { Resource, Course, SettingsData } from "./types";
 import { DraftReview } from "./DraftReview";
 import { ChatPage } from "./Chat";
-import { TodoList } from "./TodoList";
+import { AssignmentsPage } from "./Assignments";
+import { SmartSchedule } from "./SmartSchedule";
 import type { ScheduleEvent } from "./schedule";
+import { ScheduleShortcut } from "./ScheduleShortcut";
 import { courseSlot, type CourseSlot } from "./course-slot";
 
-export function CalendarPage({focusDate}: {focusDate?: string}) {
+export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: string; mode?: "timetable" | "schedule"}) {
+  const timetable = mode === "timetable";
   const calendar = useRef<FullCalendar>(null);
   useEffect(()=>{if(focusDate){calendar.current?.getApi().gotoDate(focusDate);setChat(false);}},[focusDate]);
   const q = useQueryClient();
@@ -65,21 +68,22 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
       <div className="page-head">
         <div>
           <p className="eyebrow">YOUR WEEK</p>
-          <h1>课表</h1>
-          <p>课程、固定事项和已确认的学习安排，集中在一张日历。</p>
+          <h1>{timetable ? "课表" : "待办与日程"}</h1>
+          <p>{timetable ? "人工设定的固定课程；智能排程会避让这些时间。" : "待办任务与智能学习安排，并包含固定课表和事项。"}</p>
         </div>
-        <Button
+        {timetable && <Button
           onClick={() => window.dispatchEvent(new Event("campus-start-import"))}
         >
           导入华工课表
-        </Button>
+        </Button>}
       </div>
-      <Button onClick={() => setChat(!chat)}>{chat ? "收起事项对话" : "用 AI 添加事项"}</Button>
-      {chat && <ChatPage embedded />}
-      <p>蓝色：课程 · 紫色：固定事项 · 绿色：学习安排。点击日历条目查看详情，点击周视图的空白时间格添加课程；列表视图可切换到“周”。</p>
-      <p>
+      {!timetable && <SmartSchedule />}
+      {!timetable && <Button onClick={() => setChat(!chat)}>{chat ? "收起事项对话" : "用 AI 添加固定事项"}</Button>}
+      {!timetable && chat && <ChatPage embedded />}
+      <p>{timetable ? "这里只显示固定课程。点击周视图空白格添加课程，点击已有课程查看详情；也可使用下方手工添加。" : "蓝色：固定课程 · 紫色：固定事项 · 绿色：智能学习安排。课程仅作固定时间参考，不会被智能排程移动；点击条目可查看详情与提醒设置。"}</p>
+      {timetable && <p>
         已适配本人实测的华工个人课表。请先在设置中校对开学周一、学期周数和节次时间。
-      </p>
+      </p>}
       <div className="card">
         {events.error && <p role="alert">{String(events.error)}</p>}
         {events.isPending && <p role="status">正在读取日程…</p>}
@@ -105,11 +109,11 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
           slotMaxTime="24:00:00"
           slotDuration="00:30:00"
           dateClick={info => {
-            if (info.allDay || info.view.type !== "timeGridWeek") return;
+            if (!timetable || info.allDay || info.view.type !== "timeGridWeek") return;
             setSlot(courseSlot(info.dateStr, settings.data?.data as SettingsData | undefined));
             setSelected(null);
           }}
-          events={(events.data?.events ?? []).map((e) => ({
+          events={(events.data?.events ?? []).filter(e => !timetable || e.kind === "course").map((e) => ({
             ...e,
             title: e.title + (e.location ? " · " + e.location : ""),
             start: e.starts_at,
@@ -126,17 +130,19 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
             })
           }
         />
-        {events.data?.events.length === 0 && (
-          <p>本周还没有课程或事项。可点击周视图的空白时间格添加课程，也可导入课表或使用“用 AI 添加事项”。</p>
+        {events.data && events.data.events.filter(e => !timetable || e.kind === "course").length === 0 && (
+          <p>{timetable ? "本周还没有课程。可点击周视图空白格、手工添加或导入课表。" : "本周暂无安排。先添加待办、补齐耗时或步骤，再点击智能安排。"}</p>
         )}
       </div>
       {selected && <section className="card" aria-label="日程详情">
         <h2>{selected.title}</h2>
         <p>{new Date(selected.starts_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}–{new Date(selected.ends_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}</p>
         <p>{selected.kind === "course" ? "课程" : selected.kind === "fixed_event" ? "固定事项" : "学习安排"} {selected.location}</p>
+        <ScheduleShortcut key={`${selected.id}:${selected.starts_at}`} event={selected} />
         <Button variant="outline" onClick={()=>setSelected(null)}>关闭详情</Button>
       </section>}
-      <TodoList />
+      {!timetable && <AssignmentsPage embedded />}
+      {timetable && <>
       <Button variant="outline" onClick={() => setManual(!manual)}>
         手工添加课程
       </Button>
@@ -165,6 +171,7 @@ export function CalendarPage({focusDate}: {focusDate?: string}) {
         .map((d) => (
           <div key={d.id} id={`timetable-draft-${d.id}`} tabIndex={-1}><DraftReview draft={d} /></div>
         ))}
+      </>}
     </>
   );
 }
