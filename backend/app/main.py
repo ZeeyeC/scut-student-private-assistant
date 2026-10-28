@@ -10,7 +10,6 @@ from fastapi import Depends, FastAPI, Header, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app import store
@@ -24,6 +23,7 @@ from app.constraints import constraint_router
 from app.contracts import SettingsUpdate
 from app.course_changes import course_change_router
 from app.data_routes import data_router
+from app.db_sessions import sqlite_transaction
 from app.execution_routes import execution_router
 from app.model_gateway import ModelGateway
 from app.paths import resource_root
@@ -148,15 +148,9 @@ def create_app(config=None):
     app.state.gateway = ModelGateway(config)
 
     async def get_db():
-        async with sessions() as db:
-            # SQLite serializes short business transactions, including replay checks.
-            await db.execute(text("BEGIN IMMEDIATE"))
-            try:
-                yield db
-                await db.commit()
-            except Exception:
-                await db.rollback()
-                raise
+        # SQLite serializes short business transactions, including replay checks.
+        async with sqlite_transaction(sessions) as db:
+            yield db
 
     users, auth_backend = build_auth(config, get_db)
     current_user = users.current_user(active=True)

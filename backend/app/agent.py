@@ -14,7 +14,6 @@ from langchain.agents.middleware import AgentMiddleware, dynamic_prompt
 from langchain_core.messages import AIMessage, AIMessageChunk, ToolMessage
 from langchain_core.tools import tool
 from langgraph.types import Command
-from sqlalchemy import text
 
 from app import imports, store, time_mcp, timetable_text
 from app.browser_imports import get_import, start_import
@@ -27,6 +26,7 @@ from app.contracts import (
     TaskUpdate,
 )
 from app.db import Resource, now
+from app.db_sessions import session_scope, sqlite_transaction
 from app.deadlines import resolve_deadline, suggest_assignment_deadlines
 from app.planner import generate_plan
 from app.schedule import calendar_events
@@ -81,14 +81,8 @@ class NoSubagents(AgentMiddleware):
 
 @asynccontextmanager
 async def transaction(app):
-    async with app.state.sessions() as db:
-        await db.execute(text("BEGIN IMMEDIATE"))
-        try:
-            yield db
-            await db.commit()
-        except Exception:
-            await db.rollback()
-            raise
+    async with sqlite_transaction(app.state.sessions) as db:
+        yield db
 
 
 async def write_with_approval(app, owner, tool_name, args, operation):
@@ -978,7 +972,7 @@ def agent_router(get_db, current_user):
         async def stream():
             nonlocal cursor
             while not await request.is_disconnected():
-                async with request.app.state.sessions() as session:
+                async with session_scope(request.app.state.sessions) as session:
                     r = await store.owned(session, owner, rid, "agent_run")
                     events = [
                         e.data
