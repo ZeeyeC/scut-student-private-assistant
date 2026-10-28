@@ -24,6 +24,7 @@ from app.constraints import constraint_router
 from app.contracts import SettingsUpdate
 from app.course_changes import course_change_router
 from app.data_routes import data_router
+from app.execution_routes import execution_router
 from app.model_gateway import ModelGateway
 from app.paths import resource_root
 from app.pet_status import pet_router
@@ -280,6 +281,7 @@ def create_app(config=None):
     app.include_router(assignment_router(config, get_db, current_user))
     app.include_router(timetable_recognition_router(config, get_db, current_user))
     app.include_router(task_router(get_db, current_user))
+    app.include_router(execution_router(get_db, current_user))
     app.include_router(planner_router(get_db, current_user))
     app.include_router(constraint_router(get_db, current_user))
     app.include_router(course_change_router(get_db, current_user))

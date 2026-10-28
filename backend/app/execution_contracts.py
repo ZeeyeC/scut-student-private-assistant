@@ -9,7 +9,9 @@ from pydantic import Field, model_validator
 from app.contracts import ResourceView, StrictModel
 
 Feedback = Literal["partial", "completed", "not_started", "skipped"]
-Reason = Literal["interrupted", "insufficient_time", "unsuitable_schedule", "skipped", "other"]
+Reason = Literal[
+    "interrupted", "insufficient_time", "unsuitable_schedule", "skipped", "other"
+]
 
 
 class ExecutionWrite(StrictModel):
