@@ -296,3 +296,94 @@ async def correct_execution(
     db.add(record)
     await db.flush()
     return await effects(db, owner, task, record, body.task_status)
+
+
+async def apply_legacy_spent_update(
+    db, owner: str, step_id: str, expected_revision: int, total_minutes: int
+) -> dict:
+    """Compatibility total edit: extra minutes are estimates, never new actuals."""
+    step = await store.owned(db, owner, step_id, "step")
+    store.revision(step, expected_revision)
+    task = await store.owned(db, owner, step.data["task_id"], "task")
+    state = await baseline(db, owner, step, create=True)
+    summary = await execution_summary(db, owner, task.id, step.id)
+    actual = summary.actual_minutes or 0
+    if total_minutes < actual:
+        raise HTTPException(422, "总量不能小于已记录实际投入，请更正执行记录")
+    history = [
+        *state.data.get("history", []),
+        {
+            "recorded_at": now().isoformat(),
+            "previous": dict(state.data, history=None),
+            "total_minutes": total_minutes,
+        },
+    ]
+    state.data = {
+        **state.data,
+        "allocations": {},
+        "unallocated_minutes": total_minutes - actual,
+        "unallocated_resolution": "separate"
+        if summary.actual_minutes is not None
+        else None,
+        "history": history,
+    }
+    state.revision += 1
+    step.data = {**step.data, "spent_minutes": total_minutes}
+    step.revision += 1
+    task.revision += 1
+    await store.bump(db, owner)
+    await record_change(
+        db,
+        owner,
+        "execution_changed",
+        state.id,
+        state.revision,
+        {
+            "task_id": task.id,
+            "step_id": step.id,
+            "source": "legacy_estimate",
+            "source_revision": (await store.settings(db, owner)).revision,
+        },
+    )
+    return store.view(step)
+
+
+async def record_legacy_block_completion(db, owner: str, block):
+    """Called by A's old completion route before changing the block status."""
+    step = await store.owned(db, owner, block.data["step_id"], "step")
+    state = await baseline(db, owner, step, create=True)
+    history = await execution_history(db, owner, block.data["task_id"])
+    has_actual = any(r.data.get("plan_block_id") == block.id for r in history)
+    if not has_actual:
+        minutes = max(
+            0,
+            int(
+                (
+                    datetime.fromisoformat(block.data["ends_at"])
+                    - datetime.fromisoformat(block.data["starts_at"])
+                ).total_seconds()
+                // 60
+            ),
+        )
+        state.data = {
+            **state.data,
+            "allocations": {**state.data["allocations"], block.id: minutes},
+        }
+        state.revision += 1
+        await record_change(
+            db,
+            owner,
+            "execution_changed",
+            state.id,
+            state.revision,
+            {
+                "task_id": block.data["task_id"],
+                "step_id": step.id,
+                "plan_block_id": block.id,
+                "source": "legacy_estimate",
+            },
+        )
+    await db.flush()
+    summary = await execution_summary(db, owner, block.data["task_id"], step.id)
+    step.data = {**step.data, "spent_minutes": summary.planning_spent_minutes}
+    step.revision += 1

@@ -58,6 +58,11 @@ async def save_steps(db, owner, payload):
     t = await store.owned(db, owner, payload["task_id"], "task")
     store.revision(t, payload["task_revision"])
     old = [s for s in await store.rows(db, owner, "step") if s.data["task_id"] == t.id]
+    recorded_steps = {
+        r.data.get("step_id") for r in await store.rows(db, owner, "execution")
+    }
+    if any(s.id in recorded_steps and s.data["status"] != "completed" for s in old):
+        raise HTTPException(409, "已有执行记录，请修改现有步骤，不能删除后重新拆解")
     blocks = await store.rows(db, owner, "plan_block")
     preserved_ids = {
         b.data["step_id"]
@@ -187,14 +192,22 @@ def task_router(get_db, current_user):
         async def op():
             r = await store.owned(db, str(user.id), rid, "step")
             store.revision(r, body.revision)
+            patch = body.model_dump(
+                mode="json", exclude_unset=True, exclude={"revision"}
+            )
+            if "spent_minutes" in patch:
+                from app.execution import apply_legacy_spent_update
+
+                await apply_legacy_spent_update(
+                    db, str(user.id), rid, body.revision, patch.pop("spent_minutes")
+                )
+            else:
+                r.revision += 1
+                await store.bump(db, str(user.id))
             r.data = {
                 **r.data,
-                **body.model_dump(
-                    mode="json", exclude_unset=True, exclude={"revision"}
-                ),
+                **patch,
             }
-            r.revision += 1
-            await store.bump(db, str(user.id))
             return store.view(r)
 
         return await store.mutate(

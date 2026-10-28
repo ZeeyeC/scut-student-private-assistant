@@ -31,7 +31,13 @@ async def delete_task(db, owner, rid, expected):
         for b in await store.rows(db, owner, "plan_block")
         if b.data.get("task_id") == rid or b.data.get("step_id") in step_ids
     ]
-    for resource in [*blocks, *steps, task]:
+    execution_resources = [
+        r
+        for kind in ("execution", "execution_baseline")
+        for r in await store.rows(db, owner, kind)
+        if r.data.get("task_id") == rid
+    ]
+    for resource in [*execution_resources, *blocks, *steps, task]:
         await db.delete(resource)
     for draft in await store.rows(db, owner, "draft"):
         if draft.data["status"] != "pending":

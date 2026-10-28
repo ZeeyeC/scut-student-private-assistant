@@ -673,18 +673,9 @@ def planner_router(get_db, current_user):
             if body.locked is not None:
                 data["locked"] = body.locked
             if body.completed is True and data["status"] != "completed":
-                step = await store.owned(db, str(user.id), data["step_id"], "step")
-                n = int(
-                    (
-                        instant(data["ends_at"]) - instant(data["starts_at"])
-                    ).total_seconds()
-                    // 60
-                )
-                step.data = {
-                    **step.data,
-                    "spent_minutes": step.data["spent_minutes"] + n,
-                }
-                step.revision += 1
+                from app.execution import record_legacy_block_completion
+
+                await record_legacy_block_completion(db, str(user.id), b)
                 data["status"] = "completed"
             if body.completed is False and data["status"] == "completed":
                 raise HTTPException(422, "已记录投入，不能直接撤销")
