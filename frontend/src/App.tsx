@@ -8,6 +8,7 @@ import { Settings } from "./Settings";
 import { LocalEntry } from "./LocalMode";
 import { BrowserImport, stopBrowserImports } from "./BrowserImport";
 import { AfterClassCheckin } from "./AfterClass";
+import {TimerHeartbeat} from "./ExecutionTimer";
 const CalendarPage = lazy(() =>
   import("./Calendar").then((m) => ({ default: m.CalendarPage })),
 );
@@ -193,6 +194,7 @@ function Workspace({ local = false }: { local?: boolean }) {
       </aside>
       <main className={page === "助手" ? "assistant-main" : undefined}>
         <AfterClassCheckin />
+        <TimerHeartbeat />
         <BrowserImport showOverview={page === "课表"} />
         <Suspense fallback={<p role="status">正在加载页面…</p>}>
           {page === "今日" ? (

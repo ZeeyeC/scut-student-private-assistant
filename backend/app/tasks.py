@@ -61,6 +61,11 @@ async def save_steps(db, owner, payload):
     recorded_steps = {
         r.data.get("step_id") for r in await store.rows(db, owner, "execution")
     }
+    recorded_steps.update(
+        r.data.get("step_id")
+        for r in await store.rows(db, owner, "execution_timer")
+        if r.data["status"] not in ("finished", "discarded")
+    )
     if any(s.id in recorded_steps and s.data["status"] != "completed" for s in old):
         raise HTTPException(409, "已有执行记录，请修改现有步骤，不能删除后重新拆解")
     blocks = await store.rows(db, owner, "plan_block")

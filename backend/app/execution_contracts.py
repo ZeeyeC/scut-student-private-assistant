@@ -14,7 +14,7 @@ Reason = Literal[
 ]
 
 
-class ExecutionWrite(StrictModel):
+class ExecutionTarget(StrictModel):
     client_operation_id: str = Field(min_length=1, max_length=160)
     execution_id: str = Field(min_length=1, max_length=160)
     task_id: str = Field(min_length=1)
@@ -25,10 +25,6 @@ class ExecutionWrite(StrictModel):
     plan_block_revision: int | None = Field(default=None, ge=1)
     performed_on: date
     timezone: str
-    actual_minutes: int = Field(ge=0, le=100000, strict=True)
-    feedback: Feedback
-    unfinished_reason: Reason | None = None
-    task_status: Literal["open", "completed"] | None = None
     legacy_resolution: Literal["replace", "separate"] | None = None
 
     @model_validator(mode="after")
@@ -43,6 +39,17 @@ class ExecutionWrite(StrictModel):
             raise ValueError("时间块及其版本必须同时提供")
         if self.plan_block_id and not self.step_id:
             raise ValueError("时间块必须关联步骤")
+        return self
+
+
+class ExecutionWrite(ExecutionTarget):
+    actual_minutes: int = Field(ge=0, le=100000, strict=True)
+    feedback: Feedback
+    unfinished_reason: Reason | None = None
+    task_status: Literal["open", "completed"] | None = None
+
+    @model_validator(mode="after")
+    def feedback_valid(self):
         if self.feedback in ("not_started", "skipped") and self.actual_minutes:
             raise ValueError("未执行或跳过的实际分钟必须为0")
         return self
@@ -72,6 +79,8 @@ class ExecutionSummary(StrictModel):
     task_id: str
     step_id: str | None = None
     actual_minutes: int | None = None
+    actual_seconds: int | None = None
+    unconfirmed_execution_ids: list[str] = Field(default_factory=list)
     legacy_estimated_minutes: int = 0
     unresolved_legacy_minutes: int = 0
     planning_spent_minutes: int = 0

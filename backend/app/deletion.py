@@ -33,7 +33,7 @@ async def delete_task(db, owner, rid, expected):
     ]
     execution_resources = [
         r
-        for kind in ("execution", "execution_baseline")
+        for kind in ("execution", "execution_baseline", "execution_timer")
         for r in await store.rows(db, owner, kind)
         if r.data.get("task_id") == rid
     ]

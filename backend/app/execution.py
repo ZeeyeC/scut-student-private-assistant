@@ -141,11 +141,22 @@ async def execution_summary(
         )
         if not actual:
             unknown.append(step.id)
-    actual_minutes = sum(r.data["actual_minutes"] for r in records) if records else None
+    actual_seconds = (
+        sum(
+            r.data.get("actual_seconds", r.data["actual_minutes"] * 60) for r in records
+        )
+        if records
+        else None
+    )
+    actual_minutes = actual_seconds // 60 if actual_seconds is not None else None
     return ExecutionSummary(
         task_id=task_id,
         step_id=step_id,
         actual_minutes=actual_minutes,
+        actual_seconds=actual_seconds,
+        unconfirmed_execution_ids=[
+            r.id for r in records if r.data.get("unconfirmed_interval")
+        ],
         legacy_estimated_minutes=legacy,
         unresolved_legacy_minutes=unresolved,
         planning_spent_minutes=(actual_minutes or 0) + legacy,
@@ -208,16 +219,8 @@ async def effects(db, owner, task, record, task_status):
     return store.view(record)
 
 
-async def record_execution(db, owner: str, body: ExecutionWrite) -> dict:
+async def prepare_execution(db, owner, body):
     task = await store.owned(db, owner, body.task_id, "task")
-    payload = body.model_dump(mode="json")
-    request_hash = store.digest({"operation": "create", "body": payload})
-    replay = await replay_operation(db, owner, body.client_operation_id, request_hash)
-    if replay:
-        return replay
-    rid = identity(owner, "fact", body.execution_id)
-    if await db.get(Resource, rid):
-        raise HTTPException(409, "该次执行已记录，请使用更正")
     store.revision(task, body.task_revision)
     settings = await store.settings(db, owner)
     if body.timezone != settings.data["timezone"]:
@@ -277,6 +280,53 @@ async def record_execution(db, owner: str, body: ExecutionWrite) -> dict:
                 "unallocated_resolution": body.legacy_resolution,
             }
             state.revision += 1
+    return task, coverage, separate
+
+
+async def record_execution(
+    db,
+    owner: str,
+    body: ExecutionWrite,
+    *,
+    source="manual",
+    actual_seconds=None,
+    timer_id=None,
+) -> dict:
+    task = await store.owned(db, owner, body.task_id, "task")
+    payload = body.model_dump(mode="json")
+    request_hash = store.digest(
+        {
+            "operation": "create",
+            "body": payload,
+            **(
+                {
+                    "source": source,
+                    "actual_seconds": actual_seconds,
+                    "timer_id": timer_id,
+                }
+                if source != "manual" or timer_id
+                else {}
+            ),
+        }
+    )
+    replay = await replay_operation(db, owner, body.client_operation_id, request_hash)
+    if replay:
+        return replay
+    rid = identity(owner, "fact", body.execution_id)
+    if await db.get(Resource, rid):
+        raise HTTPException(409, "该次执行已记录，请使用更正")
+    task, coverage, separate = await prepare_execution(db, owner, body)
+    if timer_id is None:
+        for timer in await store.rows(db, owner, "execution_timer"):
+            target = timer.data["target"]
+            if (
+                target.get("step_id") == body.step_id
+                and target["task_id"] == body.task_id
+                and timer.data["status"] not in ("finished", "discarded")
+            ):
+                raise HTTPException(
+                    409, "此步骤有未结束计时，请先结束或在计时中改为补记"
+                )
     record = Resource(
         id=rid,
         owner_id=owner,
@@ -284,7 +334,11 @@ async def record_execution(db, owner: str, body: ExecutionWrite) -> dict:
         data={
             **payload,
             "schema_version": 1,
-            "source": "manual",
+            "source": source,
+            **(
+                {"actual_seconds": actual_seconds} if actual_seconds is not None else {}
+            ),
+            **({"timer_id": timer_id} if timer_id else {}),
             "supersedes_id": None,
             "request_hash": request_hash,
             "recorded_at": now().isoformat(),
@@ -321,6 +375,10 @@ async def correct_execution(
         data={
             **original.data,
             **payload,
+            "source": "manual",
+            "corrected_source": original.data.get("source", "manual"),
+            "actual_seconds": body.actual_minutes * 60,
+            "unconfirmed_interval": False,
             "supersedes_id": record_id,
             "request_hash": request_hash,
             "recorded_at": now().isoformat(),

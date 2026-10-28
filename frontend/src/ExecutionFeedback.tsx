@@ -4,6 +4,8 @@ import { api, ApiError } from "./api";
 import type { Resource } from "./types";
 import { Button } from "./components/ui/button";
 import { executionDisplay, newExecutionOperation, type ExecutionSummary } from "./execution-state";
+import {ExecutionTimer} from "./ExecutionTimer";
+import {formatElapsed} from "./timer-state";
 
 type Operation = ReturnType<typeof newExecutionOperation<Record<string, unknown>>>;
 
@@ -31,6 +33,8 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     queryFn: () => api<ExecutionSummary>(`/tasks/${task.id}/execution-summary${stepId ? `?step_id=${encodeURIComponent(stepId)}` : ""}`),
   });
   const history = useQuery({ queryKey: ["executions", task.id], queryFn: () => api<Resource[]>(`/tasks/${task.id}/executions`) });
+  const timers = useQuery({queryKey:["execution-timers"],queryFn:()=>api<Resource[]>("/execution-timers")});
+  const activeTimer = timers.data?.some(r=>r.data.task_id===task.id&&r.data.step_id===stepId&&!["finished","discarded"].includes(r.data.status));
   const currentStep = steps.data?.find(s => s.id === stepId);
   const selectedId = block?.id || selectedBlockId;
   const currentBlock = blocks.data?.find(b => b.id === selectedId);
@@ -99,12 +103,16 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     <h4>实际执行与反馈</h4>
     {block && <p>本次计划：{Math.round((Date.parse(block.data.ends_at) - Date.parse(block.data.starts_at)) / 60000)} 分钟</p>}
     {display && <><p>{display.actualLabel}</p>{display.estimateLabel && <p>{display.estimateLabel}</p>}</>}
+    {summary.data?.actual_seconds != null && summary.data.actual_seconds % 60 !== 0 && <p>该步骤已记录合计：{formatElapsed(summary.data.actual_seconds)}（按秒）</p>}
+    {block && Date.parse(block.data.ends_at) < Date.now() && !hasBlockFeedback && !activeTimer && <p>该时段已结束，尚未收到实际执行反馈；缺记录保持未知。</p>}
+    {!!summary.data?.unconfirmed_execution_ids?.length && <p>部分计时时段尚未确认，可补记或更正。</p>}
     {block && summary.data?.actual_minutes != null && summary.data.actual_minutes !== blockActual && <p>该步骤累计已记录实际：{summary.data.actual_minutes} 分钟</p>}
     {block && !!summary.data?.legacy_estimated_minutes && <p>该步骤另有历史估算：{summary.data.legacy_estimated_minutes} 分钟</p>}
     {summary.data?.unknown_step_ids.length ? <p>仍有未反馈步骤；缺记录保持未知。</p> : null}
     {(summary.error || history.error || taskLive.error || steps.error || blocks.error || settings.error) && <p role="alert">执行资料读取失败，请刷新后重试。</p>}
     {editing && <p>正在更正 {editing.data.actual_minutes} 分钟；原记录会保留。</p>}
-    {(!hasBlockFeedback || editing) && <>
+    {!editing && !hasBlockFeedback && <ExecutionTimer task={task} step={currentStep} block={currentBlock} ready={ready} legacyResolution={resolution||null}/>}
+    {(!hasBlockFeedback || editing) && !activeTimer && <>
       {!block && !editing && availableBlocks.length > 0 && <label>对应的学习安排<select value={selectedBlockId} disabled={locked} onChange={e => { setSelectedBlockId(e.target.value); setResolution(""); }}>
         <option value="">不指定单次安排（需核对覆盖关系）</option>
         {availableBlocks.map(b => <option key={b.id} value={b.id}>{new Date(b.data.starts_at).toLocaleString("zh-CN", {timeZone: timezone || "Asia/Shanghai"})} · {Math.round((Date.parse(b.data.ends_at) - Date.parse(b.data.starts_at))/60000)}分钟</option>)}
@@ -133,7 +141,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     {message && <p role="status">{message}</p>}
     {rows.length > 0 && <details><summary>执行与更正历史（{rows.length}条）</summary>
       {rows.map(r => <div className="step" key={r.id}>
-        <p>{r.data.performed_on} · 手工补记 {r.data.actual_minutes} 分钟{summary.data?.effective_record_ids.includes(r.id) ? " · 当前有效" : " · 已被更正"}</p>
+        <p>{r.data.performed_on} · {r.data.source === "timer" ? `计时记录 ${formatElapsed(r.data.actual_seconds ?? r.data.actual_minutes * 60)}` : `手工补记 ${r.data.actual_minutes} 分钟`}{summary.data?.effective_record_ids.includes(r.id) ? " · 当前有效" : " · 已被更正"}</p>
         {r.data.supersedes_id && <p>更正了此前记录，原值保留。</p>}
         {summary.data?.effective_record_ids.includes(r.id) && <Button type="button" variant="outline" disabled={locked} onClick={() => edit(r)}>更正此记录</Button>}
       </div>)}

@@ -2,6 +2,8 @@ export type ExecutionSummary = {
   task_id: string;
   step_id: string | null;
   actual_minutes: number | null;
+  actual_seconds?: number | null;
+  unconfirmed_execution_ids?: string[];
   legacy_estimated_minutes: number;
   unresolved_legacy_minutes: number;
   planning_spent_minutes: number;
