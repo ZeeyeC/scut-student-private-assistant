@@ -7,6 +7,7 @@ import { DraftActions } from "./Assignments";
 import { TodoList } from "./TodoList";
 import { navigate, visibleDrafts } from "./drafts";
 import type { ScheduleEvent } from "./schedule";
+import { ExecutionFeedback } from "./ExecutionFeedback";
 const clock = (v: string, tz = "Asia/Shanghai") =>
   new Date(v).toLocaleTimeString("zh-CN", {
     hour: "2-digit",
@@ -129,7 +130,7 @@ export function TodayPage() {
               <h3>{title(b.data.task_id)}</h3>
               <p>
                 {b.data.status === "completed"
-                  ? "已记录本次投入"
+                  ? b.data.execution_record_id ? "本次执行已反馈" : "已按计划时长记录估算投入"
                   : b.data.locked
                     ? "时间已锁定"
                     : "建议时间"}
@@ -152,8 +153,9 @@ export function TodayPage() {
                   }
                 }}
               >
-                记录本次完成
+                按计划时长记录估算
               </Button>
+              {tasks.data?.find(t => t.id === b.data.task_id) && <ExecutionFeedback task={tasks.data.find(t => t.id === b.data.task_id)!} block={b} />}
               <Button
                 variant="outline"
                 onClick={async () => {

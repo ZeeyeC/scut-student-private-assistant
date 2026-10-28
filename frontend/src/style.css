@@ -545,3 +545,6 @@ small {
   .timetable-source { position:sticky; top:12px; max-height:85vh; }
 }
 @container timetable-review (min-width:480px) { .recognition-candidate .grid2 { grid-template-columns:minmax(0,1fr) minmax(0,1fr); } }
+ .execution-feedback { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border, #d9ded8); border-radius: 12px; }
+ .execution-feedback h4 { margin: 0 0 .6rem; }
+ .execution-feedback details { margin-top: .8rem; }

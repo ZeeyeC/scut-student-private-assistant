@@ -4,6 +4,7 @@ import { api } from "./api";
 import type { Resource } from "./types";
 import { Button } from "./components/ui/button";
 import { DraftActions } from "./Assignments";
+import { ExecutionFeedback } from "./ExecutionFeedback";
 export function TaskDetail({ task }: { task: Resource }) {
   const q = useQueryClient(),
     [error, setError] = useState(""),
@@ -149,7 +150,6 @@ export function TaskDetail({ task }: { task: Resource }) {
                 method: "PATCH",
                 body: JSON.stringify({
                   revision: s.revision,
-                  spent_minutes: Number(f.get("spent")),
                   estimated_minutes: Number(f.get("estimate")),
                 }),
               });
@@ -184,17 +184,8 @@ export function TaskDetail({ task }: { task: Resource }) {
                 defaultValue={s.data.estimated_minutes}
               />
             </label>
-            <label>
-              已投入分钟
-              <input
-                name="spent"
-                type="number"
-                min={0}
-                defaultValue={s.data.spent_minutes}
-              />
-            </label>
           </div>
-          <Button variant="outline">记录投入和估计</Button>
+          <Button variant="outline">更新预计分钟</Button>
           <Button
             type="button"
             variant="outline"
@@ -216,6 +207,7 @@ export function TaskDetail({ task }: { task: Resource }) {
           >
             {s.data.status === "completed" ? "重新打开步骤" : "确认步骤完成"}
           </Button>
+          <ExecutionFeedback task={task} step={s} />
         </form>
       ))}
     </div>
