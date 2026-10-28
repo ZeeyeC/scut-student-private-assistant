@@ -20,6 +20,7 @@ class Config(BaseSettings):
     vision_model: str = ""
     model_api_key: str = ""
     model_base_url: str | None = None
+    model_use_system_proxy: bool = True
     scut_adapter_path: str = ""
 
     def prepare(self):

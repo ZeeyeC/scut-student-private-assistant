@@ -53,7 +53,7 @@ async def occurrence(db, owner, event_id, starts_at):
     settings = await store.settings(db, owner)
     day = starts_at.astimezone(ZoneInfo(settings.data['timezone'])).date()
     result = await calendar_events(db, owner, day, day)
-    event = next((e for e in result['events'] if e['id'] == event_id and datetime.fromisoformat(e['starts_at']) == starts_at), None)
+    event = next((e for e in result['events'] if e['kind'] != 'scheduling_constraint' and e['id'] == event_id and datetime.fromisoformat(e['starts_at']) == starts_at), None)
     if not event:
         raise HTTPException(404, '日程已移除或时间已调整，请重新打开详情')
     return event
@@ -74,6 +74,8 @@ async def due_reminders(db, owner):
     blocks = {r.id: r.data for r in await store.rows(db, owner, 'plan_block')}
     reminders = []
     for e in result['events']:
+        if e['kind'] == 'scheduling_constraint':
+            continue
         start = datetime.fromisoformat(e['starts_at'])
         if not current < start <= end:
             continue

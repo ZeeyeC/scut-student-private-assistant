@@ -12,7 +12,10 @@ root = Path(__file__).resolve().parent
 version = (root / "VERSION").read_text(encoding="utf8").strip()
 parser = argparse.ArgumentParser()
 parser.add_argument("--reuse-service", action="store_true", help="Reuse this project's previously built service")
+parser.add_argument("--output-dir", type=Path, help="Build a preview alongside the stable App")
+parser.add_argument("--version", default=version, help="Override the preview bundle version")
 args = parser.parse_args()
+version = args.version
 project = root.parent
 python = project / "backend/.venv/bin/python"
 build = root / "build"
@@ -36,7 +39,7 @@ if not args.reuse_service:
         ], cwd=project, env=environment, stdout=log, stderr=subprocess.STDOUT, check=True)
 if not (service / "CampusCompanion").is_file():
     raise SystemExit("Missing service. Run build.py without --reuse-service first.")
-app = root / "dist/课间桌宠.app"
+app = (args.output_dir.resolve() if args.output_dir else root / "dist") / "课间桌宠.app"
 contents = app / "Contents"
 macos = contents / "MacOS"
 resources = contents / "Resources"

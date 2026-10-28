@@ -16,7 +16,7 @@ from langchain_core.tools import tool
 from langgraph.types import Command
 from sqlalchemy import text
 
-from app import imports, store, time_mcp
+from app import imports, store, time_mcp, timetable_text
 from app.browser_imports import get_import, start_import
 from app.calendar import expand_calendar
 from app.contracts import (
@@ -38,6 +38,9 @@ TOOLS = {
     "start_timetable_import",
     "get_timetable_import_status",
     "list_course_occurrences",
+    "create_timetable_draft",
+    "list_timetable_drafts",
+    "update_timetable_draft",
     "list_tasks",
     "create_assignment_draft",
     "list_assignment_drafts",
@@ -60,6 +63,8 @@ SYSTEM_PROMPT += "\n用户为已经保存的待办/作业设置、延长或修�
 SYSTEM_PROMPT += "\n教学周截止有明确边界时不必让用户手选日期：例如‘第14周之前’/‘11周之前’含义为该周开始前，create_assignment_draft传原文due_text即可由程序按学期设置自动计算due_at，不要臆算或要求用户另选钟点；说明推算依据，等待校对。已保存任务的教学周截止可先调用resolve_academic_deadline取得精确周边界，再set_task_deadline。‘第14周左右’等仍模糊，不猜日期。用户修改未保存草稿时先list_assignment_drafts，匹配真实draft_id/revision与item_index（从0起），调用set_assignment_draft_deadline更新原草稿，不重复创建，不用set_task_deadline。相对日期明确如‘明晚8点’先get_current_time，然后把完整含时区日期交给草稿修改工具；不要只在聊天回复时间，必须工具返回更新后的草稿。多份草稿分别处理，保存由用户在界面确认；缺日期只需询问自然语言描述，不强迫使用日期选择器。"
 SYSTEM_PROMPT += "\n普通月日截止也要区分日期边界：用户说‘11月1日之前’意为11月1日开始前，不要求另选钟点。先用get_current_time核对当前消息日期，create_assignment_draft或set_assignment_draft_deadline只需传原文due_text，程序自动补当前消息年份并填00:00边界，展示依据等待本人校对；这不是默认23:59。用户明确明年/年份则照原话；缺年份按消息所在年份提出建议，不能偷偷滚到下一年。不要让用户手选已能计算的日期。已有任务的普通日期边界同样可调用resolve_academic_deadline（为兼容历史保留的名称，现在也支持月日边界），再set_task_deadline请求确认。只说‘11月1日’或‘明天’没有边界/钟点时可以自然语言追问，不强制用户操作日期控件。"
 capability = ContextVar("server_approval", default=None)
+conversation = ContextVar("server_conversation_message", default=None)
+SYSTEM_PROMPT += "\n用户用文字添加课表或课程时，调用create_timetable_draft生成课程候选，不要当成作业或固定活动。每个不同星期/节次组合单列候选；仅提取用户明确给出的值，未知星期/周次/节次保持null或空列表，不默认全学期，不编造教师教室。先get_student_context读取学期和节次配置。工具返回clarifications时直接用简短问题追问。用户补充或修改尚未保存的课程时，先list_timetable_drafts查询真实draft_id/revision/candidate_id，再update_timetable_draft，只传需要修改的changes字段，不重建草稿；同一草稿其他课程保留。未保存的课程通过界面逐门校对、确认学期、预览差异后保存，不能把生成候选称为已添加。教师、教室、校区可留空，不反复追问可选字段。已有正式课程的调课修改不在此工具范围，不得用新增同名候选代替更新。"
 
 
 class NoFilesystem(AgentMiddleware):
@@ -174,6 +179,88 @@ def student_agent(app, owner):
                 [r.data for r in await store.rows(db, owner, "exception")],
                 start,
                 end,
+            )
+
+    @tool
+    async def create_timetable_draft(
+        courses: list[timetable_text.TextCourseFields],
+        semester_label: str | None = None,
+    ) -> dict:
+        """Propose 1..50 courses from user text; missing fields remain null/empty. Read student settings first. Returns an editable timetable draft and clarifications; never saves courses. Each meeting pattern is a separate candidate. Raw source is captured by server, not supplied by model."""
+        ctx = conversation.get()
+        if ctx is None:
+            raise ValueError("需要真实对话上下文")
+        args = {
+            "courses": [c.model_dump(mode="json") for c in courses],
+            "semester_label": semester_label,
+        }
+        async with transaction(app) as db:
+
+            async def op():
+                return await timetable_text.create(
+                    db, owner, courses, semester_label, ctx
+                )
+
+            return await store.mutate(
+                db,
+                owner,
+                "agent-timetable-create",
+                ctx["run_id"] + ":" + store.digest(args),
+                args,
+                op,
+            )
+
+    @tool
+    async def list_timetable_drafts() -> list:
+        """List this student's pending text timetable drafts with real draft/candidate ids, revisions and unresolved questions. Use before correcting a draft; never guess ids or recreate it."""
+        async with transaction(app) as db:
+            return [
+                await timetable_text.view(db, owner, r)
+                for r in await store.rows(db, owner, "draft")
+                if r.data["draft_kind"] == "timetable_text"
+                and r.data["status"] == "pending"
+            ]
+
+    @tool
+    async def update_timetable_draft(
+        draft_id: str,
+        revision: int,
+        changes: timetable_text.TextCourseFields,
+        candidate_id: str | None = None,
+        semester_label: str | None = None,
+    ) -> dict:
+        """Patch ONE pending text course using ids/revision from list_timetable_drafts. In changes supply only fields the user corrected; omitted fields and other courses stay intact. null explicitly clears a scalar. For semester-only correction use changes={} and semester_label. Never updates saved courses; still requires review."""
+        ctx = conversation.get()
+        if ctx is None:
+            raise ValueError("需要真实对话上下文")
+        args = {
+            "draft_id": draft_id,
+            "revision": revision,
+            "candidate_id": candidate_id,
+            "changes": changes.model_dump(mode="json", exclude_unset=True),
+            "semester_label": semester_label,
+        }
+        async with transaction(app) as db:
+
+            async def op():
+                return await timetable_text.update(
+                    db,
+                    owner,
+                    draft_id,
+                    revision,
+                    candidate_id,
+                    changes,
+                    semester_label,
+                    ctx,
+                )
+
+            return await store.mutate(
+                db,
+                owner,
+                "agent-timetable-update",
+                ctx["run_id"] + ":" + store.digest(args),
+                args,
+                op,
             )
 
     @tool
@@ -337,11 +424,12 @@ def student_agent(app, owner):
             )
 
     @tool
-    async def propose_daily_plan(target_date: str | None = None) -> dict:
-        """Calculate a deterministic seven-day plan draft. Explain results; do not invent times."""
+    async def propose_daily_plan(target_date: str | None = None, horizon_days: int = 1) -> dict:
+        """Calculate a deterministic plan draft, never save it. Default: today's remaining time in the user's timezone, preserving other dates and ongoing work. Use horizon_days=7 only for an explicit seven-day request; target_date only for an explicit date. Explain unscheduled work; do not invent tasks or times."""
         async with transaction(app) as db:
             return await generate_plan(
-                db, owner, date.fromisoformat(target_date) if target_date else None
+                db, owner, date.fromisoformat(target_date) if target_date else None,
+                horizon_days, "today" if target_date is None and horizon_days == 1 else "range"
             )
 
     @tool
@@ -427,6 +515,9 @@ def student_agent(app, owner):
         start_timetable_import,
         get_timetable_import_status,
         list_course_occurrences,
+        create_timetable_draft,
+        list_timetable_drafts,
+        update_timetable_draft,
         list_tasks,
         create_assignment_draft,
         list_assignment_drafts,
@@ -469,7 +560,11 @@ async def emit(db, owner, rid, kind, payload):
     run = await store.owned(db, owner, rid, "agent_run")
     seq = run.data.get("event_counter", 0) + 1
     phase = {"message_delta": "replying", "tool_started": "thinking"}.get(kind)
-    run.data = {**run.data, "event_counter": seq, **({"pet_phase": phase} if phase else {})}
+    run.data = {
+        **run.data,
+        "event_counter": seq,
+        **({"pet_phase": phase} if phase else {}),
+    }
     run.revision += 1
     db.add(
         Resource(
@@ -530,11 +625,15 @@ def public_text(content):
 
 async def execute_run(app, owner, rid, resume=False):
     token = None
+    message_token = None
     try:
         async with transaction(app) as db:
             r = await store.owned(db, owner, rid, "agent_run")
             data = dict(r.data)
             r.data = {**data, "status": "running", "pet_phase": "thinking"}
+        message_token = conversation.set(
+            {"run_id": rid, "thread_id": data["thread_id"], "message": data["message"]}
+        )
         graph = student_agent(app, owner)
         cfg = {"configurable": {"thread_id": data["thread_id"]}, "recursion_limit": 40}
         if resume:
@@ -678,6 +777,8 @@ async def execute_run(app, owner, rid, resume=False):
             }
             await emit(db, owner, rid, "error", {"message": r.data["error"]})
     finally:
+        if message_token is not None:
+            conversation.reset(message_token)
         if token is not None:
             capability.reset(token)
 

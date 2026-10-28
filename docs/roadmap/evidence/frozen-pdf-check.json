@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "scope": "actual frozen backend, temporary local profile, no model calls",
+  "checks": [
+    "isolated database identity",
+    "PDFium dynamic library loads",
+    "PDF upload and render",
+    "page PNG served",
+    "original and page export",
+    "asset cleanup"
+  ]
+}

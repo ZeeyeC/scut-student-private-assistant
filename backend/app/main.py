@@ -20,7 +20,9 @@ from app.assignments import assignment_router
 from app.auth import UserCreate, UserRead, build_auth
 from app.browser_imports import browser_router
 from app.config import Config
+from app.constraints import constraint_router
 from app.contracts import SettingsUpdate
+from app.course_changes import course_change_router
 from app.data_routes import data_router
 from app.model_gateway import ModelGateway
 from app.paths import resource_root
@@ -28,8 +30,9 @@ from app.pet_status import pet_router
 from app.planner import planner_router
 from app.processes import process_alive
 from app.routes import business_router
-from app.tasks import task_router
 from app.schedule_reminders import reminder_router
+from app.tasks import task_router
+from app.timetable_recognition import timetable_recognition_router
 
 
 def create_app(config=None):
@@ -123,6 +126,8 @@ def create_app(config=None):
                         *app.state.running_tasks, return_exceptions=True
                     )
         finally:
+            if hasattr(app.state.gateway, "aclose"):
+                await app.state.gateway.aclose()
             await engine.dispose()
             lock.unlink(missing_ok=True)
 
@@ -222,7 +227,17 @@ def create_app(config=None):
         return {
             **service_identity(config),
             "status": "ok",
-            "capabilities": ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders"],
+            "capabilities": [
+                "after-class-checkin",
+                "calendar-course-entry",
+                "pet-state",
+                "schedule-reminders",
+                "planning-constraints-once",
+                "timetable-recognition",
+                "timetable-text",
+                "planning-today",
+                "course-changes",
+            ],
             "model_configured": bool(config.text_model and config.model_api_key),
             "vision_configured": bool(config.vision_model and config.model_api_key),
             "scut_verified": bool(config.scut_adapter_path),
@@ -263,8 +278,11 @@ def create_app(config=None):
     app.include_router(business_router(get_db, current_user))
     app.include_router(browser_router(config, get_db, current_user))
     app.include_router(assignment_router(config, get_db, current_user))
+    app.include_router(timetable_recognition_router(config, get_db, current_user))
     app.include_router(task_router(get_db, current_user))
     app.include_router(planner_router(get_db, current_user))
+    app.include_router(constraint_router(get_db, current_user))
+    app.include_router(course_change_router(get_db, current_user))
     app.include_router(agent_router(get_db, current_user))
     app.include_router(pet_router(get_db, current_user))
     app.include_router(reminder_router(get_db, current_user))

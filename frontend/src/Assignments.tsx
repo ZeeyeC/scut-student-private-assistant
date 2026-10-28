@@ -374,11 +374,13 @@ export function DraftActions({
   payload,
   onError,
   canSave = true,
+  blockedMessage = "没有可保存的安排，补齐信息后重新生成。",
 }: {
   draft: Resource;
   payload: unknown;
   onError: (e: string) => void;
   canSave?: boolean;
+  blockedMessage?: string;
 }) {
   const q = useQueryClient(),
     [ask, setAsk] = useState(false),
@@ -386,11 +388,11 @@ export function DraftActions({
     [saved, setSaved] = useState<Resource>(draft),
     [key] = useState(crypto.randomUUID());
   return <div className="draft-actions">
-    {!canSave ? <p>没有可保存的安排，补齐信息后重新生成。</p> : !ask ? (
+    {!canSave ? <p role="status">{blockedMessage}</p> : !ask ? (
     <Button type="button" onClick={() => setAsk(true)}>校对完成，准备保存</Button>
   ) : (
     <div className="confirm">
-      <p>{draft.data.draft_kind === "timetable" ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
+      <p>{draft.data.draft_kind === "course_change" ? "确认仅调整本次课程？其他周课程和已有学习安排保留。" : draft.data.draft_kind === "scheduling_constraint" ? "确认保存禁排？后续新计划将遵守它；已有安排需重新规划并确认后才调整。" : ["timetable", "timetable_recognition", "timetable_text"].includes(draft.data.draft_kind) ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
       <Button
         type="button"
         disabled={busy}
@@ -411,6 +413,7 @@ export function DraftActions({
               headers: { "Idempotency-Key": key },
             });
             q.invalidateQueries();
+            if (draft.data.draft_kind === "course_change") window.dispatchEvent(new Event("campus-course-change-saved"));
             if (draft.data.draft_kind === "calendar_event") {
               window.dispatchEvent(new CustomEvent("campus-calendar-saved", {detail: edited.data.payload.starts_at}));
             }

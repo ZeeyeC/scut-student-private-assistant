@@ -1,4 +1,5 @@
 """Exercise native WebKit with real isolated API/SQLite, leaving production alone."""
+import argparse
 import json
 import os
 import subprocess
@@ -14,7 +15,10 @@ output.mkdir(parents=True, exist_ok=True)
 result_path = output / "result.json"
 result_path.unlink(missing_ok=True)
 python = project / "backend/.venv/bin/python"
-app = root / "dist/课间桌宠.app/Contents/MacOS/CampusPet"
+parser = argparse.ArgumentParser()
+parser.add_argument("--app", type=Path, default=root / "dist/课间桌宠.app")
+args = parser.parse_args()
+app = args.app.resolve() / "Contents/MacOS/CampusPet"
 opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 try:
     opener.open("http://127.0.0.1:5189/api/healthz", timeout=1)

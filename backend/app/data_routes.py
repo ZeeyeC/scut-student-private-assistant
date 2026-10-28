@@ -29,12 +29,24 @@ def data_router(get_db, current_user):
                 ).read_bytes()
             ).decode()
             for r in resources
-            if r.kind == "asset"
+            if r.kind == "asset" and r.data.get("mime_type", "image/png") == "image/png"
         }
+        files = {}
+        for r in resources:
+            if r.kind == "asset":
+                names = [
+                    r.data["filename"],
+                    *[p["filename"] for p in r.data.get("pages", [])],
+                ]
+                for name in names:
+                    files[name] = base64.b64encode(
+                        Path(request.app.state.config.upload_dir, name).read_bytes()
+                    ).decode()
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "resources": [store.view(r) for r in resources],
             "images_png_base64": images,
+            "asset_files_base64": files,
         }
 
     @router.post("/data-delete")
@@ -69,9 +81,13 @@ def data_router(get_db, current_user):
             if r.kind == "agent_thread":
                 await request.app.state.checkpointer.adelete_thread(r.id)
             if r.kind == "asset":
-                Path(request.app.state.config.upload_dir, r.data["filename"]).unlink(
-                    missing_ok=True
-                )
+                for name in [
+                    r.data["filename"],
+                    *[p["filename"] for p in r.data.get("pages", [])],
+                ]:
+                    Path(request.app.state.config.upload_dir, name).unlink(
+                        missing_ok=True
+                    )
         await db.execute(delete(Resource).where(Resource.owner_id == str(user.id)))
         await db.execute(delete(Receipt).where(Receipt.owner_id == str(user.id)))
         return {"deleted": True}

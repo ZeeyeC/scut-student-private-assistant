@@ -100,6 +100,7 @@ type Models = {
   model_base_url: string;
   key_configured?: boolean;
   model_api_key: string;
+  model_use_system_proxy: boolean;
 };
 export function LocalSettings() {
   const q = useQueryClient();
@@ -125,9 +126,9 @@ export function LocalSettings() {
   });
   return (
     <section className="card">
-      <h2>模型连接</h2>
+      <h2>统一模型连接</h2>
       <p>
-        助手与数据保存在本机。聊天和截图识别通过你配置的在线模型服务处理，需要联网。
+        助手对话、任务拆解、作业识别和课表识别共用下方 API 地址与一个密钥。图片功能使用视觉模型；支持图文的同一模型可同时填写在两处。
       </p>
       {model.isPending ? (
         <p>正在读取模型配置…</p>
@@ -181,9 +182,9 @@ export function LocalSettings() {
             />
           </label>
           <p>
-            密钥仅保存在本机配置文件，不会回显。OpenRouter
-            的模型名称请使用服务商提供的完整 ID。
+            密钥仅保存在本机配置文件，不会回显。DeepSeek 可使用 https://api.deepseek.com，文本与视觉均填写 deepseek-flash；其他服务请使用供应商提供的完整模型 ID。
           </p>
+          <label className="check"><input type="checkbox" {...register("model_use_system_proxy")} />使用系统环境代理（本机代理不可用时可关闭，仅影响模型请求）</label>
           <Button disabled={formState.isSubmitting}>保存模型配置</Button>
         </form>
       )}

@@ -30,6 +30,7 @@ class ModelSettings(StrictModel):
     vision_model: str = Field(min_length=1, max_length=200)
     model_base_url: str = "https://openrouter.ai/api/v1"
     model_api_key: str = Field(default="", max_length=4096)
+    model_use_system_proxy: bool = True
 
     @model_validator(mode="after")
     def endpoint(self):
@@ -61,6 +62,7 @@ def model_values(config):
             "vision_model",
             "model_base_url",
             "model_api_key",
+            "model_use_system_proxy",
         )
     }
 

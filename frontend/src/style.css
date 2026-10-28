@@ -525,3 +525,23 @@ small {
 .course-slot-dialog .card { margin-bottom: 0; }
 .fc .fc-timegrid-col { cursor: pointer; }
 .fc .fc-event { cursor: pointer; }
+
+.timetable-recognition-review { width:100%; box-sizing:border-box; container-type:inline-size; container-name:timetable-review; }
+.timetable-review-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; align-items:start; margin:24px 0; }
+.timetable-review-layout > * { min-width:0; }
+.timetable-source { position:static; max-height:65vh; overflow:auto; padding:12px; border:1px solid #d8e5e2; border-radius:14px; background:#f6faf9; }
+.recognition-candidate .grid2 { grid-template-columns:minmax(0,1fr); }
+.timetable-source-image { position:relative; margin-top:12px; }
+.timetable-source-image img { display:block; width:100%; height:auto; }
+.evidence-box { position:absolute; border:2px solid #dd6a00; background:#ffb74d33; pointer-events:none; }
+.pdf-source-text { white-space:pre-wrap; overflow-wrap:anywhere; max-height:220px; overflow:auto; font-size:12px; }
+.recognition-candidate { min-width:0; margin-bottom:20px; border:1px solid #cedbd8; border-radius:14px; padding:18px; }
+.timetable-evidence { display:flex; flex-direction:column; gap:6px; margin:12px 0; }
+.evidence-link { text-align:left; padding:8px; border:1px solid #d8e5e2; border-radius:8px; background:#f6faf9; color:#155e57; cursor:pointer; overflow-wrap:anywhere; font:inherit; font-size:13px; }
+.evidence-link:hover { background:#e4f2ee; }
+.recognition-job { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+@container timetable-review (min-width:760px) {
+  .timetable-review-layout { grid-template-columns:minmax(260px,1fr) minmax(320px,1.25fr); }
+  .timetable-source { position:sticky; top:12px; max-height:85vh; }
+}
+@container timetable-review (min-width:480px) { .recognition-candidate .grid2 { grid-template-columns:minmax(0,1fr) minmax(0,1fr); } }

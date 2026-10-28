@@ -21,6 +21,8 @@ dependencies = [
   "mcp-server-time==2026.10.10",
   "langchain-mcp-adapters==0.3.2",
   "mcp>=1.29,<2",
+  "pypdfium2>=5.14.0",
+  "pypdf>=6.21.3",
 ]
 
 [dependency-groups]

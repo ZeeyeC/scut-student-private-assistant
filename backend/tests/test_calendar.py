@@ -15,6 +15,14 @@ def test_week_expression_and_uncertain_rejection():
         parse_week_expression("1-25周", 16)
 
 
+def test_explicit_conversational_week_ranges_keep_ambiguity_rejection():
+    for expression in ("第3至8周", "第3周到第8周", "3～8周", "第3—8周"):
+        assert parse_week_expression(expression, 20) == [3, 4, 5, 6, 7, 8]
+    for expression in ("第3至8周左右", "下周到期末", "从第3周开始", "8至3周"):
+        with pytest.raises(ValueError):
+            parse_week_expression(expression, 20)
+
+
 def test_measured_scut_segment_parity_and_single_week():
     assert parse_week_expression("第13周", 30) == [13]
     assert parse_week_expression("1周,4-10周(双),11-15周(单)", 30) == [

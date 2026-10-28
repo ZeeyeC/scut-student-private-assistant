@@ -4,8 +4,17 @@ import { AssignmentReview, DraftActions } from "./Assignments";
 import { DecompositionReview } from "./TaskDetail";
 import { EventReview } from "./EventReview";
 import { PlanReview } from "./Today";
+import { CourseChangeReview } from "./CourseChanges";
+import { ConstraintReview } from "./SchedulingConstraints";
+import { TimetableRecognitionReview } from "./TimetableRecognition";
 
 export function DraftReview({ draft }: { draft: Resource }) {
+  if (draft.data.draft_kind === "course_change")
+    return <CourseChangeReview draft={draft} key={draft.id+":"+draft.revision} />;
+  if (["timetable_recognition", "timetable_text"].includes(draft.data.draft_kind))
+    return <TimetableRecognitionReview draft={draft} key={draft.id + ":" + draft.revision} />;
+  if (draft.data.draft_kind === "scheduling_constraint")
+    return <ConstraintReview draft={draft} key={draft.id + ":" + draft.revision} />;
   if (draft.data.draft_kind === "calendar_event")
     return <EventReview draft={draft} key={draft.id + ":" + draft.revision} />;
   if (draft.data.draft_kind === "assignment")
