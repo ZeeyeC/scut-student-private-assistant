@@ -33,6 +33,7 @@ from app.pet_status import pet_router
 from app.planner import planner_router
 from app.processes import process_alive
 from app.profile_routes import profile_router
+from app.review_routes import review_router
 from app.routes import business_router
 from app.schedule_reminders import reminder_router
 from app.tasks import task_router
@@ -283,6 +284,7 @@ def create_app(config=None):
     app.include_router(timer_router(get_db, current_user, str(uuid4())))
     app.include_router(profile_router(get_db, current_user))
     app.include_router(goal_router(get_db, current_user))
+    app.include_router(review_router(get_db, current_user))
     app.include_router(planner_router(get_db, current_user))
     app.include_router(constraint_router(get_db, current_user))
     app.include_router(course_change_router(get_db, current_user))

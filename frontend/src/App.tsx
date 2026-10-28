@@ -10,6 +10,7 @@ import { BrowserImport, stopBrowserImports } from "./BrowserImport";
 import { AfterClassCheckin } from "./AfterClass";
 import {TimerHeartbeat} from "./ExecutionTimer";
 import {Goals} from "./Goals";
+import {WeeklyReview} from "./WeeklyReview";
 const CalendarPage = lazy(() =>
   import("./Calendar").then((m) => ({ default: m.CalendarPage })),
 );
@@ -207,7 +208,7 @@ function Workspace({ local = false }: { local?: boolean }) {
           ) : page === "助手" ? (
             <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
           ) : page === "目标与复盘" ? (
-            <><h1>目标与周复盘</h1><Goals /></>
+            <><h1>目标与周复盘</h1><Goals /><WeeklyReview /></>
           ) : (
             <Settings local={local} />
           )}
