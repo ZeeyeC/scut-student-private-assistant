@@ -240,3 +240,35 @@ def test_zero_stale_and_owner_boundaries(tmp_path):
         other_h = register_login(c, "bob@example.com")
         assert c.get(f"/api/tasks/{ids['task']}/execution-summary").status_code == 404
         assert write(c, other_h, "/executions", stale).status_code == 404
+
+
+def test_two_stale_entrances_cannot_both_save_the_same_block(tmp_path):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        first = execution_body(c, ids)
+        second = execution_body(c, ids, actual_minutes=30)
+        save(c, h, first)
+        assert write(c, h, "/executions", second).status_code == 409
+        assert summary(c, ids)["actual_minutes"] == 25
+
+
+def test_local_date_across_midnight_and_year_uses_saved_timezone(tmp_path, monkeypatch):
+    from app import execution
+
+    monkeypatch.setattr(
+        execution, "now", lambda: datetime.fromisoformat("2026-01-01T00:15:00+00:00")
+    )
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        settings = c.get("/api/settings").json()
+        settings["data"]["timezone"] = "America/Los_Angeles"
+        assert write(c, h, "/settings", settings, "PUT").status_code == 200
+        future = execution_body(
+            c, ids, timezone="America/Los_Angeles", performed_on="2026-01-01"
+        )
+        assert write(c, h, "/executions", future).status_code == 422
+        record = save(c, h, {**future, "performed_on": "2025-12-31"})
+        assert record["data"]["performed_on"] == "2025-12-31"
+        assert record["data"]["timezone"] == "America/Los_Angeles"

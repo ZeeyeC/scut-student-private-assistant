@@ -253,3 +253,49 @@ def test_step_only_actual_prevents_redecomposition_from_orphaning_facts(tmp_path
             ).status_code
             == 409
         )
+
+
+def test_legacy_read_and_restart_do_not_rewrite_old_resources(tmp_path):
+    with make_client(tmp_path) as c:
+        register_login(c)
+        ids = seed_execution(c, spent=40)
+        before = c.get("/api/data-export").json()["resources"]
+        assert summary(c, ids)["actual_minutes"] is None
+        assert summary(c, ids)["legacy_estimated_minutes"] == 40
+        assert c.get("/api/data-export").json()["resources"] == before
+        cookies = dict(c.cookies)
+    with make_client(tmp_path) as c:
+        c.cookies.update(cookies)
+        assert summary(c, ids)["actual_minutes"] is None
+        assert c.get("/api/data-export").json()["resources"] == before
+
+
+def test_execution_and_correction_survive_backup_restore(tmp_path):
+    import json
+    import sqlite3
+
+    from app.backup import backup, restore
+
+    source = tmp_path / "source"
+    source.mkdir()
+    with make_client(source) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        record = save(c, h, execution_body(c, ids))
+        assert (
+            write(
+                c, h, f"/executions/{record['id']}/corrections", correction(c, ids)
+            ).status_code
+            == 200
+        )
+    package = tmp_path / "execution-backup.zip"
+    backup(source / "test.db", source / "agent.db", source / "uploads", package)
+    target = tmp_path / "restored"
+    restore(package, target)
+    with sqlite3.connect(target / "campus.db") as db:
+        records = [
+            json.loads(r[0])
+            for r in db.execute("SELECT data FROM resources WHERE kind='execution'")
+        ]
+    assert sorted(r["actual_minutes"] for r in records) == [20, 25]
+    assert len({r["execution_id"] for r in records}) == 1

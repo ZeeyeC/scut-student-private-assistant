@@ -1,0 +1,37 @@
+{
+  "stage": "development-preview",
+  "scope": "B0/B1",
+  "baseline": "36c9bef93cd8fb961a955842f7d2b2db4dee44cc",
+  "backend": {
+    "passed": 286,
+    "subtests": 18
+  },
+  "frontend": {
+    "passed": 16
+  },
+  "browser": {
+    "passed": 24,
+    "channel": "installed Chrome",
+    "bundled_chromium": "not installed; initial launch failed"
+  },
+  "native_logic": "passed",
+  "frozen_execution": "passed",
+  "frozen_pdf_course_changes": "passed",
+  "native_window_integration": {
+    "passed": false,
+    "attempts": 2,
+    "error": "initial health request timed out; feature checks not entered",
+    "diagnostic": "Independent minimal Swift Foundation URLSession to the same isolated loopback service also timed out; Python and browser requests succeeded. Root environment cause remains unresolved."
+  },
+  "known_issue": "S02 SSE cancellation / SQLite no active connection reproduced; not fixed in B1",
+  "data": "isolated synthetic",
+  "paid_model_calls": 0,
+  "recording": false,
+  "pending": [
+    "A contract review and integration",
+    "B2-S02",
+    "B3-B7",
+    "native window integration",
+    "real timetable accuracy acceptance"
+  ]
+}

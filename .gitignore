@@ -24,3 +24,4 @@ backups/
 
 # Private initialization tools, Python runtimes, downloads and logs.
 .tools/
+.development-previews/

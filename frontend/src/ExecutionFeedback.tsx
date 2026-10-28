@@ -38,6 +38,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
   const activeRows = rows.filter(r => summary.data?.effective_record_ids.includes(r.id));
   const hasBlockFeedback = !!block && activeRows.length > 0;
   const locked = busy || !!pending;
+  const ready = !!(taskLive.data && timezone && summary.data && history.data && steps.data && blocks.data && (!stepId || currentStep) && (!block || currentBlock));
 
   function edit(record: Resource) {
     setEditing(record); setMinutes(String(record.data.actual_minutes));
@@ -88,11 +89,14 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     } finally { setBusy(false); }
   }
 
-  const display = summary.data ? executionDisplay(summary.data) : null;
+  const blockActual = activeRows.length ? activeRows.reduce((sum, r) => sum + r.data.actual_minutes, 0) : null;
+  const display = summary.data ? executionDisplay(block ? { actual_minutes: blockActual, legacy_estimated_minutes: 0 } : summary.data) : null;
   return <section className="execution-feedback" aria-label={block ? "本次安排执行反馈" : "步骤执行反馈"}>
     <h4>实际执行与反馈</h4>
     {block && <p>本次计划：{Math.round((Date.parse(block.data.ends_at) - Date.parse(block.data.starts_at)) / 60000)} 分钟</p>}
     {display && <><p>{display.actualLabel}</p>{display.estimateLabel && <p>{display.estimateLabel}</p>}</>}
+    {block && summary.data?.actual_minutes != null && summary.data.actual_minutes !== blockActual && <p>该步骤累计已记录实际：{summary.data.actual_minutes} 分钟</p>}
+    {block && !!summary.data?.legacy_estimated_minutes && <p>该步骤另有历史估算：{summary.data.legacy_estimated_minutes} 分钟</p>}
     {summary.data?.unknown_step_ids.length ? <p>仍有未反馈步骤；缺记录保持未知。</p> : null}
     {(summary.error || history.error || taskLive.error || steps.error || blocks.error || settings.error) && <p role="alert">执行资料读取失败，请刷新后重试。</p>}
     {editing && <p>正在更正 {editing.data.actual_minutes} 分钟；原记录会保留。</p>}
@@ -113,7 +117,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
       {!editing && !!summary.data?.unresolved_legacy_minutes && <label>旧估算与本次投入的关系<select value={resolution} disabled={locked} onChange={e => setResolution(e.target.value)}>
         <option value="">请确认覆盖范围</option><option value="replace">本次实际替代旧估算</option><option value="separate">旧估算是另一段投入，继续保留</option>
       </select></label>}
-      <Button type="button" variant="outline" disabled={busy || !summary.data || !timezone} onClick={save}>{busy ? "正在保存…" : pending ? "重试保存执行反馈" : editing ? "保存更正" : "保存执行反馈"}</Button>
+      <Button type="button" variant="outline" disabled={busy || !ready} onClick={save}>{busy ? "正在保存…" : pending ? "重试保存执行反馈" : editing ? "保存更正" : "保存执行反馈"}</Button>
       {editing && !locked && <Button type="button" variant="outline" onClick={() => { setEditing(null); setMinutes(""); }}>取消更正</Button>}
     </>}
     {pending && !busy && <p>保存结果尚未确认。重试会使用同一次操作，避免重复累计。</p>}

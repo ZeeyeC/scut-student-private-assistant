@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "mode": "actual-frozen-service",
+  "data": "isolated-synthetic",
+  "paid_model_calls": 0,
+  "checks": [
+    "identity",
+    "60-minute-plan-kept",
+    "actual25-task-open",
+    "idempotent-retry",
+    "correction20-history25"
+  ]
+}
