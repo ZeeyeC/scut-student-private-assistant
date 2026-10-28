@@ -3,14 +3,14 @@
   "scope": "B0/B1",
   "baseline": "36c9bef93cd8fb961a955842f7d2b2db4dee44cc",
   "backend": {
-    "passed": 286,
+    "passed": 289,
     "subtests": 18
   },
   "frontend": {
     "passed": 16
   },
   "browser": {
-    "passed": 24,
+    "passed": 25,
     "channel": "installed Chrome",
     "bundled_chromium": "not installed; initial launch failed"
   },
@@ -33,5 +33,11 @@
     "B3-B7",
     "native window integration",
     "real timetable accuracy acceptance"
-  ]
+  ],
+  "independent_review": {
+    "important_findings": 2,
+    "fixed": 2,
+    "regressions": "3 real API tests RED→GREEN; step-to-block browser flow passed",
+    "re_review": false
+  }
 }

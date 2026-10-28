@@ -125,3 +125,23 @@ test("each block shows its own observation when one step has several blocks", as
   await expect(second).toContainText("已记录实际：0 分钟");
   await expect(first).toContainText("已记录实际：25 分钟");
 });
+
+test("step detail can bind manual feedback to an existing estimated block", async ({ page }) => {
+  const {tid, bid} = await seed(page);
+  await page.evaluate(async (id) => {
+    const csrf = (await (await fetch('/api/csrf')).json()).csrf_token;
+    const block = (await (await fetch('/api/plan-blocks')).json()).find((b:any)=>b.id===id);
+    const r=await fetch('/api/plan-blocks/'+id,{method:'PATCH',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({revision:block.revision,completed:true})});
+    if(!r.ok) throw new Error(await r.text());
+  },bid);
+  await page.reload();
+  await page.getByRole("button", { name: "查看 / 拆解步骤", exact: true }).click();
+  const region=page.getByRole("region",{name:"步骤执行反馈",exact:true});
+  await region.getByLabel("对应的学习安排").selectOption(bid);
+  await region.getByLabel("实际分钟",{exact:true}).fill("25");
+  await region.getByRole("button",{name:"保存执行反馈",exact:true}).click();
+  await expect(region).toContainText("已记录实际：25 分钟");
+  const s=await (await page.request.get(`/api/tasks/${tid}/execution-summary`)).json();
+  expect(s.planning_spent_minutes).toBe(25);
+  expect(s.legacy_estimated_minutes).toBe(0);
+});

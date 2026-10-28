@@ -10,7 +10,7 @@ GET `/api/tasks/{id}/execution-summary?step_id=<可选>`返回：task_id、step_
 
 更正追加新execution资源，以supersedes_id指向旧记录；同execution_id仅链尾计入。旧记录不覆盖。各次独立执行累加；同一时间块只允许一个逻辑执行，后续变化走更正，避免不同入口各补记一次。
 
-历史步骤总量先只读投影；首次明确修改才保存execution_baseline。旧完成块能在旧总量中完整覆盖时分配对应估算，其余为unallocated。新记录覆盖同一块的估算，不产生60+25=85。无法确定覆盖范围时，必须明确legacy_resolution=replace（替代未分配旧估算）或separate（确认为另一段投入）。原估算和选择仍保留。甲可使用planning_spent_minutes兼容排程；actual_minutes用于真实投入统计，两者不可混同。
+历史步骤总量先只读投影；首次明确修改才保存execution_baseline。旧完成块能在旧总量中完整覆盖时分配对应估算，其余为unallocated。新记录覆盖同一块的估算，不产生60+25=85。无法确定覆盖范围时，必须明确legacy_resolution=replace（替代未分配旧估算）或separate（确认为另一段投入）。步骤入口未指定单次安排但已有当前安排/旧估算时也必须核对，或显式绑定具体块。覆盖选择由服务端记录covered_plan_block_ids/separate_plan_block_ids；多块合计不能冒充单块精确分钟。旧总量保存不变时保留原分配；编辑导致来源不明的余额保持待核对，不能自动标为另一段投入。原估算和选择仍保留。甲可使用planning_spent_minutes兼容排程；actual_minutes用于真实投入统计，两者不可混同。
 
 ## 写入样例
 

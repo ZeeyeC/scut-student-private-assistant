@@ -88,6 +88,13 @@ def effective(records):
     return [r for r in records if r.id not in superseded]
 
 
+def covered_blocks(record):
+    result = set(record.data.get("covered_plan_block_ids", []))
+    if record.data.get("plan_block_id"):
+        result.add(record.data["plan_block_id"])
+    return result
+
+
 async def execution_history(db, owner, task_id):
     await store.owned(db, owner, task_id, "task")
     return [
@@ -122,7 +129,7 @@ async def execution_summary(
     for step in steps:
         state = await baseline(db, owner, step)
         actual = [r for r in records if r.data.get("step_id") == step.id]
-        covered = {r.data.get("plan_block_id") for r in actual}
+        covered = set().union(*(covered_blocks(r) for r in actual)) if actual else set()
         unallocated = state.data["unallocated_minutes"]
         if state.data.get("unallocated_resolution") == "replace":
             unallocated = 0
@@ -217,6 +224,7 @@ async def record_execution(db, owner: str, body: ExecutionWrite) -> dict:
         raise HTTPException(409, "时区设置已变化，请刷新后记录")
     if body.performed_on > now().astimezone(ZoneInfo(body.timezone)).date():
         raise HTTPException(422, "实际执行日期不能在未来")
+    coverage, separate = [], []
     if body.step_id:
         step = await store.owned(db, owner, body.step_id, "step")
         if step.data["task_id"] != task.id:
@@ -228,11 +236,34 @@ async def record_execution(db, owner: str, body: ExecutionWrite) -> dict:
                 raise HTTPException(422, "时间块与任务步骤不匹配")
             store.revision(block, body.plan_block_revision)
             if any(
-                r.data.get("plan_block_id") == block.id
-                for r in await execution_history(db, owner, task.id)
+                block.id in covered_blocks(r)
+                for r in effective(await execution_history(db, owner, task.id))
             ):
                 raise HTTPException(409, "该时间块已有反馈，请更正原记录")
         state = await baseline(db, owner, step, create=True)
+        step_blocks = [
+            b.id
+            for b in await store.rows(db, owner, "plan_block")
+            if b.data.get("step_id") == step.id
+        ]
+        if not body.plan_block_id and (step_blocks or state.data["allocations"]):
+            if body.legacy_resolution is None:
+                raise HTTPException(
+                    409, "请选择对应安排，或明确与当前全部安排及旧估算的覆盖关系"
+                )
+            coverage = (
+                sorted(set(step_blocks) | set(state.data["allocations"]))
+                if body.legacy_resolution == "replace"
+                else []
+            )
+            separate = step_blocks if body.legacy_resolution == "separate" else []
+            if any(
+                set(coverage) & covered_blocks(r)
+                for r in effective(await execution_history(db, owner, task.id))
+            ):
+                raise HTTPException(
+                    409, "覆盖的安排已有实际记录，请更正原记录或选择另一段投入"
+                )
         if (
             state.data["unallocated_minutes"]
             and state.data["unallocated_resolution"] is None
@@ -257,6 +288,8 @@ async def record_execution(db, owner: str, body: ExecutionWrite) -> dict:
             "supersedes_id": None,
             "request_hash": request_hash,
             "recorded_at": now().isoformat(),
+            "covered_plan_block_ids": coverage,
+            "separate_plan_block_ids": separate,
         },
     )
     db.add(record)
@@ -318,15 +351,27 @@ async def apply_legacy_spent_update(
             "total_minutes": total_minutes,
         },
     ]
-    state.data = {
-        **state.data,
-        "allocations": {},
-        "unallocated_minutes": total_minutes - actual,
-        "unallocated_resolution": "separate"
-        if summary.actual_minutes is not None
-        else None,
-        "history": history,
-    }
+    if total_minutes == summary.planning_spent_minutes:
+        state.data = {**state.data, "history": history}
+    else:
+        records = effective(await execution_history(db, owner, task.id))
+        covered = (
+            set().union(*(covered_blocks(r) for r in records)) if records else set()
+        )
+        known = sum(
+            n for bid, n in state.data["allocations"].items() if bid not in covered
+        )
+        allocations = (
+            state.data["allocations"] if total_minutes - actual >= known else {}
+        )
+        remainder = total_minutes - actual - (known if allocations else 0)
+        state.data = {
+            **state.data,
+            "allocations": allocations,
+            "unallocated_minutes": remainder,
+            "unallocated_resolution": None,
+            "history": history,
+        }
     state.revision += 1
     step.data = {**step.data, "spent_minutes": total_minutes}
     step.revision += 1
@@ -353,7 +398,17 @@ async def record_legacy_block_completion(db, owner: str, block):
     step = await store.owned(db, owner, block.data["step_id"], "step")
     state = await baseline(db, owner, step, create=True)
     history = await execution_history(db, owner, block.data["task_id"])
-    has_actual = any(r.data.get("plan_block_id") == block.id for r in history)
+    active = [r for r in effective(history) if r.data.get("step_id") == step.id]
+    has_actual = any(block.id in covered_blocks(r) for r in active)
+    if not has_actual and any(
+        not covered_blocks(r)
+        and block.id not in r.data.get("separate_plan_block_ids", [])
+        for r in active
+    ):
+        raise HTTPException(
+            409,
+            "已有未关联安排的实际投入，请先核对是否属于同一次执行，不能直接叠加估算",
+        )
     if not has_actual:
         minutes = max(
             0,

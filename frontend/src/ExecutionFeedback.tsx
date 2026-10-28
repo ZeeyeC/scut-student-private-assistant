@@ -15,6 +15,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
   const [taskStatus, setTaskStatus] = useState("");
   const [date, setDate] = useState("");
   const [resolution, setResolution] = useState("");
+  const [selectedBlockId, setSelectedBlockId] = useState("");
   const [editing, setEditing] = useState<Resource | null>(null);
   const [pending, setPending] = useState<Operation | null>(null);
   const [busy, setBusy] = useState(false);
@@ -31,14 +32,17 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
   });
   const history = useQuery({ queryKey: ["executions", task.id], queryFn: () => api<Resource[]>(`/tasks/${task.id}/executions`) });
   const currentStep = steps.data?.find(s => s.id === stepId);
-  const currentBlock = blocks.data?.find(b => b.id === block?.id);
+  const selectedId = block?.id || selectedBlockId;
+  const currentBlock = blocks.data?.find(b => b.id === selectedId);
+  const availableBlocks = blocks.data?.filter(b => b.data.step_id === stepId) ?? [];
   const timezone = settings.data?.data.timezone;
   const localDate = timezone ? new Date().toLocaleDateString("en-CA", { timeZone: timezone }) : "";
-  const rows = history.data?.filter(r => (!stepId || r.data.step_id === stepId) && (!block || r.data.plan_block_id === block.id)) ?? [];
+  const rows = history.data?.filter(r => (!stepId || r.data.step_id === stepId) && (!block || r.data.plan_block_id === block.id || r.data.covered_plan_block_ids?.includes(block.id))) ?? [];
   const activeRows = rows.filter(r => summary.data?.effective_record_ids.includes(r.id));
   const hasBlockFeedback = !!block && activeRows.length > 0;
   const locked = busy || !!pending;
-  const ready = !!(taskLive.data && timezone && summary.data && history.data && steps.data && blocks.data && (!stepId || currentStep) && (!block || currentBlock));
+  const ready = !!(taskLive.data && timezone && summary.data && history.data && steps.data && blocks.data && (!stepId || currentStep) && (!selectedId || currentBlock));
+  const needsCoverage = !editing && (!!summary.data?.unresolved_legacy_minutes || (!selectedId && (availableBlocks.length > 0 || !!summary.data?.legacy_estimated_minutes)));
 
   function edit(record: Resource) {
     setEditing(record); setMinutes(String(record.data.actual_minutes));
@@ -66,7 +70,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
       if (editing) payload.revision = editing.revision;
       else Object.assign(payload, {
         task_id: task.id, step_id: stepId ?? null, step_revision: currentStep?.revision ?? null,
-        plan_block_id: block?.id ?? null, plan_block_revision: currentBlock?.revision ?? null,
+        plan_block_id: currentBlock?.id ?? null, plan_block_revision: currentBlock?.revision ?? null,
         performed_on: date || localDate, timezone, legacy_resolution: resolution || null,
       });
       operation = newExecutionOperation(path, payload);
@@ -77,7 +81,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     setBusy(true);
     try {
       await api(operation.path, { method: "POST", headers: { "Idempotency-Key": operation.idempotencyKey }, body: JSON.stringify(operation.body) });
-      setPending(null); setMinutes(""); setEditing(null); setTaskStatus("");
+      setPending(null); setMinutes(""); setEditing(null); setTaskStatus(""); setSelectedBlockId(""); setResolution("");
       setMessage("执行反馈已保存；计划时长和任务完成分别保留。");
       await q.invalidateQueries();
     } catch (e) {
@@ -89,7 +93,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     } finally { setBusy(false); }
   }
 
-  const blockActual = activeRows.length ? activeRows.reduce((sum, r) => sum + r.data.actual_minutes, 0) : null;
+  const blockActual = activeRows.length && activeRows.every(r => r.data.plan_block_id || r.data.covered_plan_block_ids?.length === 1) ? activeRows.reduce((sum, r) => sum + r.data.actual_minutes, 0) : null;
   const display = summary.data ? executionDisplay(block ? { actual_minutes: blockActual, legacy_estimated_minutes: 0 } : summary.data) : null;
   return <section className="execution-feedback" aria-label={block ? "本次安排执行反馈" : "步骤执行反馈"}>
     <h4>实际执行与反馈</h4>
@@ -101,6 +105,10 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     {(summary.error || history.error || taskLive.error || steps.error || blocks.error || settings.error) && <p role="alert">执行资料读取失败，请刷新后重试。</p>}
     {editing && <p>正在更正 {editing.data.actual_minutes} 分钟；原记录会保留。</p>}
     {(!hasBlockFeedback || editing) && <>
+      {!block && !editing && availableBlocks.length > 0 && <label>对应的学习安排<select value={selectedBlockId} disabled={locked} onChange={e => { setSelectedBlockId(e.target.value); setResolution(""); }}>
+        <option value="">不指定单次安排（需核对覆盖关系）</option>
+        {availableBlocks.map(b => <option key={b.id} value={b.id}>{new Date(b.data.starts_at).toLocaleString("zh-CN", {timeZone: timezone || "Asia/Shanghai"})} · {Math.round((Date.parse(b.data.ends_at) - Date.parse(b.data.starts_at))/60000)}分钟</option>)}
+      </select></label>}
       <div className="grid2">
         <label>实际分钟<input type="number" min="0" max="100000" step="1" value={minutes} disabled={locked} onChange={e => setMinutes(e.target.value)} /></label>
         {!editing && <label>执行日期<input type="date" value={date || localDate} max={localDate} disabled={locked || !timezone} onChange={e => setDate(e.target.value)} /></label>}
@@ -114,8 +122,8 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
           <option value="">保持当前状态</option><option value="open">任务仍未完成</option><option value="completed">确认整项任务完成</option>
         </select></label>
       </div>
-      {!editing && !!summary.data?.unresolved_legacy_minutes && <label>旧估算与本次投入的关系<select value={resolution} disabled={locked} onChange={e => setResolution(e.target.value)}>
-        <option value="">请确认覆盖范围</option><option value="replace">本次实际替代旧估算</option><option value="separate">旧估算是另一段投入，继续保留</option>
+      {needsCoverage && <label>当前安排及旧估算与本次投入的关系<select value={resolution} disabled={locked} onChange={e => setResolution(e.target.value)}>
+        <option value="">请确认覆盖范围</option><option value="replace">本次实际覆盖所选范围的旧估算（未指定单次时覆盖当前全部安排）</option><option value="separate">本次是另一段投入，保留原有安排及估算</option>
       </select></label>}
       <Button type="button" variant="outline" disabled={busy || !ready} onClick={save}>{busy ? "正在保存…" : pending ? "重试保存执行反馈" : editing ? "保存更正" : "保存执行反馈"}</Button>
       {editing && !locked && <Button type="button" variant="outline" onClick={() => { setEditing(null); setMinutes(""); }}>取消更正</Button>}

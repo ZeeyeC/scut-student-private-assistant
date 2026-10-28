@@ -227,7 +227,17 @@ def test_step_only_actual_prevents_redecomposition_from_orphaning_facts(tmp_path
     with make_client(tmp_path) as c:
         h = register_login(c)
         ids = seed_execution(c)
-        save(c, h, execution_body(c, ids, plan_block_id=None, plan_block_revision=None))
+        save(
+            c,
+            h,
+            execution_body(
+                c,
+                ids,
+                plan_block_id=None,
+                plan_block_revision=None,
+                legacy_resolution="separate",
+            ),
+        )
         task = c.get(f"/api/tasks/{ids['task']}").json()
         draft = write(
             c,
@@ -299,3 +309,92 @@ def test_execution_and_correction_survive_backup_restore(tmp_path):
         ]
     assert sorted(r["actual_minutes"] for r in records) == [20, 25]
     assert len({r["execution_id"] for r in records}) == 1
+
+
+def test_unscoped_step_feedback_requires_explicit_coverage_then_replaces_estimate(
+    tmp_path,
+):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c, spent=60, block_status="completed")
+        body = execution_body(c, ids, plan_block_id=None, plan_block_revision=None)
+        assert write(c, h, "/executions", body).status_code == 409
+        save(c, h, {**body, "legacy_resolution": "replace"})
+        assert summary(c, ids)["actual_minutes"] == 25
+        assert summary(c, ids)["legacy_estimated_minutes"] == 0
+        assert summary(c, ids)["planning_spent_minutes"] == 25
+
+
+def test_unscoped_actual_covering_current_block_prevents_later_legacy_double_count(
+    tmp_path,
+):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        body = execution_body(c, ids, plan_block_id=None, plan_block_revision=None)
+        assert write(c, h, "/executions", body).status_code == 409
+        save(c, h, {**body, "legacy_resolution": "replace"})
+        response = write(
+            c,
+            h,
+            f"/plan-blocks/{ids['block']}",
+            {"revision": 1, "completed": True},
+            "PATCH",
+        )
+        assert response.status_code == 200, response.text
+        assert summary(c, ids)["planning_spent_minutes"] == 25
+        assert summary(c, ids)["legacy_estimated_minutes"] == 0
+
+
+def test_noop_legacy_total_edit_preserves_block_provenance(tmp_path):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        save(c, h, execution_body(c, ids))
+        second_id = str(uuid4())
+        owner = c.get("/api/me").json()["id"]
+
+        async def add():
+            async with c.app.state.sessions() as db:
+                db.add(
+                    Resource(
+                        id=second_id,
+                        owner_id=owner,
+                        kind="plan_block",
+                        data={
+                            "task_id": ids["task"],
+                            "step_id": ids["step"],
+                            "title": "另一段",
+                            "starts_at": "2026-10-14T12:00:00+08:00",
+                            "ends_at": "2026-10-14T13:00:00+08:00",
+                            "status": "suggested",
+                            "locked": False,
+                        },
+                    )
+                )
+                await db.commit()
+
+        c.portal.call(add)
+        assert (
+            write(
+                c,
+                h,
+                f"/plan-blocks/{second_id}",
+                {"revision": 1, "completed": True},
+                "PATCH",
+            ).status_code
+            == 200
+        )
+        step = c.get(f"/api/tasks/{ids['task']}/steps").json()[0]
+        result = write(
+            c,
+            h,
+            f"/steps/{ids['step']}",
+            {"revision": step["revision"], "spent_minutes": 85},
+            "PATCH",
+        )
+        assert result.status_code == 200
+        save(c, h, execution_body(c, {**ids, "block": second_id}))
+        assert summary(c, ids)["actual_minutes"] == 50
+        assert summary(c, ids)["legacy_estimated_minutes"] == 0
+        assert summary(c, ids)["planning_spent_minutes"] == 50
