@@ -26,6 +26,7 @@ from app.course_changes import course_change_router
 from app.data_routes import data_router
 from app.db_sessions import sqlite_transaction
 from app.execution_routes import execution_router
+from app.goal_routes import goal_router
 from app.model_gateway import ModelGateway
 from app.paths import resource_root
 from app.pet_status import pet_router
@@ -281,6 +282,7 @@ def create_app(config=None):
     app.include_router(execution_router(get_db, current_user))
     app.include_router(timer_router(get_db, current_user, str(uuid4())))
     app.include_router(profile_router(get_db, current_user))
+    app.include_router(goal_router(get_db, current_user))
     app.include_router(planner_router(get_db, current_user))
     app.include_router(constraint_router(get_db, current_user))
     app.include_router(course_change_router(get_db, current_user))

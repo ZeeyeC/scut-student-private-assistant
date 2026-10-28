@@ -9,6 +9,7 @@ import { LocalEntry } from "./LocalMode";
 import { BrowserImport, stopBrowserImports } from "./BrowserImport";
 import { AfterClassCheckin } from "./AfterClass";
 import {TimerHeartbeat} from "./ExecutionTimer";
+import {Goals} from "./Goals";
 const CalendarPage = lazy(() =>
   import("./Calendar").then((m) => ({ default: m.CalendarPage })),
 );
@@ -63,7 +64,7 @@ function Workspace({ local = false }: { local?: boolean }) {
   useEffect(() => {
     const listener = (event: Event) => {
       const page = (event as CustomEvent<string>).detail;
-      if (["今日", "课表", "作业", "助手", "设置"].includes(page)) {setCalendarDate(undefined); setPage(page);}
+      if (["今日", "课表", "作业", "助手", "目标与复盘", "设置"].includes(page)) {setCalendarDate(undefined); setPage(page);}
     };
     const saved = (event: Event) => {
       setCalendarDate((event as CustomEvent<string>).detail);
@@ -166,7 +167,7 @@ function Workspace({ local = false }: { local?: boolean }) {
           课间<span>Campus companion</span>
         </div>
         <nav>
-          {["今日", "课表", "作业", "助手", "设置"].map((n) => (
+          {["今日", "课表", "作业", "助手", "目标与复盘", "设置"].map((n) => (
             <Button
               key={n}
               variant={page === n ? "default" : "outline"}
@@ -205,6 +206,8 @@ function Workspace({ local = false }: { local?: boolean }) {
             <CalendarPage key="schedule" mode="schedule" focusDate={calendarDate} />
           ) : page === "助手" ? (
             <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
+          ) : page === "目标与复盘" ? (
+            <><h1>目标与周复盘</h1><Goals /></>
           ) : (
             <Settings local={local} />
           )}
