@@ -622,6 +622,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/drafts/{rid}/timetable-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview */
+        post: operations["preview_api_drafts__rid__timetable_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/timetable-jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Jobs */
+        get: operations["jobs_api_timetable_jobs_get"];
+        put?: never;
+        /** Recognize */
+        post: operations["recognize_api_timetable_jobs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/timetable-assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload */
+        post: operations["upload_api_timetable_assets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assets/{rid}/pages/{page}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Page Image */
+        get: operations["page_image_api_assets__rid__pages__page__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/timetable-assets/{rid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Asset */
+        get: operations["get_asset_api_timetable_assets__rid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/tasks/{rid}": {
         parameters: {
             query?: never;
@@ -758,6 +844,108 @@ export interface paths {
         head?: never;
         /** Update */
         patch: operations["update_api_plan_blocks__rid__patch"];
+        trace?: never;
+    };
+    "/api/scheduling-constraints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listing */
+        get: operations["listing_api_scheduling_constraints_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/drafts/scheduling-constraint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Draft */
+        post: operations["draft_api_drafts_scheduling_constraint_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/scheduling-constraints/{rid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** State */
+        patch: operations["state_api_scheduling_constraints__rid__patch"];
+        trace?: never;
+    };
+    "/api/course-changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listing */
+        get: operations["listing_api_course_changes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/course-change-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** History */
+        get: operations["history_api_course_change_history_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/drafts/course-change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Draft */
+        post: operations["draft_api_drafts_course_change_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/agent/tools": {
@@ -914,6 +1102,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/schedule-shortcut": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Shortcut */
+        get: operations["get_shortcut_api_schedule_shortcut_get"];
+        /** Save Shortcut */
+        put: operations["save_shortcut_api_schedule_shortcut_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/schedule-reminders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reminders */
+        get: operations["reminders_api_schedule_reminders_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/schedule-reminders/ack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Acknowledge */
+        post: operations["acknowledge_api_schedule_reminders_ack_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/data-export": {
         parameters: {
             query?: never;
@@ -1033,6 +1273,11 @@ export interface components {
             /** Timezone */
             timezone: string;
         };
+        /** Acknowledge */
+        Acknowledge: {
+            /** Key */
+            key: string;
+        };
         /** AssignmentCandidate */
         AssignmentCandidate: {
             /** Title */
@@ -1041,7 +1286,10 @@ export interface components {
             course_id?: string | null;
             /** Requirements */
             requirements?: string[];
-            /** Due At */
+            /**
+             * Due At
+             * @description ISO 8601 datetime with explicit UTC offset or Z. If the source timezone or exact date/time is unknown, output null and add due_at to uncertain_fields.
+             */
             due_at?: string | null;
             /** Due Text */
             due_text?: string | null;
@@ -1118,6 +1366,11 @@ export interface components {
             /** File */
             file: string;
         };
+        /** Body_upload_api_timetable_assets_post */
+        Body_upload_api_timetable_assets_post: {
+            /** File */
+            file: string;
+        };
         /** CalendarDeadlineBasis */
         CalendarDeadlineBasis: {
             /**
@@ -1191,6 +1444,21 @@ export interface components {
             /** Revision */
             revision: number;
         };
+        /** ConstraintDraft */
+        ConstraintDraft: {
+            constraint: components["schemas"]["SchedulingConstraint"];
+            /** Constraint Id */
+            constraint_id?: string | null;
+            /** Constraint Revision */
+            constraint_revision?: number | null;
+        };
+        /** ConstraintStateUpdate */
+        ConstraintStateUpdate: {
+            /** Revision */
+            revision: number;
+            /** Active */
+            active: boolean;
+        };
         /** Course */
         Course: {
             /** Source Key */
@@ -1221,6 +1489,29 @@ export interface components {
             status: "none" | "homework";
             /** Items */
             items?: components["schemas"]["HomeworkItem"][];
+        };
+        /** CourseChange */
+        CourseChange: {
+            /** Course Id */
+            course_id: string;
+            /**
+             * Original Date
+             * Format: date
+             */
+            original_date: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "move" | "cancel" | "restore";
+            /** Starts At */
+            starts_at?: string | null;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Reason */
+            reason: string;
         };
         /** Decision */
         Decision: {
@@ -1347,6 +1638,11 @@ export interface components {
              * @default
              */
             model_api_key: string;
+            /**
+             * Model Use System Proxy
+             * @default true
+             */
+            model_use_system_proxy: boolean;
         };
         /** PetStatus */
         PetStatus: {
@@ -1360,6 +1656,12 @@ export interface components {
         };
         /** PlanRequest */
         PlanRequest: {
+            /**
+             * Scope
+             * @default range
+             * @enum {string}
+             */
+            scope: "range" | "today";
             /** Target Date */
             target_date?: string | null;
             /**
@@ -1413,6 +1715,41 @@ export interface components {
             /** Message */
             message: string;
         };
+        /**
+         * SchedulingConstraint
+         * @description First increment: an explicit, one-off protected interval for task planning.
+         */
+        SchedulingConstraint: {
+            /**
+             * Title
+             * @default 不可安排
+             */
+            title: string;
+            /**
+             * Strength
+             * @default hard
+             * @constant
+             */
+            strength: "hard";
+            /**
+             * Recurrence
+             * @default once
+             * @constant
+             */
+            recurrence: "once";
+            /** Timezone */
+            timezone: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+        };
         /** SettingsUpdate */
         SettingsUpdate: {
             /** Revision */
@@ -1422,6 +1759,37 @@ export interface components {
             id?: string | null;
             /** Kind */
             kind?: string | null;
+        };
+        /** Shortcut */
+        Shortcut: {
+            /** Event Id */
+            event_id: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Revision
+             * @default 0
+             */
+            revision: number;
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /**
+             * Target Kind
+             * @default none
+             * @enum {string}
+             */
+            target_kind: "none" | "website" | "file";
+            /**
+             * Target
+             * @default
+             */
+            target: string;
         };
         /** StartImport */
         StartImport: {
@@ -1542,6 +1910,16 @@ export interface components {
             semester_label: string;
             /** Warnings */
             warnings?: string[];
+        };
+        /** TimetableJobRequest */
+        TimetableJobRequest: {
+            /** Asset Id */
+            asset_id: string;
+            /**
+             * Consent
+             * @constant
+             */
+            consent: true;
         };
         /** UserCreate */
         UserCreate: {
@@ -2914,6 +3292,194 @@ export interface operations {
             };
         };
     };
+    preview_api_drafts__rid__timetable_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    jobs_api_timetable_jobs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"][];
+                };
+            };
+        };
+    };
+    recognize_api_timetable_jobs_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimetableJobRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_api_timetable_assets_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_api_timetable_assets_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    page_image_api_assets__rid__pages__page__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rid: string;
+                page: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_asset_api_timetable_assets__rid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     task_api_tasks__rid__get: {
         parameters: {
             query?: never;
@@ -3255,6 +3821,173 @@ export interface operations {
             };
         };
     };
+    listing_api_scheduling_constraints_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"][];
+                };
+            };
+        };
+    };
+    draft_api_drafts_scheduling_constraint_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConstraintDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    state_api_scheduling_constraints__rid__patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConstraintStateUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listing_api_course_changes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"][];
+                };
+            };
+        };
+    };
+    history_api_course_change_history_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"][];
+                };
+            };
+        };
+    };
+    draft_api_drafts_course_change_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CourseChange"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     tool_list_api_agent_tools_get: {
         parameters: {
             query?: never;
@@ -3548,6 +4281,124 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PetStatus"];
+                };
+            };
+        };
+    };
+    get_shortcut_api_schedule_shortcut_get: {
+        parameters: {
+            query: {
+                event_id: string;
+                starts_at: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_shortcut_api_schedule_shortcut_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Shortcut"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reminders_api_schedule_reminders_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    acknowledge_api_schedule_reminders_ack_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Acknowledge"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

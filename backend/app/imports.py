@@ -1,14 +1,41 @@
 from uuid import uuid4
 
 from fastapi import HTTPException
+from pydantic import ValidationError
 
 from app import store
-from app.contracts import AssignmentExtraction, Decomposition, FixedEvent, Timetable
+from app.contracts import (
+    AssignmentExtraction,
+    ConstraintDraft,
+    Decomposition,
+    FixedEvent,
+    Timetable,
+)
 from app.db import Resource, now
 from app.deadlines import suggest_assignment_deadlines, validate_deadline_basis
+from app.timetable_contracts import TimetableRecognition
 
 
 def validate_payload(kind, payload):
+    if kind == "course_change":
+        from app.course_changes import CourseChange
+
+        try:
+            return CourseChange.model_validate(payload).model_dump(mode="json")
+        except ValidationError as exc:
+            raise HTTPException(422, "课程调整草稿无效，请重新选择课程与时间") from exc
+    if kind in {"timetable_recognition", "timetable_text"}:
+        try:
+            return TimetableRecognition.model_validate(payload).model_dump(mode="json")
+        except ValidationError as exc:
+            raise HTTPException(422, "课表识别草稿格式无效，请核对字段") from exc
+    if kind == "scheduling_constraint":
+        try:
+            return ConstraintDraft.model_validate(payload).model_dump(mode="json")
+        except ValidationError as exc:
+            raise HTTPException(
+                422, "禁排草稿无效，请核对时间、时区和修改版本"
+            ) from exc
     if kind == "calendar_event":
         return FixedEvent.model_validate(payload).model_dump(mode="json")
     if kind == "timetable":
@@ -67,6 +94,10 @@ async def create_draft(db, owner, kind, payload, source=None):
 
 
 async def review_view(db, owner, draft):
+    if draft.data["draft_kind"] == "timetable_text":
+        from app.timetable_text import view
+
+        return await view(db, owner, draft)
     result = store.view(draft)
     if draft.data["draft_kind"] == "assignment" and draft.data["status"] == "pending":
         s = await store.settings(db, owner)
@@ -87,7 +118,21 @@ async def edit_draft(db, owner, rid, expected, payload):
     store.revision(r, expected)
     if r.data["status"] != "pending":
         raise HTTPException(409, "草稿已确认或失效")
-    r.data = {**r.data, "payload": validate_payload(r.data["draft_kind"], payload)}
+    if r.data["draft_kind"] == "course_change":
+        raise HTTPException(422, "课程调整与预览绑定，请删除后重新生成草稿")
+    validated = validate_payload(r.data["draft_kind"], payload)
+    if r.data["draft_kind"] in {"timetable_recognition", "timetable_text"}:
+        from app.timetable_recognition import validate_review_edit
+
+        validate_review_edit(r.data["payload"], validated)
+    if r.data["draft_kind"] == "scheduling_constraint":
+        # Editing content must not retarget an already-reviewed amendment.
+        if any(
+            validated[k] != r.data["payload"][k]
+            for k in ("constraint_id", "constraint_revision")
+        ):
+            raise HTTPException(422, "请从禁排列表重新发起修改，不可更换草稿目标或版本")
+    r.data = {**r.data, "payload": validated}
     r.revision += 1
     return store.view(r)
 
@@ -110,10 +155,22 @@ async def commit_draft(db, owner, draft_id, expected):
     # New independent facts do not depend on every unrelated database change.
     # Plans/timetable replacements retain their full source version guard;
     # decompositions validate the actual task version in save_steps below.
-    if d.data["draft_kind"] in {"plan", "timetable"}:
+    if d.data["draft_kind"] in {"plan", "timetable", "course_change"}:
         store.revision(s, d.data["source_revision"])
     payload = validate_payload(d.data["draft_kind"], d.data["payload"])
     ids = []
+    if d.data["draft_kind"] == "course_change":
+        from app.course_changes import save_change
+
+        ids = await save_change(db, owner, d, payload)
+    if d.data["draft_kind"] in {"timetable_recognition", "timetable_text"}:
+        from app.timetable_recognition import save_recognized_courses
+
+        ids = await save_recognized_courses(db, owner, d, payload, s.data)
+    if d.data["draft_kind"] == "scheduling_constraint":
+        from app.constraints import save_constraint
+
+        ids = await save_constraint(db, owner, d, payload)
     if d.data["draft_kind"] == "calendar_event":
         r = Resource(id=str(uuid4()), owner_id=owner, kind="fixed_event", data=payload)
         db.add(r)

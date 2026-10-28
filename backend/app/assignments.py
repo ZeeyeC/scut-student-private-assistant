@@ -124,7 +124,9 @@ def assignment_router(config, get_db, current_user):
     async def asset(rid: str, user=Depends(current_user), db=Depends(get_db)):
         r = await store.owned(db, str(user.id), rid, "asset")
         return FileResponse(
-            Path(config.upload_dir, r.data["filename"]), media_type="image/png"
+            Path(config.upload_dir, r.data["filename"]),
+            media_type=r.data.get("mime_type", "image/png"),
+            headers={"X-Content-Type-Options": "nosniff"},
         )
 
     @router.post("/assignment-jobs", response_model=ResourceView)
@@ -136,7 +138,9 @@ def assignment_router(config, get_db, current_user):
         user=Depends(current_user),
         db=Depends(get_db),
     ):
-        await store.owned(db, str(user.id), body.asset_id, "asset")
+        asset = await store.owned(db, str(user.id), body.asset_id, "asset")
+        if asset.data.get("purpose") == "timetable":
+            raise HTTPException(422, "课表原件请使用课表识别入口")
 
         async def op():
             r = Resource(

@@ -106,6 +106,53 @@ class Confirm(StrictModel):
     revision: int
 
 
+class SchedulingConstraint(StrictModel):
+    """First increment: an explicit, one-off protected interval for task planning."""
+
+    title: str = Field(default="不可安排", min_length=1, max_length=200)
+    strength: Literal["hard"] = "hard"
+    recurrence: Literal["once"] = "once"
+    timezone: str
+    starts_at: datetime
+    ends_at: datetime
+
+    @model_validator(mode="after")
+    def valid_interval(self):
+        try:
+            ZoneInfo(self.timezone)
+        except (ZoneInfoNotFoundError, ValueError) as exc:
+            raise ValueError("请输入有效 IANA 时区") from exc
+        if not self.title.strip():
+            raise ValueError("请输入禁排名称")
+        if not self.starts_at.tzinfo or not self.ends_at.tzinfo:
+            raise ValueError("禁排时间必须带时区")
+        # Compare instants, including intervals spanning a daylight-saving fold.
+        from datetime import timezone
+
+        if self.ends_at.astimezone(timezone.utc) <= self.starts_at.astimezone(
+            timezone.utc
+        ):
+            raise ValueError("禁排结束时间必须晚于开始时间")
+        return self
+
+
+class ConstraintDraft(StrictModel):
+    constraint: SchedulingConstraint
+    constraint_id: str | None = None
+    constraint_revision: int | None = Field(default=None, ge=1)
+
+    @model_validator(mode="after")
+    def valid_target(self):
+        if (self.constraint_id is None) != (self.constraint_revision is None):
+            raise ValueError("修改禁排需要同时提供标识和版本")
+        return self
+
+
+class ConstraintStateUpdate(StrictModel):
+    revision: int = Field(ge=1)
+    active: bool
+
+
 class DraftEdit(StrictModel):
     revision: int
     payload: dict
@@ -158,7 +205,10 @@ class AssignmentCandidate(StrictModel):
     title: str = Field(min_length=1, max_length=200)
     course_id: str | None = None
     requirements: list[str] = Field(default_factory=list, max_length=50)
-    due_at: datetime | None = None
+    due_at: datetime | None = Field(
+        default=None,
+        description="ISO 8601 datetime with explicit UTC offset or Z. If the source timezone or exact date/time is unknown, output null and add due_at to uncertain_fields.",
+    )
     due_text: str | None = None
     deadline_basis: AcademicDeadlineBasis | CalendarDeadlineBasis | None = None
     submission_method: str | None = None

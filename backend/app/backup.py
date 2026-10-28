@@ -29,7 +29,9 @@ def backup(database, checkpoint, uploads, output):
                 if db.execute("pragma integrity_check").fetchone()[0] != "ok":
                     raise ValueError("数据库完整性检查失败")
             files[name] = (root / name).read_bytes()
-        for file in uploads.glob("*.png"):
+        for file in uploads.iterdir():
+            if file.suffix not in {".png", ".jpg", ".webp", ".pdf"}:
+                continue
             if file.is_symlink():
                 raise ValueError("图片目录不允许符号链接")
             files["uploads/" + file.name] = file.read_bytes()
@@ -59,7 +61,10 @@ def restore(package, target):
                 or ".." in p.parts
                 or (
                     name not in ("campus.db", "agent.db")
-                    and not (p.parent == Path("uploads") and p.suffix == ".png")
+                    and not (
+                        p.parent == Path("uploads")
+                        and p.suffix in {".png", ".jpg", ".webp", ".pdf"}
+                    )
                 )
             ):
                 raise ValueError("备份路径无效")

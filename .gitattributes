@@ -4,3 +4,6 @@
 *.ps1 text eol=crlf
 *.sh text eol=lf
 *.command text eol=lf
+
+# PDF byte offsets and cross-reference padding must remain untouched.
+*.pdf binary

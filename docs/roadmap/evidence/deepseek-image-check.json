@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-10-28T07:12:08.783400+00:00",
+  "provider_host": "api.deepseek.com",
+  "text_model": "deepseek-flash",
+  "vision_model": "deepseek-flash",
+  "sample_type": "generated synthetic examples; no personal data",
+  "real_ocr_benchmark": false,
+  "checks": [
+    {
+      "feature": "assignment_image",
+      "passed": true,
+      "items": 1,
+      "deadline_detected": true
+    },
+    {
+      "feature": "timetable_image",
+      "passed": true,
+      "courses": 1,
+      "critical_fields_detected": true,
+      "evidence_fields": [
+        "campus",
+        "location",
+        "name",
+        "periods",
+        "teacher",
+        "weekday",
+        "weeks_text"
+      ]
+    }
+  ]
+}

@@ -77,10 +77,11 @@ export function TodayPage() {
           disabled={busy}
           onClick={async () => {
             setBusy(true);
+            setError("");
             try {
               await api("/plan-drafts", {
                 method: "POST",
-                body: JSON.stringify({ horizon_days: 7 }),
+                body: JSON.stringify({ scope: "today" }),
               });
               q.invalidateQueries({ queryKey: ["drafts"] });
             } catch (e) {
@@ -90,7 +91,7 @@ export function TodayPage() {
             }
           }}
         >
-          {busy ? "正在计算…" : "规划未来 7 天"}
+          {busy ? "正在计算…" : "一键生成当日日程"}
         </Button>
       </div>
       {error && <p role="alert">{error}</p>}
@@ -196,13 +197,19 @@ export function TodayPage() {
 export function PlanReview({ draft }: { draft: Resource }) {
   const [error, setError] = useState("");
   const p = draft.data.payload;
+  const displayedBlocks = p.scope === "today" ? p.blocks.filter((b: Record<string, any>) =>
+    new Date(b.starts_at).toLocaleDateString("en-CA", {timeZone: p.timezone}) === p.target_date
+  ) : p.blocks;
   return (
-    <section className="card">
+    <section className="card" aria-label="计划草稿">
       <p className="eyebrow">程序计算 · {p.blocks.length > 0 || p.removed_blocks?.length > 0 ? "等待确认" : "无新增学习安排"}</p>
-      <h2>未来 {p.horizon_days} 天计划</h2>
+      <h2>{p.scope === "today" ? `${p.target_date} 当日日程` : `未来 ${p.horizon_days} 天计划`}</h2>
       <p>
-        课程、固定事项、锁定时间和依赖已纳入计算。更改学习设置后可重新生成。
+        课程、固定事项、已确认禁排、锁定时间和依赖已纳入计算。更改设置后可重新生成。
       </p>
+      {p.scope === "today" && <p>按 {p.timezone} 计算今天剩余时间。已开始、已完成、锁定及其他日期的安排保留；其他日期不在下方展开。排不下的工作会列出，不自动延至明天。</p>}
+      {p.changes && <p>新增 {p.changes.added_ids.length} 项 · 保留 {p.changes.retained_ids.length} 项 · 替换或移除 {p.changes.removed_ids.length} 项。确认前正式日程保持原样。</p>}
+      {p.protected_windows?.length > 0 && <div><h3>本次避让的禁排时段</h3>{p.protected_windows.map((r: Resource) => <p key={r.id}>{r.data.title} · {new Date(r.data.starts_at).toLocaleString("zh-CN", {timeZone: p.timezone})} 至 {new Date(r.data.ends_at).toLocaleString("zh-CN", {timeZone: p.timezone})}</p>)}</div>}
       {p.warnings?.map((w: string, i: number) => (
         <p role="alert" key={i}>
           {w}
@@ -223,8 +230,8 @@ export function PlanReview({ draft }: { draft: Resource }) {
         <p>这些安排已经保存，规划学习时间会避让它们。</p>
         {p.fixed_agenda.map((e: Record<string, any>, i: number)=><p key={i}>{new Date(e.starts_at).toLocaleDateString("zh-CN",{timeZone:p.timezone})} {clock(e.starts_at,p.timezone)}–{clock(e.ends_at,p.timezone)} · {e.title}</p>)}
       </div>}
-      {!p.blocks.length && <p>本次没有生成学习时间块。{p.unscheduled.length ? "请先处理下方未安排事项，再重新规划。" : "当前没有需要新安排的步骤；如仍有待办，请核对预计耗时、拆解与完成状态。"}</p>}
-      {p.blocks.map((b: Record<string, any>) => (
+      {!displayedBlocks.length && <p>本次没有生成学习时间块。{p.unscheduled.length ? "请先处理下方未安排事项，再重新规划。" : "当前没有需要新安排的步骤；如仍有待办，请核对预计耗时、拆解与完成状态。"}</p>}
+      {displayedBlocks.map((b: Record<string, any>) => (
         <div className="step" key={b.id}>
           <strong>
             {new Date(b.starts_at).toLocaleDateString("zh-CN", {
@@ -237,6 +244,7 @@ export function PlanReview({ draft }: { draft: Resource }) {
             {b.locked ? "保留锁定安排" : "学习时间块"} ·{" "}
             {b.status === "completed" ? "已完成" : "待执行"}
           </p>
+          {b.explanation?.reasons?.map((reason: string, i: number) => <p key={i}>{reason}</p>)}
         </div>
       ))}
       {p.unscheduled.length > 0 && (

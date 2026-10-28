@@ -7,6 +7,7 @@ from fastapi import HTTPException
 
 from app import store
 from app.calendar import expand_calendar
+from app.constraints import active_constraints
 
 
 async def calendar_events(db, owner, start, end):
@@ -50,6 +51,12 @@ async def calendar_events(db, owner, start, end):
                         "locked": data.get("locked", False),
                     }
                 )
+    constraints = active_constraints([store.view(r) for r in await store.rows(db, owner, "scheduling_constraint")])
+    for row in constraints:
+        data = row["data"]
+        a, b = datetime.fromisoformat(data["starts_at"]), datetime.fromisoformat(data["ends_at"])
+        if a < upper and b > lower:
+            events.append({"id": row["id"], "kind": "scheduling_constraint", "title": data["title"], "starts_at": data["starts_at"], "ends_at": data["ends_at"]})
     return {
         "events": sorted(
             events, key=lambda x: (datetime.fromisoformat(x["starts_at"]), x["id"])

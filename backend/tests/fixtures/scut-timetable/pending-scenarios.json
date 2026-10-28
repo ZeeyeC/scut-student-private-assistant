@@ -1,0 +1,13 @@
+{
+  "status": "planned_not_implemented",
+  "synthetic": true,
+  "scenarios": [
+    {"id":"nonconsecutive-periods","periods":[1,2,5],"expected":"1-2节与第5节分为不同占用，不把中间3-4节占满","task":"T02"},
+    {"id":"break-inside-class","periods":[1,2],"expected":"区分授课与中间休息，并明确转移/休息是否适合排学习任务","task":"T02/T05"},
+    {"id":"move-across-weeks","expected":"取消原日期课程，增加目标日期课程，保留来源与撤销记录","task":"T02"},
+    {"id":"practice-week","expected":"用户确认实践周后只影响对应课程和范围","task":"T02"},
+    {"id":"two-adjustments-same-day","expected":"同一天多门课程调整可分别追溯，不能被第一条例外覆盖","task":"T02"},
+    {"id":"holiday-unknown","expected":"缺少学校校历时提出问题，不能按公共假期推算补课","task":"T02/T03"},
+    {"id":"transfer-too-short","minutes_available":10,"minutes_required":40,"expected":"报告跨校区转移不足30分钟；未知耗时保持待补充","task":"T03"}
+  ]
+}

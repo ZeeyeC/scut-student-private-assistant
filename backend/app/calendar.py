@@ -1,5 +1,5 @@
 import re
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 
@@ -13,6 +13,9 @@ def parse_week_expression(text, week_count):
         .replace("－", "-")
         .replace("~", "-")
     )
+    # Equivalent, explicit range separators commonly preserved in chat input.
+    # Match the whole numeric range; qualifiers such as “左右” remain invalid.
+    clean = re.sub(r"第?(\d+)周?(?:至|到|—|–|～|-)(?:第)?(\d+)", r"\1-\2", clean)
     result = set()
     group = []
     for part in clean.split(","):
@@ -41,6 +44,10 @@ def expand_calendar(settings, courses, exceptions, start, end):
     anchor = date.fromisoformat(settings["week1_monday"])
     tz = ZoneInfo(settings["timezone"])
     result = []
+    lower = datetime.combine(start, time.min, tz).astimezone(timezone.utc)
+    upper = datetime.combine(end + timedelta(days=1), time.min, tz).astimezone(
+        timezone.utc
+    )
     for course in courses:
         c, cid = course["data"], course["id"]
         periods = [
@@ -56,8 +63,10 @@ def expand_calendar(settings, courses, exceptions, start, end):
             ex = next(
                 (
                     e
-                    for e in exceptions
-                    if e["course_id"] == cid and e["date"] == d.isoformat()
+                    for e in reversed(exceptions)
+                    if e.get("active", True)
+                    and e["course_id"] == cid
+                    and e["date"] == d.isoformat()
                 ),
                 None,
             )
@@ -74,17 +83,24 @@ def expand_calendar(settings, courses, exceptions, start, end):
                     datetime.fromisoformat(ex["starts_at"]),
                     datetime.fromisoformat(ex["ends_at"]),
                 )
-            if start <= starts.astimezone(tz).date() <= end:
+            if (
+                starts.astimezone(timezone.utc) < upper
+                and ends.astimezone(timezone.utc) > lower
+            ):
                 result.append(
                     {
                         "id": f"{cid}:{d}",
                         "course_id": cid,
+                        "original_date": d.isoformat(),
+                        "adjusted": bool(ex),
                         "title": c["name"],
                         "starts_at": starts.isoformat(),
                         "ends_at": ends.isoformat(),
                         "location": ex.get("location")
-                        if ex and ex.get("location")
+                        if ex and ex.get("location") is not None
                         else c.get("location"),
                     }
                 )
-    return sorted(result, key=lambda x: (x["starts_at"], x["id"]))
+    return sorted(
+        result, key=lambda x: (datetime.fromisoformat(x["starts_at"]), x["id"])
+    )

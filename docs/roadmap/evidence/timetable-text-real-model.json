@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "real model selected course draft tool",
+    "unknown weeks preserved and questioned",
+    "follow-up patched original draft",
+    "other fields preserved",
+    "no formal course saved"
+  ],
+  "timestamp": "2026-10-28T08:14:48.747643+00:00",
+  "scope": "two real agent turns, generated synthetic course, temporary profile",
+  "personal_data_sent": false
+}

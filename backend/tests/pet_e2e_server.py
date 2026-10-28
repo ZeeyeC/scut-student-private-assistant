@@ -6,7 +6,8 @@ from pathlib import Path
 
 from app import after_class, planner
 from app.main import create_app
-from tests.test_agent import ToolModel
+from tests.test_timetable_recognition import FakeTimetableVision, candidate
+from tests.test_timetable_text import TextTimetableModel
 
 root = Path(tempfile.mkdtemp(prefix="campus-pet-e2e-"))
 app = create_app(
@@ -26,4 +27,7 @@ app = create_app(
 )
 after_class.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
 planner.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
-app.state.agent_model_factory = lambda: ToolModel()
+app.state.agent_model_factory = lambda: TextTimetableModel()
+
+# Explicit fake gateway only in this isolated UI test server.
+app.state.gateway = FakeTimetableVision([candidate(weeks_text=None)])

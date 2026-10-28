@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 test('fixed timetable is separate; smart schedule includes courses and never moves them', async ({page})=>{
+  // This fixture's timetable and planner clock are fixed to the same teaching week.
+  await page.clock.setFixedTime(new Date('2026-10-14T10:30:00Z'));
   await page.goto('/');
   await page.getByRole('button',{name:'创建账号',exact:true}).click();
   await page.getByLabel('邮箱').fill(`split-${crypto.randomUUID()}@example.com`);

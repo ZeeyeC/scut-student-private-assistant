@@ -21,6 +21,9 @@ const labels: Record<string, string> = {
   start_timetable_import: "请求打开教务",
   get_timetable_import_status: "查询导入进度",
   list_course_occurrences: "查询课程",
+  create_timetable_draft: "生成文字课表草稿",
+  list_timetable_drafts: "查询待校对课表",
+  update_timetable_draft: "补充课程信息",
   list_tasks: "查询作业",
   create_assignment_draft: "生成任务草稿",
   list_assignment_drafts: "查询待校对草稿",
@@ -35,7 +38,7 @@ const labels: Record<string, string> = {
   set_task_status: "更新作业状态",
   set_task_deadline: "更新截止时间",
 };
-export function ChatPage({ embedded = false, focusThreadId, focusRequest = 0 }: { embedded?: boolean; focusThreadId?: string; focusRequest?: number }) {
+export function ChatPage({ embedded = false, courseEntry = false, focusThreadId, focusRequest = 0 }: { embedded?: boolean; courseEntry?: boolean; focusThreadId?: string; focusRequest?: number }) {
   const q = useQueryClient(),
     [threadId, setThreadId] = useState(focusThreadId ?? ""),
     [runId, setRunId] = useState(""),
@@ -186,14 +189,14 @@ export function ChatPage({ embedded = false, focusThreadId, focusRequest = 0 }: 
       }
     },
   });
-  const pendingDrafts = visibleDrafts(drafts.data).filter(d => !embedded || ["calendar_event", "assignment"].includes(d.data.draft_kind));
+  const pendingDrafts = visibleDrafts(drafts.data).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
   const hasReview = !!approvalId || pendingDrafts.length > 0;
   return (
     <div className={embedded ? "assistant-page embedded" : "assistant-page"}>
       <header className="chat-toolbar">
         <div>
-          <h1>{embedded ? "用 AI 安排事项" : "学习助手"}</h1>
-          <p>直接说任务、日程和日期，草稿校对后保存。</p>
+          <h1>{embedded ? courseEntry ? "用文字添加课表" : "用 AI 安排事项" : "学习助手"}</h1>
+          <p>直接说课程、任务、日程和日期，草稿校对后保存。</p>
         </div>
         <Button
           variant="outline"
@@ -224,6 +227,7 @@ export function ChatPage({ embedded = false, focusThreadId, focusRequest = 0 }: 
             <ThreadPrimitive.Empty>
               <p>告诉我你想先处理什么，例如“明天有什么课”或“帮我加一个阅读文献的任务”。</p>
               <p className="chat-example">也可以说“第14周之前完成 C++ 大作业”，或“把草稿截止改成明晚8点”。</p>
+              <p className="chat-example">添加课表可说“高等数学，每周一第1、2节，第1至16周”。不清楚的信息可以稍后补充。</p>
             </ThreadPrimitive.Empty>
             <ThreadPrimitive.Messages
               components={{

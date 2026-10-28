@@ -1,0 +1,51 @@
+{
+  "version": "2.4.0",
+  "created_at": "2026-10-28T13:01:55.093985+00:00",
+  "platform": "macOS Apple Silicon",
+  "results": {
+    "backend_and_scripts": {
+      "passed": 256,
+      "subtests_passed": 18
+    },
+    "frontend": {
+      "passed": 14
+    },
+    "browser": {
+      "passed": 20
+    },
+    "native_logic": "passed",
+    "native_integration": {
+      "passed": true,
+      "checks": 54
+    },
+    "frozen_backend": {
+      "passed": true,
+      "scope": "actual frozen backend, temporary local profile, no model calls",
+      "checks": [
+        "isolated database identity",
+        "frozen today planner creates review-only one-day draft",
+        "frozen course move, cancel, restore and audit history",
+        "PDFium dynamic library loads",
+        "PDF upload and render",
+        "page PNG served",
+        "original and page export",
+        "asset cleanup"
+      ]
+    }
+  },
+  "application_sha256": "126d4f9bf0c77839a1a507df14fc9f870fbfde304319c8e0606adacd593f61ea",
+  "additional_audits": {
+    "existing_releases_and_private_files_unchanged": 7101,
+    "extracted_app_signature": "passed",
+    "archive_crc": "passed",
+    "credential_scan": "passed"
+  },
+  "data_scope": "isolated synthetic fixtures, no personal data or paid model calls",
+  "browser_cancellation_cleanup_errors_this_run": 0,
+  "limitations": [
+    "real SCUT 30-sample/5-layout/95%-accuracy benchmark pending",
+    "full semester exceptions and commute conflicts pending",
+    "automatic replanning and personalization pending",
+    "historical S02 cancellation cleanup remains under investigation"
+  ]
+}

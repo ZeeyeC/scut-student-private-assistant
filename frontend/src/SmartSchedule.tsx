@@ -5,15 +5,22 @@ import type { Resource } from './types';
 import { Button } from './components/ui/button';
 import { PlanReview } from './Today';
 import { visibleDrafts } from './drafts';
+import { SchedulingConstraints } from './SchedulingConstraints';
 
 export function SmartSchedule() {
   const q = useQueryClient();
   const drafts = useQuery({queryKey:['drafts'],queryFn:()=>api<Resource[]>('/drafts')});
   const [busy,setBusy]=useState(false), [error,setError]=useState('');
   return <section aria-label="智能安排">
+    <SchedulingConstraints />
     <div className="card">
       <h2>智能安排任务</h2>
-      <p>课表中的课程是固定占用。根据待办步骤、耗时、截止时间和学习窗口，避开课程、固定事项及锁定安排，生成未来 7 天的日程建议。排不下的任务会说明原因；确认后才保存。</p>
+      <p>根据待办步骤、耗时、截止时间和学习窗口，避开课程、固定事项、已确认禁排及锁定安排。可只安排今天剩余时间，也可规划未来 7 天。排不下的任务会说明原因；确认后才保存。</p>
+      <Button disabled={busy} onClick={async()=>{
+        setBusy(true);setError('');
+        try { await api('/plan-drafts',{method:'POST',body:JSON.stringify({scope:'today'})}); await q.invalidateQueries({queryKey:['drafts']}); }
+        catch(e){setError(String(e));}finally{setBusy(false);}
+      }}>{busy ? '正在计算…' : '一键生成当日日程'}</Button>{' '}
       <Button disabled={busy} onClick={async()=>{
         setBusy(true);setError('');
         try { await api('/plan-drafts',{method:'POST',body:JSON.stringify({horizon_days:7})}); await q.invalidateQueries({queryKey:['drafts']}); }

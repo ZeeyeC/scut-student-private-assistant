@@ -71,7 +71,7 @@ struct NativeTests {
             precondition(exits.item(withTitle: "仅退出桌宠（后台继续运行）")?.action == #selector(AppDelegate.quit), "Pet-only exit must keep existing quit behavior")
             precondition(exits.item(withTitle: "停止后台并退出…") != nil, "Service shutdown must be separately selectable")
             let identity: [String: Any] = ["application": "campus-companion", "mode": "local", "desktop_protocol": 1]
-            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders"]
+            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes"]
             func rejects(_ body: [String: Any], status: Int = 200) -> Bool {
                 do { try ServiceController.validateHealth(status: status, body: body); return false }
                 catch { return true }

@@ -9,6 +9,7 @@ function draftTitle(draft: Resource) {
   const p = draft.data.payload;
   return (
     p.title ||
+    p.constraint?.title ||
     p.items?.map((item: { title: string }) => item.title).join("、") ||
     (draft.data.draft_kind === "plan"
       ? `未来 ${p.horizon_days ?? 7} 天计划`

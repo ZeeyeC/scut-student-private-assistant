@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-10-28T07:16:58.400369+00:00",
+  "provider_host": "api.deepseek.com",
+  "text_model": "deepseek-flash",
+  "vision_model": "deepseek-flash",
+  "sample_type": "generated synthetic examples; no personal data",
+  "real_ocr_benchmark": false,
+  "checks": [
+    {
+      "feature": "chat",
+      "passed": true
+    },
+    {
+      "feature": "tool_round_trip",
+      "passed": true
+    },
+    {
+      "feature": "task_decomposition",
+      "passed": true,
+      "steps": 6
+    },
+    {
+      "feature": "assignment_image",
+      "passed": true,
+      "items": 1,
+      "deadline_detected": true
+    },
+    {
+      "feature": "timetable_image",
+      "passed": true,
+      "courses": 1,
+      "critical_fields_detected": true,
+      "evidence_fields": [
+        "campus",
+        "location",
+        "name",
+        "periods",
+        "teacher",
+        "weekday",
+        "weeks_text"
+      ]
+    }
+  ]
+}
