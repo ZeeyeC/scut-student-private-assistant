@@ -9,7 +9,11 @@ from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import Field, model_validator
 
 from app import imports, store
-from app.calendar import expand_calendar
+from app.calendar import (
+    COURSE_INTERVAL_VERSION,
+    expand_calendar,
+    occupied_course_events,
+)
 from app.contracts import ResourceView, StrictModel
 from app.db import Resource, now
 from app.planning_history import record_change
@@ -22,6 +26,7 @@ class CourseChange(StrictModel):
     starts_at: datetime | None = None
     ends_at: datetime | None = None
     location: str | None = Field(default=None, max_length=200)
+    campus: str | None = Field(default=None, max_length=100)
     reason: str = Field(min_length=1, max_length=1000)
 
     @model_validator(mode="after")
@@ -46,6 +51,7 @@ class CourseChange(StrictModel):
             self.starts_at is not None
             or self.ends_at is not None
             or self.location is not None
+            or self.campus is not None
         ):
             raise ValueError("停课或恢复原课不应包含新时间或地点")
         return self
@@ -77,35 +83,49 @@ async def preview(db, owner, payload):
     active = [r for r in rows if r.data.get("active", True)]
     if p.action == "restore" and not active:
         raise HTTPException(422, "这次课程没有需要撤销的调整")
-    before = None if active and active[-1].data.get("cancelled") else base[0]
-    if active and not active[-1].data.get("cancelled"):
-        e = active[-1].data
-        before = {
-            **base[0],
-            "starts_at": e.get("starts_at") or base[0]["starts_at"],
-            "ends_at": e.get("ends_at") or base[0]["ends_at"],
-            "location": e["location"]
-            if e.get("location") is not None
-            else base[0].get("location"),
-        }
+    tz = ZoneInfo(settings.data["timezone"])
+
+    def effective(exceptions):
+        dates = [p.original_date]
+        for exception in exceptions:
+            for key in ("starts_at", "ends_at"):
+                if exception.get(key):
+                    dates.append(
+                        datetime.fromisoformat(exception[key]).astimezone(tz).date()
+                    )
+        events = expand_calendar(
+            settings.data, [store.view(course)], exceptions, min(dates), max(dates)
+        )
+        return next((event for event in events if event["id"] == base[0]["id"]), None)
+
+    before = effective([r.data for r in active])
     after = None if p.action == "cancel" else base[0]
     if p.action == "move":
-        tz = ZoneInfo(settings.data["timezone"])
         if abs((p.starts_at.astimezone(tz).date() - p.original_date).days) > 366:
             raise HTTPException(422, "单次调课与原课程日期的间隔不能超过一年")
-        after = {
-            **base[0],
-            "starts_at": p.starts_at.isoformat(),
-            "ends_at": p.ends_at.isoformat(),
-            "location": p.location
-            if p.location is not None
-            else base[0].get("location"),
-        }
+        after = effective(
+            [
+                {
+                    "course_id": course.id,
+                    "date": p.original_date.isoformat(),
+                    "starts_at": p.starts_at.isoformat(),
+                    "ends_at": p.ends_at.isoformat(),
+                    "campus": p.campus if p.campus is not None else (
+                        base[0].get("campus") if p.location in (None, base[0].get("location")) else None
+                    ),
+                    "location": p.location
+                    if p.location is not None
+                    else base[0].get("location"),
+                }
+            ]
+        )
     conflicts, affected = [], []
-    for label, event in [("before", before), ("after", after)]:
-        if not event:
-            continue
-        tz = ZoneInfo(settings.data["timezone"])
+    actual = [
+        (label, interval)
+        for label, event in [("before", before), ("after", after)]
+        for interval in occupied_course_events([event] if event else [])
+    ]
+    for label, event in actual:
         a, b = (
             datetime.fromisoformat(event["starts_at"]),
             datetime.fromisoformat(event["ends_at"]),
@@ -118,7 +138,7 @@ async def preview(db, owner, payload):
                 422, "请先补齐课表配置：" + "；".join(agenda["warnings"])
             )
         for other in agenda["events"]:
-            if other["id"] == base[0]["id"]:
+            if other.get("occurrence_id", other["id"]) == base[0]["id"]:
                 continue
             if a < datetime.fromisoformat(
                 other["ends_at"]
@@ -127,7 +147,7 @@ async def preview(db, owner, payload):
                     e["id"] for e in affected
                 }:
                     affected.append(other)
-                if label == "after":
+                if label == "after" and other["id"] not in {e["id"] for e in conflicts}:
                     conflicts.append(other)
     return {
         "timezone": settings.data["timezone"],
@@ -138,11 +158,16 @@ async def preview(db, owner, payload):
         "conflicts": conflicts,
         "affected_plans": affected,
         "exception_versions": {r.id: r.revision for r in rows},
-        "message": "只调整这一次课程。已保存学习安排、完成记录和锁定项保持原样；如受影响，请重新生成计划并确认。",
+        "message": "只调整这一次课程的全部节次。若新起止时间不同，按您确认的一个连续时段授课，不推算新课间；仅换教室且起止不变时保留原分段。已保存学习安排、完成记录和锁定项保持原样；如受影响，请重新生成计划并确认。",
     }
 
 
 async def save_change(db, owner, draft, payload):
+    if (
+        draft.data["source"]["preview"]["original"].get("interval_version")
+        != COURSE_INTERVAL_VERSION
+    ):
+        raise HTTPException(409, "课程分段规则已更新，请重新预览调整")
     if store.digest(payload) != draft.data["source"].get("generated_hash"):
         raise HTTPException(422, "调整目标与预览绑定，请重新生成调整草稿")
     # Global source revision was checked by commit_draft; additionally bind the course.
@@ -171,6 +196,7 @@ async def save_change(db, owner, draft, payload):
         "starts_at": payload["starts_at"],
         "ends_at": payload["ends_at"],
         "location": payload["location"],
+        "campus": (draft.data["source"]["preview"].get("after") or {}).get("campus"),
         "active": payload["action"] != "restore",
         "confirmed": True,
         "source": {

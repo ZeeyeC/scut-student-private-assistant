@@ -194,7 +194,7 @@ def test_overnight_utc_interval_is_respected_in_another_user_timezone():
         {"title": " "},
         {"ends_at": "2026-10-14T13:00:00+08:00"},
         {"starts_at": "2026-10-14T14:00:00"},
-        {"strength": "soft"},
+        {"strength": "unsupported"},
         {"recurrence": "weekly"},
         {"confirmed": True},
     ],

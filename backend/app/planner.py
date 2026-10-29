@@ -3,14 +3,15 @@ from typing import Literal
 from uuid import NAMESPACE_URL, uuid5
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from pydantic import Field, model_validator
 
 from app import imports, store
-from app.calendar import expand_calendar
-from app.constraints import active_constraints
+from app.calendar import expand_calendar, occupied_course_events
+from app.constraints import planning_constraints
 from app.contracts import ResourceView, StrictModel
 from app.db import Resource, now
+from app.planning_capacity import CapacityReport, capacity_report
 from app.planning_history import PLANNER_RULE_VERSION, save_snapshot
 
 
@@ -38,9 +39,15 @@ def subtract(windows, busy):
 
 def protected_today_block(p, block):
     """Today's action must not change history, ongoing work or another date."""
-    if p.get("scope") != "today":
+    if p.get("scope") != "today" and not p.get("repair"):
         return False
     tz = ZoneInfo(p["settings"]["timezone"])
+    if p.get("repair"):
+        day = instant(block["starts_at"]).astimezone(tz).date()
+        target = date.fromisoformat(p["target_date"])
+        return not target <= day < target + timedelta(
+            days=p["horizon_days"]
+        ) or instant(block["starts_at"]) < instant(p["now_utc"])
     return instant(block["starts_at"]).astimezone(tz).date().isoformat() != p[
         "target_date"
     ] or instant(block["starts_at"]) < instant(p["now_utc"])
@@ -54,9 +61,9 @@ def revalidate_preserved(p, clock, tz):
     buffer = timedelta(minutes=cfg["buffer_minutes"])
     busy = [
         (instant(e["starts_at"]) - buffer, instant(e["ends_at"]) + buffer)
-        for e in p["occurrences"] + p["fixed_events"]
+        for e in occupied_course_events(p["occurrences"]) + p["fixed_events"]
     ]
-    protected = active_constraints(p.get("constraints", []))
+    protected = planning_constraints(p)
     busy.extend(
         (instant(r["data"]["starts_at"]), instant(r["data"]["ends_at"]))
         for r in protected
@@ -202,9 +209,9 @@ def build_plan(p):
     unscheduled = []
     busy = []
     buffer = timedelta(minutes=cfg["buffer_minutes"])
-    for e in p["occurrences"] + p["fixed_events"]:
+    for e in occupied_course_events(p["occurrences"]) + p["fixed_events"]:
         busy.append((instant(e["starts_at"]) - buffer, instant(e["ends_at"]) + buffer))
-    protected = active_constraints(p.get("constraints", []))
+    protected = planning_constraints(p)
     busy.extend(
         (instant(r["data"]["starts_at"]), instant(r["data"]["ends_at"]))
         for r in protected
@@ -235,6 +242,14 @@ def build_plan(p):
             for b in preserved
             if instant(b["starts_at"]).astimezone(tz).date() == d
         )
+    capacity_free = {d: list(windows) for d, windows in free.items()}
+    preferences = planning_constraints(p, "soft")
+    if p.get("planning_strategy") == "preferred":
+        from app.planning_options import preferred_windows
+
+        for d in free:
+            free[d] = preferred_windows(free[d], preferences)
+    capacity_used = dict(used)
     all_steps = {s["id"]: s["data"] for s in p["steps"]}
     tasks = {t["id"]: t["data"] for t in p["tasks"] if t["data"]["status"] == "open"}
     done = {k for k, v in all_steps.items() if v["status"] == "completed"}
@@ -259,6 +274,7 @@ def build_plan(p):
         for k, v in all_steps.items()
         if v["task_id"] in tasks and v["status"] == "open"
     }
+    required_minutes = sum(remaining.values())
 
     def due(t):
         return (
@@ -288,7 +304,7 @@ def build_plan(p):
                         "step_id": sid,
                         "remaining_minutes": remaining[sid],
                         "reason": "保留安排需要核对，请先处理警告后重新规划"
-                        if p.get("scope") == "today"
+                        if p.get("scope") == "today" or p.get("repair")
                         else "锁定安排与当前约束冲突，请先解锁并重新规划",
                     }
                 )
@@ -347,13 +363,33 @@ def build_plan(p):
                                     "dependency_ids": s["dependency_ids"],
                                     "settings_revision": p["source_revision"],
                                     "constraint_revisions": {
-                                        r["id"]: r["revision"] for r in protected
+                                        r.get("constraint_id", r["id"]): r["revision"]
+                                        for r in protected
                                     },
                                     "reasons": [
                                         f"使用已设置的学习窗口；当天学习上限 {cfg['daily_limit_minutes']} 分钟",
                                         f"本次分配 {n} 分钟，依据步骤剩余耗时和单块上限",
                                         "避开固定课程、事项及已确认禁排时段",
                                     ]
+                                    + (
+                                        [
+                                            "优先使用已确认软偏好窗口"
+                                            if not subtract(
+                                                [(a, end)],
+                                                [
+                                                    (
+                                                        instant(r["data"]["starts_at"]),
+                                                        instant(r["data"]["ends_at"]),
+                                                    )
+                                                    for r in preferences
+                                                ],
+                                            )
+                                            else "偏好窗口不足，使用其他可用时间；硬约束仍满足"
+                                        ]
+                                        if p.get("planning_strategy") == "preferred"
+                                        and preferences
+                                        else []
+                                    )
                                     + (
                                         [
                                             f"在任务截止 {deadline.astimezone(tz).isoformat()} 前安排"
@@ -438,7 +474,7 @@ def build_plan(p):
                     "reason": "按当前课程、任务和禁排约束重新计算，确认后替换旧安排",
                 }
             )
-    return {
+    result = {
         "blocks": blocks,
         "fixed_agenda": [
             {
@@ -446,7 +482,7 @@ def build_plan(p):
                 "starts_at": e["starts_at"],
                 "ends_at": e["ends_at"],
             }
-            for e in p["occurrences"] + p["fixed_events"]
+            for e in occupied_course_events(p["occurrences"]) + p["fixed_events"]
             if instant(e["starts_at"])
             < instant(datetime.combine(start + timedelta(days=days), time.min, tz))
             and instant(e["ends_at"]) > instant(datetime.combine(start, time.min, tz))
@@ -457,6 +493,8 @@ def build_plan(p):
         "timezone": cfg["timezone"],
         "removed_blocks": removed,
         "rule_version": PLANNER_RULE_VERSION,
+        "planning_strategy": p.get("planning_strategy", "earliest"),
+        "preference_windows": preferences,
         "protected_windows": [
             r
             for r in protected
@@ -469,12 +507,48 @@ def build_plan(p):
             "removed_ids": [b["id"] for b in removed],
         },
     }
+    result["capacity"] = capacity_report(
+        p,
+        result,
+        capacity_free,
+        capacity_used,
+        required_minutes,
+        sum(assigned.values()),
+        preserved,
+        tz,
+    )
+    if (
+        p.get("planning_strategy") == "preferred"
+        and result["capacity"]["unallocated_minutes"]
+    ):
+        # Soft preference boundaries must not strand work that the same hard
+        # constraints permit in a continuous window. Prefer feasible work first.
+        fallback = build_plan({**p, "planning_strategy": "earliest"})
+        if (
+            fallback["capacity"]["unallocated_minutes"]
+            < result["capacity"]["unallocated_minutes"]
+        ):
+            fallback["planning_strategy"] = "preferred"
+            fallback["preference_fallback"] = True
+            old_ids = {
+                b["id"]
+                for b in p.get("current_blocks", []) + p.get("preserved_blocks", [])
+            }
+            for b in fallback["blocks"]:
+                if b["id"] not in old_ids and b.get("explanation"):
+                    b["explanation"]["reasons"].append(
+                        "软偏好造成碎片或少排时让步，优先保住所能完成的工作量"
+                    )
+            return fallback
+    return result
 
 
 class PlanRequest(StrictModel):
     scope: Literal["range", "today"] = "range"
     target_date: date | None = None
     horizon_days: int = Field(default=7, ge=1, le=7)
+    strategy: Literal["earliest", "preferred"] = "earliest"
+    expected_source_revision: int | None = Field(default=None, ge=1)
 
     @model_validator(mode="after")
     def today_scope(self):
@@ -492,7 +566,10 @@ class BlockUpdate(StrictModel):
     completed: bool | None = None
 
 
-async def generate_plan(db, owner, target=None, horizon=7, scope="range"):
+async def planning_result(
+    db, owner, target=None, horizon=7, scope="range", repair=False, strategy="earliest"
+):
+    """Same inputs and deterministic calculation for reports and saved drafts."""
     settings = await store.settings(db, owner)
     clock = now()
     tz = ZoneInfo(settings.data["timezone"])
@@ -517,7 +594,8 @@ async def generate_plan(db, owner, target=None, horizon=7, scope="range"):
         preserved = [
             {"id": b.id, **b.data}
             for b in blocks
-            if b.data.get("locked")
+            if repair
+            or b.data.get("locked")
             or b.data["status"] == "completed"
             or (scope == "today" and instant(b.data["starts_at"]) < clock)
             or not target
@@ -526,6 +604,8 @@ async def generate_plan(db, owner, target=None, horizon=7, scope="range"):
         ]
         inputs = {
             "scope": scope,
+            "repair": repair,
+            "planning_strategy": strategy,
             "now_utc": clock,
             "target_date": target.isoformat(),
             "horizon_days": horizon,
@@ -547,31 +627,36 @@ async def generate_plan(db, owner, target=None, horizon=7, scope="range"):
         result = build_plan(inputs)
     except ValueError as e:
         raise HTTPException(422, str(e))
+    return inputs, result
+
+
+async def generate_plan(
+    db, owner, target=None, horizon=7, scope="range", strategy="earliest"
+):
+    inputs, result = await planning_result(
+        db, owner, target, horizon, scope, strategy=strategy
+    )
+    payload = {
+        **result,
+        "scope": scope,
+        "target_date": inputs["target_date"],
+        "horizon_days": inputs["horizon_days"],
+    }
     return await imports.create_draft(
         db,
         owner,
         "plan",
+        payload,
         {
-            **result,
-            "scope": scope,
-            "target_date": target.isoformat(),
-            "horizon_days": horizon,
-        },
-        {
-            "planning_inputs": {**inputs, "now_utc": clock.isoformat()},
-            "generated_hash": store.digest(
-                {
-                    **result,
-                    "scope": scope,
-                    "target_date": target.isoformat(),
-                    "horizon_days": horizon,
-                }
-            ),
+            "planning_inputs": {**inputs, "now_utc": inputs["now_utc"].isoformat()},
+            "generated_hash": store.digest(payload),
         },
     )
 
 
 async def save_plan(db, owner, draft, payload):
+    if payload.get("rule_version") != PLANNER_RULE_VERSION:
+        raise HTTPException(409, "排程规则已更新，请重新生成并校对计划")
     if store.digest(payload) != draft.data["source"].get("generated_hash"):
         raise HTTPException(422, "计划只能由确定性程序生成，请更改设置后重新生成")
     end = date.fromisoformat(payload["target_date"]) + timedelta(
@@ -585,7 +670,8 @@ async def save_plan(db, owner, draft, payload):
     if today_mode and clock.astimezone(tz).date().isoformat() != payload["target_date"]:
         raise HTTPException(409, "已跨过本地午夜，请重新生成当日日程")
     removed_ids = {x["id"] for x in payload.get("removed_blocks", [])}
-    if today_mode and any(
+    selective = today_mode or payload.get("replanning") is not None
+    if selective and any(
         b.id in removed_ids and instant(b.data["starts_at"]) < clock for b in existing
     ):
         raise HTTPException(409, "待替换的安排已经开始，请记录投入后重新生成")
@@ -608,7 +694,7 @@ async def save_plan(db, owner, draft, payload):
             and b.data["status"] != "completed"
             and (
                 b.id in removed_ids
-                if today_mode
+                if selective
                 else (
                     date.fromisoformat(payload["target_date"]) <= d < end
                     or b.id in removed_ids
@@ -638,6 +724,56 @@ async def save_plan(db, owner, draft, payload):
 def planner_router(get_db, current_user):
     router = APIRouter(prefix="/api")
 
+    @router.get("/planning-capacity", response_model=CapacityReport)
+    async def capacity(
+        scope: Literal["range", "today"] = "range",
+        target_date: date | None = None,
+        horizon_days: int | None = Query(default=None, ge=1, le=7),
+        user=Depends(current_user),
+        db=Depends(get_db),
+    ):
+        fields = {"scope": scope}
+        if target_date is not None:
+            fields["target_date"] = target_date
+        if horizon_days is not None:
+            fields["horizon_days"] = horizon_days
+        try:
+            body = PlanRequest.model_validate(fields)
+        except ValueError as exc:
+            raise HTTPException(422, "当日模式不能指定其他日期或多天范围") from exc
+        _, result = await planning_result(
+            db, str(user.id), body.target_date, body.horizon_days, body.scope
+        )
+        return result["capacity"]
+
+    from app.replanning import ReplanReport, replan_draft, replan_report
+
+    @router.get("/replanning", response_model=ReplanReport)
+    async def repair_preview(
+        target_date: date | None = None,
+        horizon_days: int = Query(default=7, ge=1, le=7),
+        user=Depends(current_user),
+        db=Depends(get_db),
+    ):
+        _, result = await planning_result(
+            db, str(user.id), target=target_date, horizon=horizon_days, repair=True
+        )
+        return replan_report(result)
+
+    @router.post("/replan-drafts", response_model=ResourceView)
+    async def repair_draft(
+        body: PlanRequest,
+        key: str = Header(alias="Idempotency-Key"),
+        user=Depends(current_user),
+        db=Depends(get_db),
+    ):
+        async def op():
+            return await replan_draft(db, str(user.id), body)
+
+        return await store.mutate(
+            db, str(user.id), "replan-draft", key, body.model_dump(mode="json"), op
+        )
+
     @router.post("/plan-drafts", response_model=ResourceView)
     async def plan(
         body: PlanRequest,
@@ -646,8 +782,18 @@ def planner_router(get_db, current_user):
         db=Depends(get_db),
     ):
         async def op():
+            if body.expected_source_revision is not None:
+                store.revision(
+                    await store.settings(db, str(user.id)),
+                    body.expected_source_revision,
+                )
             return await generate_plan(
-                db, str(user.id), body.target_date, body.horizon_days, body.scope
+                db,
+                str(user.id),
+                body.target_date,
+                body.horizon_days,
+                body.scope,
+                body.strategy,
             )
 
         return await store.mutate(
@@ -702,4 +848,10 @@ def planner_router(get_db, current_user):
             op,
         )
 
+    from app.planning_options import option_router
+
+    router.include_router(option_router(get_db, current_user))
+    from app.routine_candidates import routine_router
+
+    router.include_router(routine_router(get_db, current_user))
     return router

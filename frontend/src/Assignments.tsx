@@ -7,6 +7,8 @@ import { DraftReview } from "./DraftReview";
 import { TaskDetail } from "./TaskDetail";
 import { navigate } from "./drafts";
 import { DeleteButton } from "./DeleteButton";
+import {DraftActions} from "./ReviewedDraftActions";
+export {DraftActions} from "./ReviewedDraftActions";
 export function AssignmentsPage({embedded = false}: {embedded?: boolean}) {
   const q = useQueryClient(),
     [error, setError] = useState(""),
@@ -368,75 +370,4 @@ export function AssignmentReview({ draft }: { draft: Resource }) {
       <DraftActions draft={draft} payload={payload} onError={setError} />
     </section>
   );
-}
-export function DraftActions({
-  draft,
-  payload,
-  onError,
-  canSave = true,
-  blockedMessage = "没有可保存的安排，补齐信息后重新生成。",
-}: {
-  draft: Resource;
-  payload: unknown;
-  onError: (e: string) => void;
-  canSave?: boolean;
-  blockedMessage?: string;
-}) {
-  const q = useQueryClient(),
-    [ask, setAsk] = useState(false),
-    [busy, setBusy] = useState(false),
-    [saved, setSaved] = useState<Resource>(draft),
-    [key] = useState(crypto.randomUUID());
-  return <div className="draft-actions">
-    {!canSave ? <p role="status">{blockedMessage}</p> : !ask ? (
-    <Button type="button" onClick={() => setAsk(true)}>校对完成，准备保存</Button>
-  ) : (
-    <div className="confirm">
-      <p>{draft.data.draft_kind === "course_change" ? "确认仅调整本次课程？其他周课程和已有学习安排保留。" : draft.data.draft_kind === "scheduling_constraint" ? "确认保存禁排？后续新计划将遵守它；已有安排需重新规划并确认后才调整。" : ["timetable", "timetable_recognition", "timetable_text"].includes(draft.data.draft_kind) ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
-      <Button
-        type="button"
-        disabled={busy}
-        onClick={async () => {
-          setBusy(true);
-          try {
-            const edited =
-              JSON.stringify(saved.data.payload) === JSON.stringify(payload)
-                ? saved
-                : await api<Resource>(`/drafts/${draft.id}`, {
-                    method: "PUT",
-                    body: JSON.stringify({ revision: saved.revision, payload }),
-                  });
-            setSaved(edited);
-            await api(`/drafts/${draft.id}/confirm`, {
-              method: "POST",
-              body: JSON.stringify({ revision: edited.revision }),
-              headers: { "Idempotency-Key": key },
-            });
-            q.invalidateQueries();
-            if (draft.data.draft_kind === "course_change") window.dispatchEvent(new Event("campus-course-change-saved"));
-            if (draft.data.draft_kind === "calendar_event") {
-              window.dispatchEvent(new CustomEvent("campus-calendar-saved", {detail: edited.data.payload.starts_at}));
-            }
-          } catch (e) {
-            onError(String(e));
-          } finally {
-            setBusy(false);
-          }
-        }}
-      >
-        确认保存
-      </Button>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => {
-          setAsk(false);
-        }}
-      >
-        继续校对
-      </Button>
-    </div>
-  )}
-    <DeleteButton resource={saved.revision > draft.revision ? saved : draft} disabled={busy} />
-  </div>;
 }
