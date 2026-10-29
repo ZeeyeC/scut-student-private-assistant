@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 from app.launcher import desktop_config, service_identity
 
 
-def verify(service):
+def verify(service, extra_checks=None):
     origin = "http://127.0.0.1:5173"
     with httpx.Client(base_url=origin, trust_env=False, timeout=30) as client:
         try:
@@ -165,6 +165,9 @@ def verify(service):
                         r["data"]["actual_minutes"]
                         for r in get(f"/tasks/{tid}/executions")
                     ) == [20, 25]
+                    checks = (
+                        extra_checks(get, write, tid, local_day) if extra_checks else []
+                    )
                     return {
                         "passed": True,
                         "mode": "actual-frozen-service",
@@ -176,6 +179,7 @@ def verify(service):
                             "actual25-task-open",
                             "idempotent-retry",
                             "correction20-history25",
+                            *checks,
                         ],
                     }
                 finally:

@@ -61,7 +61,7 @@ export function Goals() {
         <p>截止：{goal.data.deadline ?? '未知（未设置）'} · 每周预算：{goal.data.weekly_budget_minutes} 分钟 · 优先级：{goal.data.priority} · {loadLabels[goal.data.load_category]} · {adjustmentLabels[goal.data.allowed_adjustment]}</p>
         {goal.data.paused && <p>暂停期间不生成目标安排；已有任务与完成事实保留。</p>}
         <ul>{goal.data.subtasks.map(s=><li key={s.id}>{s.title} · {s.status==='completed'?'已完成':'待完成'} · 预计 {s.estimated_minutes} 分钟{ s.task_id && (()=>{const ref=goal.references.find(r=>r.subtask_id===s.id);return <span> · 关联任务：{ref?.available?ref.title:'已不可用'}（{s.task_id}）</span>;})()}</li>)}</ul>
-        <details><summary>已完成事实（{goal.data.completion_history.length}）</summary><ul>{goal.data.completion_history.map((fact,i)=><li key={i}>{fact.title} · {fact.estimated_minutes} 分钟 · {fact.completed_at}</li>)}</ul></details>
+        <details><summary>已完成事实（{goal.data.completion_history.length}）</summary><ul>{goal.data.completion_history.map((fact,i)=><li key={i}>{fact.title} · 预计 {fact.estimated_minutes} 分钟 · {fact.completed_at}</li>)}</ul></details>
         <Button type="button" variant="outline" disabled={locked || !!editor || goals.isFetching} onClick={()=>{setEditor({id:goal.id,revision:goal.revision,form:goalForm(goal)});setError('');setMessage('');}}>编辑目标</Button>
         <Button type="button" variant="outline" disabled={locked || !!editor || goals.isFetching} onClick={()=>toggle(goal)}>{goal.data.paused?'恢复目标':'暂停目标'}</Button>
       </article>)}

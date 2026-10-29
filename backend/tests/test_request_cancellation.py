@@ -11,7 +11,6 @@ from sqlalchemy import text
 from app.agent import agent_router, transaction
 from app.main import create_app
 
-
 pytestmark = pytest.mark.asyncio
 
 
