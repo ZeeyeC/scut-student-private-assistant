@@ -92,7 +92,7 @@ test('confirmed profile survives reload and reset preserves task facts',async({p
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 
-test('goal pause preserves completed subtasks while capacity stays unknown',async({page})=>{
+test('goal pause preserves completed subtasks and excludes its budget from shared capacity',async({page})=>{
   await enter(page);const tid=await seed(page);
   await page.getByRole('button',{name:'目标与复盘',exact:true}).click();
   const goals=page.getByRole('region',{name:'长期目标',exact:true});
@@ -108,7 +108,9 @@ test('goal pause preserves completed subtasks while capacity stays unknown',asyn
   await goals.getByLabel('关联现有任务（可选）').selectOption(tid);
   await goals.getByRole('button',{name:'确认并保存目标',exact:true}).click();
   await goals.getByRole('button',{name:'暂停目标',exact:true}).click();
-  await expect(goals).toContainText('已暂停');await expect(goals).toContainText('容量未知');
+  await expect(goals).toContainText('已暂停');
+  await expect(goals).toContainText('进行中目标每周预算合计：0 分钟');
+  await expect(goals).toContainText('目标实际投入与剩余预算未知');
   await page.screenshot({path:evidence('goal-paused'),fullPage:true});
   const saved=await(await page.request.get('/api/goals')).json();
   expect(saved.goals[0].data.paused).toBe(true);

@@ -359,8 +359,12 @@ def test_old_agent_approval_cannot_save_deleted_draft(tmp_path):
                 },
                 "stale-approval",
             ).status_code
-            == 200
+            == 409
         )
-        assert wait_run(c, run["id"])["data"]["status"] == "failed"
+        assert wait_run(c, run["id"])["data"]["status"] == "waiting_approval"
+        assert post(c, h, f"/api/agent/runs/{run['id']}/resume", {
+            "approval_id": approval["id"], "revision": approval["revision"], "decision": "reject",
+        }, "reject-deleted").status_code == 200
+        assert wait_run(c, run["id"])["data"]["status"] == "done"
         assert c.get("/api/tasks").json() == []
         assert c.get("/api/drafts").json() == []

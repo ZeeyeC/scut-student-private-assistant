@@ -33,3 +33,11 @@ it('keeps the exact mutation and idempotency key for a lost response retry', () 
   expect(op.idempotencyKey).toBeTruthy();
   expect(goalOperation('/goals', 'POST', body).idempotencyKey).not.toBe(op.idempotencyKey);
 });
+
+it('queries one complete future week in the saved timezone with the goal source version', async () => {
+  const state = await import('./goal-state');
+  expect(state.nextGoalCapacityWeek('Asia/Shanghai', new Date('2027-01-03T16:30:00Z'))).toBe('2027-01-11');
+  expect(state.nextGoalCapacityWeek('UTC', new Date('2027-01-03T16:30:00Z'))).toBe('2027-01-04');
+  expect(state.goalCapacityPath('2026-11-02', 'Asia/Shanghai', 7)).toBe('/goal-capacity?week_start=2026-11-02&timezone=Asia%2FShanghai&expected_source_revision=7');
+  expect(() => state.goalCapacityPath('2026-11-03', 'Asia/Shanghai', 7)).toThrow();
+});

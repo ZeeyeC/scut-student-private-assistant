@@ -11,6 +11,11 @@ import { AfterClassCheckin } from "./AfterClass";
 import {TimerHeartbeat} from "./ExecutionTimer";
 import {Goals} from "./Goals";
 import {WeeklyReview} from "./WeeklyReview";
+import {NegotiationPanel} from "./NegotiationPanel";
+import {DurationSuggestions} from "./DurationSuggestions";
+import {TaskDetail} from "./TaskDetail";
+import type {Resource} from "./types";
+import {ProactiveSuggestions} from "./ProactiveSuggestions";
 const CalendarPage = lazy(() =>
   import("./Calendar").then((m) => ({ default: m.CalendarPage })),
 );
@@ -55,6 +60,7 @@ function Workspace({ local = false }: { local?: boolean }) {
   const [register, setRegister] = useState(false);
   const [page, setPage] = useState("今日");
   const [calendarDate, setCalendarDate] = useState<string>();
+  const [suggestedTask,setSuggestedTask] = useState<string|null>(null);
   const [reviewThread, setReviewThread] = useState<string>();
   const [reviewRequest, setReviewRequest] = useState(0);
   useEffect(() => {
@@ -197,6 +203,8 @@ function Workspace({ local = false }: { local?: boolean }) {
       <main className={page === "助手" ? "assistant-main" : undefined}>
         <AfterClassCheckin />
         <TimerHeartbeat />
+        <ProactiveSuggestions onOpenTask={id=>{setSuggestedTask(id);setCalendarDate(undefined);setPage("作业");}} />
+        {suggestedTask&&<SuggestedTask id={suggestedTask} onClose={()=>setSuggestedTask(null)}/>}
         <BrowserImport showOverview={page === "课表"} />
         <Suspense fallback={<p role="status">正在加载页面…</p>}>
           {page === "今日" ? (
@@ -208,7 +216,7 @@ function Workspace({ local = false }: { local?: boolean }) {
           ) : page === "助手" ? (
             <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
           ) : page === "目标与复盘" ? (
-            <><h1>目标与周复盘</h1><Goals /><WeeklyReview /></>
+            <><h1>目标与周复盘</h1><Goals /><DurationSuggestions /><WeeklyReview /><NegotiationPanel /></>
           ) : (
             <Settings local={local} />
           )}
@@ -216,4 +224,14 @@ function Workspace({ local = false }: { local?: boolean }) {
       </main>
     </div>
   );
+}
+
+function SuggestedTask({id,onClose}:{id:string;onClose:()=>void}) {
+  const task=useQuery({queryKey:["task",id],queryFn:()=>api<Resource>(`/tasks/${id}`)});
+  useEffect(()=>{if(task.data)document.getElementById("suggested-task")?.scrollIntoView({block:"start"});},[id,task.data?.id]);
+  return <section id="suggested-task" className="card" aria-label="建议关联的任务详情">
+    <h2>{task.data?.data.title??"关联任务"}</h2><Button variant="outline" onClick={onClose}>关闭关联任务详情</Button>
+    {task.isPending&&<p role="status">正在读取任务…</p>}{task.error&&<p role="alert">{String(task.error)}</p>}
+    {task.data&&<TaskDetail key={id} task={task.data}/>}
+  </section>;
 }

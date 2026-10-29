@@ -5,7 +5,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, Header
 
 from app import store, weekly_review
-from app.review_contracts import ReviewAction, WeeklyReview
+from app.review_contracts import ReviewAction, ReviewPlanDraft, WeeklyReview
 
 
 def review_router(get_db, current_user):
@@ -37,6 +37,19 @@ def review_router(get_db, current_user):
             key,
             body.model_dump(mode="json"),
             lambda: weekly_review.save_review_action(db, owner, body),
+        )
+
+    @router.post("/weekly-review/plan-draft")
+    async def plan_draft(
+        body: ReviewPlanDraft,
+        key: str = Header(alias="Idempotency-Key"),
+        user=Depends(current_user),
+        db=Depends(get_db),
+    ):
+        owner = str(user.id)
+        return await store.mutate(
+            db, owner, "weekly-review-plan-draft", key, body.model_dump(mode="json"),
+            lambda: weekly_review.create_next_week_draft(db, owner, body),
         )
 
     return router

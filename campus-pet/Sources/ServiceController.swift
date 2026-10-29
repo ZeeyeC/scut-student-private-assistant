@@ -141,7 +141,7 @@ final class ServiceController {
               body["mode"] as? String == "local" else {
             throw ServiceError.message("5173 端口不是本机个人助手。请先关闭冲突服务。")
         }
-        let required: Set<String> = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1"]
+        let required: Set<String> = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1"]
         guard let available = body["capabilities"] as? [String], required.isSubset(of: Set(available)) else {
             throw ServiceError.message("检测到旧版后台，缺少新版桌宠功能。请在旧助手设置中停止服务，再点击「重新连接本机服务」。浏览器和桌宠仍可共用升级后的后台，个人资料无需删除。")
         }

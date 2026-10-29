@@ -34,6 +34,18 @@ def validate_week(week_start, timezone):
         raise ValueError("需要有效 IANA 时区") from exc
 
 
+class ReviewPlanDraft(StrictModel):
+    week_start: date
+    timezone: str
+    revision: int = Field(ge=0, strict=True)
+    source_revision: int = Field(ge=0, strict=True)
+
+    @model_validator(mode="after")
+    def valid(self):
+        validate_week(self.week_start, self.timezone)
+        return self
+
+
 class PlanTotal(StrictModel):
     status: Literal["complete", "partial", "missing"]
     minutes: float | None
@@ -57,4 +69,5 @@ class WeeklyReview(StrictModel):
     estimates: dict
     gaps: list[str]
     review: dict
-    next_week_optimization: Literal["pending_integration"] = "pending_integration"
+    next_week_plan: dict = Field(default_factory=dict)
+    next_week_optimization: Literal["draft_review_available"] = "draft_review_available"

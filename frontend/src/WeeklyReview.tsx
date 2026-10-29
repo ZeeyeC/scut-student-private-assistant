@@ -1,13 +1,15 @@
 import { useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "./api";
+import { PlanReview } from "./Today";
+import type { Resource } from "./types";
 import { Button } from "./components/ui/button";
-import { currentReviewWeek, mondayOf, reviewActionOperation, secondsLabel, type PlanTotal, type ReviewAction, type ReviewOperation, type ReviewState, type WeeklyReviewView } from "./weekly-review-state";
+import { currentReviewWeek, mondayOf, reviewActionOperation, reviewPlanOperation, linkedPlanLabel, secondsLabel, type ReviewPlanOperation, type PlanTotal, type ReviewAction, type ReviewOperation, type ReviewState, type WeeklyReviewView } from "./weekly-review-state";
 
 const feedback: Record<string, string> = { partial: "部分完成", completed: "本次执行已完成", not_started: "未开始", skipped: "已跳过" };
 const reasons: Record<string, string> = { interrupted: "受到中断", insufficient_time: "时间不足", unsuitable_schedule: "安排不合适", skipped: "选择跳过", other: "其他原因" };
 const gapLabels: Record<string, string> = { ambiguous_completion_week: "跨周执行的完成日期仍需核对，尚未计入本周任务完成数", incomplete_original_baseline: "原始周基线不完整", original_recorded_after_week_start: "原始计划在本周开始后才有记录", snapshot_timezone_mismatch: "历史计划使用不同的时区，覆盖日期待核对", invalid_snapshot_scope: "历史计划的日期范围待核对", conflicting_snapshot_block: "历史安排有冲突版本", invalid_snapshot_block: "部分历史安排缺少可靠时间", invalid_current_block: "部分当前安排缺少可靠时间", missing_execution: "部分安排还没有执行反馈", ambiguous_execution_week: "部分记录无法准确归入本周", unconfirmed_execution_interval: "计时有待确认的离线间隔", undated_task_completion: "部分已完成任务没有完成日期依据" };
-const statusLabels: Record<string, string> = { awaiting_choice: "尚未选择", accepted_pending_integration: "已保存调整意向，等待排程联动", rejected: "暂不采纳" };
+const statusLabels: Record<string, string> = { awaiting_choice: "尚未选择", accepted_pending_integration: "已接受调整意向，可生成下周计划草稿", rejected: "暂不采纳" };
 
 function Planned({ title, value }: { title: string; value: PlanTotal }) {
   return <article className="card"><h4>{title}</h4>
@@ -29,6 +31,7 @@ export function WeeklyReview() {
   const [zoneDraft, setZoneDraft] = useState("");
   const [reason, setReason] = useState("");
   const [pending, setPending] = useState<ReviewOperation | null>(null);
+  const [pendingPlan, setPendingPlan] = useState<ReviewPlanOperation | null>(null);
   const [busy, setBusy] = useState(false);
   const busyRef = useRef(false);
   const [error, setError] = useState("");
@@ -37,7 +40,7 @@ export function WeeklyReview() {
   const week = selectedWeek || currentReviewWeek(timezone);
   const review = useQuery({ queryKey: ["weekly-review", week, timezone], queryFn: () => api<WeeklyReviewView>(`/weekly-review?week_start=${week}&timezone=${encodeURIComponent(timezone)}`), enabled: !!settings.data });
   const report = review.data;
-  const locked = busy || !!pending;
+  const locked = busy || !!pending || !!pendingPlan;
 
   async function save(action: ReviewAction = "reason") {
     if (busyRef.current || !report) return;
@@ -52,7 +55,7 @@ export function WeeklyReview() {
     try {
       await api<ReviewState>("/weekly-review/actions", { method: "POST", headers: { "Idempotency-Key": operation.idempotencyKey }, body: JSON.stringify(operation.body) });
       setPending(null);
-      setMessage(operation.body.action === "accept" ? "调整意向已保存，等待排程联动。正式安排仍需后续确认。" : "复盘选择已保存。");
+      setMessage(operation.body.action === "accept" ? "调整意向已保存，可以生成下周计划草稿并校对确认。" : "复盘选择已保存。");
       await q.invalidateQueries();
     } catch (e) {
       if (e instanceof ApiError && e.status >= 400 && e.status < 500) {
@@ -61,6 +64,33 @@ export function WeeklyReview() {
       }
       setError(String(e));
     } finally { busyRef.current = false; setBusy(false); }
+  }
+
+  async function createPlan() {
+    if (busyRef.current || !report) return;
+    setError(""); setMessage("");
+    let operation = pendingPlan;
+    if (!operation) {
+      try { operation = reviewPlanOperation(report); }
+      catch(e) {setError(String(e));return;}
+      setPendingPlan(operation);
+    }
+    busyRef.current = true; setBusy(true);
+    try {
+      const result = await api<{draft:Resource}>(operation.path, {method:"POST",headers:{"Idempotency-Key":operation.idempotencyKey},body:JSON.stringify(operation.body)});
+      setPendingPlan(null);
+      setMessage(`${operation.targetWeek} 起的下周草稿已生成，请在下方核对并确认。`);
+      await q.invalidateQueries();
+      // The read projection carries the original Resource into PlanReview;
+      // the draft response is retained by the server receipt for lost retries.
+      if (!result.draft) throw new Error("计划草稿未返回，请刷新核对状态");
+    } catch(e) {
+      if(e instanceof ApiError && e.status >= 400 && e.status < 500) {
+        setPendingPlan(null);
+        if(e.status === 409) await q.invalidateQueries();
+      }
+      setError(String(e));
+    } finally {busyRef.current=false;setBusy(false);}
   }
 
   function changeWeek(value: string) {
@@ -110,7 +140,7 @@ export function WeeklyReview() {
         <details><summary>核对估算来源</summary>{report.estimates.allocations.map((e, i) => <p key={i}>安排 {e.plan_block_id} · {e.minutes} 分钟{e.baseline_id && ` · 历史记录 ${e.baseline_id}`}</p>)}{report.estimates.unallocated.map((e, i) => <p key={`u${i}`}>步骤 {e.step_id} · {e.minutes} 分钟 · 所属周未知{e.baseline_id && ` · 历史记录 ${e.baseline_id}`}</p>)}</details>
       </article>
       <h4>原因与下周调整</h4>
-      <p>原因由你补充。下周优化仍等待排程联动，保存选择不会更改正式安排。</p>
+      <p>接受意向后，可明确生成复盘周下一周的计划草稿。草稿按已确认的任务、课程与排程设置计算；文字意向保留为来源，时间偏好或禁排仍需先通过相应入口确认。</p>
       <p>当前选择：{statusLabels[report.review.data.status] || "待核对"}</p>
       {report.review.data.reason && <p>已保存内容：{report.review.data.reason}</p>}
       <label>这周遇到的情况，或下周想怎样调整<textarea value={reason} maxLength={2000} disabled={locked} onChange={e => setReason(e.target.value)} /></label>
@@ -120,10 +150,20 @@ export function WeeklyReview() {
         <Button type="button" variant="outline" disabled={locked || review.isFetching} onClick={() => save("reject")}>暂不采纳</Button>
         <Button type="button" variant="outline" disabled={locked || review.isFetching || report.review.data.status === "awaiting_choice"} onClick={() => save("restore")}>恢复为待选择</Button>
       </div>
+      <article className="card" aria-label="复盘关联的下周计划">
+        <h4>下周计划 · {report.next_week_plan?.week_start || '待读取'}</h4>
+        <p>{linkedPlanLabel(report.next_week_plan?.status || 'not_created')}</p>
+        {report.next_week_plan?.status === 'invalidated' && <p>原草稿不能继续确认。请核对最新资料，再明确生成新的草稿。</p>}
+        {report.next_week_plan?.status === 'confirmed' && <p>已确认快照：{report.next_week_plan.snapshot_ids.join('、')}。可在日历切换到 {report.next_week_plan.week_start} 核对正式安排。恢复复盘意向会保留这些安排和快照。</p>}
+        <Button type="button" variant="outline" disabled={locked || review.isFetching || report.review.data.status !== 'accepted_pending_integration' || report.next_week_plan?.status === 'pending' || (report.next_week_plan?.status === 'confirmed' && report.next_week_plan.is_current_intent !== false)} onClick={()=>void createPlan()}>生成下周计划草稿</Button>
+        {report.next_week_plan?.status === 'pending' && report.next_week_plan.draft && <PlanReview draft={report.next_week_plan.draft} key={report.next_week_plan.draft.id}/>}
+      </article>
       {!!report.review.data.history.length && <details><summary>查看复盘选择历史</summary>{report.review.data.history.map((h, i) => <p key={i}>{h.recorded_at} · {{ accept: "接受调整意向", reject: "暂不采纳", restore: "恢复待选择", reason: "补充原因" }[h.action]}{h.reason && ` · ${h.reason}`}</p>)}</details>}
     </>}
     {pending && <p role="status">{busy ? "正在保存…" : "保存结果尚未确认，重试会核对同一次操作。"}</p>}
     {pending && !busy && <Button type="button" variant="outline" onClick={() => save()}>重试同一次保存</Button>}
+    {pendingPlan && <p role="status">{busy ? "正在生成下周计划草稿…" : "生成结果尚未确认，重试会核对同一次请求。"}</p>}
+    {pendingPlan && !busy && <Button type="button" variant="outline" onClick={()=>void createPlan()}>重试同一次草稿生成</Button>}
     {error && <p role="alert">{error}</p>}{message && <p role="status">{message}</p>}
   </section>;
 }

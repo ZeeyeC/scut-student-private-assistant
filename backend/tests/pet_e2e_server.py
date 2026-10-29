@@ -4,7 +4,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from app import after_class, planner
+from app import after_class, planner, conversation_constraints, goal_capacity, weekly_review, proactive, negotiation
 from app.main import create_app
 from tests.test_timetable_recognition import FakeTimetableVision, candidate
 from tests.test_timetable_text import TextTimetableModel
@@ -27,6 +27,8 @@ app = create_app(
 )
 after_class.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
 planner.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
+for module in (conversation_constraints, goal_capacity, weekly_review, proactive, negotiation):
+    module.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")
 app.state.agent_model_factory = lambda: TextTimetableModel()
 
 # Explicit fake gateway only in this isolated UI test server.

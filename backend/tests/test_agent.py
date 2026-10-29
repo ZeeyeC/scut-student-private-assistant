@@ -78,6 +78,17 @@ def test_actual_tools_restricted_and_real_service_query(tmp_path):
         assert c.get("/api/tasks").json() == []
         assert c.get("/api/agent/tools").json()["tools"] == sorted(
             [
+                "list_constraint_intents",
+                "propose_constraint_intent",
+                "update_constraint_intent",
+                "prepare_constraint_intent",
+                "cancel_constraint_intent",
+                "get_planning_context",
+                "list_planning_intents",
+                "propose_planning_intent",
+                "update_planning_intent",
+                "preview_planning_intent",
+                "preview_draft_conflicts",
                 "get_current_time",
                 "get_student_context",
                 "start_timetable_import",

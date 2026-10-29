@@ -1,4 +1,4 @@
-"""Read-only weekly projections and versioned review intent; no scheduling/model calls."""
+"""Read-only weekly facts and explicit, versioned links to original planner drafts."""
 
 import math
 from datetime import date, datetime, time, timedelta, timezone
@@ -463,6 +463,7 @@ async def read_weekly_review(db, owner, week_start, report_timezone=None):
         },
         "gaps": sorted(gaps),
         "review": review_view(review, week_start, timezone_name),
+        "next_week_plan": await linked_plan_view(db, owner, review, week_start, timezone_name, cfg.revision if cfg else 0),
     }
 
 
@@ -489,6 +490,8 @@ async def save_review_action(db, owner, body):
         "status": status,
         "reason": body.reason.strip() if body.reason else None,
         "source_revision": body.source_revision,
+        "accepted_intent_revision": (review.revision + 1 if review else 1) if body.action == "accept" else (review.data.get("accepted_intent_revision") if review else None),
+        "plan_links": list(review.data.get("plan_links", [])) if review else [],
         "history": [
             *history,
             {
@@ -523,3 +526,93 @@ async def save_review_action(db, owner, body):
         },
     )
     return store.view(review)
+
+
+async def linked_plan_view(db, owner, review, week_start, timezone_name, source_revision):
+    """Derive state without mutating snapshots, review history or confirmed plans."""
+    from app.planning_history import PLANNER_RULE_VERSION
+
+    target = week_start + timedelta(days=7)
+    links = review.data.get("plan_links", []) if review else []
+    result = {
+        "week_start": target.isoformat(),
+        "week_end": (target + timedelta(days=7)).isoformat(),
+        "timezone": timezone_name,
+        "status": "not_created",
+        "draft_id": None,
+        "draft": None,
+        "snapshot_ids": [],
+        "reason": None,
+        "is_current_intent": False,
+    }
+    if not links:
+        return result
+    link = links[-1]
+    result["is_current_intent"] = link.get("intent_revision") == review.data.get("accepted_intent_revision")
+    draft = await db.get(Resource, link["draft_id"])
+    if draft and (draft.owner_id != owner or draft.kind != "draft"):
+        draft = None
+    snapshots = [r.id for r in await store.rows(db, owner, "plan_snapshot") if r.data.get("draft_id") == link["draft_id"]]
+    result.update({"draft_id": link["draft_id"], "generated_source_revision": link["source_revision"], "snapshot_ids": snapshots})
+    # Approval evidence remains valid even when later facts have changed.
+    if snapshots:
+        result["status"] = "confirmed"
+        return result
+    reason = None
+    if not draft:
+        reason = "draft_unavailable"
+    elif draft.data.get("status") != "pending":
+        reason = "draft_" + draft.data.get("status", "unavailable")
+    elif draft.data.get("source_revision") != source_revision:
+        reason = "source_changed"
+    elif draft.data.get("payload", {}).get("rule_version") != PLANNER_RULE_VERSION:
+        reason = "rule_changed"
+    elif store.digest(draft.data["payload"]) != draft.data.get("source", {}).get("generated_hash"):
+        reason = "draft_changed"
+    elif datetime.combine(target, time.min, ZoneInfo(timezone_name)) <= now():
+        reason = "planning_week_started"
+    result.update({"status": "invalidated" if reason else "pending", "reason": reason, "draft": store.view(draft) if draft and not reason else None})
+    return result
+
+
+async def create_next_week_draft(db, owner, body):
+    """Consume an accepted intent; only original PlanReview can approve the result.
+
+    The free-text reason is provenance, not a new scheduling rule. A's planner
+    computes from confirmed facts and retains its version/hash confirmation guard.
+    """
+    from app.planner import generate_plan
+
+    settings = await store.rows(db, owner, "settings")
+    cfg = settings[0] if settings else None
+    if not cfg or cfg.revision != body.source_revision:
+        raise HTTPException(409, "资料已变化，请刷新周复盘后再生成")
+    if cfg.data["timezone"] != body.timezone:
+        raise HTTPException(409, "复盘时区与排程设置不同，请先核对设置时区")
+    rid = review_identity(owner, body.week_start, body.timezone)
+    review = await db.get(Resource, rid)
+    if not review or review.owner_id != owner or review.kind != "weekly_review":
+        raise HTTPException(409, "请先接受这项复盘调整意向")
+    store.revision(review, body.revision)
+    if review.data["status"] != "accepted_pending_integration" or not review.data.get("reason"):
+        raise HTTPException(409, "请先接受这项复盘调整意向")
+    target = body.week_start + timedelta(days=7)
+    if datetime.combine(target, time.min, ZoneInfo(body.timezone)) <= now():
+        raise HTTPException(422, "复盘对应的下周已经开始，请选择下一完整周")
+    linked = await linked_plan_view(db, owner, review, body.week_start, body.timezone, cfg.revision)
+    if linked["status"] == "pending" and linked["is_current_intent"]:
+        return {"review": store.view(review), "draft": linked["draft"], "next_week_plan": linked}
+    if linked["status"] == "confirmed" and linked["is_current_intent"]:
+        raise HTTPException(409, "这项意向的下周计划已经确认，请重新核对并接受新的调整意向")
+    draft = await generate_plan(db, owner, target=target, horizon=7)
+    resource = await store.owned(db, owner, draft["id"], "draft")
+    resource.data = {**resource.data, "source": {**resource.data["source"], "weekly_review_id": review.id, "weekly_review_revision": review.revision, "weekly_review_reason": review.data["reason"]}}
+    link = {"draft_id": resource.id, "week_start": target.isoformat(), "timezone": body.timezone, "source_revision": cfg.revision, "accepted_review_revision": review.revision, "intent_revision": review.data.get("accepted_intent_revision"), "generated_at": now().isoformat()}
+    review.data = {**review.data, "plan_links": [*review.data.get("plan_links", []), link]}
+    review.revision += 1
+    await db.flush()
+    # Linking changes no scheduling fact. Bumping settings here would make A's
+    # just-generated draft stale before the user could review it.
+    await record_change(db, owner, "weekly_review_plan_linked", review.id, review.revision, {"draft_id": resource.id, "week_start": target.isoformat(), "formal_plan_changed": False})
+    linked = await linked_plan_view(db, owner, review, body.week_start, body.timezone, cfg.revision)
+    return {"review": store.view(review), "draft": store.view(resource), "next_week_plan": linked}

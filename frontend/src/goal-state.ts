@@ -1,3 +1,4 @@
+import { currentReviewWeek, mondayOf } from "./weekly-review-state";
 export type GoalSubtask = { id?: string; title: string; status: 'open' | 'completed'; estimated_minutes: number; task_id: string | null };
 export type GoalValues = {
   title: string; description: string; deadline: string | null; weekly_budget_minutes: number; priority: number;
@@ -29,4 +30,24 @@ export function goalPayload(revision:number, form:GoalForm): GoalWrite & GoalVal
 
 export function goalOperation(path:string, method:'POST'|'PATCH', body:GoalWrite): GoalOperation {
   return {path,method,body:structuredClone(body),idempotencyKey:crypto.randomUUID()};
+}
+
+
+export type SharedGoalCapacity = {
+  contract_version: 'goal-capacity-v1'; status: 'known' | 'unknown'; week_start: string; week_end: string; timezone: string;
+  source_revision: number; shared_capacity_upper_bound_minutes: number | null; active_weekly_budget_minutes: number;
+  minimum_deficit_minutes: number | null; active_goal_ids: string[]; paused_goal_ids: string[]; goal_revisions: Record<string, number>;
+  actual_minutes: null; capacity: {warnings: string[]; unknown_estimate_count: number} | null;
+};
+
+export function nextGoalCapacityWeek(timezone: string, now = new Date()) {
+  const monday = new Date(currentReviewWeek(timezone, now) + 'T12:00:00Z');
+  monday.setUTCDate(monday.getUTCDate() + 7);
+  return monday.toISOString().slice(0, 10);
+}
+
+export function goalCapacityPath(week: string, timezone: string, sourceRevision: number) {
+  if (mondayOf(week) !== week) throw new Error('容量范围需要从周一开始');
+  new Intl.DateTimeFormat('zh-CN', {timeZone: timezone}).format();
+  return `/goal-capacity?week_start=${week}&timezone=${encodeURIComponent(timezone)}&expected_source_revision=${sourceRevision}`;
 }

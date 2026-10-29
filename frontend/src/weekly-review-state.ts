@@ -1,3 +1,4 @@
+import type { Resource } from "./types";
 export type ReviewAction = "accept" | "reject" | "restore" | "reason";
 export type PlanTotal = { status: "complete" | "partial" | "missing"; minutes: number | null; known_minutes: number; covered_dates: string[]; snapshot_ids: string[]; blocks: { plan_block_id: string; title: string; seconds: number; snapshot_ids: string[] }[]; gaps: string[] };
 export type ReviewRecord = { record_id: string; task_id: string; task_title: string; step_id?: string; plan_block_ids: string[]; source: string; performed_on: string; timezone: string; observed_seconds: number | null; actual_seconds: number | null; feedback: string; unfinished_reason: string | null; reason_prompt: string | null; supersedes_id: string | null; timer_id?: string; allocation_status: string };
@@ -8,6 +9,7 @@ export type WeeklyReviewView = {
   execution: { actual_seconds: number | null; observed_seconds: number | null; missing_plan_block_ids: string[]; ambiguous_record_ids: string[]; unconfirmed_execution_ids: string[]; completed_task_ids: string[]; undated_completed_task_ids: string[]; records: ReviewRecord[] };
   estimates: { allocated_minutes: number; allocations: { plan_block_id: string; minutes: number; baseline_id?: string }[]; unallocated: { step_id: string; plan_block_id?: string; minutes: number; baseline_id?: string }[] };
   gaps: string[]; review: ReviewState;
+  next_week_plan?: {week_start:string;week_end:string;timezone:string;status:string;is_current_intent?:boolean;draft_id:string|null;draft:Resource|null;snapshot_ids:string[];reason:string|null};
 };
 
 export function mondayOf(value: string) {
@@ -39,3 +41,17 @@ export function reviewActionOperation(week: string, timezone: string, revision: 
   return { idempotencyKey: crypto.randomUUID(), body: { week_start: week, timezone, revision, source_revision: sourceRevision, action, reason: note || null } };
 }
 export type ReviewOperation = ReturnType<typeof reviewActionOperation>;
+
+
+export function reviewPlanOperation(report: Pick<WeeklyReviewView, 'week_start' | 'timezone' | 'source_revision' | 'review'>) {
+  if (report.review.data.status !== 'accepted_pending_integration' || !report.review.data.reason?.trim()) throw new Error('请先接受一项有内容的调整意向');
+  if (mondayOf(report.week_start) !== report.week_start) throw new Error('复盘周需要从周一开始');
+  const target = new Date(report.week_start + 'T12:00:00Z');
+  target.setUTCDate(target.getUTCDate() + 7);
+  return {path:'/weekly-review/plan-draft', idempotencyKey:crypto.randomUUID(), targetWeek:target.toISOString().slice(0,10), body:{week_start:report.week_start, timezone:report.timezone, revision:report.review.revision, source_revision:report.source_revision}};
+}
+export type ReviewPlanOperation = ReturnType<typeof reviewPlanOperation>;
+
+export function linkedPlanLabel(status: string) {
+  return ({not_created:'尚未生成下周计划草稿',pending:'下周计划草稿等待确认',confirmed:'下周计划已确认',invalidated:'关联草稿已失效，请刷新后重新生成'} as Record<string,string>)[status] || '下周计划状态待核对';
+}

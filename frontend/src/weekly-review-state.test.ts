@@ -21,3 +21,17 @@ describe("weekly review calendar and durable intent", () => {
     expect(() => mondayOf("2026-02-30")).toThrow();
   });
 });
+
+it('creates an explicit next-week draft request only from the current accepted intent', async () => {
+  const state = await import('./weekly-review-state');
+  const report = {week_start:'2026-12-28', timezone:'Asia/Shanghai', source_revision:8, review:{revision:3, data:{status:'accepted_pending_integration', reason:'前移学习', history:[]}}};
+  const operation = state.reviewPlanOperation(report);
+  expect(operation.body).toEqual({week_start:'2026-12-28', timezone:'Asia/Shanghai', revision:3, source_revision:8});
+  expect(operation.targetWeek).toBe('2027-01-04');
+  expect(operation.path).toBe('/weekly-review/plan-draft');
+  expect(operation.idempotencyKey).toBeTruthy();
+  report.review.data.status = 'awaiting_choice';
+  expect(() => state.reviewPlanOperation(report)).toThrow();
+  expect(state.linkedPlanLabel('confirmed')).toContain('已确认');
+  expect(state.linkedPlanLabel('invalidated')).toContain('失效');
+});

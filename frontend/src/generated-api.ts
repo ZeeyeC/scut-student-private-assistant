@@ -1019,6 +1019,299 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/weekly-review/plan-draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Plan Draft */
+        post: operations["plan_draft_api_weekly_review_plan_draft_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/duration-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_duration_suggestions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/duration-suggestions/{rid}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Action */
+        post: operations["action_api_duration_suggestions__rid__actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/constraint-intents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listing */
+        get: operations["listing_api_constraint_intents_get"];
+        put?: never;
+        /** Create */
+        post: operations["create_api_constraint_intents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/constraint-intents/{rid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_constraint_intents__rid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch */
+        patch: operations["patch_api_constraint_intents__rid__patch"];
+        trace?: never;
+    };
+    "/api/constraint-intents/{rid}/prepare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Prepare */
+        post: operations["prepare_api_constraint_intents__rid__prepare_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/constraint-intents/{rid}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel */
+        post: operations["cancel_api_constraint_intents__rid__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/goal-capacity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_goal_capacity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/planning-intents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_planning_intents_get"];
+        put?: never;
+        /** Create */
+        post: operations["create_api_planning_intents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/planning-intents/{rid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch */
+        patch: operations["patch_api_planning_intents__rid__patch"];
+        trace?: never;
+    };
+    "/api/planning-intents/{rid}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview */
+        post: operations["preview_api_planning_intents__rid__preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/planning-intents/{rid}/choose": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Choose */
+        post: operations["choose_api_planning_intents__rid__choose_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/planning-intents/{rid}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel */
+        post: operations["cancel_api_planning_intents__rid__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/proactive/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Preferences */
+        get: operations["preferences_api_proactive_preferences_get"];
+        /** Save */
+        put: operations["save_api_proactive_preferences_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/proactive/suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Suggestions */
+        get: operations["suggestions_api_proactive_suggestions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/proactive/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh */
+        post: operations["refresh_api_proactive_refresh_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/proactive/suggestions/{rid}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Action */
+        post: operations["action_api_proactive_suggestions__rid__actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/planning-capacity": {
         parameters: {
             query?: never;
@@ -1969,6 +2262,58 @@ export interface components {
             /** Constraint Revision */
             constraint_revision?: number | null;
         };
+        /** ConstraintIntentAction */
+        ConstraintIntentAction: {
+            /** Revision */
+            revision: number;
+        };
+        /** ConstraintIntentCreate */
+        ConstraintIntentCreate: {
+            data: components["schemas"]["ConstraintIntentFields"];
+            /** Thread Id */
+            thread_id?: string | null;
+        };
+        /** ConstraintIntentFields */
+        ConstraintIntentFields: {
+            /** Day Expression */
+            day_expression?: string | null;
+            /** Start Time */
+            start_time?: string | null;
+            /** End Time */
+            end_time?: string | null;
+            /**
+             * End Day Offset
+             * @default 0
+             */
+            end_day_offset: number;
+            /**
+             * Recurrence
+             * @default once
+             * @enum {string}
+             */
+            recurrence: "once" | "weekly";
+            /** Weekdays */
+            weekdays?: number[];
+            /** Valid Until */
+            valid_until?: string | null;
+            /**
+             * Strength
+             * @default hard
+             * @enum {string}
+             */
+            strength: "hard" | "soft";
+            /** Timezone */
+            timezone?: string | null;
+        };
+        /** ConstraintIntentPatch */
+        ConstraintIntentPatch: {
+            /** Revision */
+            revision: number;
+            /** Changes */
+            changes: {
+                [key: string]: unknown;
+            };
+        };
         /** ConstraintStateUpdate */
         ConstraintStateUpdate: {
             /** Revision */
@@ -2043,6 +2388,12 @@ export interface components {
              * @enum {string}
              */
             decision: "approve" | "reject";
+            /** Conflict Tokens */
+            conflict_tokens?: {
+                [key: string]: string;
+            };
+            /** Conflict Acknowledged */
+            conflict_acknowledged?: string[];
         };
         /** DraftAnswer */
         DraftAnswer: {
@@ -2080,6 +2431,142 @@ export interface components {
             estimated_minutes: number;
             /** Due At */
             due_at?: string | null;
+        };
+        /** DurationAction */
+        DurationAction: {
+            /** Revision */
+            revision: number;
+            /** Task Revision */
+            task_revision: number;
+            /** Step Revision */
+            step_revision: number;
+            /** Source Revision */
+            source_revision: number;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "accept" | "reject" | "restore_default";
+        };
+        /** DurationActionResult */
+        DurationActionResult: {
+            suggestion: components["schemas"]["DurationSuggestionView"];
+            step: components["schemas"]["ResourceView"];
+            /** Source Revision */
+            source_revision: number;
+        };
+        /** DurationSample */
+        DurationSample: {
+            /** Execution Id */
+            execution_id: string;
+            /** Execution Revision */
+            execution_revision: number;
+            /** Actual Minutes */
+            actual_minutes: number;
+            /**
+             * Feedback
+             * @enum {string}
+             */
+            feedback: "partial" | "completed" | "not_started" | "skipped";
+        };
+        /** DurationSuggestionData */
+        DurationSuggestionData: {
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: 1;
+            /**
+             * Source
+             * @constant
+             */
+            source: "duration_generator";
+            /** Task Id */
+            task_id: string;
+            /** Task Revision */
+            task_revision: number;
+            /** Step Id */
+            step_id: string;
+            /** Step Revision */
+            step_revision: number;
+            /** Source Revision */
+            source_revision: number;
+            /** Default Estimated Minutes */
+            default_estimated_minutes: number | null;
+            /** Suggested Minutes */
+            suggested_minutes: number;
+            /** Reasons */
+            reasons: string[];
+            /** Sample Basis */
+            sample_basis: components["schemas"]["DurationSample"][];
+            /**
+             * State
+             * @default pending
+             * @enum {string}
+             */
+            state: "pending" | "accepted" | "rejected" | "restored";
+            /** Applied Step Revision */
+            applied_step_revision?: number | null;
+            /** Applied Source Revision */
+            applied_source_revision?: number | null;
+        };
+        /** DurationSuggestionList */
+        DurationSuggestionList: {
+            /**
+             * Contract Version
+             * @default duration-suggestions-v1
+             * @constant
+             */
+            contract_version: "duration-suggestions-v1";
+            /**
+             * Generation Status
+             * @default not_integrated
+             * @constant
+             */
+            generation_status: "not_integrated";
+            /** Source Revision */
+            source_revision: number;
+            /**
+             * Invalid Suggestion Count
+             * @default 0
+             */
+            invalid_suggestion_count: number;
+            /** Suggestions */
+            suggestions: components["schemas"]["DurationSuggestionView"][];
+        };
+        /** DurationSuggestionView */
+        DurationSuggestionView: {
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @default duration_suggestion
+             * @constant
+             */
+            kind: "duration_suggestion";
+            /** Revision */
+            revision: number;
+            data: components["schemas"]["DurationSuggestionData"];
+            /**
+             * Freshness
+             * @enum {string}
+             */
+            freshness: "fresh" | "stale";
+            /** Freshness Reason */
+            freshness_reason: string | null;
+            /** Current Task Revision */
+            current_task_revision: number | null;
+            /** Current Step Revision */
+            current_step_revision: number | null;
+            /** Current Source Revision */
+            current_source_revision: number;
+            /** Current Estimated Minutes */
+            current_estimated_minutes: number | null;
+            /** Task Title */
+            task_title: string | null;
+            /** Step Title */
+            step_title: string | null;
         };
         /** EmptyAction */
         EmptyAction: Record<string, never>;
@@ -2495,6 +2982,79 @@ export interface components {
             /** Error Code */
             error_code?: string | null;
         };
+        /** IntentAction */
+        IntentAction: {
+            /** Revision */
+            revision: number;
+            /** Source Revision */
+            source_revision: number;
+        };
+        /** IntentChoiceView */
+        IntentChoiceView: {
+            intent: components["schemas"]["ResourceView"];
+            draft: components["schemas"]["ResourceView"];
+        };
+        /** IntentChoose */
+        IntentChoose: {
+            /** Revision */
+            revision: number;
+            /** Source Revision */
+            source_revision: number;
+            /**
+             * Option Id
+             * @enum {string}
+             */
+            option_id: "earliest" | "preferred";
+        };
+        /** IntentCreate */
+        IntentCreate: {
+            /** Source Revision */
+            source_revision: number;
+            data: components["schemas"]["IntentData"];
+        };
+        /** IntentData */
+        IntentData: {
+            /** Description */
+            description: string;
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+            /** Horizon Days */
+            horizon_days: number;
+            /** Timezone */
+            timezone: string;
+            /** Protected Intervals */
+            protected_intervals?: components["schemas"]["IntentInterval"][];
+            /** Preferred Intervals */
+            preferred_intervals?: components["schemas"]["IntentInterval"][];
+            /** Reduced Daily Limit Minutes */
+            reduced_daily_limit_minutes?: number | null;
+            /** Keep Block Ids */
+            keep_block_ids?: string[];
+        };
+        /** IntentInterval */
+        IntentInterval: {
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+        };
+        /** IntentPatch */
+        IntentPatch: {
+            /** Source Revision */
+            source_revision: number;
+            data: components["schemas"]["IntentData"];
+            /** Revision */
+            revision: number;
+        };
         /** ModelSettings */
         ModelSettings: {
             /** Revision */
@@ -2653,6 +3213,179 @@ export interface components {
             /** Revision */
             revision: number;
         };
+        /** ProactiveAction */
+        ProactiveAction: {
+            /** Revision */
+            revision: number;
+            /** Fingerprint */
+            fingerprint: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "snooze" | "dismiss" | "disable_category" | "accept";
+            /** Snooze Minutes */
+            snooze_minutes?: number | null;
+            /** Accept Mode */
+            accept_mode?: ("details" | "replan") | null;
+        };
+        /** ProactiveActionResult */
+        ProactiveActionResult: {
+            suggestion: components["schemas"]["ProactiveSuggestionView"];
+            /** Open Task Id */
+            open_task_id?: string | null;
+            draft?: components["schemas"]["ResourceView"] | null;
+            /**
+             * Requires Confirmation
+             * @default false
+             */
+            requires_confirmation: boolean;
+        };
+        /** ProactiveList */
+        ProactiveList: {
+            /**
+             * Contract Version
+             * @default proactive-v1
+             * @constant
+             */
+            contract_version: "proactive-v1";
+            preferences: components["schemas"]["ProactivePreferenceView"];
+            /** Suggestions */
+            suggestions: components["schemas"]["ProactiveSuggestionView"][];
+            /** Suppression */
+            suppression?: ("disabled" | "inactive" | "quiet_hours") | null;
+            /** Source Revision */
+            source_revision?: number | null;
+            /** Capacity */
+            capacity?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** ProactivePreferenceView */
+        ProactivePreferenceView: {
+            /** Id */
+            id: string | null;
+            /**
+             * Kind
+             * @default proactive_preferences
+             * @constant
+             */
+            kind: "proactive_preferences";
+            /** Revision */
+            revision: number;
+            /**
+             * Contract Version
+             * @default proactive-v1
+             * @constant
+             */
+            contract_version: "proactive-v1";
+            data: components["schemas"]["ProactivePreferences"];
+        };
+        /** ProactivePreferenceWrite */
+        ProactivePreferenceWrite: {
+            /** Revision */
+            revision: number;
+            data: components["schemas"]["ProactivePreferences"];
+        };
+        /** ProactivePreferences */
+        ProactivePreferences: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /** Categories */
+            categories?: {
+                [key: string]: boolean;
+            };
+            /** Timezone */
+            timezone?: string | null;
+            /** Quiet Hours */
+            quiet_hours?: components["schemas"]["QuietWindow"][] | null;
+        };
+        /** ProactiveRefresh */
+        ProactiveRefresh: {
+            /** App Active */
+            app_active: boolean;
+        };
+        /** ProactiveSource */
+        ProactiveSource: {
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Revision */
+            revision: number;
+        };
+        /** ProactiveSuggestionData */
+        ProactiveSuggestionData: {
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: 1;
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "deadline" | "capacity" | "unknown_estimate" | "available_window" | "facts_changed";
+            /** Issue Key */
+            issue_key: string;
+            /** Fingerprint */
+            fingerprint: string;
+            /** Title */
+            title: string;
+            /** Reasons */
+            reasons: string[];
+            /** Gaps */
+            gaps: string[];
+            /** Rank */
+            rank: number;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "pending" | "snoozed" | "dismissed" | "accepted" | "resolved" | "superseded";
+            /**
+             * First Seen At
+             * Format: date-time
+             */
+            first_seen_at: string;
+            /** Snoozed Until */
+            snoozed_until?: string | null;
+            /** Resolved At */
+            resolved_at?: string | null;
+            /** Source Revision */
+            source_revision: number;
+            /** Sources */
+            sources: components["schemas"]["ProactiveSource"][];
+            /** Evidence */
+            evidence: {
+                [key: string]: unknown;
+            };
+            /** Task Id */
+            task_id?: string | null;
+            /**
+             * Visible
+             * @default false
+             */
+            visible: boolean;
+        };
+        /** ProactiveSuggestionView */
+        ProactiveSuggestionView: {
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @default proactive_suggestion
+             * @constant
+             */
+            kind: "proactive_suggestion";
+            /** Revision */
+            revision: number;
+            data: components["schemas"]["ProactiveSuggestionData"];
+        };
         /** ProfileChoice */
         ProfileChoice: {
             /** Profile Id */
@@ -2762,6 +3495,15 @@ export interface components {
             revision: number;
             data: components["schemas"]["ProfileInput"];
         };
+        /** QuietWindow */
+        QuietWindow: {
+            /** Weekdays */
+            weekdays: number[];
+            /** Start */
+            start: string;
+            /** End */
+            end: string;
+        };
         /** ReplanAddition */
         ReplanAddition: {
             /** Id */
@@ -2859,6 +3601,20 @@ export interface components {
             action: "accept" | "reject" | "restore" | "reason";
             /** Reason */
             reason?: string | null;
+        };
+        /** ReviewPlanDraft */
+        ReviewPlanDraft: {
+            /**
+             * Week Start
+             * Format: date
+             */
+            week_start: string;
+            /** Timezone */
+            timezone: string;
+            /** Revision */
+            revision: number;
+            /** Source Revision */
+            source_revision: number;
         };
         /** Risk */
         Risk: {
@@ -3389,12 +4145,16 @@ export interface components {
             review: {
                 [key: string]: unknown;
             };
+            /** Next Week Plan */
+            next_week_plan?: {
+                [key: string]: unknown;
+            };
             /**
              * Next Week Optimization
-             * @default pending_integration
+             * @default draft_review_available
              * @constant
              */
-            next_week_optimization: "pending_integration";
+            next_week_optimization: "draft_review_available";
         };
         /** Window */
         Window: {
@@ -5637,6 +6397,687 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    plan_draft_api_weekly_review_plan_draft_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewPlanDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_duration_suggestions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DurationSuggestionList"];
+                };
+            };
+        };
+    };
+    action_api_duration_suggestions__rid__actions_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DurationAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DurationActionResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listing_api_constraint_intents_get: {
+        parameters: {
+            query?: {
+                thread_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_api_constraint_intents_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConstraintIntentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_constraint_intents__rid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_api_constraint_intents__rid__patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConstraintIntentPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    prepare_api_constraint_intents__rid__prepare_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConstraintIntentAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_api_constraint_intents__rid__cancel_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConstraintIntentAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_goal_capacity_get: {
+        parameters: {
+            query?: {
+                week_start?: string | null;
+                timezone?: string | null;
+                expected_source_revision?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_planning_intents_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"][];
+                };
+            };
+        };
+    };
+    create_api_planning_intents_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IntentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_api_planning_intents__rid__patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IntentPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_api_planning_intents__rid__preview_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IntentAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    choose_api_planning_intents__rid__choose_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IntentChoose"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IntentChoiceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_api_planning_intents__rid__cancel_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IntentAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preferences_api_proactive_preferences_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProactivePreferenceView"];
+                };
+            };
+        };
+    };
+    save_api_proactive_preferences_put: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProactivePreferenceWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProactivePreferenceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    suggestions_api_proactive_suggestions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProactiveList"];
+                };
+            };
+        };
+    };
+    refresh_api_proactive_refresh_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProactiveRefresh"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProactiveList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    action_api_proactive_suggestions__rid__actions_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProactiveAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProactiveActionResult"];
                 };
             };
             /** @description Validation Error */

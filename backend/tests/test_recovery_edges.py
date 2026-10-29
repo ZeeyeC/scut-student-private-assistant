@@ -45,12 +45,21 @@ def test_reject_does_not_commit_and_stale_approval_fails(tmp_path):
                     },
                     headers={**h, "Idempotency-Key": "resume" + suffix},
                 ).status_code
-                == 200
+                == (409 if suffix == "stale" else 200)
             )
             end = wait_run(c, r["id"])
             assert c.get("/api/tasks").json() == []
             if suffix == "stale":
-                assert end["data"]["status"] == "failed"
+                assert end["data"]["status"] == "waiting_approval"
+                # Validation rejects before dispatch; the original decision can
+                # still be explicitly rejected to release the pending run.
+                rejected = c.post(
+                    "/api/agent/runs/" + r["id"] + "/resume",
+                    json={"approval_id": a["id"], "revision": a["revision"], "decision": "reject"},
+                    headers={**h, "Idempotency-Key": "reject-stale"},
+                )
+                assert rejected.status_code == 200
+                assert wait_run(c, r["id"])["data"]["status"] == "done"
 
 
 def test_browser_import_owner_and_out_of_order(tmp_path):

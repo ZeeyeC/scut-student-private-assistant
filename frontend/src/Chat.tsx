@@ -14,6 +14,8 @@ import { replayEvents, type PublicEvent } from "./sse";
 import type { Resource } from "./types";
 import { Button } from "./components/ui/button";
 import { DraftReview } from "./DraftReview";
+import { AgentApproval } from "./AgentApproval";
+import { ConstraintIntents } from "./ConstraintIntents";
 import { visibleDrafts } from "./drafts";
 const labels: Record<string, string> = {
   get_current_time: "核对当前日期",
@@ -33,6 +35,17 @@ const labels: Record<string, string> = {
   list_calendar_events: "查询日程安排",
   propose_decomposition: "提出拆解",
   propose_daily_plan: "计算每日计划",
+  list_constraint_intents: "查询原约束意图",
+  propose_constraint_intent: "记录待补充约束",
+  update_constraint_intent: "补充原约束意图",
+  prepare_constraint_intent: "生成待校对约束",
+  cancel_constraint_intent: "取消约束意图",
+  get_planning_context: "核对真实风险与容量",
+  list_planning_intents: "查询协商历史",
+  propose_planning_intent: "记录规划意向",
+  update_planning_intent: "继续修改本轮协商",
+  preview_planning_intent: "计算真实可选方案",
+  preview_draft_conflicts: "核对草稿冲突",
   commit_import: "确认保存",
   commit_plan: "确认保存计划",
   set_task_status: "更新作业状态",
@@ -47,7 +60,8 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
     [error, setError] = useState(""),
     [status, setStatus] = useState(""),
     [approvalId, setApprovalId] = useState(""),
-    [epoch, setEpoch] = useState(0);
+    [epoch, setEpoch] = useState(0),
+    [showConstraints,setShowConstraints] = useState(false);
   const cursors = useRef<Record<string, number>>({});
   const threads = useQuery({
     queryKey: ["threads"],
@@ -57,6 +71,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
     queryKey: ["drafts"],
     queryFn: () => api<Resource[]>("/drafts"),
   });
+  const constraintIntents = useQuery({queryKey:["constraint-intents"], queryFn:()=>api<Resource[]>("/constraint-intents")});
   useEffect(() => {
     if (!focusThreadId) return;
     setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
@@ -75,6 +90,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
       if (event.type === "message_delta") setStatus("正在回复…");
     }
     if (event.type === "tool_started") setStatus(labels[p.name] ?? "处理请求");
+    if (event.type === "tool_finished") { void q.invalidateQueries({queryKey:["constraint-intents"]}); void q.invalidateQueries({queryKey:["planning-intents"]}); }
     if (event.type === "draft_ready")
       q.invalidateQueries({ queryKey: ["drafts"] });
     if (event.type === "browser_action_required")
@@ -189,8 +205,10 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
       }
     },
   });
-  const pendingDrafts = visibleDrafts(drafts.data).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
-  const hasReview = !!approvalId || pendingDrafts.length > 0;
+  const pendingDrafts = visibleDrafts(drafts.data).filter(d=>!d.data.source?.constraint_intent_id).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
+  const hasIntents = constraintIntents.data?.some(r=>["clarifying","ready_for_review"].includes(r.data.status));
+  useEffect(()=>{if(hasIntents)setShowConstraints(true);},[hasIntents]);
+  const hasReview = !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
   return (
     <div className={embedded ? "assistant-page embedded" : "assistant-page"}>
       <header className="chat-toolbar">
@@ -218,6 +236,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
         >
           新会话
         </Button>
+        <Button variant="outline" onClick={()=>setShowConstraints(v=>!v)}>{showConstraints?"收起约束入口":"安排持续约束"}</Button>
       </header>
       <div className={hasReview ? "assistant-layout has-review" : "assistant-layout"}>
         <div className="chat-area">
@@ -271,7 +290,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
       {hasReview && <div className="review-panel" role="complementary" aria-label="草稿校对区">
       <h2 className="review-panel-title">待校对 · {pendingDrafts.length + (approvalId ? 1 : 0)}</h2>
       {approvalId && (
-        <ApprovalCard
+        <AgentApproval
           id={approvalId}
           runId={runId}
           onResume={() => {
@@ -281,6 +300,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
           }}
         />
       )}
+      {(showConstraints||hasIntents)&&<ConstraintIntents threadId={threadId}/>}
       {pendingDrafts.map((d) => (
         <DraftReview draft={d} key={d.id} />
       ))}
@@ -301,183 +321,5 @@ function AssistantMessage() {
     <MessagePrimitive.Root className="message assistant">
       <MessagePrimitive.Parts />
     </MessagePrimitive.Root>
-  );
-}
-function ApprovalCard({
-  id,
-  runId,
-  onResume,
-}: {
-  id: string;
-  runId: string;
-  onResume: () => void;
-}) {
-  const q = useQueryClient(),
-    [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
-  const a = useQuery({
-    queryKey: ["approval", id],
-    queryFn: () => api<Resource>("/agent/approvals/" + id),
-    refetchInterval: 15000,
-  });
-  const decide = async (decision: "approve" | "reject") => {
-    if (!a.data) return;
-    setBusy(true);
-    try {
-      await api(`/agent/runs/${runId}/resume`, {
-        method: "POST",
-        body: JSON.stringify({
-          approval_id: id,
-          revision: a.data.revision,
-          decision,
-        }),
-      });
-      q.invalidateQueries();
-      onResume();
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setBusy(false);
-    }
-  };
-  return (
-    <section className="card confirm">
-      <h2>这一步需要你确认</h2>
-      <p>批准后才会保存或更新；拒绝不会写入业务数据。</p>
-      {a.data && Date.parse(a.data.data.expires_at) < Date.now() && (
-        <p role="alert">此确认已过期，请拒绝后重新提出请求。</p>
-      )}
-      {a.data?.data.actions.map((action: Record<string, any>, i: number) => (
-        <div key={i}>
-          <h3>{labels[action.name]}</h3>
-          {action.args.draft_id ? (
-            <ApprovalDraft id={action.args.draft_id} />
-          ) : (
-            <ApprovalTask args={action.args} name={action.name} />
-          )}
-        </div>
-      ))}
-      <Button
-        disabled={
-          busy || !a.data || Date.parse(a.data.data.expires_at) < Date.now()
-        }
-        onClick={() => decide("approve")}
-      >
-        批准并执行
-      </Button>
-      <Button
-        variant="outline"
-        disabled={busy || !a.data}
-        onClick={() => decide("reject")}
-      >
-        拒绝
-      </Button>
-      {error && <p role="alert">{error}</p>}
-    </section>
-  );
-}
-function ApprovalDraft({ id }: { id: string }) {
-  const d = useQuery({
-    queryKey: ["approval-draft", id],
-    queryFn: () => api<Resource>("/drafts/" + id),
-  });
-  if (d.error) return <p role="alert">{String(d.error)}</p>;
-  if (!d.data) return <p>正在读取准确内容…</p>;
-  const p = d.data.data.payload;
-  return (
-    <div>
-      {p.starts_at && <p>{p.title} · {new Date(p.starts_at).toLocaleString("zh-CN")}–{new Date(p.ends_at).toLocaleString("zh-CN")}</p>}
-      {p.items?.map((x: Record<string, any>, i: number) => (
-        <p key={i}>
-          {x.title} ·{" "}
-          {x.due_at
-            ? new Date(x.due_at).toLocaleString("zh-CN")
-            : "截止时间待确认"}
-          <br />
-          {x.requirements.join("；")}
-        </p>
-      ))}
-      {p.courses?.map((c: Record<string, any>, i: number) => (
-        <p key={i}>
-          {c.name} · 星期{c.weekday} · 第 {c.weeks.join(",")} 周 · 第{" "}
-          {c.periods.join(",")} 节 · {c.location}
-        </p>
-      ))}
-      {p.steps?.map((s: Record<string, any>, i: number) => (
-        <p key={i}>
-          {s.title} · 预计 {s.estimated_minutes} 分钟 ·{" "}
-          {s.acceptance_criteria.join("；")}
-        </p>
-      ))}
-      {p.blocks?.map((b: Record<string, any>) => (
-        <p key={b.id}>
-          <strong>{b.title ?? "学习安排"}</strong> ·{" "}
-          {new Date(b.starts_at).toLocaleString("zh-CN", {
-            timeZone: p.timezone ?? "Asia/Shanghai",
-          })}
-          –
-          {new Date(b.ends_at).toLocaleTimeString("zh-CN", {
-            timeZone: p.timezone ?? "Asia/Shanghai",
-          })}
-          {b.locked ? " · 已锁定" : ""}
-        </p>
-      ))}
-      {p.warnings?.map((w: string, i: number) => (
-        <p role="alert" key={i}>
-          {w}
-        </p>
-      ))}
-      {p.removed_blocks?.map((b: Record<string, any>) => (
-        <p key={b.id}>
-          移除旧建议：{b.title} · {b.reason}
-        </p>
-      ))}
-      {p.unscheduled?.map((u: Record<string, any>, i: number) => (
-        <p key={i}>
-          {u.title}：{u.remaining_minutes == null ? "" : `未安排 ${u.remaining_minutes} 分钟 · `}{u.reason}
-        </p>
-      ))}
-    </div>
-  );
-}
-function ApprovalTask({ args, name }: { args: Record<string, any>; name: string }) {
-  const task = useQuery({
-    queryKey: ["approval-task", args.task_id],
-    queryFn: () => api<Resource>("/tasks/" + args.task_id),
-  });
-  const settings = useQuery({
-    queryKey: ["settings"],
-    queryFn: () => api<Resource>("/settings"),
-  });
-  const timezone = settings.data?.data.timezone ?? "Asia/Shanghai";
-  function deadline(value: string | null | undefined) {
-    if (!value) return "待确认";
-    if (Number.isNaN(Date.parse(value))) return "时间无效，请拒绝后重新设置";
-    return new Date(value).toLocaleString("zh-CN", {timeZone: timezone, hour12: false});
-  }
-  if (name === "set_task_deadline") {
-    const recovery = args.deadline_type === "remedy_due_at";
-    return <div>
-      <p>{task.data?.data.title ?? "正在读取待办…"} · 版本 {args.revision}</p>
-      <p>原{recovery ? "补救" : ""}截止时间：{deadline(task.data?.data[args.deadline_type])}</p>
-      <p>新{recovery ? "补救" : ""}截止时间：{deadline(args.due_at)}</p>
-      <p>时区：{timezone}</p>
-      {!recovery && task.data?.data.remedy_due_at && <p>确认后清除原补救截止时间：{deadline(task.data.data.remedy_due_at)}</p>}
-      <p>已有步骤和学习安排保留；旧计划与拆解草稿会失效，请重新生成。</p>
-      {task.data && task.data.revision !== args.revision && <p role="alert">待办已变更，请拒绝这次操作后重新提出请求。</p>}
-      {task.error && <p role="alert">{String(task.error)}</p>}
-    </div>;
-  }
-  return (
-    <p>
-      {task.data?.data.title ?? "正在读取作业…"} · 版本 {args.revision} ·
-      将状态改为{" "}
-      {args.status === "completed"
-        ? "已完成"
-        : args.status === "archived"
-          ? "已归档"
-          : "进行中"}
-      {task.error && <span role="alert">{String(task.error)}</span>}
-    </p>
   );
 }
