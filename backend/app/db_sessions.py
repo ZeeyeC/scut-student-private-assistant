@@ -20,6 +20,19 @@ async def session_scope(sessions):
 
 
 @asynccontextmanager
+async def read_snapshot(sessions):
+    # SQLAlchemy invalidates a connection if a query itself is cancelled. Its
+    # driver termination also awaits I/O, so AnyIO level cancellation can cancel
+    # that termination repeatedly before close() gets control. Complete only
+    # this short SSE database snapshot, then deliver cancellation before emitting
+    # an event; never shield the stream wait, a model call or a worker operation.
+    with anyio.CancelScope(shield=True):
+        async with session_scope(sessions) as db:
+            yield db
+    await anyio.lowlevel.checkpoint()
+
+
+@asynccontextmanager
 async def sqlite_transaction(sessions):
     async with session_scope(sessions) as db:
         try:

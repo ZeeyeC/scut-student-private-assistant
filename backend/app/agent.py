@@ -26,7 +26,7 @@ from app.contracts import (
     TaskUpdate,
 )
 from app.db import Resource, now
-from app.db_sessions import session_scope, sqlite_transaction
+from app.db_sessions import read_snapshot, sqlite_transaction
 from app.deadlines import resolve_deadline, suggest_assignment_deadlines
 from app.planner import generate_plan
 from app.schedule import calendar_events
@@ -972,7 +972,7 @@ def agent_router(get_db, current_user):
         async def stream():
             nonlocal cursor
             while not await request.is_disconnected():
-                async with session_scope(request.app.state.sessions) as session:
+                async with read_snapshot(request.app.state.sessions) as session:
                     r = await store.owned(session, owner, rid, "agent_run")
                     events = [
                         e.data

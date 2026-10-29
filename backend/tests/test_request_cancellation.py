@@ -77,7 +77,10 @@ async def test_cancelled_transaction_rolls_back_before_returning_connection(
         )
 
 
-async def test_sse_disconnect_during_read_releases_sqlite_before_refresh(isolated_app):
+@pytest.mark.parametrize("boundary", ["rollback", "query"])
+async def test_sse_disconnect_during_read_releases_sqlite_before_refresh(
+    isolated_app, boundary
+):
     from types import SimpleNamespace
 
     import httpx
@@ -113,7 +116,17 @@ async def test_sse_disconnect_during_read_releases_sqlite_before_refresh(isolate
         # during that I/O boundary rather than depending on wall-clock sleeps.
         await_only(pause_for_disconnect())
 
-    event.listen(engine.sync_engine, "rollback", before_rollback)
+    def after_query(connection, cursor, statement, parameters, context, executemany):
+        if statement.lstrip().upper().startswith("SELECT") and any(
+            m["type"] == "http.response.start" for m in messages
+        ):
+            # Interrupt after real SQLite I/O, while SQLAlchemy still owns its
+            # execute exception handler and can invalidate the connection.
+            await_only(pause_for_disconnect())
+
+    event_name = "rollback" if boundary == "rollback" else "after_cursor_execute"
+    listener = before_rollback if boundary == "rollback" else after_query
+    event.listen(engine.sync_engine, event_name, listener)
 
     async def receive():
         await reading.wait()
@@ -158,7 +171,7 @@ async def test_sse_disconnect_during_read_releases_sqlite_before_refresh(isolate
             await db.execute(text("BEGIN IMMEDIATE"))
             await db.commit()
     finally:
-        event.remove(engine.sync_engine, "rollback", before_rollback)
+        event.remove(engine.sync_engine, event_name, listener)
 
 
 @pytest.mark.parametrize("cancellation", ["anyio", "shutdown"])
