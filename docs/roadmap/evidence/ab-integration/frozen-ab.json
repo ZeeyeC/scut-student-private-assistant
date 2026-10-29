@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "mode": "actual-frozen-service",
+  "data": "isolated-synthetic",
+  "paid_model_calls": 0,
+  "checks": [
+    "identity",
+    "60-minute-plan-kept",
+    "actual25-task-open",
+    "idempotent-retry",
+    "correction20-history25",
+    "timer-pause-resume-manual25-once",
+    "invalid-manual-finish422-remains-editable",
+    "finish-keeps-original-timezone-after-settings-change",
+    "corrected20-plus-manual25-pooled45",
+    "profile-zero-and-reset-preserve-task",
+    "paused-goal-keeps-completion-capacity-unknown",
+    "weekly45-and-pending-intent-preserves-plan",
+    "real-B-actual45-to-A-remaining15",
+    "two-real-options-use-corrected-remaining15",
+    "replanning-and-risk-read-real-execution-projection",
+    "profile-goal-consumers-still-honestly-pending",
+    "cross-domain-queries-preserve-schedule"
+  ],
+  "service_sha256": "636d46674baeb06bc68171516aa722eae567c7324be01353d8fe52eb63e1bace"
+}

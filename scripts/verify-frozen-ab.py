@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+from datetime import datetime
 from pathlib import Path
 
 
@@ -35,8 +36,8 @@ def verify(service):
         repair = get("/replanning?horizon_days=7")
         seconds = sum(
             (
-                harness.datetime.fromisoformat(row["ends_at"])
-                - harness.datetime.fromisoformat(row["starts_at"])
+                datetime.fromisoformat(row["ends_at"])
+                - datetime.fromisoformat(row["starts_at"])
             ).total_seconds()
             for row in repair["added"]
         )

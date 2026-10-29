@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-29",
+  "stage": "development-preview",
+  "version": "2.4.7",
+  "branch": "codex/demo2.4.7-ab-integration",
+  "merge_commit": "fd1f398",
+  "backend": {
+    "passed": 475,
+    "subtests_passed": 18,
+    "joint_api_probes": 8
+  },
+  "frontend": {
+    "passed": 44
+  },
+  "browser": {
+    "passed": 43,
+    "channel": "installed Chrome",
+    "connection_or_lock_errors": 0,
+    "old_A_timeout_scenario": "passed this run; old root cause not inferred"
+  },
+  "build_and_typecheck": {
+    "passed": true,
+    "existing_large_chunk_warning": true
+  },
+  "native_logic": {
+    "passed": true
+  },
+  "native_integration": {
+    "passed": true,
+    "checks": 56,
+    "attempts": 2,
+    "first_attempt": "health request timed out before GUI; logs retained"
+  },
+  "frozen_ab": {
+    "passed": true,
+    "checks": 17,
+    "service_sha256": "636d46674baeb06bc68171516aa722eae567c7324be01353d8fe52eb63e1bace"
+  },
+  "frozen_a": {
+    "passed": true,
+    "checks": 16
+  },
+  "review": {
+    "scope": "merge contact points and readiness",
+    "critical": 0,
+    "important": 0,
+    "minor_docs_fixed": 1
+  },
+  "observed_joint_results": {
+    "actual25_remaining": 35,
+    "corrected20_remaining": 40,
+    "pooled_actual45_frozen_remaining": 15,
+    "profile_goal_consumption": "pending",
+    "capacity_upper_bound": 360,
+    "stored_goal_budget": 600,
+    "unobserved_work": "unknown, not0"
+  },
+  "privacy": {
+    "isolated_synthetic_data": true,
+    "personal_database_used": false,
+    "paid_model_calls": 0
+  },
+  "formal_release": {
+    "passed": false,
+    "reason": "Demo2.2 baseline missing; preflight refused"
+  },
+  "node": {
+    "actual": "v26.0.0",
+    "required": "22.12+ <23",
+    "matching_environment_verified": false
+  }
+}
