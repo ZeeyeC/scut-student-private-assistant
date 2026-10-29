@@ -69,8 +69,6 @@ def questions(payload, settings):
             str(p) not in {str(k) for k in settings["periods"]} for p in c["periods"]
         ):
             missing["periods"] = f"请先在设置中补齐{label}所用节次的起止时间。"
-        elif any(b != a + 1 for a, b in zip(c["periods"], c["periods"][1:])):
-            missing["periods"] = f"{label}包含非连续节次，首版请分成不同课程候选添加。"
         result.extend(
             {"candidate_id": c["candidate_id"], "field": k, "question": v}
             for k, v in missing.items()

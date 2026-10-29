@@ -1,8 +1,12 @@
 # 课间 · 华工学生助手
 
-当前版本 **Demo2.4**：新增单次调课、停课、恢复原课与调整记录，预览影响后确认；同时包含图片/PDF识别、文字课表与一键生成当日日程。[本版使用说明与边界](docs/releases/Demo2.4.md)；[Demo2.3 说明](docs/releases/Demo2.3.md)；[Demo2.2 更新、演示与自检](docs/demo2.2/README.md)。
+本源码开发候选 **Demo2.4.7**：课程/冲突、重复硬禁排、软偏好、容量、方案比较、固定事实局部重排、显式日常候选和风险检查。选择和接受经过原草稿校对确认后保存。正式应用以工作区README为准。
 
-用户最新核心流程与本轮验收见 [核心使用流程补充](docs/roadmap/core-flow-2026-10-28.md)。当日排程及单次课程调整已完成，完整学期例外、跨校区冲突及其余依赖任务继续按任务书推进。
+[本版说明](docs/releases/Demo2.4.7.md) · [甲独立规划接口](docs/roadmap/a3-a6-independent-planning.md) · [需要乙交付的清单](docs/roadmap/乙方需提供的交接清单.md) · [局部重排](docs/roadmap/a4-calendar-replanning.md) · [容量](docs/roadmap/a3-planning-capacity.md) · [重复硬禁排](docs/roadmap/a3-weekly-constraints.md) · [统一冲突](docs/roadmap/a2-unified-conflicts.md) · [课程分段](docs/roadmap/a1-course-intervals.md)
+
+用户最新核心流程与本轮验收见 [核心使用流程补充](docs/roadmap/core-flow-2026-10-28.md)。当日排程、单次课程调整、统一冲突、每周硬禁排、软偏好及固定事实局部重排已接入；通勤候选仅使用已确认耗时。完整学期例外和乙方执行事件联调继续按任务书推进。
+
+后续双人协作以 Demo2.4 提交为共同基线，分工、接口、交接与验收见 [双人开发任务分配](docs/roadmap/demo2.4-two-person-plan.md)，分别领取 [甲：课表与排程](docs/roadmap/demo2.4-person-a.md) 和 [乙：执行与助手](docs/roadmap/demo2.4-person-b.md)。
 
 后续开发已启动：首批增加“待办与日程 → 禁排时段”、规划说明和批准快照，优先适配华工图片/PDF课表。首批范围、使用方法与后续待办见 [开发进度与数据契约](docs/roadmap/m0-planning-foundation.md)；完整建设范围见 [开发任务书](docs/roadmap/demo2.2-development-taskbook.md)。
 
@@ -12,7 +16,7 @@
 
 ## 双击打开
 
-- 当前 Mac 日常入口：双击工作区 `Demo2.4/课间桌宠.app`，或 `campus-pet/启动课间桌宠.command`（优先打开 VERSION 对应的发布包，未发布时才构建）。桌宠会启动所需后台；浏览器可以同时访问 `http://127.0.0.1:5173/` 使用 Web UI，无需再启动另一个助手。
+- 当前正式 Mac 日常入口：双击工作区 `Demo2.4.6/课间桌宠.app`。源码 VERSION 为 Demo2.4.7 候选，完整浏览器回归仍有一条读取超时；候选未正式发布，暂存 App 不替代正式入口。`campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台；浏览器可以同时访问 `http://127.0.0.1:5173/` 使用 Web UI，无需再启动另一个助手。
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。
 - 点击“导入华工课表”立即显示分步向导，含首次扩展安装、打开目录、检测、本人进入课表、校对与保存。首次仍需用户在Chrome/Edge安装扩展一次。

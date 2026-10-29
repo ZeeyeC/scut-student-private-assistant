@@ -7,6 +7,7 @@ from app.calendar import expand_calendar
 from app.contracts import (
     CalendarException,
     Confirm,
+    DraftConfirm,
     DraftEdit,
     FixedEvent,
     ResourceView,
@@ -134,17 +135,28 @@ def business_router(get_db, current_user):
     @router.post("/drafts/{rid}/confirm")
     async def confirm(
         rid: str,
-        body: Confirm,
+        body: DraftConfirm,
         key: str = Header(alias="Idempotency-Key"),
         user=Depends(current_user),
         db=Depends(get_db),
     ):
         async def op():
-            return await imports.commit_draft(db, str(user.id), rid, body.revision)
+            return await imports.commit_draft(db, str(user.id), rid, body.revision, body.conflict_token)
 
         return await store.mutate(
-            db, str(user.id), f"confirm:{rid}", key, body.model_dump(), op
+            db, str(user.id), f"confirm:{rid}", key, body.model_dump(exclude_none=True), op
         )
+
+    @router.post("/drafts/{rid}/conflict-preview")
+    async def conflict_preview(
+        rid: str, body: DraftEdit, user=Depends(current_user), db=Depends(get_db)
+    ):
+        from app.conflicts import draft_conflicts
+
+        owner = str(user.id)
+        draft = await store.owned(db, owner, rid, "draft")
+        store.revision(draft, body.revision)
+        return await draft_conflicts(db, owner, draft, body.payload)
 
     @router.post("/fixed-events", response_model=ResourceView)
     async def fixed(

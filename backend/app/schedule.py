@@ -6,8 +6,9 @@ from zoneinfo import ZoneInfo
 from fastapi import HTTPException
 
 from app import store
-from app.calendar import expand_calendar
-from app.constraints import active_constraints
+from app.calendar import expand_calendar, occupied_course_events
+from app.constraints import expand_constraints
+from app.conflicts import detect_conflicts
 
 
 async def calendar_events(db, owner, start, end):
@@ -29,7 +30,9 @@ async def calendar_events(db, owner, start, end):
     except ValueError as exc:
         courses = []
         warnings.append(str(exc))
-    events = [{**event, "kind": "course"} for event in courses]
+    # Envelopes can contain free, nonconsecutive periods. Only occupied runs
+    # become actual calendar events, including their explicitly protected breaks.
+    events = [{**event, "kind": "course"} for event in occupied_course_events(courses)]
     tasks = {r.id: r.data["title"] for r in await store.rows(db, owner, "task")}
     for kind in ["fixed_event", "plan_block"]:
         for row in await store.rows(db, owner, kind):
@@ -51,15 +54,19 @@ async def calendar_events(db, owner, start, end):
                         "locked": data.get("locked", False),
                     }
                 )
-    constraints = active_constraints([store.view(r) for r in await store.rows(db, owner, "scheduling_constraint")])
+    try:
+        constraints = expand_constraints([store.view(r) for r in await store.rows(db, owner, "scheduling_constraint") if r.data.get("strength", "hard") == "hard"], lower, upper)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
     for row in constraints:
         data = row["data"]
         a, b = datetime.fromisoformat(data["starts_at"]), datetime.fromisoformat(data["ends_at"])
         if a < upper and b > lower:
-            events.append({"id": row["id"], "kind": "scheduling_constraint", "title": data["title"], "starts_at": data["starts_at"], "ends_at": data["ends_at"]})
+            events.append({"id": row["id"], "kind": "scheduling_constraint", "title": data["title"], "starts_at": data["starts_at"], "ends_at": data["ends_at"], "constraint_id": row.get("constraint_id", row["id"]), "recurrence": data.get("recurrence", "once")})
     return {
         "events": sorted(
             events, key=lambda x: (datetime.fromisoformat(x["starts_at"]), x["id"])
         ),
         "warnings": warnings,
+        "conflict_report": detect_conflicts(events, settings.data),
     }

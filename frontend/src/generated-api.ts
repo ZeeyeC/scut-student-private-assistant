@@ -382,6 +382,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/drafts/{rid}/conflict-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conflict Preview */
+        post: operations["conflict_preview_api_drafts__rid__conflict_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/fixed-events": {
         parameters: {
             query?: never;
@@ -795,6 +812,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/planning-capacity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Capacity */
+        get: operations["capacity_api_planning_capacity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replanning": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Repair Preview */
+        get: operations["repair_preview_api_replanning_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replan-drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Repair Draft */
+        post: operations["repair_draft_api_replan_drafts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/plan-drafts": {
         parameters: {
             query?: never;
@@ -844,6 +912,108 @@ export interface paths {
         head?: never;
         /** Update */
         patch: operations["update_api_plan_blocks__rid__patch"];
+        trace?: never;
+    };
+    "/api/planning-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Options */
+        get: operations["options_api_planning_options_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/planning-risks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Risks */
+        get: operations["risks_api_planning_risks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/daily-routine-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview */
+        post: operations["preview_api_daily_routine_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/daily-routine-drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Draft */
+        post: operations["draft_api_daily_routine_drafts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/daily-routine-dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dismiss */
+        post: operations["dismiss_api_daily_routine_dismiss_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/drafts/{rid}/constraint-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview */
+        post: operations["preview_api_drafts__rid__constraint_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/scheduling-constraints": {
@@ -1405,6 +1575,146 @@ export interface components {
             ends_at?: string | null;
             /** Location */
             location?: string | null;
+            /** Campus */
+            campus?: string | null;
+        };
+        /** CampusTransfer */
+        CampusTransfer: {
+            /** From Campus */
+            from_campus: string;
+            /** To Campus */
+            to_campus: string;
+            /** Minutes */
+            minutes: number;
+        };
+        /** Candidate */
+        Candidate: {
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "routine" | "preparation" | "review" | "commute";
+            /** Title */
+            title: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /** Can Add */
+            can_add: boolean;
+            /** Dismissed */
+            dismissed: boolean;
+            /** Conflicts */
+            conflicts: string[];
+        };
+        /** CandidateDraft */
+        CandidateDraft: {
+            /** Candidate Id */
+            candidate_id: string;
+            /** Expected Source Revision */
+            expected_source_revision: number;
+            request: components["schemas"]["RoutineRequest"];
+        };
+        /** CapacityChanges */
+        CapacityChanges: {
+            /** Added */
+            added: number;
+            /** Retained */
+            retained: number;
+            /** Removed */
+            removed: number;
+        };
+        /** CapacityDay */
+        CapacityDay: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Free Windows */
+            free_windows: components["schemas"]["CapacityWindow"][];
+            /** Free Minutes */
+            free_minutes: number;
+            /** Budget Remaining Minutes */
+            budget_remaining_minutes: number;
+            /** Capacity Upper Bound Minutes */
+            capacity_upper_bound_minutes: number;
+            /** Proposed Minutes */
+            proposed_minutes: number;
+        };
+        /** CapacityReport */
+        CapacityReport: {
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: 1;
+            /**
+             * Scope
+             * @enum {string}
+             */
+            scope: "today" | "range";
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+            /** Horizon Days */
+            horizon_days: number;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Calculated At
+             * Format: date-time
+             */
+            calculated_at: string;
+            /** Source Revision */
+            source_revision: number;
+            /** Rule Version */
+            rule_version: string;
+            /** Days */
+            days: components["schemas"]["CapacityDay"][];
+            /** Capacity Upper Bound Minutes */
+            capacity_upper_bound_minutes: number;
+            /** Required Minutes */
+            required_minutes: number;
+            /** Reserved Work Minutes */
+            reserved_work_minutes: number;
+            /** Proposed Minutes */
+            proposed_minutes: number;
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /** Unknown Estimate Count */
+            unknown_estimate_count: number;
+            /** Unscheduled */
+            unscheduled: components["schemas"]["UnallocatedWork"][];
+            /** Warnings */
+            warnings: string[];
+            changes: components["schemas"]["CapacityChanges"];
+        };
+        /** CapacityWindow */
+        CapacityWindow: {
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /** Minutes */
+            minutes: number;
         };
         /** Capture */
         Capture: {
@@ -1510,6 +1820,8 @@ export interface components {
             ends_at?: string | null;
             /** Location */
             location?: string | null;
+            /** Campus */
+            campus?: string | null;
             /** Reason */
             reason: string;
         };
@@ -1536,6 +1848,13 @@ export interface components {
             status: "pending" | "none" | "homework";
             /** Items */
             items?: components["schemas"]["DraftHomeworkItem"][];
+        };
+        /** DraftConfirm */
+        DraftConfirm: {
+            /** Revision */
+            revision: number;
+            /** Conflict Token */
+            conflict_token?: string | null;
         };
         /** DraftEdit */
         DraftEdit: {
@@ -1644,6 +1963,63 @@ export interface components {
              */
             model_use_system_proxy: boolean;
         };
+        /** Option */
+        Option: {
+            /**
+             * Id
+             * @enum {string}
+             */
+            id: "earliest" | "preferred";
+            /** Title */
+            title: string;
+            /** Proposed Minutes */
+            proposed_minutes: number;
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /** Preferred Minutes */
+            preferred_minutes: number;
+            /** Retained Count */
+            retained_count: number;
+            /** Changed Count */
+            changed_count: number;
+            /** Explanation */
+            explanation: string[];
+            /** Blocks */
+            blocks: components["schemas"]["ReplanAddition"][];
+        };
+        /** Options */
+        Options: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+            /** Horizon Days */
+            horizon_days: number;
+            /** Preference Count */
+            preference_count: number;
+            /** Options */
+            options: components["schemas"]["Option"][];
+            /**
+             * Profile Integration
+             * @default pending_person_b
+             */
+            profile_integration: string;
+            /**
+             * Goal Integration
+             * @default pending_person_b
+             */
+            goal_integration: string;
+        };
         /** PetStatus */
         PetStatus: {
             /**
@@ -1669,6 +2045,14 @@ export interface components {
              * @default 7
              */
             horizon_days: number;
+            /**
+             * Strategy
+             * @default earliest
+             * @enum {string}
+             */
+            strategy: "earliest" | "preferred";
+            /** Expected Source Revision */
+            expected_source_revision?: number | null;
         };
         /** PreferencesUpdate */
         PreferencesUpdate: {
@@ -1695,6 +2079,70 @@ export interface components {
              */
             create_new: boolean;
         };
+        /** ReplanAddition */
+        ReplanAddition: {
+            /** Id */
+            id: string;
+            /** Task Id */
+            task_id: string;
+            /** Step Id */
+            step_id: string;
+            /** Title */
+            title: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+        };
+        /** ReplanRemoval */
+        ReplanRemoval: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Reason */
+            reason: string;
+        };
+        /** ReplanReport */
+        ReplanReport: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /**
+             * Rule Version
+             * @default preserve-valid-1
+             */
+            rule_version: string;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /** Needs Changes */
+            needs_changes: boolean;
+            /** Retained Ids */
+            retained_ids: string[];
+            /** Removed */
+            removed: components["schemas"]["ReplanRemoval"][];
+            /** Added */
+            added: components["schemas"]["ReplanAddition"][];
+            /** Warnings */
+            warnings: string[];
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /**
+             * Execution Integration
+             * @default pending_person_b
+             */
+            execution_integration: string;
+        };
         /** ResourceView */
         ResourceView: {
             /** Id */
@@ -1708,6 +2156,122 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** Risk */
+        Risk: {
+            /**
+             * Code
+             * @enum {string}
+             */
+            code: "unknown_estimate" | "overdue" | "unallocated";
+            /** Task Id */
+            task_id?: string | null;
+            /** Step Id */
+            step_id?: string | null;
+            /** Title */
+            title: string;
+            /** Remaining Minutes */
+            remaining_minutes: number | null;
+            /** Reason */
+            reason: string;
+        };
+        /** Risks */
+        Risks: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /** Capacity Upper Bound Minutes */
+            capacity_upper_bound_minutes: number;
+            /** Required Minutes */
+            required_minutes: number;
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /** Unknown Estimate Count */
+            unknown_estimate_count: number;
+            /** Risks */
+            risks: components["schemas"]["Risk"][];
+            /**
+             * Execution Integration
+             * @default pending_person_b
+             */
+            execution_integration: string;
+        };
+        /** RoutinePreview */
+        RoutinePreview: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Source
+             * @default explicit_request
+             * @constant
+             */
+            source: "explicit_request";
+            /** Candidates */
+            candidates: components["schemas"]["Candidate"][];
+            /** Warnings */
+            warnings: string[];
+        };
+        /** RoutineRequest */
+        RoutineRequest: {
+            /**
+             * Confirmed
+             * @constant
+             */
+            confirmed: true;
+            /** Target Date */
+            target_date?: string | null;
+            /**
+             * Horizon Days
+             * @default 7
+             */
+            horizon_days: number;
+            /** Daily Windows */
+            daily_windows?: components["schemas"]["RoutineWindow"][];
+            /**
+             * Preparation Minutes
+             * @default 0
+             */
+            preparation_minutes: number;
+            /**
+             * Review Minutes
+             * @default 0
+             */
+            review_minutes: number;
+            /**
+             * Include Campus Transfer
+             * @default false
+             */
+            include_campus_transfer: boolean;
+        };
+        /** RoutineWindow */
+        RoutineWindow: {
+            /** Title */
+            title: string;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /** Weekdays */
+            weekdays?: number[];
+        };
         /** RunRequest */
         RunRequest: {
             /** Thread Id */
@@ -1717,7 +2281,7 @@ export interface components {
         };
         /**
          * SchedulingConstraint
-         * @description First increment: an explicit, one-off protected interval for task planning.
+         * @description Confirmed one-off or weekly hard protection in its own local timezone.
          */
         SchedulingConstraint: {
             /**
@@ -1728,15 +2292,19 @@ export interface components {
             /**
              * Strength
              * @default hard
-             * @constant
+             * @enum {string}
              */
-            strength: "hard";
+            strength: "hard" | "soft";
             /**
              * Recurrence
              * @default once
-             * @constant
+             * @enum {string}
              */
-            recurrence: "once";
+            recurrence: "once" | "weekly";
+            /** Weekdays */
+            weekdays?: number[];
+            /** Valid Until */
+            valid_until?: string | null;
             /** Timezone */
             timezone: string;
             /**
@@ -1880,6 +2448,8 @@ export interface components {
              * @default 10
              */
             buffer_minutes: number;
+            /** Campus Transfers */
+            campus_transfers?: components["schemas"]["CampusTransfer"][];
         };
         /** TaskUpdate */
         TaskUpdate: {
@@ -1920,6 +2490,19 @@ export interface components {
              * @constant
              */
             consent: true;
+        };
+        /** UnallocatedWork */
+        UnallocatedWork: {
+            /** Task Id */
+            task_id?: string | null;
+            /** Step Id */
+            step_id?: string | null;
+            /** Title */
+            title: string;
+            /** Remaining Minutes */
+            remaining_minutes: number | null;
+            /** Reason */
+            reason: string;
         };
         /** UserCreate */
         UserCreate: {
@@ -2755,7 +3338,42 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Confirm"];
+                "application/json": components["schemas"]["DraftConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    conflict_preview_api_drafts__rid__conflict_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftEdit"];
             };
         };
         responses: {
@@ -3729,6 +4347,106 @@ export interface operations {
             };
         };
     };
+    capacity_api_planning_capacity_get: {
+        parameters: {
+            query?: {
+                scope?: "range" | "today";
+                target_date?: string | null;
+                horizon_days?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapacityReport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    repair_preview_api_replanning_get: {
+        parameters: {
+            query?: {
+                target_date?: string | null;
+                horizon_days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReplanReport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    repair_draft_api_replan_drafts_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     plan_api_plan_drafts_post: {
         parameters: {
             query?: never;
@@ -3808,6 +4526,211 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    options_api_planning_options_get: {
+        parameters: {
+            query?: {
+                target_date?: string | null;
+                horizon_days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Options"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    risks_api_planning_risks_get: {
+        parameters: {
+            query?: {
+                target_date?: string | null;
+                horizon_days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Risks"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_api_daily_routine_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoutineRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutinePreview"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    draft_api_daily_routine_drafts_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CandidateDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dismiss_api_daily_routine_dismiss_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CandidateDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_api_drafts__rid__constraint_preview_post: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+            };
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

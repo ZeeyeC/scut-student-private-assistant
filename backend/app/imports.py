@@ -137,7 +137,7 @@ async def edit_draft(db, owner, rid, expected, payload):
     return store.view(r)
 
 
-async def commit_draft(db, owner, draft_id, expected):
+async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     d = await store.owned(db, owner, draft_id, "draft")
     if d.data["status"] == "confirmed":
         return d.data["summary"]
@@ -158,6 +158,13 @@ async def commit_draft(db, owner, draft_id, expected):
     if d.data["draft_kind"] in {"plan", "timetable", "course_change"}:
         store.revision(s, d.data["source_revision"])
     payload = validate_payload(d.data["draft_kind"], d.data["payload"])
+    from app.conflicts import REVIEW_KINDS, draft_conflicts
+
+    conflict_report = None
+    if d.data["draft_kind"] in REVIEW_KINDS:
+        conflict_report = await draft_conflicts(db, owner, d, payload)
+        if conflict_token is not None and conflict_token != conflict_report["conflict_token"]:
+            raise HTTPException(409, "课程、固定事项或转移设置已变化，请重新检查冲突后保存")
     ids = []
     if d.data["draft_kind"] == "course_change":
         from app.course_changes import save_change
@@ -227,6 +234,8 @@ async def commit_draft(db, owner, draft_id, expected):
                     await db.delete(r)
     await store.bump(db, owner)
     summary = {"draft_id": d.id, "saved_ids": ids}
+    if conflict_report is not None:
+        summary.update(conflict_report=conflict_report, conflict_reviewed=conflict_token is not None)
     d.data = {**d.data, "status": "confirmed", "summary": summary}
     d.revision += 1
     if d.data.get("source", {}).get("browser_session"):

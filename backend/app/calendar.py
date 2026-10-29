@@ -36,6 +36,107 @@ def parse_week_expression(text, week_count):
     return sorted(result)
 
 
+COURSE_INTERVAL_VERSION = "course-intervals-1"
+
+
+def course_intervals(settings, course, day):
+    """Keep teaching, protected breaks and nonconsecutive free gaps distinct."""
+    tz = ZoneInfo(settings["timezone"])
+    teaching, breaks, occupied = [], [], []
+    previous = None
+    for number in sorted(set(course["periods"])):
+        window = settings["periods"].get(str(number)) or settings["periods"].get(number)
+        if not window:
+            raise ValueError(f"课程 {course['name']} 缺少节次时间映射")
+        a, b = time.fromisoformat(window["start"]), time.fromisoformat(window["end"])
+        if a.tzinfo or b.tzinfo or b <= a:
+            raise ValueError("节次必须使用当地时间，且结束晚于开始")
+        if previous and a < previous[2]:
+            raise ValueError("所用节次时间重叠或顺序不正确，请核对设置")
+        interval = {
+            "periods": [number],
+            "starts_at": datetime.combine(day, a, tz).isoformat(),
+            "ends_at": datetime.combine(day, b, tz).isoformat(),
+        }
+        teaching.append(interval)
+        if previous and number == previous[0] + 1:
+            if a > previous[2]:
+                breaks.append(
+                    {
+                        "after_period": previous[0],
+                        "before_period": number,
+                        "starts_at": datetime.combine(day, previous[2], tz).isoformat(),
+                        "ends_at": interval["starts_at"],
+                        "protected": True,
+                    }
+                )
+            occupied[-1] = {
+                **occupied[-1],
+                "periods": [*occupied[-1]["periods"], number],
+                "ends_at": interval["ends_at"],
+            }
+        else:
+            occupied.append(dict(interval))
+        previous = (number, a, b)
+    if not teaching:
+        raise ValueError("课程节次不能为空")
+    return {
+        "interval_version": COURSE_INTERVAL_VERSION,
+        "teaching_intervals": teaching,
+        "break_intervals": breaks,
+        "occupied_intervals": occupied,
+    }
+
+
+def occupied_course_events(occurrences):
+    """Scheduling/reminders consume occupied runs, never a whole-day envelope.
+
+    The original occurrence ID remains stable. Additional runs have stable IDs
+    derived from their first period; adjacent breaks remain protected inside runs.
+    Legacy callers without interval metadata retain their original semantics.
+    """
+    result = []
+    for event in occurrences:
+        if event.get("occurrence_id") and event.get("segment_id"):
+            result.append(event)
+            continue
+        intervals = event.get("occupied_intervals")
+        if intervals is None:
+            result.append(event)
+            continue
+        for i, interval in enumerate(intervals):
+            segment_id = (
+                "period-" + str(interval["periods"][0])
+                if interval["periods"]
+                else "explicit"
+            )
+            a, b = interval["starts_at"], interval["ends_at"]
+            result.append(
+                {
+                    **event,
+                    "id": event["id"] if i == 0 else f"{event['id']}:{segment_id}",
+                    "occurrence_id": event["id"],
+                    "segment_id": segment_id,
+                    "occurrence_starts_at": event["starts_at"],
+                    "occurrence_ends_at": event["ends_at"],
+                    "starts_at": a,
+                    "ends_at": b,
+                    "periods": interval["periods"],
+                    "teaching_intervals": [
+                        x
+                        for x in event["teaching_intervals"]
+                        if a <= x["starts_at"] and x["ends_at"] <= b
+                    ],
+                    "break_intervals": [
+                        x
+                        for x in event["break_intervals"]
+                        if a <= x["starts_at"] and x["ends_at"] <= b
+                    ],
+                }
+            )
+    return result
+
+
 def expand_calendar(settings, courses, exceptions, start, end):
     if not courses:
         return []
@@ -50,12 +151,6 @@ def expand_calendar(settings, courses, exceptions, start, end):
     )
     for course in courses:
         c, cid = course["data"], course["id"]
-        periods = [
-            settings["periods"].get(str(p)) or settings["periods"].get(p)
-            for p in c["periods"]
-        ]
-        if not all(periods):
-            raise ValueError(f"课程 {c['name']} 缺少节次时间映射")
         for week in c["weeks"]:
             if week > settings["week_count"]:
                 raise ValueError("课程周次超出学期范围")
@@ -72,17 +167,33 @@ def expand_calendar(settings, courses, exceptions, start, end):
             )
             if ex and ex.get("cancelled"):
                 continue
-            starts = datetime.combine(
-                d, min(time.fromisoformat(p["start"]) for p in periods), tz
+            intervals = course_intervals(settings, c, d)
+            starts = datetime.fromisoformat(
+                intervals["teaching_intervals"][0]["starts_at"]
             )
-            ends = datetime.combine(
-                d, max(time.fromisoformat(p["end"]) for p in periods), tz
+            ends = datetime.fromisoformat(
+                intervals["teaching_intervals"][-1]["ends_at"]
             )
             if ex and ex.get("starts_at"):
-                starts, ends = (
+                moved_start, moved_end = (
                     datetime.fromisoformat(ex["starts_at"]),
                     datetime.fromisoformat(ex["ends_at"]),
                 )
+                # Changing only the room does not destroy known period structure.
+                # A new explicit interval is authoritative; never invent breaks.
+                if moved_start != starts or moved_end != ends:
+                    interval = {
+                        "periods": [],
+                        "starts_at": moved_start.isoformat(),
+                        "ends_at": moved_end.isoformat(),
+                    }
+                    intervals = {
+                        "interval_version": COURSE_INTERVAL_VERSION,
+                        "teaching_intervals": [interval],
+                        "break_intervals": [],
+                        "occupied_intervals": [interval],
+                    }
+                starts, ends = moved_start, moved_end
             if (
                 starts.astimezone(timezone.utc) < upper
                 and ends.astimezone(timezone.utc) > lower
@@ -93,7 +204,11 @@ def expand_calendar(settings, courses, exceptions, start, end):
                         "course_id": cid,
                         "original_date": d.isoformat(),
                         "adjusted": bool(ex),
+                        **intervals,
                         "title": c["name"],
+                        "campus": (ex.get("campus") or None)
+                        if ex and "campus" in ex
+                        else (None if ex and ex.get("location") not in (None, c.get("location")) else c.get("campus")),
                         "starts_at": starts.isoformat(),
                         "ends_at": ends.isoformat(),
                         "location": ex.get("location")

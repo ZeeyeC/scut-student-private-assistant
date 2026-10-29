@@ -79,7 +79,7 @@ export function TimetableRecognitionReview({draft}: {draft: Resource}) {
   return <section className="card timetable-recognition-review" aria-label={textInput ? "文字课表校对" : "课表识别校对"}>
     <p className="eyebrow">{textInput ? "文字课表草稿" : "华工课表识别草稿"} · 尚未保存</p><h2>{textInput ? "核对文字内容，逐门确认课程" : "对照原件，逐门确认课程"}</h2>
     <p>共 {payload.candidates.length} 个候选，保留 {included.length} 个。当前已保存 {courses.data?.length ?? "…"} 条课程；保存时仅新增，完全相同的课程复用，不删除已有课程。</p>
-    <p>请核对设置中的开学周一、学期周数与节次时间。非连续节次首版请排除后分别手工添加。</p>
+    <p>请核对设置中的开学周一、学期周数与节次时间。非连续节次会分段占用，中间未上课的节次保持空闲；连续节次间的休息单独记录并保留。</p>
     <label>{textInput ? "文字课表的学期名称" : "识别课表的学期名称"}<input value={payload.semester_label} onChange={e => setPayload({...payload, semester_label: e.target.value, semester_confirmed: false})} /></label>
     {settings.data && <p>当前设置学期：{settings.data.data.semester_name || "未填写"}；首周周一：{settings.data.data.week1_monday || "未填写，请前往设置补齐"}；共 {settings.data.data.week_count} 周。</p>}
     <label className="check"><input type="checkbox" checked={payload.semester_confirmed} onChange={e => setPayload({...payload, semester_confirmed: e.target.checked})} />{textInput ? "确认这些课程属于上述学期，且与当前设置一致" : "确认这些页面属于上述学期，且与当前设置一致"}</label>

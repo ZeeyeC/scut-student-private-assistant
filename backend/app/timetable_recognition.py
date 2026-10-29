@@ -20,7 +20,7 @@ from sqlalchemy import text
 from starlette.concurrency import run_in_threadpool
 
 from app import imports, store
-from app.calendar import parse_week_expression
+from app.calendar import course_intervals, parse_week_expression
 from app.contracts import Course, DraftEdit, ResourceView
 from app.db import Resource
 from app.timetable_contracts import (
@@ -166,7 +166,8 @@ def reviewed_courses(payload, settings, asset_id, source_kind="ocr"):
                         )
                     },
                     "weeks": weeks,
-                    "source_key": source_kind + ":"
+                    "source_key": source_kind
+                    + ":"
                     + store.digest({"asset": asset_id, "candidate": c["candidate_id"]}),
                 }
             ).model_dump(mode="json")
@@ -179,10 +180,14 @@ def reviewed_courses(payload, settings, asset_id, source_kind="ocr"):
             for p in course["periods"]
         ):
             raise HTTPException(422, "课程名称为空或节次时间映射缺失，请先在设置中补齐")
-        if any(b != a + 1 for a, b in zip(course["periods"], course["periods"][1:])):
-            raise HTTPException(
-                422, "首版暂不保存非连续节次，请不导入该候选并分次手工添加"
+        try:
+            from datetime import date
+
+            course_intervals(
+                settings, course, date.fromisoformat(settings["week1_monday"])
             )
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from exc
         result.append(course)
     if not result:
         raise HTTPException(422, "至少保留一门已校对的课程")
@@ -194,7 +199,12 @@ async def save_recognized_courses(db, owner, draft, payload, settings):
     text_input = draft.data["draft_kind"] == "timetable_text"
     if not text_input:
         await store.owned(db, owner, source["asset_id"], "asset")
-    courses = reviewed_courses(payload, settings, draft.id if text_input else source["asset_id"], "text" if text_input else "ocr")
+    courses = reviewed_courses(
+        payload,
+        settings,
+        draft.id if text_input else source["asset_id"],
+        "text" if text_input else "ocr",
+    )
     existing = await store.rows(db, owner, "course")
 
     # Exact normalized facts from a different input may already exist. Never delete
@@ -227,7 +237,12 @@ async def save_recognized_courses(db, owner, draft, payload, settings):
 
 async def preview_recognized_courses(db, owner, draft, payload, settings):
     text_input = draft.data["draft_kind"] == "timetable_text"
-    courses = reviewed_courses(payload, settings, draft.id if text_input else draft.data["source"]["asset_id"], "text" if text_input else "ocr")
+    courses = reviewed_courses(
+        payload,
+        settings,
+        draft.id if text_input else draft.data["source"]["asset_id"],
+        "text" if text_input else "ocr",
+    )
     existing = await store.rows(db, owner, "course")
     fields = ("name", "teacher", "campus", "location", "weekday", "weeks", "periods")
 
