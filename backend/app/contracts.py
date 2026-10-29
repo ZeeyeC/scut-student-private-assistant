@@ -20,6 +20,24 @@ class Window(StrictModel):
         return self
 
 
+class CampusTransfer(StrictModel):
+    from_campus: str = Field(min_length=1, max_length=100)
+    to_campus: str = Field(min_length=1, max_length=100)
+    minutes: int = Field(ge=1, le=360, strict=True)
+
+    @model_validator(mode="after")
+    def valid(self):
+        self.from_campus = self.from_campus.strip()
+        self.to_campus = self.to_campus.strip()
+        if (
+            not self.from_campus
+            or not self.to_campus
+            or self.from_campus == self.to_campus
+        ):
+            raise ValueError("请填写两个不同校区；时间按方向分别确认")
+        return self
+
+
 class StudentSettings(StrictModel):
     timezone: str = "Asia/Shanghai"
     semester_name: str = ""
@@ -37,9 +55,13 @@ class StudentSettings(StrictModel):
     max_block_minutes: int = Field(default=60, ge=15, le=240)
     min_block_minutes: int = Field(default=15, ge=5, le=60)
     buffer_minutes: int = Field(default=10, ge=0, le=120)
+    campus_transfers: list[CampusTransfer] = Field(default_factory=list, max_length=100)
 
     @model_validator(mode="after")
     def valid(self):
+        pairs = [(r.from_campus, r.to_campus) for r in self.campus_transfers]
+        if len(set(pairs)) != len(pairs):
+            raise ValueError("同一方向的校区转移时间不能重复")
         try:
             ZoneInfo(self.timezone)
         except (ZoneInfoNotFoundError, ValueError) as exc:
@@ -106,12 +128,18 @@ class Confirm(StrictModel):
     revision: int
 
 
+class DraftConfirm(Confirm):
+    conflict_token: str | None = Field(default=None, min_length=64, max_length=64)
+
+
 class SchedulingConstraint(StrictModel):
-    """First increment: an explicit, one-off protected interval for task planning."""
+    """Confirmed one-off or weekly hard protection in its own local timezone."""
 
     title: str = Field(default="不可安排", min_length=1, max_length=200)
-    strength: Literal["hard"] = "hard"
-    recurrence: Literal["once"] = "once"
+    strength: Literal["hard", "soft"] = "hard"
+    recurrence: Literal["once", "weekly"] = "once"
+    weekdays: list[int] = Field(default_factory=list, max_length=7)
+    valid_until: date | None = None
     timezone: str
     starts_at: datetime
     ends_at: datetime
@@ -133,6 +161,20 @@ class SchedulingConstraint(StrictModel):
             timezone.utc
         ):
             raise ValueError("禁排结束时间必须晚于开始时间")
+        if self.recurrence == "once":
+            if self.weekdays or self.valid_until:
+                raise ValueError("单次禁排不应包含重复星期或有效期")
+        else:
+            if not self.weekdays or any(d < 1 or d > 7 for d in self.weekdays):
+                raise ValueError("每周禁排需要选择星期一至星期日")
+            self.weekdays = sorted(set(self.weekdays))
+            zone = ZoneInfo(self.timezone)
+            a, b = self.starts_at.astimezone(zone), self.ends_at.astimezone(zone)
+            local_duration = b.replace(tzinfo=None) - a.replace(tzinfo=None)
+            if not 0 < local_duration.total_seconds() <= 86400:
+                raise ValueError("每周禁排的单次时段需在24小时内，跨午夜请填写次日结束")
+            if self.valid_until and self.valid_until < a.date():
+                raise ValueError("重复截止日期不能早于生效开始日期")
         return self
 
 
@@ -165,6 +207,7 @@ class CalendarException(StrictModel):
     starts_at: datetime | None = None
     ends_at: datetime | None = None
     location: str | None = None
+    campus: str | None = Field(default=None, max_length=100)
 
 
 class FixedEvent(StrictModel):

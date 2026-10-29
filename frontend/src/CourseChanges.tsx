@@ -8,7 +8,7 @@ import { DraftActions } from './Assignments';
 import { constraintInput, constraintInstant } from './constraint-time';
 
 const when = (e: Record<string, any> | null, timezone: string) => e
-  ? `${new Date(e.starts_at).toLocaleString('zh-CN',{timeZone:timezone})} – ${new Date(e.ends_at).toLocaleString('zh-CN',{timeZone:timezone})}${e.location ? ` · ${e.location}` : ''}`
+  ? `${(e.occupied_intervals ?? [e]).map((part: Record<string, any>)=>`${new Date(part.starts_at).toLocaleString('zh-CN',{timeZone:timezone})} – ${new Date(part.ends_at).toLocaleString('zh-CN',{timeZone:timezone})}`).join('；')}${e.location ? ` · ${e.location}` : ''}`
   : '本次不上课';
 
 export function CourseChangeForm({event, timezone, onClose}:{event:ScheduleEvent;timezone:string;onClose:()=>void}) {
@@ -23,19 +23,20 @@ export function CourseChangeForm({event, timezone, onClose}:{event:ScheduleEvent
       await api('/drafts/course-change',{method:'POST',headers:{'Idempotency-Key':key},body:JSON.stringify({
         course_id:event.course_id, original_date:event.original_date, action,
         reason:String(f.get('reason')),
-        ...(action==='move' ? {starts_at:constraintInstant(String(f.get('start')),timezone),ends_at:constraintInstant(String(f.get('end')),timezone),location:String(f.get('location'))} : {}),
+        ...(action==='move' ? {starts_at:constraintInstant(String(f.get('start')),timezone),ends_at:constraintInstant(String(f.get('end')),timezone),location:String(f.get('location')),campus:String(f.get('campus')) || null} : {}),
       })});
       await q.invalidateQueries({queryKey:['drafts']}); onClose();
     } catch(e){setError(String(e));}finally{setBusy(false);}
   }}>
     <h3>{event.title} · 原课日期 {event.original_date}</h3>
-    <p>仅调整这一次课程，其他周不变。填写教师或教务通知依据，生成草稿后再确认。</p>
+    <p>调整原日期这门课的全部节次，其他周不变。新起止若改变，按填写的一个连续时段授课，不推算课间；仅换教室且起止不变时保留原分段。填写教师或教务通知依据，生成草稿后再确认。</p>
     <fieldset disabled={busy}>
       <label>调整方式<select value={action} onChange={e=>setAction(e.target.value)}><option value="move">调课或更换教室</option><option value="cancel">本次停课</option></select></label>
       {action==='move' && <div className="grid2">
-        <label>新上课时间<input name="start" type="datetime-local" required defaultValue={constraintInput(event.starts_at,timezone)} /></label>
-        <label>新下课时间<input name="end" type="datetime-local" required defaultValue={constraintInput(event.ends_at,timezone)} /></label>
+        <label>新上课时间<input name="start" type="datetime-local" required defaultValue={constraintInput(event.occurrence_starts_at ?? event.starts_at,timezone)} /></label>
+        <label>新下课时间<input name="end" type="datetime-local" required defaultValue={constraintInput(event.occurrence_ends_at ?? event.ends_at,timezone)} /></label>
         <label>新教室<input name="location" maxLength={200} defaultValue={event.location??''} /></label>
+        <label>本次校区<input name="campus" maxLength={100} defaultValue={event.campus??''} placeholder="请按调课通知确认，未知可留空" /></label>
       </div>}
       <label>调整依据<textarea name="reason" required maxLength={1000} placeholder="例如：10月14日教师通知，本周课程改到周四晚上" /></label>
     </fieldset>

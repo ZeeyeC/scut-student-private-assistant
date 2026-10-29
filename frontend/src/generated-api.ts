@@ -382,6 +382,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/drafts/{rid}/conflict-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conflict Preview */
+        post: operations["conflict_preview_api_drafts__rid__conflict_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/fixed-events": {
         parameters: {
             query?: never;
@@ -795,6 +812,264 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record */
+        post: operations["record_api_executions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/executions/{rid}/corrections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Correct */
+        post: operations["correct_api_executions__rid__corrections_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{rid}/execution-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Summary */
+        get: operations["summary_api_tasks__rid__execution_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{rid}/executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** History */
+        get: operations["history_api_tasks__rid__executions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/execution-timers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Timers */
+        get: operations["timers_api_execution_timers_get"];
+        put?: never;
+        /** Start */
+        post: operations["start_api_execution_timers_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/execution-timers/{rid}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Act */
+        post: operations["act_api_execution_timers__rid__actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_profile_get"];
+        /** Replace */
+        put: operations["replace_api_profile_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/profile/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset */
+        post: operations["reset_api_profile_reset_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/goals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_goals_get"];
+        put?: never;
+        /** Create */
+        post: operations["create_api_goals_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/goals/{rid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch */
+        patch: operations["patch_api_goals__rid__patch"];
+        trace?: never;
+    };
+    "/api/weekly-review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_weekly_review_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/weekly-review/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Action */
+        post: operations["action_api_weekly_review_actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/planning-capacity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Capacity */
+        get: operations["capacity_api_planning_capacity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replanning": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Repair Preview */
+        get: operations["repair_preview_api_replanning_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replan-drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Repair Draft */
+        post: operations["repair_draft_api_replan_drafts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/plan-drafts": {
         parameters: {
             query?: never;
@@ -844,6 +1119,108 @@ export interface paths {
         head?: never;
         /** Update */
         patch: operations["update_api_plan_blocks__rid__patch"];
+        trace?: never;
+    };
+    "/api/planning-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Options */
+        get: operations["options_api_planning_options_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/planning-risks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Risks */
+        get: operations["risks_api_planning_risks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/daily-routine-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview */
+        post: operations["preview_api_daily_routine_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/daily-routine-drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Draft */
+        post: operations["draft_api_daily_routine_drafts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/daily-routine-dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dismiss */
+        post: operations["dismiss_api_daily_routine_dismiss_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/drafts/{rid}/constraint-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview */
+        post: operations["preview_api_drafts__rid__constraint_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/scheduling-constraints": {
@@ -1405,6 +1782,146 @@ export interface components {
             ends_at?: string | null;
             /** Location */
             location?: string | null;
+            /** Campus */
+            campus?: string | null;
+        };
+        /** CampusTransfer */
+        CampusTransfer: {
+            /** From Campus */
+            from_campus: string;
+            /** To Campus */
+            to_campus: string;
+            /** Minutes */
+            minutes: number;
+        };
+        /** Candidate */
+        Candidate: {
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "routine" | "preparation" | "review" | "commute";
+            /** Title */
+            title: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /** Can Add */
+            can_add: boolean;
+            /** Dismissed */
+            dismissed: boolean;
+            /** Conflicts */
+            conflicts: string[];
+        };
+        /** CandidateDraft */
+        CandidateDraft: {
+            /** Candidate Id */
+            candidate_id: string;
+            /** Expected Source Revision */
+            expected_source_revision: number;
+            request: components["schemas"]["RoutineRequest"];
+        };
+        /** CapacityChanges */
+        CapacityChanges: {
+            /** Added */
+            added: number;
+            /** Retained */
+            retained: number;
+            /** Removed */
+            removed: number;
+        };
+        /** CapacityDay */
+        CapacityDay: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Free Windows */
+            free_windows: components["schemas"]["CapacityWindow"][];
+            /** Free Minutes */
+            free_minutes: number;
+            /** Budget Remaining Minutes */
+            budget_remaining_minutes: number;
+            /** Capacity Upper Bound Minutes */
+            capacity_upper_bound_minutes: number;
+            /** Proposed Minutes */
+            proposed_minutes: number;
+        };
+        /** CapacityReport */
+        CapacityReport: {
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: 1;
+            /**
+             * Scope
+             * @enum {string}
+             */
+            scope: "today" | "range";
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+            /** Horizon Days */
+            horizon_days: number;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Calculated At
+             * Format: date-time
+             */
+            calculated_at: string;
+            /** Source Revision */
+            source_revision: number;
+            /** Rule Version */
+            rule_version: string;
+            /** Days */
+            days: components["schemas"]["CapacityDay"][];
+            /** Capacity Upper Bound Minutes */
+            capacity_upper_bound_minutes: number;
+            /** Required Minutes */
+            required_minutes: number;
+            /** Reserved Work Minutes */
+            reserved_work_minutes: number;
+            /** Proposed Minutes */
+            proposed_minutes: number;
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /** Unknown Estimate Count */
+            unknown_estimate_count: number;
+            /** Unscheduled */
+            unscheduled: components["schemas"]["UnallocatedWork"][];
+            /** Warnings */
+            warnings: string[];
+            changes: components["schemas"]["CapacityChanges"];
+        };
+        /** CapacityWindow */
+        CapacityWindow: {
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /** Minutes */
+            minutes: number;
         };
         /** Capture */
         Capture: {
@@ -1510,6 +2027,8 @@ export interface components {
             ends_at?: string | null;
             /** Location */
             location?: string | null;
+            /** Campus */
+            campus?: string | null;
             /** Reason */
             reason: string;
         };
@@ -1537,6 +2056,13 @@ export interface components {
             /** Items */
             items?: components["schemas"]["DraftHomeworkItem"][];
         };
+        /** DraftConfirm */
+        DraftConfirm: {
+            /** Revision */
+            revision: number;
+            /** Conflict Token */
+            conflict_token?: string | null;
+        };
         /** DraftEdit */
         DraftEdit: {
             /** Revision */
@@ -1557,6 +2083,26 @@ export interface components {
         };
         /** EmptyAction */
         EmptyAction: Record<string, never>;
+        /** EnergyWindow */
+        EnergyWindow: {
+            /** Weekdays */
+            weekdays: number[];
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "low" | "medium" | "high";
+        };
         /** ErrorModel */
         ErrorModel: {
             /** Detail */
@@ -1570,6 +2116,112 @@ export interface components {
             field: string;
             /** Text */
             text: string;
+        };
+        /** ExecutionCorrection */
+        ExecutionCorrection: {
+            /** Client Operation Id */
+            client_operation_id: string;
+            /** Revision */
+            revision: number;
+            /** Task Revision */
+            task_revision: number;
+            /** Actual Minutes */
+            actual_minutes: number;
+            /**
+             * Feedback
+             * @enum {string}
+             */
+            feedback: "partial" | "completed" | "not_started" | "skipped";
+            /** Unfinished Reason */
+            unfinished_reason?: ("interrupted" | "insufficient_time" | "unsuitable_schedule" | "skipped" | "other") | null;
+            /** Task Status */
+            task_status?: ("open" | "completed") | null;
+        };
+        /** ExecutionSummary */
+        ExecutionSummary: {
+            /** Task Id */
+            task_id: string;
+            /** Step Id */
+            step_id?: string | null;
+            /** Actual Minutes */
+            actual_minutes?: number | null;
+            /** Actual Seconds */
+            actual_seconds?: number | null;
+            /** Unconfirmed Execution Ids */
+            unconfirmed_execution_ids?: string[];
+            /**
+             * Legacy Estimated Minutes
+             * @default 0
+             */
+            legacy_estimated_minutes: number;
+            /**
+             * Unresolved Legacy Minutes
+             * @default 0
+             */
+            unresolved_legacy_minutes: number;
+            /**
+             * Planning Spent Minutes
+             * @default 0
+             */
+            planning_spent_minutes: number;
+            /** Unknown Step Ids */
+            unknown_step_ids?: string[];
+            /** Effective Record Ids */
+            effective_record_ids?: string[];
+            /** Source Revision */
+            source_revision: number;
+        };
+        /** ExecutionView */
+        ExecutionView: {
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Revision */
+            revision: number;
+            /** Data */
+            data: {
+                [key: string]: unknown;
+            };
+        };
+        /** ExecutionWrite */
+        ExecutionWrite: {
+            /** Client Operation Id */
+            client_operation_id: string;
+            /** Execution Id */
+            execution_id: string;
+            /** Task Id */
+            task_id: string;
+            /** Task Revision */
+            task_revision: number;
+            /** Step Id */
+            step_id?: string | null;
+            /** Step Revision */
+            step_revision?: number | null;
+            /** Plan Block Id */
+            plan_block_id?: string | null;
+            /** Plan Block Revision */
+            plan_block_revision?: number | null;
+            /**
+             * Performed On
+             * Format: date
+             */
+            performed_on: string;
+            /** Timezone */
+            timezone: string;
+            /** Legacy Resolution */
+            legacy_resolution?: ("replace" | "separate") | null;
+            /** Actual Minutes */
+            actual_minutes: number;
+            /**
+             * Feedback
+             * @enum {string}
+             */
+            feedback: "partial" | "completed" | "not_started" | "skipped";
+            /** Unfinished Reason */
+            unfinished_reason?: ("interrupted" | "insufficient_time" | "unsuitable_schedule" | "skipped" | "other") | null;
+            /** Task Status */
+            task_status?: ("open" | "completed") | null;
         };
         /** FixedEvent */
         FixedEvent: {
@@ -1585,6 +2237,235 @@ export interface components {
              * Format: date-time
              */
             ends_at: string;
+        };
+        /** GoalCapacity */
+        GoalCapacity: {
+            /**
+             * Status
+             * @default unknown
+             * @constant
+             */
+            status: "unknown";
+            /** Weekly Available Minutes */
+            weekly_available_minutes?: null;
+            /**
+             * Integration Status
+             * @default pending
+             * @constant
+             */
+            integration_status: "pending";
+        };
+        /** GoalCompletion */
+        GoalCompletion: {
+            /** Subtask Id */
+            subtask_id: string;
+            /** Title */
+            title: string;
+            /** Estimated Minutes */
+            estimated_minutes: number;
+            /** Task Id */
+            task_id: string | null;
+            /**
+             * Completed At
+             * Format: date-time
+             */
+            completed_at: string;
+            /** Goal Revision */
+            goal_revision: number;
+        };
+        /** GoalCreate */
+        GoalCreate: {
+            /** Title */
+            title: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /** Deadline */
+            deadline?: string | null;
+            /** Weekly Budget Minutes */
+            weekly_budget_minutes: number;
+            /** Priority */
+            priority: number;
+            /**
+             * Load Category
+             * @enum {string}
+             */
+            load_category: "study" | "exercise" | "other";
+            /**
+             * Allowed Adjustment
+             * @enum {string}
+             */
+            allowed_adjustment: "reduce" | "delay" | "ask";
+            /**
+             * Paused
+             * @default false
+             */
+            paused: boolean;
+            /** Subtasks */
+            subtasks?: components["schemas"]["GoalSubtaskInput"][];
+            /**
+             * Revision
+             * @default 0
+             */
+            revision: number;
+        };
+        /** GoalData */
+        GoalData: {
+            /** Title */
+            title: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /** Deadline */
+            deadline?: string | null;
+            /** Weekly Budget Minutes */
+            weekly_budget_minutes: number;
+            /** Priority */
+            priority: number;
+            /**
+             * Load Category
+             * @enum {string}
+             */
+            load_category: "study" | "exercise" | "other";
+            /**
+             * Allowed Adjustment
+             * @enum {string}
+             */
+            allowed_adjustment: "reduce" | "delay" | "ask";
+            /**
+             * Paused
+             * @default false
+             */
+            paused: boolean;
+            /** Subtasks */
+            subtasks?: components["schemas"]["GoalSubtaskInput"][];
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: 1;
+            /**
+             * Source
+             * @default user
+             * @constant
+             */
+            source: "user";
+            /**
+             * Confirmed
+             * @default true
+             * @constant
+             */
+            confirmed: true;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Completion History */
+            completion_history?: components["schemas"]["GoalCompletion"][];
+        };
+        /** GoalPatch */
+        GoalPatch: {
+            /** Revision */
+            revision: number;
+            /** Title */
+            title?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Deadline */
+            deadline?: string | null;
+            /** Weekly Budget Minutes */
+            weekly_budget_minutes?: number | null;
+            /** Priority */
+            priority?: number | null;
+            /** Load Category */
+            load_category?: ("study" | "exercise" | "other") | null;
+            /** Allowed Adjustment */
+            allowed_adjustment?: ("reduce" | "delay" | "ask") | null;
+            /** Paused */
+            paused?: boolean | null;
+            /** Subtasks */
+            subtasks?: components["schemas"]["GoalSubtaskInput"][] | null;
+        };
+        /** GoalReference */
+        GoalReference: {
+            /** Subtask Id */
+            subtask_id: string;
+            /** Task Id */
+            task_id: string;
+            /** Available */
+            available: boolean;
+            /** Revision */
+            revision?: number | null;
+            /** Title */
+            title?: string | null;
+            /** Status */
+            status?: string | null;
+        };
+        /** GoalSubtaskInput */
+        GoalSubtaskInput: {
+            /** Id */
+            id?: string | null;
+            /** Title */
+            title: string;
+            /**
+             * Status
+             * @default open
+             * @enum {string}
+             */
+            status: "open" | "completed";
+            /** Estimated Minutes */
+            estimated_minutes: number;
+            /** Task Id */
+            task_id?: string | null;
+        };
+        /** GoalView */
+        GoalView: {
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @default goal
+             * @constant
+             */
+            kind: "goal";
+            /** Revision */
+            revision: number;
+            /** Source Revision */
+            source_revision: number;
+            /**
+             * Contract Version
+             * @default goals-v1
+             * @constant
+             */
+            contract_version: "goals-v1";
+            data: components["schemas"]["GoalData"];
+            capacity?: components["schemas"]["GoalCapacity"];
+            /** References */
+            references?: components["schemas"]["GoalReference"][];
+            /** Arrangements */
+            arrangements?: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** GoalsView */
+        GoalsView: {
+            /**
+             * Contract Version
+             * @default goals-v1
+             * @constant
+             */
+            contract_version: "goals-v1";
+            /** Source Revision */
+            source_revision: number;
+            capacity?: components["schemas"]["GoalCapacity"];
+            /** Goals */
+            goals: components["schemas"]["GoalView"][];
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1644,6 +2525,63 @@ export interface components {
              */
             model_use_system_proxy: boolean;
         };
+        /** Option */
+        Option: {
+            /**
+             * Id
+             * @enum {string}
+             */
+            id: "earliest" | "preferred";
+            /** Title */
+            title: string;
+            /** Proposed Minutes */
+            proposed_minutes: number;
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /** Preferred Minutes */
+            preferred_minutes: number;
+            /** Retained Count */
+            retained_count: number;
+            /** Changed Count */
+            changed_count: number;
+            /** Explanation */
+            explanation: string[];
+            /** Blocks */
+            blocks: components["schemas"]["ReplanAddition"][];
+        };
+        /** Options */
+        Options: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+            /** Horizon Days */
+            horizon_days: number;
+            /** Preference Count */
+            preference_count: number;
+            /** Options */
+            options: components["schemas"]["Option"][];
+            /**
+             * Profile Integration
+             * @default pending_person_b
+             */
+            profile_integration: string;
+            /**
+             * Goal Integration
+             * @default pending_person_b
+             */
+            goal_integration: string;
+        };
         /** PetStatus */
         PetStatus: {
             /**
@@ -1669,6 +2607,36 @@ export interface components {
              * @default 7
              */
             horizon_days: number;
+            /**
+             * Strategy
+             * @default earliest
+             * @enum {string}
+             */
+            strategy: "earliest" | "preferred";
+            /** Expected Source Revision */
+            expected_source_revision?: number | null;
+        };
+        /** PlanTotal */
+        PlanTotal: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "complete" | "partial" | "missing";
+            /** Minutes */
+            minutes: number | null;
+            /** Known Minutes */
+            known_minutes: number;
+            /** Covered Dates */
+            covered_dates: string[];
+            /** Snapshot Ids */
+            snapshot_ids: string[];
+            /** Blocks */
+            blocks: {
+                [key: string]: unknown;
+            }[];
+            /** Gaps */
+            gaps: string[];
         };
         /** PreferencesUpdate */
         PreferencesUpdate: {
@@ -1695,6 +2663,169 @@ export interface components {
              */
             create_new: boolean;
         };
+        /** ProfileData */
+        ProfileData: {
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: 1;
+            /** Timezone */
+            timezone?: string | null;
+            /** Effective From */
+            effective_from?: string | null;
+            /** Effective Until */
+            effective_until?: string | null;
+            preferences?: components["schemas"]["ProfilePreferences"];
+            /**
+             * Source
+             * @default unknown
+             * @enum {string}
+             */
+            source: "unknown" | "user";
+            /**
+             * Confirmed
+             * @default false
+             */
+            confirmed: boolean;
+            /**
+             * Sample Count
+             * @default 0
+             * @constant
+             */
+            sample_count: 0;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** ProfileInput */
+        ProfileInput: {
+            /** Timezone */
+            timezone: string;
+            /** Effective From */
+            effective_from?: string | null;
+            /** Effective Until */
+            effective_until?: string | null;
+            preferences?: components["schemas"]["ProfilePreferences"];
+        };
+        /** ProfilePreferences */
+        ProfilePreferences: {
+            /** Preferred Study Windows */
+            preferred_study_windows?: components["schemas"]["StudyWindow"][] | null;
+            /** Energy Windows */
+            energy_windows?: components["schemas"]["EnergyWindow"][] | null;
+            /** Focus Minutes */
+            focus_minutes?: number | null;
+            /** Break Minutes */
+            break_minutes?: number | null;
+            /** Review Interval Days */
+            review_interval_days?: number | null;
+            /** Daily Load Minutes */
+            daily_load_minutes?: number | null;
+            /** Leisure Protection */
+            leisure_protection?: ("prefer_protect" | "flexible") | null;
+        };
+        /** ProfileReset */
+        ProfileReset: {
+            /** Revision */
+            revision: number;
+        };
+        /** ProfileView */
+        ProfileView: {
+            /** Id */
+            id: string | null;
+            /**
+             * Kind
+             * @default user_profile
+             * @constant
+             */
+            kind: "user_profile";
+            /** Revision */
+            revision: number;
+            /** Source Revision */
+            source_revision: number;
+            /**
+             * Contract Version
+             * @default profile-v1
+             * @constant
+             */
+            contract_version: "profile-v1";
+            data: components["schemas"]["ProfileData"];
+            /** Suggestions */
+            suggestions?: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** ProfileWrite */
+        ProfileWrite: {
+            /** Revision */
+            revision: number;
+            data: components["schemas"]["ProfileInput"];
+        };
+        /** ReplanAddition */
+        ReplanAddition: {
+            /** Id */
+            id: string;
+            /** Task Id */
+            task_id: string;
+            /** Step Id */
+            step_id: string;
+            /** Title */
+            title: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+        };
+        /** ReplanRemoval */
+        ReplanRemoval: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Reason */
+            reason: string;
+        };
+        /** ReplanReport */
+        ReplanReport: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /**
+             * Rule Version
+             * @default preserve-valid-1
+             */
+            rule_version: string;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /** Needs Changes */
+            needs_changes: boolean;
+            /** Retained Ids */
+            retained_ids: string[];
+            /** Removed */
+            removed: components["schemas"]["ReplanRemoval"][];
+            /** Added */
+            added: components["schemas"]["ReplanAddition"][];
+            /** Warnings */
+            warnings: string[];
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /**
+             * Execution Integration
+             * @default pending_person_b
+             */
+            execution_integration: string;
+        };
         /** ResourceView */
         ResourceView: {
             /** Id */
@@ -1708,6 +2839,143 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** ReviewAction */
+        ReviewAction: {
+            /**
+             * Week Start
+             * Format: date
+             */
+            week_start: string;
+            /** Timezone */
+            timezone: string;
+            /** Revision */
+            revision: number;
+            /** Source Revision */
+            source_revision: number;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "accept" | "reject" | "restore" | "reason";
+            /** Reason */
+            reason?: string | null;
+        };
+        /** Risk */
+        Risk: {
+            /**
+             * Code
+             * @enum {string}
+             */
+            code: "unknown_estimate" | "overdue" | "unallocated";
+            /** Task Id */
+            task_id?: string | null;
+            /** Step Id */
+            step_id?: string | null;
+            /** Title */
+            title: string;
+            /** Remaining Minutes */
+            remaining_minutes: number | null;
+            /** Reason */
+            reason: string;
+        };
+        /** Risks */
+        Risks: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /** Capacity Upper Bound Minutes */
+            capacity_upper_bound_minutes: number;
+            /** Required Minutes */
+            required_minutes: number;
+            /** Unallocated Minutes */
+            unallocated_minutes: number;
+            /** Unknown Estimate Count */
+            unknown_estimate_count: number;
+            /** Risks */
+            risks: components["schemas"]["Risk"][];
+            /**
+             * Execution Integration
+             * @default pending_person_b
+             */
+            execution_integration: string;
+        };
+        /** RoutinePreview */
+        RoutinePreview: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Source Revision */
+            source_revision: number;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Source
+             * @default explicit_request
+             * @constant
+             */
+            source: "explicit_request";
+            /** Candidates */
+            candidates: components["schemas"]["Candidate"][];
+            /** Warnings */
+            warnings: string[];
+        };
+        /** RoutineRequest */
+        RoutineRequest: {
+            /**
+             * Confirmed
+             * @constant
+             */
+            confirmed: true;
+            /** Target Date */
+            target_date?: string | null;
+            /**
+             * Horizon Days
+             * @default 7
+             */
+            horizon_days: number;
+            /** Daily Windows */
+            daily_windows?: components["schemas"]["RoutineWindow"][];
+            /**
+             * Preparation Minutes
+             * @default 0
+             */
+            preparation_minutes: number;
+            /**
+             * Review Minutes
+             * @default 0
+             */
+            review_minutes: number;
+            /**
+             * Include Campus Transfer
+             * @default false
+             */
+            include_campus_transfer: boolean;
+        };
+        /** RoutineWindow */
+        RoutineWindow: {
+            /** Title */
+            title: string;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /** Weekdays */
+            weekdays?: number[];
+        };
         /** RunRequest */
         RunRequest: {
             /** Thread Id */
@@ -1717,7 +2985,7 @@ export interface components {
         };
         /**
          * SchedulingConstraint
-         * @description First increment: an explicit, one-off protected interval for task planning.
+         * @description Confirmed one-off or weekly hard protection in its own local timezone.
          */
         SchedulingConstraint: {
             /**
@@ -1728,15 +2996,19 @@ export interface components {
             /**
              * Strength
              * @default hard
-             * @constant
+             * @enum {string}
              */
-            strength: "hard";
+            strength: "hard" | "soft";
             /**
              * Recurrence
              * @default once
-             * @constant
+             * @enum {string}
              */
-            recurrence: "once";
+            recurrence: "once" | "weekly";
+            /** Weekdays */
+            weekdays?: number[];
+            /** Valid Until */
+            valid_until?: string | null;
             /** Timezone */
             timezone: string;
             /**
@@ -1880,6 +3152,29 @@ export interface components {
              * @default 10
              */
             buffer_minutes: number;
+            /** Campus Transfers */
+            campus_transfers?: components["schemas"]["CampusTransfer"][];
+        };
+        /** StudyWindow */
+        StudyWindow: {
+            /** Weekdays */
+            weekdays: number[];
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /**
+             * Task Type
+             * @default any
+             * @enum {string}
+             */
+            task_type: "any" | "deep" | "review";
         };
         /** TaskUpdate */
         TaskUpdate: {
@@ -1895,6 +3190,56 @@ export interface components {
             remedy_due_at?: string | null;
             /** Priority */
             priority?: number | null;
+        };
+        /** TimerAction */
+        TimerAction: {
+            /** Revision */
+            revision: number;
+            /** Client Operation Id */
+            client_operation_id: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "heartbeat" | "pause" | "resume" | "finish" | "discard";
+            /** Feedback */
+            feedback?: ("partial" | "completed" | "not_started" | "skipped") | null;
+            /** Unfinished Reason */
+            unfinished_reason?: ("interrupted" | "insufficient_time" | "unsuitable_schedule" | "skipped" | "other") | null;
+            /** Task Status */
+            task_status?: ("open" | "completed") | null;
+            /** Task Revision */
+            task_revision?: number | null;
+            /** Actual Minutes */
+            actual_minutes?: number | null;
+        };
+        /** TimerStart */
+        TimerStart: {
+            /** Client Operation Id */
+            client_operation_id: string;
+            /** Execution Id */
+            execution_id: string;
+            /** Task Id */
+            task_id: string;
+            /** Task Revision */
+            task_revision: number;
+            /** Step Id */
+            step_id?: string | null;
+            /** Step Revision */
+            step_revision?: number | null;
+            /** Plan Block Id */
+            plan_block_id?: string | null;
+            /** Plan Block Revision */
+            plan_block_revision?: number | null;
+            /**
+             * Performed On
+             * Format: date
+             */
+            performed_on: string;
+            /** Timezone */
+            timezone: string;
+            /** Legacy Resolution */
+            legacy_resolution?: ("replace" | "separate") | null;
         };
         /** Timetable */
         Timetable: {
@@ -1920,6 +3265,19 @@ export interface components {
              * @constant
              */
             consent: true;
+        };
+        /** UnallocatedWork */
+        UnallocatedWork: {
+            /** Task Id */
+            task_id?: string | null;
+            /** Step Id */
+            step_id?: string | null;
+            /** Title */
+            title: string;
+            /** Remaining Minutes */
+            remaining_minutes: number | null;
+            /** Reason */
+            reason: string;
         };
         /** UserCreate */
         UserCreate: {
@@ -1986,6 +3344,57 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
+        };
+        /** WeeklyReview */
+        WeeklyReview: {
+            /**
+             * Contract Version
+             * @default weekly-review-v1
+             * @constant
+             */
+            contract_version: "weekly-review-v1";
+            /**
+             * Week Start
+             * Format: date
+             */
+            week_start: string;
+            /**
+             * Week End
+             * Format: date
+             */
+            week_end: string;
+            /** Timezone */
+            timezone: string;
+            /** Starts At */
+            starts_at: string;
+            /** Ends At */
+            ends_at: string;
+            /** Source Revision */
+            source_revision: number;
+            /** Plans */
+            plans: {
+                [key: string]: components["schemas"]["PlanTotal"];
+            };
+            /** Execution */
+            execution: {
+                [key: string]: unknown;
+            };
+            /** Estimates */
+            estimates: {
+                [key: string]: unknown;
+            };
+            /** Gaps */
+            gaps: string[];
+            /** Review */
+            review: {
+                [key: string]: unknown;
+            };
+            /**
+             * Next Week Optimization
+             * @default pending_integration
+             * @constant
+             */
+            next_week_optimization: "pending_integration";
         };
         /** Window */
         Window: {
@@ -2755,7 +4164,42 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Confirm"];
+                "application/json": components["schemas"]["DraftConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    conflict_preview_api_drafts__rid__conflict_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftEdit"];
             };
         };
         responses: {
@@ -3729,6 +5173,583 @@ export interface operations {
             };
         };
     };
+    record_api_executions_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    correct_api_executions__rid__corrections_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionCorrection"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    summary_api_tasks__rid__execution_summary_get: {
+        parameters: {
+            query?: {
+                step_id?: string | null;
+            };
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    history_api_tasks__rid__executions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionView"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    timers_api_execution_timers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"][];
+                };
+            };
+        };
+    };
+    start_api_execution_timers_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimerStart"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    act_api_execution_timers__rid__actions_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimerAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_profile_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileView"];
+                };
+            };
+        };
+    };
+    replace_api_profile_put: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reset_api_profile_reset_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileReset"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_goals_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoalsView"];
+                };
+            };
+        };
+    };
+    create_api_goals_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoalCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoalView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_api_goals__rid__patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoalPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoalView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_weekly_review_get: {
+        parameters: {
+            query: {
+                week_start: string;
+                timezone?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyReview"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    action_api_weekly_review_actions_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    capacity_api_planning_capacity_get: {
+        parameters: {
+            query?: {
+                scope?: "range" | "today";
+                target_date?: string | null;
+                horizon_days?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapacityReport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    repair_preview_api_replanning_get: {
+        parameters: {
+            query?: {
+                target_date?: string | null;
+                horizon_days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReplanReport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    repair_draft_api_replan_drafts_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     plan_api_plan_drafts_post: {
         parameters: {
             query?: never;
@@ -3808,6 +5829,211 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    options_api_planning_options_get: {
+        parameters: {
+            query?: {
+                target_date?: string | null;
+                horizon_days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Options"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    risks_api_planning_risks_get: {
+        parameters: {
+            query?: {
+                target_date?: string | null;
+                horizon_days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Risks"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_api_daily_routine_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoutineRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutinePreview"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    draft_api_daily_routine_drafts_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CandidateDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dismiss_api_daily_routine_dismiss_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CandidateDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_api_drafts__rid__constraint_preview_post: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+            };
+            header?: never;
+            path: {
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

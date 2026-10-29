@@ -73,7 +73,7 @@ struct NativeTests {
             let identity: [String: Any] = ["application": "campus-companion", "mode": "local", "desktop_protocol": 1]
             precondition(AppDelegate.pages[4] == "目标与复盘", "Compact desktop must expose goals and weekly review")
             precondition(AppDelegate.pages.last == "设置", "Adding goals must preserve settings navigation")
-            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1"]
+            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1"]
             func rejects(_ body: [String: Any], status: Int = 200) -> Bool {
                 do { try ServiceController.validateHealth(status: status, body: body); return false }
                 catch { return true }

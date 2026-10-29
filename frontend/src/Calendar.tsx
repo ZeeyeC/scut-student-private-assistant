@@ -7,6 +7,7 @@ import luxonPlugin from "@fullcalendar/luxon3";
 import interactionPlugin from "@fullcalendar/interaction";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "./components/ui/button";
+import { CourseIntervals } from "./CourseIntervals";
 import { api } from "./api";
 import type { Resource, Course, SettingsData } from "./types";
 import { DraftReview } from "./DraftReview";
@@ -18,6 +19,7 @@ import { ScheduleShortcut } from "./ScheduleShortcut";
 import { courseSlot, type CourseSlot } from "./course-slot";
 import { CourseChangeForm, CourseChangeHistory } from "./CourseChanges";
 import { TimetableRecognitionInput } from "./TimetableRecognition";
+import {CampusTransfers, ConflictReview, type ConflictReport} from "./ConflictReview";
 
 export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: string; mode?: "timetable" | "schedule"}) {
   const timetable = mode === "timetable";
@@ -35,7 +37,7 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
   const events = useQuery({
     queryKey: ["calendar-events", range],
     queryFn: () =>
-      api<{events: ScheduleEvent[]; warnings: string[]}>(`/calendar-events?start=${range.start}&end=${range.end}`),
+      api<{events: ScheduleEvent[]; warnings: string[]; conflict_report:ConflictReport}>(`/calendar-events?start=${range.start}&end=${range.end}`),
   });
   const drafts = useQuery({
     queryKey: ["drafts"],
@@ -88,6 +90,8 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
       {timetable && <p>
         已适配本人实测的华工个人课表。请先在设置中校对开学周一、学期周数和节次时间。
       </p>}
+      {timetable && <CampusTransfers />}
+      {events.data?.conflict_report && events.data.conflict_report.issues.length>0 && <div className="card"><p>当前显示日期内的课程与固定事项检查</p><ConflictReview report={events.data.conflict_report} timezone={settings.data?.data.timezone} /></div>}
       <div className="card">
         {events.error && <p role="alert">{String(events.error)}</p>}
         {events.isPending && <p role="status">正在读取日程…</p>}
@@ -142,6 +146,8 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
         <h2>{selected.title}</h2>
         <p>{new Date(selected.starts_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}–{new Date(selected.ends_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}</p>
         <p>{selected.kind === "course" ? "课程" : selected.kind === "fixed_event" ? "固定事项" : selected.kind === "scheduling_constraint" ? "禁排时段 · 仅约束后续任务规划，不触发提醒" : "学习安排"} {selected.location}</p>
+        {selected.kind === "course" && <CourseIntervals event={selected} timezone={settings.data?.data.timezone ?? "Asia/Shanghai"} />}
+        {timetable && selected.kind === "course" && selected.course_id && <CourseCampusEditor key={selected.course_id} courseId={selected.course_id} onCreated={async id=>{setNewDraft(id);setSelected(null);await q.invalidateQueries({queryKey:["drafts"]});}} />}
         {selected.kind !== "scheduling_constraint" && <ScheduleShortcut key={`${selected.id}:${selected.starts_at}`} event={selected} />}
         {selected.kind === "course" && <><p>{selected.adjusted ? "本次课程已调整 · " : ""}原课日期 {selected.original_date}</p><Button variant="outline" onClick={()=>setAdjustCourse(!adjustCourse)}>调课或停课</Button></>}
         <Button variant="outline" onClick={()=>{setSelected(null);setAdjustCourse(false);}}>关闭详情</Button>
@@ -186,6 +192,26 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
     </>
   );
 }
+function CourseCampusEditor({courseId,onCreated}:{courseId:string;onCreated:(id:string)=>Promise<void>}) {
+  const [open,setOpen]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState("");
+  const courses=useQuery({queryKey:["courses"],queryFn:()=>api<Resource[]>("/courses"),enabled:open});
+  const course=courses.data?.find(c=>c.id===courseId);
+  return <div>
+    <Button variant="outline" onClick={()=>setOpen(!open)}>{open?"收起课程校区":"补充或修改整门课程校区"}</Button>
+    {open && courses.error && <p role="alert">{String(courses.error)}</p>}
+    {open && course && <form aria-label="编辑整门课程校区" onSubmit={async e=>{
+      e.preventDefault();setBusy(true);setError("");
+      const campus=String(new FormData(e.currentTarget).get("campus")).trim() || null;
+      try {const d=await api<Resource>("/drafts/timetable",{method:"POST",body:JSON.stringify({semester_label:"补充课程校区",completeness:"partial",courses:[{...course.data,campus}]})});await onCreated(d.id);}
+      catch(e){setError(String(e));}finally{setBusy(false);}
+    }}>
+      <p>修改 {course.data.name} 在全部教学周的固定校区，先生成草稿再确认。单次调课已确认的校区仍按原调整保留。</p>
+      <label>整门课程校区<input name="campus" maxLength={100} defaultValue={course.data.campus??""} placeholder="未知可留空" /></label>
+      <Button disabled={busy}>{busy?"正在生成…":"生成校区校对草稿"}</Button>
+      {error&&<p role="alert">{error}</p>}
+    </form>}
+  </div>;
+}
 function CourseForm({ onSave, initial }: { onSave: (c: Course) => Promise<void>; initial?: CourseSlot }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -204,6 +230,7 @@ function CourseForm({ onSave, initial }: { onSave: (c: Course) => Promise<void>;
           weeks: String(f.get("weeks")).split(",").map(Number),
           periods: String(f.get("periods")).split(",").map(Number),
           location: String(f.get("location")),
+          campus: String(f.get("campus")) || null,
         }); } catch (e) { setError(String(e)); } finally { setBusy(false); }
       }}
     >
@@ -222,6 +249,10 @@ function CourseForm({ onSave, initial }: { onSave: (c: Course) => Promise<void>;
               </option>
             ))}
           </select>
+        </label>
+        <label>
+          校区
+          <input name="campus" maxLength={100} placeholder="按实际校区填写，可稍后补充" />
         </label>
         <label>
           地点

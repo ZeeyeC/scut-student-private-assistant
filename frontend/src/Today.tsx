@@ -8,6 +8,8 @@ import { TodoList } from "./TodoList";
 import { navigate, visibleDrafts } from "./drafts";
 import type { ScheduleEvent } from "./schedule";
 import { ExecutionFeedback } from "./ExecutionFeedback";
+import type { CourseIntervalsData } from "./schedule";
+import { CourseIntervals } from "./CourseIntervals";
 const clock = (v: string, tz = "Asia/Shanghai") =>
   new Date(v).toLocaleTimeString("zh-CN", {
     hour: "2-digit",
@@ -40,13 +42,13 @@ export function TodayPage() {
     queryKey: ["today-courses", localDate, tz],
     queryFn: () =>
       api<
-        {
+        (CourseIntervalsData & {
           id: string;
           title: string;
           starts_at: string;
           ends_at: string;
           location: string;
-        }[]
+        })[]
       >(`/occurrences?start=${localDate}&end=${localDate}`),
   });
   const events = useQuery({queryKey:["today-events",localDate,tz],queryFn:()=>api<{events:ScheduleEvent[]; warnings:string[]}>(`/calendar-events?start=${localDate}&end=${localDate}`)});
@@ -112,6 +114,7 @@ export function TodayPage() {
               </strong>
               <h3>{c.title}</h3>
               <p>{c.location}</p>
+              <CourseIntervals event={c} timezone={tz} />
             </div>
           ))}
         </section>

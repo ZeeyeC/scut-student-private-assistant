@@ -241,6 +241,7 @@ def create_app(config=None):
                 "profiles-v1",
                 "goals-v1",
                 "weekly-review-v1",
+                "planning-core-v1",
             ],
             "model_configured": bool(config.text_model and config.model_api_key),
             "vision_configured": bool(config.vision_model and config.model_api_key),

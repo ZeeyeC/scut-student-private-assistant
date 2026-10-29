@@ -32,6 +32,9 @@ async function enter(page:Page){
 async function save(page:Page){
   const r=page.getByRole('region',{name:'课程调整草稿',exact:true});
   await r.getByRole('button',{name:'校对完成，准备保存'}).click();
+  await expect(r.getByRole('button',{name:'确认保存',exact:true})).toBeVisible();
+  const acknowledgment=r.getByRole('checkbox',{name:'我已核对上述提示，仍按已确认的课程或事项保存'});
+  if(await acknowledgment.count())await acknowledgment.check();
   await r.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect(r).toHaveCount(0);
 }
