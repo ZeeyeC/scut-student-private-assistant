@@ -3,10 +3,10 @@
 import importlib.util
 import io
 import json
+import subprocess
 import tempfile
 import unittest
 import zipfile
-import subprocess
 from pathlib import Path
 from unittest.mock import patch
 
@@ -134,7 +134,7 @@ class ReleaseSafetyTests(unittest.TestCase):
 
                 real_run = subprocess.run
 
-                def platform_command(command, **kwargs):
+                def platform_command(command, real_run=real_run, **kwargs):
                     if command[0] == "ditto":
                         with zipfile.ZipFile(command[-1], "w") as archive:
                             archive.write(
