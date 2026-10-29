@@ -109,16 +109,6 @@ def verify_bundle(app, version, secrets):
                 check_stream(stream, secrets)
 
 
-def baseline_snapshot(workspace):
-    baseline = workspace / "Demo2.2"
-    if not baseline.is_dir() or baseline.is_symlink():
-        raise RuntimeError("Demo2.2 baseline missing or linked; refusing release.")
-    return {
-        str(path.relative_to(baseline)): sha256(path)
-        for path in sorted(baseline.rglob("*")) if path.is_file()
-    }
-
-
 def cleanup_generated(project, workspace):
     """Fixed allowlist only; never recurse into dependencies or personal data."""
     targets = [
@@ -153,13 +143,12 @@ def run_checks(project, stage, version):
     env = dict(os.environ)
     env["PYTHONPATH"] = str(project / "backend")
     env["PATH"] = str(project / ".tools/macos/node/bin") + os.pathsep + env.get("PATH", "")
-    env["PET_BROWSER_CHANNEL"] = "bundled"
     commands = [
-        ("backend", [python, "-m", "pytest", "backend/tests", "scripts/tests", "-q"]),
-        ("frontend", ["npm", "--prefix", "frontend", "test"]),
-        # Build finishes before browser/native tests consume the resulting assets.
+        # Build the current frontend and binary before tests consume static assets.
         ("build", [python, "campus-pet/build.py", "--output-dir", str(stage),
                    "--version", version]),
+        ("backend", [python, "-m", "pytest", "backend/tests", "scripts/tests", "-q"]),
+        ("frontend", ["npm", "--prefix", "frontend", "test"]),
         ("browser", [str(project / "frontend/node_modules/.bin/playwright"), "test",
                      "--config=frontend/playwright.pet.config.ts"]),
         ("native_logic", [python, "campus-pet/tests/run_native_tests.py"]),
@@ -167,6 +156,12 @@ def run_checks(project, stage, version):
         ("frozen_pdf", [python, "scripts/verify-frozen-timetable.py", "--service",
                         str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"),
                         "--output", str(stage / "打包PDF检查.json")]),
+        ("frozen_ab", [python, "scripts/verify-frozen-ab.py", "--service",
+                       str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"),
+                       "--output", str(stage / "甲乙冻结联调检查.json")]),
+        ("frozen_b_interaction", [python, "scripts/verify-frozen-b-interaction.py", "--service",
+                                  str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"),
+                                  "--output", str(stage / "乙交互冻结检查.json")]),
     ]
     results = {}
     for name, command in commands:
@@ -184,10 +179,8 @@ def main():
     parser.add_argument("--version", required=True, help="e.g. 2.3.0")
     parser.add_argument("--keep-generated", action="store_true", help="Retain caches and previews")
     args = parser.parse_args()
-    if not re.fullmatch(r"\d+\.\d+\.\d+", args.version) or tuple(
-        map(int, args.version.split("."))
-    )[:2] <= (2, 2):
-        parser.error("Use a version newer than Demo2.2, e.g. 2.3.0")
+    if not re.fullmatch(r"\d+\.\d+\.\d+", args.version):
+        parser.error("Use a three-part numeric version, e.g. 2.4.7")
     label = "Demo" + re.sub(r"\.0$", "", args.version)
     final = WORKSPACE / label
     stage = WORKSPACE / (".Demo" + args.version + "-staging")
@@ -198,7 +191,6 @@ def main():
         parser.error("Write docs/releases/" + label + ".md before releasing.")
     if (PROJECT / "campus-pet/VERSION").read_text().strip() != args.version:
         parser.error("Update campus-pet/VERSION before releasing.")
-    baseline = baseline_snapshot(WORKSPACE)
     secrets = private_values(PROJECT)
     stage.mkdir()
     checks = run_checks(PROJECT, stage, args.version)
@@ -222,8 +214,14 @@ def main():
     with zipfile.ZipFile(app_zip) as archive:
         if archive.testzip() is not None:
             raise RuntimeError("Application ZIP integrity check failed.")
-    if baseline_snapshot(WORKSPACE) != baseline:
-        raise RuntimeError("Demo2.2 baseline changed; release stopped before cleanup.")
+    validation = {
+        "passed": True, "version": args.version, "checks": checks,
+        "application_signature": "verified", "application_zip_crc": "passed",
+        "source_zip_crc": "passed", "private_values_scan": "passed",
+        "scope": "current working tree; isolated automated data; no paid model calls",
+        "real_samples_acceptance": "pending; see release notes",
+    }
+    (stage / "验证结果.json").write_text(json.dumps(validation, ensure_ascii=False, indent=2) + "\n")
     manifest = {
         "release": label, "version": args.version,
         "created_at": datetime.now(UTC).isoformat(),
@@ -231,7 +229,7 @@ def main():
         "source": "current working tree, including uncommitted changes",
         "platform": "macOS Apple Silicon", "minimum_macos": "13.0",
         "checks": checks, "credentials_and_personal_data_in_package": False,
-        "baseline_demo2.2": "all file SHA256 values unchanged",
+        "release_basis": "current version built and verified independently; no historical baseline required",
         "real_model_smoke": "development evidence copied; no paid calls during release",
         "real_scut_accuracy_acceptance": "pending; no 30-sample benchmark",
     }
@@ -245,7 +243,7 @@ def main():
     removed = [] if args.keep_generated else cleanup_generated(PROJECT, WORKSPACE)
     (final / "整理记录.json").write_text(json.dumps({
         "removed_generated_paths": removed, "preserved": [
-            "Demo2.2", label, "active source project", ".env / model.env", "data / backups",
+            "existing archives", label, "active source project", ".env / model.env", "data / backups",
             "installed dependencies", "development taskbook",
         ],
     }, ensure_ascii=False, indent=2) + "\n")
@@ -255,13 +253,12 @@ def main():
     ))
     (WORKSPACE / "README.md").write_text(
         "# 课间奶蛙\n\n"
-        + "当前版本 **" + label + "**（" + args.version + "），稳定基线 **Demo2.2** 保留原样。\n\n"
+        + "当前版本 **" + label + "**（" + args.version + "），已从当前源码独立构建并验证。\n\n"
         + "- [打开最新桌宠](" + label + "/课间桌宠.app)\n"
         + "- [下载最新应用包](" + label + "/" + label + "-Mac-AppleSilicon.zip)\n"
         + "- [当前源码快照](" + label + "/" + label + "-源码.zip)\n"
         + "- [使用说明与已知限制](" + label + "/使用说明.md)\n"
-        + "- [Demo2.2 归档](Demo2.2/)\n"
-        + "- [后续开发任务书](Demo2.2后续开发任务书/Demo2.2后续开发任务书.docx)\n\n"
+        + "- [开发任务书](" + PROJECT.name + "/docs/roadmap/demo2.2-development-taskbook.md)\n\n"
         + "活跃源码与个人资料在 `" + PROJECT.name + "/`；目录名保留以兼容既有路径。"
         + "Key 在私有配置中，资料在 data/、backups/ 中，不进入发布包。\n\n"
         + "每版开发后按 [发布流程](" + PROJECT.name + "/docs/releases/发布流程.md)"

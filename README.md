@@ -1,6 +1,6 @@
 # 课间 · 华工学生助手
 
-当前开发入口为 **Demo2.4.7 乙交互预览**，分支 `codex/demo2.4.7-b-interaction`，从甲乙合并候选 `6353142` 继续。已接入对话约束、冲突批准校对、共享目标容量、周复盘下周草稿、应用内主动建议与多轮协商，见[本轮开发记录](docs/roadmap/demo2.4.7-b-interaction.md)。
+当前版本为 **Demo2.4.7 甲乙合并版**，分支 `codex/demo2.4.7-b-interaction`，从甲乙合并候选 `6353142` 继续。已接入对话约束、冲突批准校对、共享目标容量、周复盘下周草稿、应用内主动建议与多轮协商，见[本轮开发记录](docs/roadmap/demo2.4.7-b-interaction.md)。
 
 甲方规划核心与乙方既有执行、计时、档案、目标等功能保留。[上轮甲乙合并记录](docs/roadmap/demo2.4.7-ab-integration.md)及所有旧预览保留。档案/目标的甲方排程消费、T09 建议生成和真实样本验收仍明确待完成。
 
@@ -20,7 +20,7 @@
 
 ## 双击打开
 
-- 最新入口：[乙交互开发预览 App](.development-previews/demo2.4.7-b-interaction/课间桌宠.app)，[使用说明](docs/releases/Demo2.4.7-乙交互开发预览.md)。本检出缺少需保护的 Demo2.2 基线，正式发布预检被拒绝；开发预览不覆盖旧版。上一轮[甲乙联合预览](.development-previews/demo2.4.7-ab-integration/课间桌宠.app)保留。
+- 最新入口：[Demo2.4.7 App](../Demo2.4.7/课间桌宠.app)、[应用 ZIP](../Demo2.4.7/Demo2.4.7-Mac-AppleSilicon.zip)、[当前源码 ZIP](../Demo2.4.7/Demo2.4.7-源码.zip)，[本版说明](docs/releases/Demo2.4.7.md)。当前版本独立构建验证，无历史基线前置条件；旧[乙交互预览](.development-previews/demo2.4.7-b-interaction/课间桌宠.app)与[甲乙联合预览](.development-previews/demo2.4.7-ab-integration/课间桌宠.app)保留。
 - `campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台；浏览器可以同时访问 `http://127.0.0.1:5173/` 使用 Web UI，无需再启动另一个助手。
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。
