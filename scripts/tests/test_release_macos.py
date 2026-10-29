@@ -18,6 +18,100 @@ SPEC.loader.exec_module(release)
 
 
 class ReleaseSafetyTests(unittest.TestCase):
+    def test_native_timeout_keeps_first_failure_and_requires_a_successful_retry(self):
+        with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
+            project = Path(temp)
+            stage = project / "stage"
+            stage.mkdir()
+            verification = project / "campus-pet/build/verification"
+            verification.mkdir(parents=True)
+            native_calls = []
+
+            def external(command, **kwargs):
+                if "campus-pet/verify.py" in command:
+                    native_calls.append(command)
+                    if len(native_calls) == 1:
+                        (verification / "result.json").write_text(
+                            json.dumps(
+                                {"passed": False, "error": "The request timed out."}
+                            )
+                        )
+                        kwargs["stdout"].write("recorded health timeout\n")
+                        raise subprocess.CalledProcessError(1, command)
+                    (verification / "result.json").write_text(
+                        '{"passed":true,"error":""}'
+                    )
+                return subprocess.CompletedProcess(command, 0)
+
+            with patch.object(release.subprocess, "run", side_effect=external):
+                results = release.run_checks(project, stage, "2.4.7")
+            self.assertEqual(len(native_calls), 2)
+            self.assertFalse(
+                json.loads((stage / "native-attempt-1/result.json").read_text())[
+                    "passed"
+                ]
+            )
+            self.assertIn(
+                "recorded health timeout",
+                (stage / "native_integration-attempt-1.log").read_text(),
+            )
+            self.assertTrue(
+                json.loads((stage / "原生集成检查.json").read_text())["passed"]
+            )
+            self.assertIn("native_integration", results)
+
+    def test_native_business_failure_is_not_retried_or_accepted(self):
+        with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
+            project = Path(temp)
+            stage = project / "stage"
+            stage.mkdir()
+            verification = project / "campus-pet/build/verification"
+            verification.mkdir(parents=True)
+            native_calls = []
+
+            def external(command, **kwargs):
+                if "campus-pet/verify.py" in command:
+                    native_calls.append(command)
+                    (verification / "result.json").write_text(
+                        '{"passed":false,"error":"wrong task completed"}'
+                    )
+                    raise subprocess.CalledProcessError(1, command)
+                return subprocess.CompletedProcess(command, 0)
+
+            with (
+                patch.object(release.subprocess, "run", side_effect=external),
+                self.assertRaises(subprocess.CalledProcessError),
+            ):
+                release.run_checks(project, stage, "2.4.7")
+            self.assertEqual(len(native_calls), 1)
+            self.assertFalse((stage / "原生集成检查.json").exists())
+
+    def test_two_native_timeouts_still_abort_release(self):
+        with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
+            project = Path(temp)
+            stage = project / "stage"
+            stage.mkdir()
+            verification = project / "campus-pet/build/verification"
+            verification.mkdir(parents=True)
+            native_calls = []
+
+            def external(command, **kwargs):
+                if "campus-pet/verify.py" in command:
+                    native_calls.append(command)
+                    (verification / "result.json").write_text(
+                        '{"passed":false,"error":"The request timed out."}'
+                    )
+                    raise subprocess.CalledProcessError(1, command)
+                return subprocess.CompletedProcess(command, 0)
+
+            with (
+                patch.object(release.subprocess, "run", side_effect=external),
+                self.assertRaises(subprocess.CalledProcessError),
+            ):
+                release.run_checks(project, stage, "2.4.7")
+            self.assertEqual(len(native_calls), 2)
+            self.assertFalse((stage / "原生集成检查.json").exists())
+
     def test_private_and_generated_sources_excluded_even_if_tracked(self):
         for name in (
             ".env",

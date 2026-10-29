@@ -166,10 +166,32 @@ def run_checks(project, stage, version):
     results = {}
     for name, command in commands:
         print("Release check:", name, flush=True)
-        with (stage / (name + ".log")).open("w") as log:
-            subprocess.run(command, cwd=project, env=env, stdout=log,
-                           stderr=subprocess.STDOUT, check=True)
-        results[name] = "passed"
+        log_path = stage / (name + ".log")
+        try:
+            with log_path.open("w") as log:
+                subprocess.run(command, cwd=project, env=env, stdout=log,
+                               stderr=subprocess.STDOUT, check=True)
+        except subprocess.CalledProcessError as failure:
+            if name != "native_integration":
+                raise
+            verification = project / "campus-pet/build/verification"
+            try:
+                result = json.loads((verification / "result.json").read_text())
+            except (OSError, ValueError):
+                raise failure
+            if result.get("passed") is not False or result.get("error") != "The request timed out.":
+                raise
+            # A recorded network timeout permits one fresh isolated run. No
+            # business error is retried; a second failure still aborts release.
+            shutil.copytree(verification, stage / "native-attempt-1")
+            log_path.rename(stage / "native_integration-attempt-1.log")
+            print("Native request timeout recorded; retrying once with isolated data", flush=True)
+            with log_path.open("w") as log:
+                subprocess.run(command, cwd=project, env=env, stdout=log,
+                               stderr=subprocess.STDOUT, check=True)
+            results[name] = "passed after one recorded timeout retry"
+        else:
+            results[name] = "passed"
     shutil.copy2(project / "campus-pet/build/verification/result.json", stage / "原生集成检查.json")
     return results
 
