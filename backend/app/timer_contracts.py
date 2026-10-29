@@ -24,6 +24,8 @@ class TimerAction(StrictModel):
     def valid(self):
         if self.action == "finish" and self.feedback is None:
             raise ValueError("结束计时需要执行反馈")
+        if self.feedback in ("not_started", "skipped") and self.actual_minutes:
+            raise ValueError("未执行或跳过的实际分钟必须为0")
         if self.action != "finish" and any(
             v is not None
             for v in (

@@ -46,6 +46,11 @@ test('timer pauses, resumes after reload and switches to manual exactly once',as
   await timer.getByLabel('改为手工补记，替代本次计时投入').check();
   await timer.getByLabel('补记实际分钟').fill('25');
   await timer.getByLabel('计时后的任务状态').selectOption('open');
+  await timer.getByLabel('计时结束结果').selectOption('skipped');
+  await timer.getByRole('button',{name:'结束并保存反馈',exact:true}).click();
+  await expect(timer.getByRole('alert')).toBeVisible();
+  await expect(timer.getByLabel('计时结束结果')).toBeEnabled();
+  await timer.getByLabel('计时结束结果').selectOption('partial');
   await timer.getByRole('button',{name:'结束并保存反馈',exact:true}).click();
   await expect(feedback).toContainText('已记录实际：25 分钟');
   const records=await(await page.request.get(`/api/tasks/${tid}/executions`)).json();

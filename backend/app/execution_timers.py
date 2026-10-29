@@ -55,7 +55,8 @@ async def start_timer(db, owner, body, boot_id):
         return view(old, boot_id)
     if await db.get(Resource, execution.identity(owner, "fact", body.execution_id)):
         raise HTTPException(409, "该次执行已有记录，请更正现有事实")
-    await execution.prepare_execution(db, owner, body)
+    # Starting an observation must not replace any existing execution estimate.
+    await execution.prepare_execution(db, owner, body, persist_baseline=False)
     await check_running(db, owner, boot_id)
     for row in await store.rows(db, owner, "execution_timer"):
         if (

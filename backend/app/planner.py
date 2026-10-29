@@ -598,9 +598,7 @@ async def save_plan(db, owner, draft, payload):
             and instant(b["starts_at"]) < clock
         ):
             raise HTTPException(409, "计划的开始时间已经过去，请重新生成")
-    # Snapshots, replacements and the draft receipt share the caller's transaction.
-    await save_snapshot(db, owner, draft, payload, [store.view(b) for b in existing])
-    ids = []
+    replacing = []
     for b in existing:
         d = instant(b.data["starts_at"]).astimezone(tz).date()
         if (
@@ -615,7 +613,21 @@ async def save_plan(db, owner, draft, payload):
                 )
             )
         ):
-            await db.delete(b)
+            replacing.append(b)
+    replacing_ids = {b.id for b in replacing}
+    for timer in await store.rows(db, owner, "execution_timer"):
+        if (
+            timer.data["status"] not in ("finished", "discarded")
+            and timer.data["target"].get("plan_block_id") in replacing_ids
+        ):
+            raise HTTPException(
+                409, "待替换安排有未结束计时，请先结束或放弃计时，再重新生成计划"
+            )
+    # Snapshots, replacements and the draft receipt share the caller's transaction.
+    await save_snapshot(db, owner, draft, payload, [store.view(b) for b in existing])
+    ids = []
+    for b in replacing:
+        await db.delete(b)
     await db.flush()
     for b in payload["blocks"]:
         found = await db.get(Resource, b["id"])

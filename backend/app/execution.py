@@ -219,11 +219,13 @@ async def effects(db, owner, task, record, task_status):
     return store.view(record)
 
 
-async def prepare_execution(db, owner, body):
+async def prepare_execution(
+    db, owner, body, *, persist_baseline=True, historical_timezone=False
+):
     task = await store.owned(db, owner, body.task_id, "task")
     store.revision(task, body.task_revision)
     settings = await store.settings(db, owner)
-    if body.timezone != settings.data["timezone"]:
+    if not historical_timezone and body.timezone != settings.data["timezone"]:
         raise HTTPException(409, "时区设置已变化，请刷新后记录")
     if body.performed_on > now().astimezone(ZoneInfo(body.timezone)).date():
         raise HTTPException(422, "实际执行日期不能在未来")
@@ -243,7 +245,7 @@ async def prepare_execution(db, owner, body):
                 for r in effective(await execution_history(db, owner, task.id))
             ):
                 raise HTTPException(409, "该时间块已有反馈，请更正原记录")
-        state = await baseline(db, owner, step, create=True)
+        state = await baseline(db, owner, step, create=persist_baseline)
         step_blocks = [
             b.id
             for b in await store.rows(db, owner, "plan_block")
@@ -275,11 +277,12 @@ async def prepare_execution(db, owner, body):
                 raise HTTPException(
                     409, "旧估算覆盖范围不明，请选择替代或作为另一段投入"
                 )
-            state.data = {
-                **state.data,
-                "unallocated_resolution": body.legacy_resolution,
-            }
-            state.revision += 1
+            if persist_baseline:
+                state.data = {
+                    **state.data,
+                    "unallocated_resolution": body.legacy_resolution,
+                }
+                state.revision += 1
     return task, coverage, separate
 
 
@@ -315,7 +318,11 @@ async def record_execution(
     rid = identity(owner, "fact", body.execution_id)
     if await db.get(Resource, rid):
         raise HTTPException(409, "该次执行已记录，请使用更正")
-    task, coverage, separate = await prepare_execution(db, owner, body)
+    # A timer's trusted saved target keeps the timezone observed at its start.
+    # New direct manual writes still validate against the current settings.
+    task, coverage, separate = await prepare_execution(
+        db, owner, body, historical_timezone=timer_id is not None
+    )
     if timer_id is None:
         for timer in await store.rows(db, owner, "execution_timer"):
             target = timer.data["target"]

@@ -259,3 +259,119 @@ def test_not_started_cannot_keep_observed_timer_seconds(tmp_path, clock):
         assert summary(c, ids)["actual_minutes"] is None
         command(c, h, timer, "finish", feedback="not_started", actual_minutes=0)
         assert summary(c, ids)["actual_minutes"] == 0
+
+
+@pytest.mark.parametrize("last_action", ["discard", "finish"])
+def test_start_does_not_replace_legacy_until_an_execution_is_finished(
+    tmp_path, clock, last_action
+):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c, spent=30)
+        timer = start(
+            c,
+            h,
+            ids,
+            plan_block_id=None,
+            plan_block_revision=None,
+            legacy_resolution="replace",
+        )
+        assert summary(c, ids)["legacy_estimated_minutes"] == 30
+        assert summary(c, ids)["planning_spent_minutes"] == 30
+        assert resources(c, "execution_baseline") == []
+        if last_action == "finish":
+            command(c, h, timer, "finish", feedback="partial", actual_minutes=25)
+            assert summary(c, ids)["legacy_estimated_minutes"] == 0
+            assert summary(c, ids)["actual_minutes"] == 25
+        else:
+            command(c, h, timer, "discard")
+            assert summary(c, ids)["legacy_estimated_minutes"] == 30
+            assert summary(c, ids)["actual_minutes"] is None
+
+
+@pytest.mark.parametrize("feedback", ["not_started", "skipped"])
+def test_invalid_manual_finish_is_editable_client_error(tmp_path, clock, feedback):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        timer = start(c, h, ids)
+        response = write(
+            c,
+            h,
+            f"/execution-timers/{timer['id']}/actions",
+            {
+                "revision": timer["revision"],
+                "client_operation_id": str(uuid4()),
+                "action": "finish",
+                "feedback": feedback,
+                "actual_minutes": 5,
+            },
+        )
+        assert response.status_code == 422
+        assert summary(c, ids)["actual_minutes"] is None
+        command(c, h, timer, "finish", feedback=feedback, actual_minutes=0)
+        assert summary(c, ids)["actual_minutes"] == 0
+
+
+@pytest.mark.parametrize("manual", [False, True])
+def test_finish_keeps_observed_timezone_after_settings_change(tmp_path, clock, manual):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        timer = start(c, h, ids)
+        timer = advance(c, h, timer, clock, 60)
+        settings = c.get("/api/settings").json()
+        settings["data"]["timezone"] = "America/Los_Angeles"
+        assert write(c, h, "/settings", settings, "PUT").status_code == 200
+        command(
+            c,
+            h,
+            timer,
+            "finish",
+            feedback="partial",
+            **({"actual_minutes": 25} if manual else {}),
+        )
+        record = resources(c, "execution")[0]
+        assert record["data"]["timezone"] == "Asia/Shanghai"
+        assert record["data"]["performed_on"] == "2026-10-14"
+        assert summary(c, ids)["actual_seconds"] == (1500 if manual else 60)
+
+
+def test_plan_replacement_preserves_unfinished_timer_target(
+    tmp_path, clock, monkeypatch
+):
+    from datetime import datetime
+
+    from app import planner
+
+    monkeypatch.setattr(
+        planner, "now", lambda: datetime.fromisoformat("2026-10-14T08:00:00+08:00")
+    )
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        ids = seed_execution(c)
+        timer = start(c, h, ids)
+
+        def plan():
+            response = write(
+                c, h, "/plan-drafts", {"target_date": "2026-10-14", "horizon_days": 7}
+            )
+            assert response.status_code == 200, response.text
+            return response.json()
+
+        draft = plan()
+        response = write(
+            c, h, f"/drafts/{draft['id']}/confirm", {"revision": draft["revision"]}
+        )
+        assert response.status_code == 409
+        assert "计时" in response.text
+        assert any(b["id"] == ids["block"] for b in resources(c, "plan_block"))
+        assert resources(c, "plan_snapshot") == []
+        command(c, h, timer, "discard")
+        draft = plan()
+        assert (
+            write(
+                c, h, f"/drafts/{draft['id']}/confirm", {"revision": draft["revision"]}
+            ).status_code
+            == 200
+        )
