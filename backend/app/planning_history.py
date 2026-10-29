@@ -4,7 +4,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from app.db import Resource, now
 
-PLANNER_RULE_VERSION = "soft-preferences-2"
+PLANNER_RULE_VERSION = "personal-facts-1"
 
 
 async def record_change(db, owner, event_type, source_id, source_revision, details):

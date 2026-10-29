@@ -5,7 +5,11 @@ async function setup(page: Page) {
   await page.getByRole("button", { name: "创建账号", exact: true }).click();
   await page.getByLabel("邮箱").fill(`pet-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
+  // Finish the initial open before seeding courses. Otherwise it may see the
+  // new courses and open a modal over the manual-open button during its click.
+  const bootstrap=page.waitForResponse(r=>r.url().endsWith('/api/after-class/open')&&r.request().method()==='POST');
   await page.getByRole("button", { name: "注册并登录" }).click();
+  await (await bootstrap).finished();
   await expect(page.getByRole("heading", { name: "今天，专注几件事。" })).toBeVisible();
   await page.evaluate(async () => {
     const csrf = (await (await fetch("/api/csrf")).json()).csrf_token;

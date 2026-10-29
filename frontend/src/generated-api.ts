@@ -1070,6 +1070,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/duration-suggestions/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create */
+        post: operations["create_api_duration_suggestions_generate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/constraint-intents": {
         parameters: {
             query?: never;
@@ -1493,6 +1510,58 @@ export interface paths {
         put?: never;
         /** Dismiss */
         post: operations["dismiss_api_daily_routine_dismiss_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replanning/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_replanning_changes_get"];
+        put?: never;
+        /** Consume */
+        post: operations["consume_api_replanning_changes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replanning/changes/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dismiss */
+        post: operations["dismiss_api_replanning_changes_dismiss_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replanning/changes/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Draft */
+        post: operations["draft_api_replanning_changes_draft_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2200,6 +2269,18 @@ export interface components {
             /** Warnings */
             warnings: string[];
             changes: components["schemas"]["CapacityChanges"];
+            /** Execution Context */
+            execution_context?: {
+                [key: string]: unknown;
+            };
+            /** Profile Context */
+            profile_context?: {
+                [key: string]: unknown;
+            };
+            /** Goal Allocation */
+            goal_allocation?: {
+                [key: string]: unknown;
+            };
         };
         /** CapacityWindow */
         CapacityWindow: {
@@ -2234,6 +2315,12 @@ export interface components {
             semester_label: string;
             /** Fragments */
             fragments: string[];
+        };
+        /** ChangeResult */
+        ChangeResult: {
+            /** Consumed */
+            consumed: number;
+            notice: components["schemas"]["ResourceView"] | null;
         };
         /** CheckinDraft */
         CheckinDraft: {
@@ -2320,6 +2407,14 @@ export interface components {
             revision: number;
             /** Active */
             active: boolean;
+        };
+        /** ConsumeRequest */
+        ConsumeRequest: {
+            /**
+             * App Active
+             * @default true
+             */
+            app_active: boolean;
         };
         /** Course */
         Course: {
@@ -2521,10 +2616,10 @@ export interface components {
             contract_version: "duration-suggestions-v1";
             /**
              * Generation Status
-             * @default not_integrated
-             * @constant
+             * @default ready
+             * @enum {string}
              */
-            generation_status: "not_integrated";
+            generation_status: "not_integrated" | "ready";
             /** Source Revision */
             source_revision: number;
             /**
@@ -2724,6 +2819,28 @@ export interface components {
              * Format: date-time
              */
             ends_at: string;
+        };
+        /** GenerateDurations */
+        GenerateDurations: {
+            /** Expected Source Revision */
+            expected_source_revision: number;
+        };
+        /** GenerationResult */
+        GenerationResult: {
+            /**
+             * Rule
+             * @default same-step-observed-total-1
+             */
+            rule: string;
+            /** Created Ids */
+            created_ids: string[];
+            /** Refreshed Ids */
+            refreshed_ids?: string[];
+            /** Skipped */
+            skipped: {
+                [key: string]: unknown;
+            }[];
+            result: components["schemas"]["DurationSuggestionList"];
         };
         /** GoalCapacity */
         GoalCapacity: {
@@ -3085,6 +3202,13 @@ export interface components {
              */
             model_use_system_proxy: boolean;
         };
+        /** NoticeAction */
+        NoticeAction: {
+            /** Revision */
+            revision: number;
+            /** Source Revision */
+            source_revision: number;
+        };
         /** Option */
         Option: {
             /**
@@ -3141,6 +3265,20 @@ export interface components {
              * @default pending_person_b
              */
             goal_integration: string;
+            /**
+             * Goal Allocation
+             * @default {}
+             */
+            goal_allocation: {
+                [key: string]: unknown;
+            };
+            /**
+             * Profile Context
+             * @default {}
+             */
+            profile_context: {
+                [key: string]: unknown;
+            };
         };
         /** PetStatus */
         PetStatus: {
@@ -3660,6 +3798,20 @@ export interface components {
              * @default pending_person_b
              */
             execution_integration: string;
+            /**
+             * Goal Allocation
+             * @default {}
+             */
+            goal_allocation: {
+                [key: string]: unknown;
+            };
+            /**
+             * Execution Context
+             * @default {}
+             */
+            execution_context: {
+                [key: string]: unknown;
+            };
         };
         /** RoutinePreview */
         RoutinePreview: {
@@ -6502,6 +6654,41 @@ export interface operations {
             };
         };
     };
+    create_api_duration_suggestions_generate_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerateDurations"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     listing_api_constraint_intents_get: {
         parameters: {
             query?: {
@@ -7437,6 +7624,129 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_replanning_changes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"] | null;
+                };
+            };
+        };
+    };
+    consume_api_replanning_changes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsumeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangeResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dismiss_api_replanning_changes_dismiss_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NoticeAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    draft_api_replanning_changes_draft_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NoticeAction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
                 };
             };
             /** @description Validation Error */

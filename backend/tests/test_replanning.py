@@ -174,7 +174,7 @@ async def test_readonly_dedup_confirm_preserve_identity_restart_and_no_loop(
         report = c.get("/api/replanning").json()
         assert (
             report["needs_changes"]
-            and report["execution_integration"] == "pending_person_b"
+            and report["execution_integration"] == "authoritative_execution_v1"
         )
         assert target["id"] in {b["id"] for b in report["removed"]}
         assert c.get("/api/data-export").json()["resources"] == before

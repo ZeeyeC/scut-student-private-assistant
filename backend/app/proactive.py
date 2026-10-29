@@ -422,6 +422,9 @@ async def refresh_suggestions(db, owner, app_active=True):
         return await list_suggestions(db, owner, suppressed="disabled")
     if not app_active:
         return await list_suggestions(db, owner, suppressed="inactive")
+    from app.planning_changes import consume_changes
+
+    await consume_changes(db, owner)
     from app.planner import planning_result
 
     inputs, result = await planning_result(db, owner, repair=True)

@@ -1,12 +1,12 @@
 # 课间 · 华工学生助手
 
-当前版本为 **Demo2.4.7 甲乙合并版**，分支 `codex/demo2.4.7-b-interaction`，从甲乙合并候选 `6353142` 继续。已接入对话约束、冲突批准校对、共享目标容量、周复盘下周草稿、应用内主动建议与多轮协商，见[本轮开发记录](docs/roadmap/demo2.4.7-b-interaction.md)。
+当前源码为 **Demo2.4.8 甲乙规划接通版**，基于乙交付 `596b4d0`，本地分支 `integration/person-b-delivery-2.4.7`。甲方后续 A-01～A-05 核心已接通：权威执行输入、变化事件到重排建议、档案个性化、共享目标预算及步骤时长建议生成，沿用乙的领域存储和确认界面。
 
-甲方规划核心与乙方既有执行、计时、档案、目标等功能保留。[上轮甲乙合并记录](docs/roadmap/demo2.4.7-ab-integration.md)及所有旧预览保留。档案/目标的甲方排程消费、T09 建议生成和真实样本验收仍明确待完成。
+[本版说明](docs/releases/Demo2.4.8.md) · [核心功能、接口、乙方兼容补丁和未完成清单](docs/roadmap/demo2.4.8-a-followup.md) · [收到的后续任务单](docs/roadmap/reference/甲同学后续开发任务单-Demo2.4.7.md)
 
-[本版说明](docs/releases/Demo2.4.7.md) · [甲独立规划接口](docs/roadmap/a3-a6-independent-planning.md) · [需要乙交付的清单](docs/roadmap/乙方需提供的交接清单.md) · [局部重排](docs/roadmap/a4-calendar-replanning.md) · [容量](docs/roadmap/a3-planning-capacity.md) · [重复硬禁排](docs/roadmap/a3-weekly-constraints.md) · [统一冲突](docs/roadmap/a2-unified-conflicts.md) · [课程分段](docs/roadmap/a1-course-intervals.md)
+正式App是否通过完整发布，以工作区README入口和归档中的验证结果为准。保留Demo2.2、所有原正式版本、旧失败暂存和个人资料。真实OCR/校历、批量调整专项、类型规则和细评分仍需后续；不将合成自动化当作真实样本验收。
 
-协作交接先看 [甲方完成、未完成与乙方依赖清单](docs/roadmap/甲方完成与待办清单.md)：分别列明已实现接口、甲方独立剩余项、乙方最小材料及接入后验收，不把独立核心交付写成全部任务完成。
+[乙方接收复核](docs/roadmap/乙方交付接收与进度复核-Demo2.4.7.md)保留为接收时记录；此前“乙接口待交付”及“未接入生成”清单均为历史状态，当前交接以本轮清单和代码为准。
 
 用户最新核心流程与本轮验收见 [核心使用流程补充](docs/roadmap/core-flow-2026-10-28.md)。当日排程、单次课程调整、统一冲突、每周硬禁排、软偏好及固定事实局部重排已接入；通勤候选仅使用已确认耗时。完整学期例外和乙方执行事件联调继续按任务书推进。
 

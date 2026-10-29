@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-29",
+  "stage": "source-delivery-receipt-not-release",
+  "source_branch": "codex/demo2.4.7-b-interaction",
+  "source_commit": "596b4d06ff8930661b46c1115cab78e1a71ad2f7",
+  "includes_person_a_commit": "cb84277e1799523a24b87a6c9b92ab3e1b6c8170",
+  "local_branch": "integration/person-b-delivery-2.4.7",
+  "functional_code_modified_by_receipt": false,
+  "environment": {
+    "node": "22.23.3",
+    "browser": "bundled Playwright Chromium",
+    "python": "3.12",
+    "data": "isolated synthetic"
+  },
+  "paid_model_calls": 0,
+  "personal_database_access": false,
+  "all_checks_passed": false,
+  "checks": {
+    "backend": {
+      "command": "PYTHONPATH=backend backend/.venv/bin/python -m pytest backend/tests scripts/tests -q",
+      "passed": 550,
+      "subtests_passed": 20,
+      "failed": 0,
+      "exit_code": 0,
+      "local_log": "backend-full.log"
+    },
+    "frontend": {
+      "command": "PATH=<bundled Node22> npm --prefix frontend test",
+      "passed": 81,
+      "files": 22,
+      "failed": 0,
+      "exit_code": 0,
+      "evidence": "tool stdout; not rerun for a log"
+    },
+    "build": {
+      "command": "PATH=<bundled Node22> npm --prefix frontend run build",
+      "passed": true,
+      "exit_code": 0,
+      "includes": "TypeScript noEmit and Vite production build"
+    },
+    "native_logic": {
+      "command": "backend/.venv/bin/python campus-pet/tests/run_native_tests.py",
+      "passed": true,
+      "exit_code": 0,
+      "captured_stdout": "Native regression checks passed"
+    },
+    "browser_full": {
+      "command": "PATH=<bundled Node22> PET_BROWSER_CHANNEL=bundled frontend/node_modules/.bin/playwright test --config=frontend/playwright.pet.config.ts",
+      "passed": 48,
+      "failed": 1,
+      "exit_code": 1,
+      "local_log": "browser-full.log",
+      "failure": "b-interaction.spec.ts:52; create intent sends cached source_revision 1 while settings revision 3 is loading; HTTP409 then preview button timeout"
+    },
+    "browser_directed": {
+      "command": "same config b-interaction.spec.ts --grep negotiation chooses --repeat-each=3",
+      "passed": 2,
+      "failed": 1,
+      "exit_code": 1,
+      "local_log": "negotiation-recheck.log",
+      "no_code_change": true
+    },
+    "native_app_integration": {
+      "run_this_receipt": false,
+      "upstream_reported_checks": 56
+    },
+    "frozen": {
+      "run_this_receipt": false,
+      "upstream_reported_checks": 48
+    }
+  },
+  "first_backend_attempt": {
+    "passed": 549,
+    "failed": 1,
+    "subtests_passed": 20,
+    "cause": "reviewer ran frontend build concurrently; assets directory transiently absent",
+    "resolution": "complete backend rerun after build:550 passed; no product code change"
+  },
+  "local_evidence_directory": ".development-previews/b-delivery-receipt-20261029",
+  "runtime_logs_in_git": false,
+  "regenerated_screenshots_saved_locally_then_original_upstream_evidence_restored": 20,
+  "PR_pushed_or_updated": false,
+  "official_App_rebuilt_or_promoted": false
+}

@@ -37,8 +37,18 @@ async function seed(page: Page) {
 
 test('capacity is read-only, distinguishes shortage and unknown work, matches the confirmed planner', async ({page}) => {
   await enter(page); await seed(page);
-  const before = (await (await page.request.get('/api/data-export')).json()).resources;
+  let before = (await (await page.request.get('/api/data-export')).json()).resources;
+  await page.request.get('/api/planning-capacity?scope=today');
+  expect((await (await page.request.get('/api/data-export')).json()).resources).toEqual(before);
+  const consumed=page.waitForResponse(r=>r.url().endsWith('/api/replanning/changes')&&r.request().method()==='POST');
   await page.getByRole('button', {name:'待办与日程',exact:true}).click();
+  await (await consumed).finished();
+  const afterNavigation=(await (await page.request.get('/api/data-export')).json()).resources;
+  // Mounting the new active change consumer may write its notice/event cursor;
+  // every business fact must stay unchanged, and capacity reads stay fully pure.
+  const facts=(rows:any[])=>rows.filter(r=>!['planning_event','replan_notice'].includes(r.kind));
+  expect(facts(afterNavigation)).toEqual(facts(before));
+  before=afterNavigation;
   const panel = page.getByRole('region', {name:'时间容量检查',exact:true});
   await expect(panel).toContainText('容量上限 90 分钟');
   await expect(panel).toContainText('待分配 180 分钟 · 本范围可排 90 分钟 · 仍未排 90 分钟');

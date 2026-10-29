@@ -170,7 +170,7 @@ def verify(service):
         )
         duration = get("/duration-suggestions")
         assert (
-            duration["generation_status"] == "not_integrated"
+            duration["generation_status"] == "ready"
             and duration["suggestions"] == []
         )
         return [

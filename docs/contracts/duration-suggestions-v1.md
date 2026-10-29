@@ -1,3 +1,5 @@
+> Demo2.4.8规划/生成端已接入，扩展与兼容说明见 [甲方后续交付](../roadmap/demo2.4.8-a-followup.md)。原消费字段和领域存储继续兼容。
+
 # T09 时长建议消费契约：duration-suggestions-v1
 
 本增量只消费已存在的真实 typed `Resource(kind=duration_suggestion)`。A 的建议生成算法/生成服务尚未接入，没有生成端点、虚构建议或默认样本。GET 固定说明 generation_status=not_integrated；空列表展示“未接入生成服务 / 暂无可消费的有效时长建议”。本模块不调用模型。

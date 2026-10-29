@@ -12,6 +12,16 @@ from app.constraints import planning_constraints
 from app.contracts import ResourceView, StrictModel
 from app.db import Resource, now
 from app.planning_capacity import CapacityReport, capacity_report
+from app.planning_facts import (
+    active_profile,
+    goal_inputs,
+    goal_report,
+    load_facts,
+    observed_goal_usage,
+    profile_limits,
+    profile_windows,
+    week_key,
+)
 from app.planning_history import PLANNER_RULE_VERSION, save_snapshot
 
 
@@ -39,6 +49,10 @@ def subtract(windows, busy):
 
 def protected_today_block(p, block):
     """Today's action must not change history, ongoing work or another date."""
+    if block["id"] in p.get("timer_protected_ids", []) or instant(
+        block["starts_at"]
+    ) < instant(p["now_utc"]):
+        return True
     if p.get("scope") != "today" and not p.get("repair"):
         return False
     tz = ZoneInfo(p["settings"]["timezone"])
@@ -114,7 +128,7 @@ def revalidate_preserved(p, clock, tz):
         ):
             reason = "超过更新后的学习上限"
         elif allocated.get(block["step_id"], 0) + n > max(
-            0, step.get("estimated_minutes", 0) - step.get("spent_minutes", 0)
+            0, (step.get("estimated_minutes") or 0) - step.get("spent_minutes", 0)
         ):
             reason = "超过步骤剩余耗时"
         if reason:
@@ -172,7 +186,9 @@ def revalidate_preserved(p, clock, tz):
                     and instant(x["ends_at"]) > clock
                 )
                 if ready < max(
-                    0, steps[dep]["estimated_minutes"] - steps[dep]["spent_minutes"]
+                    0,
+                    (steps[dep]["estimated_minutes"] or 0)
+                    - steps[dep]["spent_minutes"],
                 ):
                     reason = "旧安排的前置步骤未在开始前满足"
                     warnings.append(f"{block.get('title', '旧安排')}：{reason}")
@@ -217,6 +233,16 @@ def build_plan(p):
         for r in protected
     )
     busy.extend((instant(b["starts_at"]), instant(b["ends_at"])) for b in preserved)
+    for block in preserved:
+        personal = active_profile(p, instant(block["starts_at"]))
+        rest = personal.get("preferences", {}).get("break_minutes") or 0
+        if rest:
+            busy.append(
+                (
+                    instant(block["starts_at"]) - timedelta(minutes=rest),
+                    instant(block["ends_at"]) + timedelta(minutes=rest),
+                )
+            )
     free = {}
     used = {}
     for i in range(days):
@@ -244,10 +270,25 @@ def build_plan(p):
         )
     capacity_free = {d: list(windows) for d, windows in free.items()}
     preferences = planning_constraints(p, "soft")
+    personal_windows, low_energy = profile_windows(p)
+    preferences += personal_windows
     if p.get("planning_strategy") == "preferred":
         from app.planning_options import preferred_windows
 
         for d in free:
+            if low_energy:
+                low_spans = [
+                    (instant(r["data"]["starts_at"]), instant(r["data"]["ends_at"]))
+                    for r in low_energy
+                ]
+                good = subtract(free[d], low_spans)
+                free[d] = good + subtract(free[d], good)
+            profile = active_profile(p, datetime.combine(d, time(12), tz))
+            if (
+                profile.get("preferences", {}).get("leisure_protection")
+                == "prefer_protect"
+            ):
+                free[d].sort(key=lambda w: (-(w[1] - w[0]).total_seconds(), w[0]))
             free[d] = preferred_windows(free[d], preferences)
     capacity_used = dict(used)
     all_steps = {s["id"]: s["data"] for s in p["steps"]}
@@ -272,21 +313,52 @@ def build_plan(p):
     remaining = {
         k: max(0, v["estimated_minutes"] - v["spent_minutes"] - assigned.get(k, 0))
         for k, v in all_steps.items()
-        if v["task_id"] in tasks and v["status"] == "open"
+        if v["task_id"] in tasks
+        and v["status"] == "open"
+        and v["estimated_minutes"] is not None
     }
     required_minutes = sum(remaining.values())
+    active_goals, task_goals = goal_inputs(p)
+    goal_used = observed_goal_usage(p, task_goals, tz)
+    for block in preserved:
+        gid = task_goals.get(block["task_id"])
+        if gid and block["status"] != "completed" and instant(block["ends_at"]) > clock:
+            key = (gid, week_key(instant(block["starts_at"]), tz))
+            goal_used[key] = (
+                goal_used.get(key, 0)
+                + (
+                    instant(block["ends_at"]) - instant(block["starts_at"])
+                ).total_seconds()
+                / 60
+            )
 
     def due(t):
-        return (
+        task_deadline = (
             instant(t.get("remedy_due_at") or t["due_at"])
             if t.get("remedy_due_at") or t.get("due_at")
             else datetime.max.replace(tzinfo=timezone.utc)
+        )
+        return task_deadline
+
+    def step_due(sid):
+        task = tasks[all_steps[sid]["task_id"]]
+        goal = active_goals.get(task_goals.get(all_steps[sid]["task_id"]), {}).get(
+            "data", {}
+        )
+        return min(
+            due(task),
+            instant(goal["deadline"])
+            if goal.get("deadline")
+            else datetime.max.replace(tzinfo=timezone.utc),
         )
 
     pending = sorted(
         remaining,
         key=lambda k: (
-            due(tasks[all_steps[k]["task_id"]]),
+            step_due(k),
+            -active_goals.get(task_goals.get(all_steps[k]["task_id"]), {})
+            .get("data", {})
+            .get("priority", 0),
             -tasks[all_steps[k]["task_id"]].get("priority", 2),
             all_steps[k]["task_id"],
             k,
@@ -297,7 +369,9 @@ def build_plan(p):
         for sid in list(pending):
             s = all_steps[sid]
             t = tasks[s["task_id"]]
-            deadline = due(t)
+            deadline = step_due(sid)
+            gid = task_goals.get(s["task_id"])
+            goal = active_goals.get(gid, {}).get("data", {})
             if sid in invalid_locked:
                 unscheduled.append(
                     {
@@ -326,16 +400,70 @@ def build_plan(p):
                 continue
             earliest = max([clock] + [finish[d] for d in s["dependency_ids"]])
             last = max(earliest, locked_finish.get(sid, clock))
+            before = (
+                len(blocks),
+                {d: list(w) for d, w in free.items()},
+                dict(used),
+                dict(goal_used),
+                remaining[sid],
+            )
             for d in free:
                 for a, b in list(free[d]):
                     a = max(a, earliest)
                     b = min(b, deadline)
                     while remaining[sid] > 0 and a < b:
+                        live = [
+                            (max(a, x), min(b, y))
+                            for x, y in free[d]
+                            if max(a, x) < min(b, y)
+                        ]
+                        if not live:
+                            break
+                        a, limit = min(live)
+                        limit = min(b, limit)
+                        personal = active_profile(p, a)
+                        personal_midnight = None
+                        if personal:
+                            personal_zone = ZoneInfo(personal["timezone"])
+                            personal_midnight = instant(
+                                datetime.combine(
+                                    a.astimezone(personal_zone).date()
+                                    + timedelta(days=1),
+                                    time.min,
+                                    personal_zone,
+                                )
+                            )
+                            limit = min(limit, personal_midnight)
                         cap = cfg["daily_limit_minutes"] - used[d]
-                        available = int((b - a).total_seconds() // 60)
+                        personal_cap, focus, rest = profile_limits(p, a, blocks)
+                        if personal_cap is not None:
+                            cap = min(cap, personal_cap)
+                            if cap <= 0 and personal_midnight and personal_midnight < b:
+                                a = personal_midnight
+                                continue
+                        week = week_key(a, tz)
+                        if gid:
+                            goal_cap = max(
+                                0,
+                                goal["weekly_budget_minutes"]
+                                - goal_used.get((gid, week), 0),
+                            )
+                            if (
+                                goal["allowed_adjustment"] == "ask"
+                                and remaining[sid] > goal_cap
+                            ):
+                                break
+                            cap = min(cap, goal_cap)
+                        available = int((limit - a).total_seconds() // 60)
                         n = int(
                             min(
-                                remaining[sid], cfg["max_block_minutes"], available, cap
+                                remaining[sid],
+                                cfg["max_block_minutes"],
+                                available,
+                                cap,
+                                max(cfg["min_block_minutes"], focus)
+                                if focus is not None
+                                else cfg["max_block_minutes"],
                             )
                         )
                         if (
@@ -362,6 +490,13 @@ def build_plan(p):
                                     "step_id": sid,
                                     "dependency_ids": s["dependency_ids"],
                                     "settings_revision": p["source_revision"],
+                                    "execution_basis": p.get("execution_context", {})
+                                    .get("steps", {})
+                                    .get(sid),
+                                    "profile_revision": p.get(
+                                        "profile_context", {}
+                                    ).get("revision", 0),
+                                    "goal_id": gid,
                                     "constraint_revisions": {
                                         r.get("constraint_id", r["id"]): r["revision"]
                                         for r in protected
@@ -371,6 +506,31 @@ def build_plan(p):
                                         f"本次分配 {n} 分钟，依据步骤剩余耗时和单块上限",
                                         "避开固定课程、事项及已确认禁排时段",
                                     ]
+                                    + (
+                                        [
+                                            "依据已确认档案的专注、休息和负荷偏好；偏好不是永久禁排"
+                                        ]
+                                        if active_profile(p, a)
+                                        else []
+                                    )
+                                    + (
+                                        [
+                                            f"属于目标 {active_goals[gid]['data']['title']}；共享周预算只计算一次"
+                                        ]
+                                        if gid
+                                        else []
+                                    )
+                                    + (
+                                        [
+                                            "实际投入未知，沿用明确标识的估算/剩余工作，不把缺记录记为0"
+                                        ]
+                                        if p.get("execution_context", {})
+                                        .get("steps", {})
+                                        .get(sid, {})
+                                        .get("actual_minutes", 0)
+                                        is None
+                                        else []
+                                    )
                                     + (
                                         [
                                             "优先使用已确认软偏好窗口"
@@ -403,14 +563,25 @@ def build_plan(p):
                         free[d] = subtract(free[d], [(a, end)])
                         remaining[sid] -= n
                         used[d] += n
+                        if gid:
+                            goal_used[(gid, week)] = goal_used.get((gid, week), 0) + n
                         last = max(last, end)
-                        a = end
+                        a = end + timedelta(minutes=rest)
+                        if rest:
+                            for rest_day in free:
+                                free[rest_day] = subtract(
+                                    free[rest_day],
+                                    [(end - timedelta(minutes=n + rest), a)],
+                                )
                 if remaining[sid] <= 0:
                     break
             if remaining[sid] <= 0:
                 done.add(sid)
                 finish[sid] = last
             else:
+                if gid and goal["allowed_adjustment"] == "ask":
+                    count, free, used, goal_used, remaining[sid] = before
+                    del blocks[count:]
                 unscheduled.append(
                     {
                         "step_id": sid,
@@ -423,6 +594,14 @@ def build_plan(p):
                         + ("（已避让确认的禁排时段）" if protected else ""),
                     }
                 )
+                if gid:
+                    unscheduled[-1]["reason"] += (
+                        "；目标预算或共享容量不足，需询问后决定取舍"
+                        if goal["allowed_adjustment"] == "ask"
+                        else "；按目标周预算减负，未修改截止时间"
+                        if goal["allowed_adjustment"] == "reduce"
+                        else "；目标允许延后，仅建议在后续可行范围重排，未延长截止时间"
+                    )
             pending.remove(sid)
             progressed = True
         if not progressed:
@@ -437,6 +616,18 @@ def build_plan(p):
             break
     for item in unscheduled:
         item["title"] = all_steps[item["step_id"]].get("title", "待完成步骤")
+    unscheduled.extend(
+        {
+            "step_id": sid,
+            "title": step.get("title", "待完成步骤"),
+            "remaining_minutes": None,
+            "reason": "步骤预计耗时未知，请先确认耗时；不把未知当作0",
+        }
+        for sid, step in all_steps.items()
+        if step["task_id"] in tasks
+        and step["status"] == "open"
+        and step.get("estimated_minutes") is None
+    )
     for tid, task in tasks.items():
         if not any(s["task_id"] == tid for s in all_steps.values()):
             unscheduled.append(
@@ -495,6 +686,8 @@ def build_plan(p):
         "rule_version": PLANNER_RULE_VERSION,
         "planning_strategy": p.get("planning_strategy", "earliest"),
         "preference_windows": preferences,
+        "execution_context": p.get("execution_context", {}),
+        "profile_context": p.get("profile_context", {}),
         "protected_windows": [
             r
             for r in protected
@@ -507,6 +700,7 @@ def build_plan(p):
             "removed_ids": [b["id"] for b in removed],
         },
     }
+    result["goal_allocation"] = goal_report(p, result, task_goals, active_goals)
     result["capacity"] = capacity_report(
         p,
         result,
@@ -578,6 +772,11 @@ async def planning_result(
     target = target or clock.astimezone(tz).date()
     courses = [store.view(r) for r in await store.rows(db, owner, "course")]
     blocks = await store.rows(db, owner, "plan_block")
+    timer_ids = {
+        t.data["target"].get("plan_block_id")
+        for t in await store.rows(db, owner, "execution_timer")
+        if t.data["status"] not in ("finished", "discarded")
+    }
     dates = [
         instant(b.data["starts_at"]).astimezone(tz).date()
         for b in blocks
@@ -595,15 +794,17 @@ async def planning_result(
             {"id": b.id, **b.data}
             for b in blocks
             if repair
+            or b.id in timer_ids
             or b.data.get("locked")
             or b.data["status"] == "completed"
-            or (scope == "today" and instant(b.data["starts_at"]) < clock)
+            or instant(b.data["starts_at"]) < clock
             or not target
             <= instant(b.data["starts_at"]).astimezone(tz).date()
             < target + timedelta(days=horizon)
         ]
         inputs = {
             "scope": scope,
+            "timer_protected_ids": sorted(x for x in timer_ids if x),
             "repair": repair,
             "planning_strategy": strategy,
             "now_utc": clock,
@@ -624,6 +825,7 @@ async def planning_result(
             ],
             "current_blocks": [{"id": b.id, **b.data} for b in blocks],
         }
+        inputs = await load_facts(db, owner, inputs)
         result = build_plan(inputs)
     except ValueError as e:
         raise HTTPException(422, str(e))
@@ -700,6 +902,8 @@ async def save_plan(db, owner, draft, payload):
             )
         ):
             replacing.append(b)
+    retained = set(payload.get("changes", {}).get("retained_ids", []))
+    replacing = [b for b in replacing if b.id not in retained]
     replacing_ids = {b.id for b in replacing}
     for timer in await store.rows(db, owner, "execution_timer"):
         if (

@@ -112,7 +112,7 @@ async def list_suggestions(db, owner):
         suggestions.append(view)
     return {
         "contract_version": "duration-suggestions-v1",
-        "generation_status": "not_integrated",
+        "generation_status": "ready",
         "source_revision": await source_revision(db, owner),
         "invalid_suggestion_count": invalid,
         "suggestions": suggestions,

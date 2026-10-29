@@ -217,7 +217,7 @@ def verify(service):
                     "/plan-drafts", {"target_date": str(future), "horizon_days": 1}
                 )
                 payload = gap_plan["data"]["payload"]
-                assert payload["rule_version"] == "soft-preferences-2"
+                assert payload["rule_version"] == "personal-facts-1"
                 assert len(payload["blocks"]) == 1
                 block = payload["blocks"][0]
                 assert datetime.fromisoformat(

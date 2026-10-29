@@ -9,7 +9,7 @@ export type DurationSuggestion={
     state:'pending'|'accepted'|'rejected'|'restored';applied_step_revision:number|null;applied_source_revision:number|null;
   };
 };
-export type DurationSuggestionList={contract_version:'duration-suggestions-v1';generation_status:'not_integrated';source_revision:number;invalid_suggestion_count:number;suggestions:DurationSuggestion[]};
+export type DurationSuggestionList={contract_version:'duration-suggestions-v1';generation_status:'not_integrated'|'ready';source_revision:number;invalid_suggestion_count:number;suggestions:DurationSuggestion[]};
 export type DurationOperation={path:string;method:'POST';idempotencyKey:string;body:{revision:number;task_revision:number;step_revision:number;source_revision:number;action:DurationAction}};
 
 export function durationActions(item:DurationSuggestion):DurationAction[] {

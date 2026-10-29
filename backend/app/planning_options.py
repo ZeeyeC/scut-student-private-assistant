@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Query
 
 from app.constraints import planning_constraints
 from app.contracts import StrictModel
+from app.planning_facts import profile_windows
 from app.replanning import ReplanAddition
 
 
@@ -52,6 +53,8 @@ class Options(StrictModel):
     options: list[Option]
     profile_integration: str = "pending_person_b"
     goal_integration: str = "pending_person_b"
+    goal_allocation: dict = {}
+    profile_context: dict = {}
 
 
 class Risk(StrictModel):
@@ -73,12 +76,14 @@ class Risks(StrictModel):
     unknown_estimate_count: int
     risks: list[Risk]
     execution_integration: str = "pending_person_b"
+    goal_allocation: dict = {}
+    execution_context: dict = {}
 
 
 def compare_plans(inputs):
     from app.planner import build_plan, instant
 
-    preferences = planning_constraints(inputs, "soft")
+    preferences = planning_constraints(inputs, "soft") + profile_windows(inputs)[0]
     options = []
     for strategy, title in [("earliest", "更早开始"), ("preferred", "遵循软偏好")]:
         p = {**deepcopy(inputs), "planning_strategy": strategy}
@@ -146,6 +151,14 @@ def compare_plans(inputs):
         horizon_days=inputs["horizon_days"],
         preference_count=len(preferences),
         options=options,
+        profile_integration="confirmed_profile_v1"
+        if "profile_context" in inputs
+        else "pending_person_b",
+        goal_integration="goal_budget_v1"
+        if "goal_context" in inputs
+        else "pending_person_b",
+        profile_context=inputs.get("profile_context", {}),
+        goal_allocation=result.get("goal_allocation", {}),
     )
 
 
@@ -185,6 +198,11 @@ def risk_report(inputs, result):
         unallocated_minutes=c["unallocated_minutes"],
         unknown_estimate_count=c["unknown_estimate_count"],
         risks=risks,
+        execution_integration=inputs.get("execution_context", {}).get(
+            "integration", "pending_person_b"
+        ),
+        execution_context=inputs.get("execution_context", {}),
+        goal_allocation=result.get("goal_allocation", {}),
     )
 
 

@@ -31,8 +31,8 @@ def verify(service):
         options = get("/planning-options?horizon_days=7")
         assert len(options["options"]) == 2
         assert all(o["proposed_minutes"] == 15 for o in options["options"])
-        assert options["profile_integration"] == "pending_person_b"
-        assert options["goal_integration"] == "pending_person_b"
+        assert options["profile_integration"] == "confirmed_profile_v1"
+        assert options["goal_integration"] == "goal_budget_v1"
         repair = get("/replanning?horizon_days=7")
         seconds = sum(
             (
@@ -42,15 +42,20 @@ def verify(service):
             for row in repair["added"]
         )
         assert seconds == 15 * 60
-        assert repair["execution_integration"] == "pending_person_b"
+        assert repair["execution_integration"] == "authoritative_execution_v1"
         assert get("/planning-risks?horizon_days=7")["required_minutes"] == 15
         assert get("/plan-blocks") == before
+        facts = capacity["execution_context"]["tasks"][task_id]
+        assert facts["actual_minutes"] == 45 and len(facts["effective_record_ids"]) == 2
+        followup = module("a_followup_checks", "verify-a-followup-checks.py")
+        additional = followup.checks(get, write, task_id, local_day)
         return [
             *verified,
+            *additional,
             "real-B-actual45-to-A-remaining15",
             "two-real-options-use-corrected-remaining15",
             "replanning-and-risk-read-real-execution-projection",
-            "profile-goal-consumers-still-honestly-pending",
+            "profile-goal-consumers-connected-to-real-facts",
             "cross-domain-queries-preserve-schedule",
         ]
 
