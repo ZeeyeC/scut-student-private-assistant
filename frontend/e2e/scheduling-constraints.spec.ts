@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { fileURLToPath } from "node:url";
 
 async function enter(page: Page) {
   await page.clock.setFixedTime(new Date("2026-10-14T10:30:00Z"));
@@ -139,7 +140,7 @@ test('weekly protection previews dates, survives reload and guides today and sev
   await expect(review.getByLabel('禁排发生预览').locator('p')).toHaveCount(4);
   await expect(review).toContainText('每周三、五');
   expect(await(await page.request.get('/api/scheduling-constraints')).json()).toHaveLength(0);
-  await review.screenshot({path:'/Users/cya/Desktop/个人助理agent开发/scut-student-private-assistant-demo2.1/docs/roadmap/evidence/weekly-constraints-review.png'});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/weekly-constraints-review.png',import.meta.url))});
   await save(page);
   await page.reload();await page.getByRole('button',{name:'待办与日程',exact:true}).click();
   await expect(page.getByRole('heading',{name:'每周固定安排 · 已启用',exact:true})).toBeVisible();

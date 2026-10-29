@@ -13,10 +13,18 @@
     "passed": 44
   },
   "browser": {
-    "passed": 43,
+    "passed": 44,
     "channel": "installed Chrome",
     "connection_or_lock_errors": 0,
-    "old_A_timeout_scenario": "passed this run; old root cause not inferred"
+    "old_A_timeout_scenario": "passed this run; old root cause not inferred",
+    "failed": 0,
+    "command_exit_code": 0,
+    "initial_attempt": {
+      "passed": 43,
+      "failed": 1,
+      "reason": "hardcoded author screenshot path; reproduced then fixed",
+      "trace": "browser-portability-failure-trace"
+    }
   },
   "build_and_typecheck": {
     "passed": true,
