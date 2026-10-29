@@ -1,8 +1,8 @@
 # 课间 · 华工学生助手
 
-当前为甲乙合并联调候选 **Demo2.4.7**：从乙方`codex/demo2.4-b-independent`（`e38054c`）合并甲方`feat/person-a-planning-demo2.4.7`（`cb84277`）。联调分支`codex/demo2.4.7-ab-integration`，正式发布与外部真实样本验收另列。
+当前开发入口为 **Demo2.4.7 乙交互预览**，分支 `codex/demo2.4.7-b-interaction`，从甲乙合并候选 `6353142` 继续。已接入对话约束、冲突批准校对、共享目标容量、周复盘下周草稿、应用内主动建议与多轮协商，见[本轮开发记录](docs/roadmap/demo2.4.7-b-interaction.md)。
 
-甲方提供课程分段、统一冲突、重复约束、容量、方案比较、局部重排、显式日常候选和风险计算；乙方提供自愿计时、执行更正、档案、目标、周复盘、桌宠入口与SQLite取消修复。合并不表示所有消费接口已经接通，见[本轮联调检查](docs/roadmap/demo2.4.7-ab-integration.md)。乙方上一阶段的[开发记录](docs/roadmap/demo2.4-b-independent.md)与[独立开发预览](.development-previews/demo2.4-b-independent/课间桌宠.app)保留。
+甲方规划核心与乙方既有执行、计时、档案、目标等功能保留。[上轮甲乙合并记录](docs/roadmap/demo2.4.7-ab-integration.md)及所有旧预览保留。档案/目标的甲方排程消费、T09 建议生成和真实样本验收仍明确待完成。
 
 [本版说明](docs/releases/Demo2.4.7.md) · [甲独立规划接口](docs/roadmap/a3-a6-independent-planning.md) · [需要乙交付的清单](docs/roadmap/乙方需提供的交接清单.md) · [局部重排](docs/roadmap/a4-calendar-replanning.md) · [容量](docs/roadmap/a3-planning-capacity.md) · [重复硬禁排](docs/roadmap/a3-weekly-constraints.md) · [统一冲突](docs/roadmap/a2-unified-conflicts.md) · [课程分段](docs/roadmap/a1-course-intervals.md)
 
@@ -20,7 +20,7 @@
 
 ## 双击打开
 
-- 本轮联调入口：[甲乙联合开发预览 App](.development-previews/demo2.4.7-ab-integration/课间桌宠.app)，[使用说明与未接通范围](docs/releases/Demo2.4.7-甲乙联调预览.md)。联合浏览器44条已通过；甲方旧候选的一条超时为历史结果。本检出因缺少Demo2.2基线未正式发布，原有正式归档与乙方旧预览保留。
+- 最新入口：[乙交互开发预览 App](.development-previews/demo2.4.7-b-interaction/课间桌宠.app)，[使用说明](docs/releases/Demo2.4.7-乙交互开发预览.md)。本检出缺少需保护的 Demo2.2 基线，正式发布预检被拒绝；开发预览不覆盖旧版。上一轮[甲乙联合预览](.development-previews/demo2.4.7-ab-integration/课间桌宠.app)保留。
 - `campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台；浏览器可以同时访问 `http://127.0.0.1:5173/` 使用 Web UI，无需再启动另一个助手。
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。

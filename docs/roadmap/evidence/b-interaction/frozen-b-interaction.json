@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "mode": "actual-frozen-service",
+  "data": "isolated-synthetic",
+  "paid_model_calls": 0,
+  "checks": [
+    "identity",
+    "60-minute-plan-kept",
+    "actual25-task-open",
+    "idempotent-retry",
+    "correction20-history25",
+    "b-interaction-capability",
+    "unknown-clock-clarification",
+    "same-intent-original-constraint-draft",
+    "confirmed-rule-restored-and-explicitly-disabled",
+    "negotiation-original-plan-review",
+    "cancel-preserves-confirmed-schedule",
+    "shared-goal-capacity",
+    "weekly-original-next-week-draft",
+    "proactive-opt-in-real-risk-and-owned-task-details",
+    "duration-generator-honestly-unavailable"
+  ],
+  "service_sha256": "6122f08c21785da01d5d4924db67e320b249f1268a9ed9a35cb7f82164b49219"
+}

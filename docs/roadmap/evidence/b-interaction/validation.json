@@ -1,0 +1,118 @@
+{
+  "stage": "development-preview",
+  "version": "2.4.7",
+  "branch": "codex/demo2.4.7-b-interaction",
+  "build_code_commit": "c8eedf5",
+  "data": "isolated-synthetic",
+  "paid_model_calls": 0,
+  "backend": {
+    "passed": 545,
+    "subtests_passed": 18,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "backend-final.log"
+  },
+  "frontend": {
+    "passed": 81,
+    "files": 22,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "frontend-unit-final.log"
+  },
+  "browser": {
+    "passed": 49,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "browser-release.log"
+  },
+  "browser_current_flow": {
+    "passed": 5,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "browser-interaction-final.log"
+  },
+  "native_logic": {
+    "passed": true,
+    "exit_code": 0,
+    "log": "native-unit.log"
+  },
+  "independent_review": {
+    "rounds": 1,
+    "findings": 2,
+    "fixed": 2,
+    "regression_tests_passed": 7,
+    "log": "review-fixes-green.log"
+  },
+  "formal_release": {
+    "passed": false,
+    "exit_code": 1,
+    "reason": "required Demo2.2 archive baseline missing; preflight refused",
+    "log": "formal-release-preflight.log"
+  },
+  "environment": {
+    "node": "26 (repository specifies22.12+<23; Node22 verification pending)",
+    "browser": "installed Chrome; bundled Playwright Chromium unavailable"
+  },
+  "previous_failures": {
+    "backend": {
+      "passed": 539,
+      "failed": 2,
+      "exit_code": 1,
+      "log": "backend-full.log"
+    },
+    "browser": {
+      "passed": 46,
+      "failed": 2,
+      "exit_code": 1,
+      "log": "browser-full.log"
+    }
+  },
+  "pending": [
+    "A direct authoritative execution/event consumption",
+    "A profile/goal planner adapters",
+    "A T09 suggestion generation",
+    "real samples and human acceptance",
+    "Node22 verification",
+    "formal baseline restoration and coordinated release"
+  ],
+  "frozen_b_interaction": {
+    "passed": true,
+    "checks": 15,
+    "exit_code": 0,
+    "log": "frozen-b-interaction.log"
+  },
+  "native_initial_attempt": {
+    "passed": false,
+    "checks_completed": 56,
+    "exit_code": 1,
+    "error": "The request timed out.",
+    "evidence": "logs/native-attempt-1"
+  },
+  "frozen_ab": {
+    "passed": true,
+    "checks": 17,
+    "exit_code": 0,
+    "log": "frozen-ab.log"
+  },
+  "frozen_a": {
+    "passed": true,
+    "checks": 16,
+    "exit_code": 0,
+    "log": "frozen-a.log"
+  },
+  "native_integration": {
+    "passed": true,
+    "checks": 56,
+    "exit_code": 0,
+    "attempt": 2,
+    "log": "native-integration-retry.log",
+    "note": "initial health request timeout preserved; isolated retry passed"
+  },
+  "app_build": {
+    "passed": true,
+    "exit_code": 0,
+    "log": "app-build.log",
+    "built_from": "c8eedf5",
+    "reused_old_app": false
+  }
+}
