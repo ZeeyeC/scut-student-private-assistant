@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-29",
+  "stage": "development-preview",
+  "version": "2.4.0",
+  "code_commit": "5a81880",
+  "backend": {
+    "passed": 375,
+    "subtests_passed": 18
+  },
+  "frontend": {
+    "passed": 44
+  },
+  "browser": {
+    "passed": 30,
+    "channel": "installed Chrome",
+    "connection_or_lock_errors": 0
+  },
+  "typecheck_and_build": {
+    "passed": true,
+    "existing_large_chunk_warning": true
+  },
+  "native_logic": {
+    "passed": true
+  },
+  "native_integration": {
+    "passed": true,
+    "checks": 56,
+    "intermediate_startup_timeout_preserved": true
+  },
+  "frozen_independent": {
+    "passed": true,
+    "checks": 12,
+    "service_sha256": "75a4dd07ac276199226b299df40e714cb6bb885e9ea719f5d8e00e78e7d062b6"
+  },
+  "frozen_timetable": {
+    "passed": true,
+    "checks": 8
+  },
+  "code_review": {
+    "critical": 0,
+    "important": 4,
+    "fixed": 4,
+    "regressions_added": 7
+  },
+  "cancellation": {
+    "passed": 7,
+    "query_disconnect_red_to_green": true
+  },
+  "privacy": {
+    "test_data": "isolated synthetic",
+    "paid_model_calls": 0,
+    "personal_database_used": false
+  },
+  "formal_release": {
+    "passed": false,
+    "reason": "missing Demo2.2 baseline; preflight refused"
+  },
+  "node": {
+    "actual": "v26.0.0",
+    "required": "22.12+ <23",
+    "matching_environment_verified": false
+  },
+  "pending": [
+    "A interface integration",
+    "real samples",
+    "real user acceptance",
+    "Node22 verification"
+  ]
+}

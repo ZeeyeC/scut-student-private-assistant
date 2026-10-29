@@ -1,5 +1,7 @@
 # 课间 · 华工学生助手
 
+乙方最新开发交付（2026-10-29）：自愿计时、显式偏好档案、目标管理和独立周复盘，另修复SQLite取消清理。[实际结果与待联调项](docs/roadmap/demo2.4-b-independent.md) · [开发预览使用说明](docs/releases/Demo2.4-乙方独立功能预览.md) · [打开本地开发预览](.development-previews/demo2.4-b-independent/课间桌宠.app)。正式版号保留2.4.0；甲方容量/重排等接口未交付，本轮不视为整份任务书验收完成。
+
 当前版本 **Demo2.4**：新增单次调课、停课、恢复原课与调整记录，预览影响后确认；同时包含图片/PDF识别、文字课表与一键生成当日日程。[本版使用说明与边界](docs/releases/Demo2.4.md)；[Demo2.3 说明](docs/releases/Demo2.3.md)；[Demo2.2 更新、演示与自检](docs/demo2.2/README.md)。
 
 用户最新核心流程与本轮验收见 [核心使用流程补充](docs/roadmap/core-flow-2026-10-28.md)。当日排程及单次课程调整已完成，完整学期例外、跨校区冲突及其余依赖任务继续按任务书推进。

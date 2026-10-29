@@ -29,10 +29,10 @@
 ## Task 1: S02取消清理
 
 Files: `backend/app/db_sessions.py`、`main.py`、`agent.py`、`backend/tests/test_request_cancellation.py`。
-Interfaces: `sqlite_transaction(sessions)`与`session_scope(sessions)`提供原有事务/读取语义；仅清理阶段屏蔽取消，退出继续传播。
+Interfaces: `sqlite_transaction(sessions)`与`session_scope(sessions)`提供原有事务/清理语义；`read_snapshot(sessions)`在SSE短查询及关闭期间延后AnyIO取消，退出检查点继续传播，不屏蔽SSE等待、模型调用或整个业务事务。
 
 - [x] 用真实SQLite/ASGI断连写失败用例并观察连接未归还。
-- [x] 按根因修复rollback/close，不吞异常、不扩大业务屏蔽范围。
+- [x] 按根因修复rollback/close，不吞异常；追加查询途中断连回归，仅扩展到完成短数据库快照后立即传播取消。
 - [x] 验证断连、刷新、task.cancel、关闭服务和后续写入，跑原agent/删除回归。
 
 ## Task 2: B2计时领域

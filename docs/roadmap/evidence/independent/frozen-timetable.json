@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "scope": "actual frozen backend, temporary local profile, no model calls",
+  "checks": [
+    "isolated database identity",
+    "frozen today planner creates review-only one-day draft",
+    "frozen course move, cancel, restore and audit history",
+    "PDFium dynamic library loads",
+    "PDF upload and render",
+    "page PNG served",
+    "original and page export",
+    "asset cleanup"
+  ]
+}
