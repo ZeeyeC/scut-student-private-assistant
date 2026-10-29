@@ -4,6 +4,8 @@
 
 [本版说明](docs/releases/Demo2.4.7.md) · [甲独立规划接口](docs/roadmap/a3-a6-independent-planning.md) · [需要乙交付的清单](docs/roadmap/乙方需提供的交接清单.md) · [局部重排](docs/roadmap/a4-calendar-replanning.md) · [容量](docs/roadmap/a3-planning-capacity.md) · [重复硬禁排](docs/roadmap/a3-weekly-constraints.md) · [统一冲突](docs/roadmap/a2-unified-conflicts.md) · [课程分段](docs/roadmap/a1-course-intervals.md)
 
+协作交接先看 [甲方完成、未完成与乙方依赖清单](docs/roadmap/甲方完成与待办清单.md)：分别列明已实现接口、甲方独立剩余项、乙方最小材料及接入后验收，不把独立核心交付写成全部任务完成。
+
 用户最新核心流程与本轮验收见 [核心使用流程补充](docs/roadmap/core-flow-2026-10-28.md)。当日排程、单次课程调整、统一冲突、每周硬禁排、软偏好及固定事实局部重排已接入；通勤候选仅使用已确认耗时。完整学期例外和乙方执行事件联调继续按任务书推进。
 
 后续双人协作以 Demo2.4 提交为共同基线，分工、接口、交接与验收见 [双人开发任务分配](docs/roadmap/demo2.4-two-person-plan.md)，分别领取 [甲：课表与排程](docs/roadmap/demo2.4-person-a.md) 和 [乙：执行与助手](docs/roadmap/demo2.4-person-b.md)。
