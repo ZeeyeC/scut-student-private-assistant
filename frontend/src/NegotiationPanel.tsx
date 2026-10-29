@@ -34,7 +34,7 @@ export function NegotiationPanel({onDraft}:{onDraft?:(draft:Resource)=>void} = {
   const selectedId=selectIntentId(intents.data??[],selected);
   const current=intents.data?.find(r=>r.id===selectedId);
   const locked=busy||!!pending;
-  const ready=!!(owner&&settings.data&&intents.data&&blocks.data);
+  const ready=!!(owner&&settings.data&&intents.data&&blocks.data&&!settings.isFetching&&!intents.isFetching&&!blocks.isFetching);
   const preview=current?.data.preview;
   const draftId=current?.data.choice?.draft_id;
   const chosenDraft=useQuery({queryKey:["negotiation-draft",draftId],queryFn:()=>api<Resource>(`/drafts/${draftId}`),enabled:!!draftId});
@@ -86,7 +86,7 @@ export function NegotiationPanel({onDraft}:{onDraft?:(draft:Resource)=>void} = {
     } finally {busyRef.current=false;setBusy(false);}
   }
   function save() {
-    if (!settings.data || locked) return;
+    if (!settings.data || locked || !ready) return;
     try {
       const body:Record<string,unknown>={source_revision:settings.data.revision,data:intentConditions(form,settings.data.data.timezone)};
       if(current) body.revision=current.revision;
@@ -94,7 +94,7 @@ export function NegotiationPanel({onDraft}:{onDraft?:(draft:Resource)=>void} = {
     } catch(e) {setError(String(e));}
   }
   function action(name:"preview"|"cancel"|"choose",optionId?:string) {
-    if (!current || !settings.data || locked) return;
+    if (!current || !settings.data || locked || !ready) return;
     void run(negotiationOperation(`/planning-intents/${current.id}/${name}`,"POST",{revision:current.revision,source_revision:settings.data.revision,...(optionId?{option_id:optionId}:{})}));
   }
   const changed=current && JSON.stringify(intentForm(current.data.conditions))!==JSON.stringify(form);
@@ -136,7 +136,7 @@ export function NegotiationPanel({onDraft}:{onDraft?:(draft:Resource)=>void} = {
         {option.explanation.map((line:string,index:number)=><p key={index}>{line}</p>)}
         <details><summary>比较安排与移动事项</summary><ul>{option.blocks.map((block:any)=><li key={block.id}>{block.title}：{time(block.starts_at)} — {time(block.ends_at)} · {option.changes.retained_ids.includes(block.id)?"保留":"新增"}</li>)}
         {option.removed_blocks.map((block:any)=><li key={`removed-${block.id}`}>{block.title}：将移除原建议 · {block.reason}</li>)}</ul></details>
-        <Button type="button" disabled={locked||!!changed||current?.data.status!=="active"||preview.source_revision!==settings.data?.revision} onClick={()=>action("choose",option.id)}>选择{option.title}并生成草稿</Button>
+        <Button type="button" disabled={locked||!ready||!!changed||current?.data.status!=="active"||preview.source_revision!==settings.data?.revision} onClick={()=>action("choose",option.id)}>选择{option.title}并生成草稿</Button>
       </article>)}
     </div>}
     {currentDraft&&(currentDraft.data.status==="pending"?<PlanReview draft={currentDraft}/>:<p>所选计划草稿：{currentDraft.data.status==="confirmed"?"已确认；继续修改或取消协商不会撤销该日程":"已取消或失效，请继续修改后重新预览"}</p>)}

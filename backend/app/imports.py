@@ -155,7 +155,7 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     # New independent facts do not depend on every unrelated database change.
     # Plans/timetable replacements retain their full source version guard;
     # decompositions validate the actual task version in save_steps below.
-    if d.data["draft_kind"] in {"plan", "timetable", "course_change"}:
+    if d.data["draft_kind"] in {"plan", "timetable", "course_change"} or d.data.get("source", {}).get("routine_candidate_id"):
         store.revision(s, d.data["source_revision"])
     payload = validate_payload(d.data["draft_kind"], d.data["payload"])
     from app.conflicts import REVIEW_KINDS, draft_conflicts

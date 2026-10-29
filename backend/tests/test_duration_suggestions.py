@@ -187,7 +187,7 @@ def test_absent_generator_is_readonly_honest_and_authenticated(tmp_path):
         assert c.get("/api/duration-suggestions").status_code == 401
         data = c.get("/api/duration-suggestions", headers=headers()).json()
         assert (
-            data["generation_status"] == "not_integrated" and data["suggestions"] == []
+            data["generation_status"] == "ready" and data["suggestions"] == []
         )
         assert data["source_revision"] == 0 and resources(c) == []
 

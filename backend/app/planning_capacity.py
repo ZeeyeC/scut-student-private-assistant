@@ -56,6 +56,9 @@ class CapacityReport(StrictModel):
     unscheduled: list[UnallocatedWork]
     warnings: list[str]
     changes: CapacityChanges
+    execution_context: dict = Field(default_factory=dict)
+    profile_context: dict = Field(default_factory=dict)
+    goal_allocation: dict = Field(default_factory=dict)
 
 
 def capacity_report(p, result, free, used, required, reserved, preserved, tz):
@@ -123,6 +126,10 @@ def capacity_report(p, result, free, used, required, reserved, preserved, tz):
             "changes": {
                 key: len(result["changes"][key + "_ids"])
                 for key in ("added", "retained", "removed")
+            },
+            **{
+                key: result.get(key, {})
+                for key in ("execution_context", "profile_context", "goal_allocation")
             },
         }
     ).model_dump(mode="json")

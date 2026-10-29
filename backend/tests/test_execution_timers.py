@@ -360,13 +360,15 @@ def test_plan_replacement_preserves_unfinished_timer_target(
             return response.json()
 
         draft = plan()
+        before = resources(c, "plan_block")
+        assert ids["block"] in draft["data"]["payload"]["changes"]["retained_ids"]
         response = write(
             c, h, f"/drafts/{draft['id']}/confirm", {"revision": draft["revision"]}
         )
-        assert response.status_code == 409
-        assert "计时" in response.text
+        assert response.status_code == 200  # unchanged timer target is never replaced
+        assert resources(c, "plan_block") == before
         assert any(b["id"] == ids["block"] for b in resources(c, "plan_block"))
-        assert resources(c, "plan_snapshot") == []
+        assert len(resources(c, "plan_snapshot")) == 1
         command(c, h, timer, "discard")
         draft = plan()
         assert (

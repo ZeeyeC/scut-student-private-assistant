@@ -79,7 +79,7 @@ class DurationSuggestionView(StrictModel):
 
 class DurationSuggestionList(StrictModel):
     contract_version: Literal["duration-suggestions-v1"] = "duration-suggestions-v1"
-    generation_status: Literal["not_integrated"] = "not_integrated"
+    generation_status: Literal["not_integrated", "ready"] = "ready"
     source_revision: int
     invalid_suggestion_count: int = 0
     suggestions: list[DurationSuggestionView]

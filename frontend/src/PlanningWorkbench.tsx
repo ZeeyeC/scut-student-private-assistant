@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import type { components } from './generated-api';
 import { Button } from './components/ui/button';
+import { PlanningFacts } from './PlanningFacts';
 type Options = components['schemas']['Options'];
 type Risks = components['schemas']['Risks'];
 type RoutineRequest = components['schemas']['RoutineRequest'];
@@ -21,6 +22,7 @@ export function PlanningWorkbench() {
     <h2>比较安排，再做决定</h2>
     <p>按截止、依赖、学习窗口和每日上限计算；软偏好可让步，课程与硬禁排不可突破。选择后先生成草稿，确认后才保存。</p>
     <Button variant="outline" disabled={busy} onClick={()=>{void options.refetch();void risks.refetch();}}>刷新方案与风险</Button>
+    <PlanningFacts execution={risks.data?.execution_context} profile={options.data?.profile_context} goals={options.data?.goal_allocation}/>
     {(options.error||risks.error||error)&&<p role="alert">{error||String(options.error||risks.error)}</p>}
     {options.data&&<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,260px),1fr))',gap:12}}>
       {options.data.options.map(o=><article className="step" key={o.id} aria-label={o.title}>

@@ -163,10 +163,11 @@ def test_a_selective_replan_cannot_remove_a_b_timer_target(tmp_path):
             ends_at="2026-10-14T11:00:00+08:00",
         )
         assert confirm(c, h, protection).status_code == 200
-        repair = plan(c, h, repair=True)
-        assert ids["block"] in repair["data"]["payload"]["changes"]["removed_ids"]
-        rejected = confirm(c, h, repair)
-        assert rejected.status_code == 409 and "计时" in rejected.text
+        report = get(c, "/replanning?target_date=2026-10-14&horizon_days=7")
+        assert ids["block"] in report["retained_ids"]
+        assert ids["block"] not in [r["id"] for r in report["removed"]]
+        assert report["warnings"]
+        assert write(c, h, "/replan-drafts", {"target_date": "2026-10-14", "horizon_days": 7}).status_code == 409
         assert resources(c, "plan_snapshot") == []
         assert any(b["id"] == ids["block"] for b in get(c, "/plan-blocks"))
         command(c, h, timer, "discard")
@@ -197,7 +198,7 @@ def test_a_snapshots_and_b_corrections_remain_separate_in_weekly_review(tmp_path
         assert corrected["plans"] == report["plans"]
 
 
-def test_profile_and_goals_are_available_but_a_consumers_are_still_declared_pending(
+def test_profile_and_goals_consumed_with_explicit_deferred_typed_preferences(
     tmp_path,
 ):
     with make_client(tmp_path) as c:
@@ -208,8 +209,8 @@ def test_profile_and_goals_are_available_but_a_consumers_are_still_declared_pend
         profile(c, h)
         saved_goal = goal(c, h, ids["task"])
         after = get(c, path)
-        assert after["profile_integration"] == "pending_person_b"
-        assert after["goal_integration"] == "pending_person_b"
+        assert after["profile_integration"] == "confirmed_profile_v1"
+        assert after["goal_integration"] == "goal_budget_v1"
         assert after["preference_count"] == before["preference_count"] == 0
 
         def allocations(options):
@@ -221,7 +222,10 @@ def test_profile_and_goals_are_available_but_a_consumers_are_still_declared_pend
                 for o in options["options"]
             ]
 
-        assert allocations(before) == allocations(after)
+        assert allocations(before) != allocations(after)  # focus45 changes blocks
+        assert all(o["proposed_minutes"] == 60 for o in after["options"])
+        assert after["profile_context"]["application"]["deferred_fields"]["preferred_study_windows.deep/review"]
+        assert after["goal_allocation"]["task_goal_ids"][ids["task"]] == saved_goal["id"]
         assert get(c, "/profile")["data"]["confirmed"]
         assert saved_goal["data"]["weekly_budget_minutes"] == 600
         assert saved_goal["capacity"]["weekly_available_minutes"] is None

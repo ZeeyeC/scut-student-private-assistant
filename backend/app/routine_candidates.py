@@ -86,6 +86,15 @@ async def preview_candidates(db, owner, request):
     busy += inputs["current_blocks"]
     candidates = {}
     warnings = []
+    from app.calendar import expand_calendar
+    from app.planning_facts import active_profile
+
+    confirmed_profile = inputs.get("profile_context", {}).get("data", {})
+    interval = (
+        confirmed_profile.get("preferences", {}).get("review_interval_days")
+        if confirmed_profile.get("confirmed")
+        else None
+    )
 
     def add(kind, title, a, b, source):
         if b <= lower or a >= upper:
@@ -131,7 +140,19 @@ async def preview_candidates(db, owner, request):
                         local_instant(datetime.combine(day, window.end), zone),
                         "explicit_daily_window",
                     )
-        courses = sorted(inputs["occurrences"], key=lambda e: instant(e["starts_at"]))
+        course_events = inputs["occurrences"]
+        if request.review_minutes and interval:
+            course_events = expand_calendar(
+                inputs["settings"],
+                [store.view(r) for r in await store.rows(db, owner, "course")],
+                [r.data for r in await store.rows(db, owner, "exception")],
+                target - timedelta(days=interval),
+                target + timedelta(days=request.horizon_days - 1),
+            )
+            warnings.append(
+                f"复习候选采用已确认档案的{interval}天间隔；复习分钟仍由本次明确指定，保存前需校对"
+            )
+        courses = sorted(course_events, key=lambda e: instant(e["starts_at"]))
         for course in courses:
             a, b = instant(course["starts_at"]), instant(course["ends_at"])
             source = course.get(
@@ -146,12 +167,24 @@ async def preview_candidates(db, owner, request):
                     source,
                 )
             if request.review_minutes:
+                profile = active_profile(inputs, b)
+                profile_zone = ZoneInfo(profile["timezone"]) if profile else zone
+                delay = profile.get("preferences", {}).get("review_interval_days") or 0
+                review_start = local_instant(
+                    b.astimezone(profile_zone).replace(tzinfo=None)
+                    + timedelta(days=delay),
+                    profile_zone,
+                )
+                if delay and not active_profile(inputs, review_start):
+                    review_start = b
                 add(
                     "review",
                     course.get("title", "课程") + " · 课后复习",
-                    b,
-                    b + timedelta(minutes=request.review_minutes),
-                    source,
+                    review_start,
+                    review_start + timedelta(minutes=request.review_minutes),
+                    f"{source}:profile:{inputs.get('profile_context', {}).get('revision', 0)}"
+                    if delay
+                    else source,
                 )
         if request.include_campus_transfer:
             matrix = {
@@ -227,6 +260,7 @@ def routine_router(get_db, current_user):
             for d in await store.rows(db, owner, "draft"):
                 if (
                     d.data["status"] == "pending"
+                    and d.data["source_revision"] == preview.source_revision
                     and d.data.get("source", {}).get("routine_candidate_id")
                     == selected.id
                 ):

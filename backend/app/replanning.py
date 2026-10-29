@@ -58,6 +58,9 @@ def replan_report(result):
         ],
         warnings=result["warnings"],
         unallocated_minutes=result["capacity"]["unallocated_minutes"],
+        execution_integration=result.get("execution_context", {}).get(
+            "integration", "pending_person_b"
+        ),
     ).model_dump(mode="json")
 
 

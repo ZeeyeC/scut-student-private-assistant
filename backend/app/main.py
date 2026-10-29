@@ -298,11 +298,17 @@ def create_app(config=None):
     from app.proactive_routes import proactive_router
 
     app.include_router(duration_suggestions_router(get_db, current_user))
+    from app.duration_generator import generator_router
+
+    app.include_router(generator_router(get_db, current_user))
     app.include_router(conversation_constraint_router(get_db, current_user))
     app.include_router(goal_capacity_router(get_db, current_user))
     app.include_router(negotiation_router(get_db, current_user))
     app.include_router(proactive_router(get_db, current_user))
     app.include_router(planner_router(get_db, current_user))
+    from app.planning_changes import changes_router
+
+    app.include_router(changes_router(get_db, current_user))
     app.include_router(constraint_router(get_db, current_user))
     app.include_router(course_change_router(get_db, current_user))
     app.include_router(agent_router(get_db, current_user))

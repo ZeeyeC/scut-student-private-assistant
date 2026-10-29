@@ -13,6 +13,22 @@ export function DurationSuggestions() {
   const list=useQuery({queryKey:['duration-suggestions'],queryFn:()=>api<DurationSuggestionList>('/duration-suggestions')});
   const [pending,setPending]=useState<DurationOperation|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
   const pendingRef=useRef<DurationOperation|null>(null),busyRef=useRef(false);
+  const generationRef=useRef<{key:string;revision:number}|null>(null);
+  const [generationPending,setGenerationPending]=useState(false);
+  async function generate() {
+    if(busyRef.current||pendingRef.current||!list.data)return;
+    const request=generationRef.current??{key:crypto.randomUUID(),revision:list.data.source_revision};
+    generationRef.current=request;setGenerationPending(true);busyRef.current=true;setBusy(true);setError('');setMessage('');
+    try {
+      const result=await api<{created_ids:string[];refreshed_ids:string[];skipped:{reason:string}[]}>('/duration-suggestions/generate',{method:'POST',headers:{'Idempotency-Key':request.key},body:JSON.stringify({expected_source_revision:request.revision})});
+      generationRef.current=null;setGenerationPending(false);
+      setMessage(result.created_ids.length?`已生成 ${result.created_ids.length} 条待确认建议；尚未修改预计值。`:result.refreshed_ids.length?`已按最新资料重新核对 ${result.refreshed_ids.length} 条待确认建议；尚未修改预计值。`:`本次未生成建议。${[...new Set(result.skipped.map(s=>s.reason))].join('；')}`);
+      await list.refetch();
+    }catch(e){
+      if(e instanceof ApiError&&e.status>=400&&e.status<500){generationRef.current=null;setGenerationPending(false);await list.refetch();}
+      setError(String(e));
+    }finally{busyRef.current=false;setBusy(false);}
+  }
   async function run(operation?:DurationOperation,retry=false) {
     if(busyRef.current||(pendingRef.current&&!retry))return;
     const request=pendingRef.current??operation;if(!request)return;
@@ -30,14 +46,16 @@ export function DurationSuggestions() {
   function act(item:DurationSuggestion,action:DurationAction) {
     try{void run(durationOperation(item,action));}catch(e){setError(String(e));}
   }
-  const locked=busy||!!pending;
+  const locked=busy||!!pending||generationPending;
   return <section aria-label="时长建议"><h3>步骤时长建议</h3>
-    <p>未接入生成服务。这里仅消费已保存且符合契约的真实建议；不会根据计划分钟伪造实际耗时或学习样本。</p>
+    <p>{list.data?.generation_status==='ready'?'根据同一步骤至少 3 条真实执行与末次完成反馈生成预计总时长建议；先校对再接受，不推断长期习惯。':'未接入生成服务。这里仅消费已保存且符合契约的真实建议；不会根据计划分钟伪造实际耗时或学习样本。'}</p>
     {list.isPending&&<p role="status">正在读取时长建议…</p>}
     {list.error&&<p role="alert">读取时长建议失败：{String(list.error)}</p>}
     <Button type="button" variant="outline" disabled={locked||list.isFetching} onClick={()=>void list.refetch()}>刷新时长建议</Button>
+    {list.data?.generation_status==='ready'&&<Button type="button" disabled={locked||list.isFetching} onClick={()=>void generate()}>检查并生成时长建议</Button>}
+    {generationPending&&!busy&&<Button type="button" onClick={()=>void generate()}>重试同一次生成</Button>}
     {list.data&&<>
-      {!list.data.suggestions.length&&<p>暂无可消费的有效时长建议。建议生成算法仍待接入。</p>}
+      {!list.data.suggestions.length&&<p>{list.data.generation_status==='ready'?'暂无时长建议；样本不足、未完成反馈、未确认区间或旧估算均不会生成建议。':'暂无可消费的有效时长建议。建议生成算法仍待接入。'}</p>}
       {list.data.invalid_suggestion_count>0&&<p role="alert">有 {list.data.invalid_suggestion_count} 条记录不符合消费契约，已阻止展示和应用；需要生成端修复。</p>}
       {list.data.suggestions.map(item=>{
         const actions=durationActions(item);
