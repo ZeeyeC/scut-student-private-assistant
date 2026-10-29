@@ -1,11 +1,14 @@
 """Verify independent B features in the real frozen binary, with isolated data."""
 
 import argparse
+import hashlib
 import importlib.util
 import json
 from datetime import timedelta
 from pathlib import Path
 from uuid import uuid4
+
+import httpx
 
 
 def independent_checks(get, write, task_id, local_day):
@@ -45,6 +48,19 @@ def independent_checks(get, write, task_id, local_day):
         "task_status": "open",
         "task_revision": get(f"/tasks/{task_id}")["revision"],
     }
+    try:
+        write(
+            f"/execution-timers/{timer['id']}/actions",
+            {**payload, "feedback": "skipped", "actual_minutes": 5},
+        )
+    except httpx.HTTPStatusError as exc:
+        assert exc.response.status_code == 422
+    else:
+        raise AssertionError("Invalid skipped/manual minutes must return422")
+    settings = get("/settings")
+    original_timezone = settings["data"]["timezone"]
+    settings["data"]["timezone"] = "UTC"
+    write("/settings", settings, method="PUT")
     result = write(f"/execution-timers/{timer['id']}/actions", payload, key="finish")
     assert (
         write(f"/execution-timers/{timer['id']}/actions", payload, key="finish")
@@ -53,6 +69,11 @@ def independent_checks(get, write, task_id, local_day):
     assert get(f"/tasks/{task_id}/execution-summary")["actual_seconds"] == 2700
     assert len(get(f"/tasks/{task_id}/executions")) == 3
     assert get(f"/tasks/{task_id}")["data"]["status"] == "open"
+    records = get(f"/tasks/{task_id}/executions")
+    assert all(r["data"]["timezone"] == original_timezone for r in records)
+    settings = get("/settings")
+    settings["data"]["timezone"] = original_timezone
+    write("/settings", settings, method="PUT")
 
     profile = get("/profile")
     assert profile["data"]["preferences"]["focus_minutes"] is None
@@ -120,6 +141,8 @@ def independent_checks(get, write, task_id, local_day):
     assert get("/plan-blocks") == before
     return [
         "timer-pause-resume-manual25-once",
+        "invalid-manual-finish422-remains-editable",
+        "finish-keeps-original-timezone-after-settings-change",
         "corrected20-plus-manual25-pooled45",
         "profile-zero-and-reset-preserve-task",
         "paused-goal-keeps-completion-capacity-unknown",
@@ -138,6 +161,8 @@ if __name__ == "__main__":
     harness = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(harness)
     result = harness.verify(args.service.resolve(), independent_checks)
+    with args.service.open("rb") as stream:
+        result["service_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps(result, ensure_ascii=False))

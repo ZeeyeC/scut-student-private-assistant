@@ -1,7 +1,18 @@
 import {test,expect,type Page} from "@playwright/test";
 import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
 
 const evidence=(name:string)=>fileURLToPath(new URL(`../../docs/roadmap/evidence/independent/${name}.png`,import.meta.url));
+
+test('compact desktop bridge opens goals and weekly review',async({page})=>{
+  await enter(page);
+  await page.setViewportSize({width:560,height:720});
+  await page.addScriptTag({content:readFileSync(new URL('../../campus-pet/Resources/Bridge.js',import.meta.url),'utf8')});
+  expect(await page.evaluate(()=>(window as any).__campusPet.navigate('目标与复盘'))).toBe(true);
+  await expect(page.getByRole('region',{name:'长期目标',exact:true})).toBeVisible();
+  await expect(page.getByRole('region',{name:'每周复盘',exact:true})).toBeVisible();
+  await expect(page.locator('.shell > aside')).toBeHidden();
+});
 
 async function enter(page:Page) {
   await page.clock.setFixedTime(new Date("2026-10-14T10:30:00Z"));

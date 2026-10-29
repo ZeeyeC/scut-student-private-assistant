@@ -1,6 +1,6 @@
 (() => {
   if (window.__campusPet) return;
-  const pages = ['助手', '今日', '课表', '作业', '设置'];
+  const pages = ['助手', '今日', '课表', '作业', '目标与复盘', '设置'];
   let lastState = '';
   let desiredPage = '助手';
   let backendState = null;

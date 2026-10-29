@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, NSWindowDelegate {
+    static let pages = ["助手", "今日", "课表", "作业", "目标与复盘", "设置"]
     let options = LaunchOptions.parse()
     lazy var service = ServiceController(options: options)
     let pet = PetView(frame: NSRect(x: 0, y: 0, width: 190, height: 210))
@@ -143,7 +144,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         let bar = NSStackView()
         bar.orientation = .horizontal; bar.spacing = 8
         bar.translatesAutoresizingMaskIntoConstraints = false
-        segments = NSSegmentedControl(labels: ["助手", "今日", "课表", "待办与日程", "设置"], trackingMode: .selectOne, target: self, action: #selector(changePage))
+        segments = NSSegmentedControl(labels: Self.pages.map { $0 == "作业" ? "待办与日程" : $0 }, trackingMode: .selectOne, target: self, action: #selector(changePage))
         segments.selectedSegment = 0
         bar.addArrangedSubview(segments)
         let expand = NSButton(title: "展开", target: self, action: #selector(toggleLayout))
@@ -261,8 +262,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
 
     func navigate() {
-        let pages = ["助手", "今日", "课表", "作业", "设置"]
-        guard let index = pages.firstIndex(of: requestedPage) else { return }
+        guard let index = Self.pages.firstIndex(of: requestedPage) else { return }
         segments.selectedSegment = index
         let literal = String(data: try! JSONSerialization.data(withJSONObject: [requestedPage]), encoding: .utf8)!
         webView.evaluateJavaScript("window.__campusPet?.navigate(\(literal)[0]);") { _, _ in }
@@ -406,7 +406,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         statusItem.menu = petMenu()
     }
     @objc func changePage() {
-        requestedPage = ["助手", "今日", "课表", "作业", "设置"][segments.selectedSegment]
+        requestedPage = Self.pages[segments.selectedSegment]
         navigate()
     }
     @objc func toggleLayout(_ sender: NSButton) {
