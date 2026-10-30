@@ -1,6 +1,7 @@
 import { defineExtensionMessaging } from "@webext-core/messaging";
 export type Binding = {
   sessionId: string;
+  bindingGeneration?: string;
   appTab: number;
   schoolTab: number;
   schoolTabs?: number[];
@@ -19,16 +20,18 @@ export type BridgeEvent = {
 type Protocol = {
   start(data: {
     sessionId: string;
+    bindingGeneration?: string;
     nonce: string;
     owner: string;
     expiresAt: string;
   }): Promise<Binding>;
   restore(data: {
     sessionId: string;
+    bindingGeneration?: string;
     nonce: string;
     owner: string;
   }): Promise<Binding | null>;
-  stop(data: { sessionId: string; owner: string }): Promise<void>;
+  stop(data: { sessionId: string; owner: string; bindingGeneration?: string }): Promise<void>;
   school(data: {
     kind: "waiting_timetable" | "extracting" | "failed" | "capture";
     fragments?: string[];

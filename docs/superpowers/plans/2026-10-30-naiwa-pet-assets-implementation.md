@@ -34,11 +34,11 @@
 
 **Interfaces:** CLI `import-naiwa-assets.py --source <只读上游检出> --selection <清单> --output <资源目录>`；输出 `asset-pack.json`，含schema_version、upstream_ref、源路径/SHA256、canvas、default_frame、clips（frames/duration_ns/loop/transitions）、states及资源授权记录。fps归一为每帧`round(1_000_000_000/fps)`纳秒，原fps另存来源；单帧手动姿态单独使用`pose_hold_ms=800`，不重复解码或篡改其源fps。
 
-- [ ] 选材固定为基础idle28帧、状态用greet/ponder/focused/curious/worried/sleepy、手动smile及surprised三段、原icons/icon-256.png。记录各自授权依据；读取原始PNG并制作静态/逐帧预览，确认不是错误目录、占位图或不相符姿态。原始记录与既有素材分开。
+- [x] 选材固定为基础idle28帧、状态用greet/ponder/focused/curious/worried/sleepy、手动smile及surprised三段、原icons/icon-256.png。记录各自授权依据；读取原始PNG并制作静态/逐帧预览，确认不是错误目录、占位图或不相符姿态。原始记录与既有素材分开。
 - [x] 写失败测试：篡改SHA、420×560声明对应错误尺寸、缺帧、非法路径/符号链接、无效帧时长、未知来源版本、失败导入后原资源包保持原样。
 - [x] Run `PYTHONPATH=backend backend/.venv/bin/python -m pytest scripts/tests/test_import_naiwa_assets.py -q`，确认RED。
 - [x] 实现原字节校验、受限路径、明确字段和暂存后原子替换；只复制选中PNG与必要声明，输出同来源默认帧。基线待机按28帧×85,000,000ns；表情按各自清单。
-- [ ] 同命令GREEN；检查清单的帧/文件/来源一一对应，再本地提交。授权未明确时继续做UI/合成测试，不把未明确素材放入发布包。
+- [x] 同命令GREEN；检查清单的帧/文件/来源一一对应，再本地提交。授权未明确时继续做UI/合成测试，不把未明确素材放入发布包。
 
 ### Task 2：元数据播放器、按需缓存和公共坐标
 
@@ -46,10 +46,10 @@
 
 **Interfaces:** `PetAssetPack.load(from: URL) throws -> PetAssetPack`；`clip(for: PetMood) -> PetClipSpec`；`PetClipSpec.frameIndex(at: TimeInterval) -> Int`；`PetFrameCache.frame(clip: PetClipSpec, index: Int) -> NSImage?`；`PetGeometry(sourceSize: NSSize, groundY: CGFloat, targetRect: NSRect)`提供 `sourcePoint(fromView: NSPoint) -> NSPoint?` 与 `viewRect(fromSource: NSRect) -> NSRect` 转换。缓存构造参数 `byteLimit` 默认64×1024×1024。
 
-- [ ] 写失败测试：85ms跨帧、24fps、静态单帧、循环与末帧、不同片段切换重置索引、缺转场与坏资源回退；420×560等比缩放不裁头脚；缓存计费/淘汰不超过上限。
-- [ ] Run `backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，确认RED。
-- [ ] 按源清单加载与验证；clip持有元数据而非整套解码图数组，帧缓存按需加载并受限。透明像素与显示图复用相同帧字节，避免哈希验证后再从可变路径读取另一份图。
-- [ ] 相同命令GREEN，覆盖原有原生逻辑，再提交；本任务产物可使用合成PNG验证，不依赖未明确授权素材。
+- [x] 写失败测试：85ms跨帧、24fps、静态单帧、循环与末帧、不同片段切换重置索引、缺转场与坏资源回退；420×560等比缩放不裁头脚；缓存计费/淘汰不超过上限。
+- [x] Run `backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，确认RED。
+- [x] 按源清单加载与验证；clip持有元数据而非整套解码图数组，帧缓存按需加载并受限。透明像素与显示图复用相同帧字节，避免哈希验证后再从可变路径读取另一份图。
+- [x] 相同命令GREEN，覆盖原有原生逻辑，再提交；本任务产物可使用合成PNG验证，不依赖未明确授权素材。
 
 ### Task 3：状态、点击区域、提醒和动作菜单接入
 
@@ -57,10 +57,10 @@
 
 **Interfaces:** 继续消费 `PetMood` 与 `receiveAssistantMood`，新资产状态表按设计映射；`isInteractive`、`isReminderBelly`和绘制均使用Task2 `PetGeometry`。动作菜单来自已验证clip，显示名对应真实素材。
 
-- [ ] 写失败测试：7种业务状态均选择新角色；提醒/待批准打断随机表演、结束回当前状态；透明边缘不吞鼠标；提醒区域只在实际新角色可点击区域内。
-- [ ] 补失败测试：隐藏、休息和减少动态效果停止不必要解码；拖拽/缩放后基线不跳；错误资源用新默认帧回退；连续切换不残留旧角色或旧动作名称。
-- [ ] 原生逻辑RED后接入状态表与共享几何；提醒使用原图上的轻量标记，保留提醒点击功能，替换旧整图HSV染色假设。
-- [ ] 原生逻辑GREEN；检查任务环、打开主窗口/快捷面板、状态审批及暂停恢复，再提交。
+- [x] 写失败测试：7种业务状态均选择新角色；提醒/待批准打断随机表演、结束回当前状态；透明边缘不吞鼠标；提醒区域只在实际新角色可点击区域内。
+- [x] 补失败测试：隐藏、休息和减少动态效果停止不必要解码；拖拽/缩放后基线不跳；错误资源用新默认帧回退；连续切换不残留旧角色或旧动作名称。
+- [x] 原生逻辑RED后接入状态表与共享几何；提醒使用原图上的轻量标记，保留提醒点击功能，替换旧整图HSV染色假设。
+- [x] 原生逻辑GREEN；检查任务环、打开主窗口/快捷面板、状态审批及暂停恢复，再提交。
 
 ### Task 4：图标、构建资源与实际Mac验收
 
@@ -68,11 +68,11 @@
 
 **Interfaces:** `verify-pet-asset-pack.py --app <当前新App>` 检查包内资源、哈希、默认帧、全部可达clip和声明；关于面板只显示本机声明与可复制来源，任何来源控件不触发浏览器。
 
-- [ ] 写资源冻结检查RED：漏帧、旧角色回退、旧三视频动作菜单、缺署名、旧320尺寸或20fps硬编码均能发现；旧“3个视频动作”断言改为已验证包中的真实动作语义，不删业务检查。
-- [ ] 调整构建：复制选中NaiWa包、同来源图标/默认帧与适用声明；旧资源不再进入新App。关于面板提供本地声明。
-- [ ] 新源码App里逐状态拍照/播放核对；检查黑白底无色边、透明点击、拖拽、任务环、提醒、隐藏/唤醒、缩放；记录缓存与播放CPU。多物理显示器未实测就明确保留为待验收。
-- [ ] 运行原生逻辑、HTTP健康10场景、实际App smoke、资源包校验；将证据交给总计划最终发布步骤。发布失败保留旧包与暂存，不能把资源清单通过代替本机实际播放验收。
+- [x] 写资源冻结检查RED：漏帧、旧角色回退、旧三视频动作菜单、缺署名、旧320尺寸或20fps硬编码均能发现；旧“3个视频动作”断言改为已验证包中的真实动作语义，不删业务检查。
+- [x] 调整构建：复制选中NaiWa包、同来源图标/默认帧与适用声明；旧资源不再进入新App。关于面板提供本地声明。
+- [x] 新源码App里逐状态拍照/播放核对；检查黑白底无色边、透明点击、拖拽、任务环、提醒、隐藏/唤醒、缩放；记录缓存与播放CPU。多物理显示器未实测就明确保留为待验收。
+- [x] 运行原生逻辑、HTTP健康10场景、实际App smoke、资源包校验；将证据交给总计划最终发布步骤。发布失败保留旧包与暂存，不能把资源清单通过代替本机实际播放验收。
 
 ## 交付
 
-新角色素材清单/许可来源、状态映射、可复现导入工具、原生资源与交互测试、实际App画面及性能记录，随新UI统一进入后续版本。当前只完成计划，不标记上述实现步骤为已完成。
+新角色素材清单/许可来源、状态映射、可复现导入工具、原生资源与交互测试、实际App画面及性能记录，随新UI统一进入后续版本。实现与验收状态随[进度表](../../roadmap/Demo2.5-开发进度追踪表.md)更新，真实外部样本不以本轮归档替代。

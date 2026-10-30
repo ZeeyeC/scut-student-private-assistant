@@ -1,12 +1,13 @@
 {
-  "cache_bytes" : 22579200,
+  "cache_bytes" : 66796800,
   "cache_limit_bytes" : 67108864,
   "canvas" : [
     420,
     560
   ],
-  "decoded_frames" : 24,
+  "decoded_frames" : 187,
   "measurement" : "3-second real-time native process idle playback; excludes separate WebKit process",
-  "native_cpu_seconds" : 0.25864100000000001,
-  "wall_seconds" : 3.0111647916673974
+  "native_cpu_seconds" : 0.18019399999999999,
+  "peak_cache_bytes" : 66796800,
+  "wall_seconds" : 3.0147153333309689
 }

@@ -1,6 +1,10 @@
 # 课间 · 华工学生助手
 
-本轮开发位于 **`codex/demo2.5-app-ui-naiwa`**：独立App新界面、Chrome/Edge学校导入与NaiWa角色替换。[总实现计划](docs/superpowers/plans/2026-10-30-app-ui-implementation.md) · [开发进度追踪表](docs/roadmap/Demo2.5-开发进度追踪表.md) · [实施材料](docs/materials/demo2.5/README.md)。当前已按方案开始实施，实际实现与验收状态见追踪表；下述Demo2.4.9仍为已发布版本。
+本轮开发位于 **`codex/demo2.5-app-ui-naiwa`**：独立App新界面、Chrome/Edge学校导入与NaiWa角色替换。[总实现计划](docs/superpowers/plans/2026-10-30-app-ui-implementation.md) · [开发进度追踪表](docs/roadmap/Demo2.5-开发进度追踪表.md) · [实施材料](docs/materials/demo2.5/README.md)。当前源码已实现Demo2.5，正在完成最终构建归档；下述Demo2.4.9仍为先前已发布版本。实际验收状态见追踪表。
+
+当前界面为独立App：**今日、日程、任务、助手**，设置分五组。目标与复盘位于任务，规划与课程工具位于日程，草稿与建议集中在待确认。日常不打开浏览器；学校课表导入指定Chrome（默认）或Edge（可记忆）。NaiWa角色素材按固定提交接入，保持原时序与透明点击。[新版使用说明](campus-pet/README.md) · [Demo2.5说明](docs/releases/Demo2.5.md) · [本轮验证](docs/validation/demo2.5/README.md)。
+
+以下保留既有功能和协作历史资料；新版界面入口以以上说明为准。
 
 已发布基线为 **Demo2.4.9 项目收尾与联合交付版**，在甲乙接通基准 `05e7981` 上开发，本地分支 `codex/demo2.4.9-project-completion`。现已增加学校校历批量停课/明确补课/精确撤销、显式课程与任务分类、匹配 deep/review 的偏好与课程类型准备规则，以及独立OCR准确率评测工具。原执行、档案、目标、复盘、计时、协商与权威规划链路继续共用。
 

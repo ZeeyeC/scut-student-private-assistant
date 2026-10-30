@@ -86,3 +86,17 @@ test('bridge loaded before login keeps its initial native navigation until React
   await page.getByRole('button',{name:'注册并登录',exact:true}).click();
   await expect(page.getByRole('heading',{name:'助手',exact:true})).toBeVisible();
 });
+
+test('mounted calendar switches views across main-window and compact widths without losing its date',async({page})=>{
+  await page.setViewportSize({width:1120,height:820});await enter(page);
+  await page.getByRole('button',{name:'日程',exact:true}).click();
+  await expect(page.locator('.fc-timeGridWeek-view')).toBeVisible();
+  const heading=await page.locator('.fc-toolbar-title').textContent();
+  await page.evaluate(()=>(window as any).__originalCalendar=document.querySelector('.fc'));
+  await page.setViewportSize({width:560,height:720});
+  await expect(page.locator('.fc-listWeek-view')).toBeVisible();
+  await page.setViewportSize({width:1120,height:820});
+  await expect(page.locator('.fc-timeGridWeek-view')).toBeVisible();
+  expect(await page.locator('.fc-toolbar-title').textContent()).toBe(heading);
+  expect(await page.evaluate(()=>(window as any).__originalCalendar===document.querySelector('.fc'))).toBe(true);
+});

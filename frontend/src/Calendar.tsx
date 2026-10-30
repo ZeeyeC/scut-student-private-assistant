@@ -34,6 +34,14 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
   useEffect(()=>{if(requestedFilter)setFilter(requestedFilter);},[requestedFilter,focusRequest]);
   const included=(event:ScheduleEvent)=>filter==='all'||(filter==='courses'?event.kind==='course':event.kind==='plan_block');
   const calendar = useRef<FullCalendar>(null);
+  const [narrowCalendar,setNarrowCalendar]=useState(()=>window.innerWidth<768);
+  useEffect(()=>{
+    const query=window.matchMedia('(max-width: 767px)');
+    const resize=()=>setNarrowCalendar(query.matches);
+    query.addEventListener('change',resize);resize();
+    return()=>query.removeEventListener('change',resize);
+  },[]);
+  useEffect(()=>{calendar.current?.getApi().changeView(narrowCalendar?'listWeek':'timeGridWeek');},[narrowCalendar]);
   useEffect(()=>{if(focusDate){calendar.current?.getApi().gotoDate(focusDate);setChat(false);}},[focusDate,focusRequest]);
   const q = useQueryClient();
   const settings = useQuery({
@@ -97,7 +105,7 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
           firstDay={1}
           plugins={[timeGridPlugin, listPlugin, luxonPlugin, interactionPlugin]}
           timeZone={settings.data?.data.timezone ?? "Asia/Shanghai"}
-          initialView={window.innerWidth < 768 ? "listWeek" : "timeGridWeek"}
+          initialView={narrowCalendar ? "listWeek" : "timeGridWeek"}
           headerToolbar={{
             left: "prev,next today",
             center: "title",
@@ -106,7 +114,7 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
           buttonText={{ today: "今天", week: "周", list: "列表" }}
           locale="zh-cn"
           allDaySlot={false}
-          height={window.innerWidth < 768 ? "auto" : 680}
+          height={narrowCalendar ? "auto" : 680}
           scrollTime={focusDate ? new Date(focusDate).toLocaleTimeString("en-GB", {timeZone: settings.data?.data.timezone ?? "Asia/Shanghai", hour12: false}) : "07:00:00"}
           slotMinTime="00:00:00"
           slotMaxTime="24:00:00"

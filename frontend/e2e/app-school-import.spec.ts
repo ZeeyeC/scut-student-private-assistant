@@ -32,7 +32,7 @@ test('external import has no App cookie, clears its grant from the URL and retur
     window.addEventListener('message',event=>{
       if(event.source!==window||event.data?.channel!=='campus-assistant-v1')return;
       const {action,nonce,requestId,payload}=event.data;
-      const result=action==='detect'?{installed:true}:action==='stop'?null:{
+      const result=action==='detect'?{installed:true,capabilities:['scoped-bindings-v1']}:action==='stop'?null:{
         ...payload,events:['opened','waiting_timetable','extracting'].map(kind=>({kind,event_id:'fixture-'+kind})),
         capture:{semester_label:'合成学校导入',fragments:['<table><tr><th>课程</th><th>星期</th><th>周次</th><th>节次</th><th>地点</th></tr><tr><td>合成导入数学</td><td>1</td><td>1-8</td><td>1-2</td><td>A101</td></tr></table>']},
       };
@@ -106,4 +106,51 @@ test('App browser selection uses the native bridge and a double click starts onl
   await expect.poll(()=>page.evaluate(()=>(window as any).__nativeImportCalls.filter((call:any)=>call.command==='open-school-import').length)).toBe(1);
   expect(await(await page.request.get('/api/browser-imports')).json()).toHaveLength(1);
   expect((await page.evaluate(()=>(window as any).__nativeImportCalls.find((call:any)=>call.command==='open-school-import'))).payload.importId).toMatch(/^[a-f0-9-]{36}$/);
+});
+
+test('cancelling an active external import stops its extension binding',async({page,browser})=>{
+  const issued=await issueInApp(page);
+  const context=await browser.newContext({baseURL:'http://127.0.0.1:5290'});
+  const external=await context.newPage();
+  await external.addInitScript(()=>{
+    (window as any).__extensionRequests=[];
+    window.addEventListener('message',event=>{
+      if(event.source!==window||event.data?.channel!=='campus-assistant-v1')return;
+      const {action,nonce,requestId,payload}=event.data;
+      (window as any).__extensionRequests.push({action,payload});
+      const result=action==='detect'?{installed:true,capabilities:['scoped-bindings-v1']}:action==='stop'?null:{...payload,events:[]};
+      window.postMessage({channel:'campus-assistant-reply-v1',nonce,requestId,result},location.origin);
+    });
+  });
+  await external.goto(issued.grant.bridge_path+'#grant='+issued.grant.grant_id+'.'+issued.secret);
+  await expect(external.getByRole('status')).toContainText('请本人登录学校');
+  await page.evaluate(async(id)=>{
+    const session=await(await fetch('/api/browser-imports/'+id)).json();
+    const csrf=(await(await fetch('/api/csrf')).json()).csrf_token;
+    const r=await fetch('/api/browser-imports/'+id+'/cancel',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({revision:session.revision})});
+    if(!r.ok)throw new Error(await r.text());
+  },issued.session.id);
+  await expect(external.getByRole('alert')).toContainText('取消');
+  await expect.poll(()=>external.evaluate(()=>(window as any).__extensionRequests.filter((call:any)=>call.action==='stop').length)).toBe(1);
+  const calls=await external.evaluate(()=>(window as any).__extensionRequests);
+  expect(calls.find((call:any)=>call.action==='stop').payload).toEqual(calls.find((call:any)=>call.action==='start').payload);
+  await context.close();
+});
+
+
+test('older extensions require an update before any school page is started',async({page,browser})=>{
+  const issued=await issueInApp(page);
+  const context=await browser.newContext({baseURL:'http://127.0.0.1:5290'});const external=await context.newPage();
+  await external.addInitScript(()=>{
+    (window as any).__starts=0;
+    window.addEventListener('message',event=>{
+      if(event.source!==window||event.data?.channel!=='campus-assistant-v1')return;
+      const {action,nonce,requestId}=event.data;if(action==='start')(window as any).__starts++;
+      window.postMessage({channel:'campus-assistant-reply-v1',nonce,requestId,result:action==='detect'?{installed:true}:{events:[]}},location.origin);
+    });
+  });
+  await external.goto(issued.grant.bridge_path+'#grant='+issued.grant.grant_id+'.'+issued.secret);
+  await expect(external.getByRole('status')).toContainText('更新');
+  expect(await external.evaluate(()=>(window as any).__starts)).toBe(0);
+  await context.close();
 });

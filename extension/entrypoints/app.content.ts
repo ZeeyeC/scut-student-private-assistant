@@ -17,7 +17,7 @@ export default defineContentScript({
       if(!importPageAllows(location.pathname,action,payload))return;
       try {
         let result: unknown;
-        if (action === "detect") result = { installed: true };
+        if (action === "detect") result = { installed: true, capabilities: ["scoped-bindings-v1"] };
         else if (action === "start")
           result = await sendMessage("start", { ...payload, nonce });
         else if (action === "restore")

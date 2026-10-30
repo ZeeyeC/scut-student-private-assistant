@@ -19,7 +19,7 @@
   ],
   "log_sha256": {
     "V1-backend.txt": "20107f18869b7c1bbf1fdf78d4929aa5a5dfe17b1b57117584ced6c53ad64828",
-    "V1-frontend.txt": "8b2bc7fe1c0307e3e9741a0a78becd0d6a504cdf78fd5ec2b2eabc12e7d5a639",
+    "V1-frontend.txt": "272ad006777edf2b67b80ccd42bbec12f22bee0385f452c1e4660df8114127d4",
     "V1-browser.txt": "70a67c4ccdc2d1b236a07c2d39442b3e76652631e5df03c02662867a46425c40",
     "V1-local-session.txt": "673cd5736d1483b0bce08c45bed9cd39eaab9f793230c5ee8a32efc45740e33b",
     "V1-native-http.txt": "d60a571abfe3284d48634a77e38a8e179c59b8652193b58c18a5c9fcc30ad29e",

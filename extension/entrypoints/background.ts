@@ -86,6 +86,7 @@ export default defineBackground(() => {
         if (existing.owner !== data.owner) throw new Error("账号不符");
         existing.appTab = appTab;
         existing.nonce = data.nonce;
+        existing.bindingGeneration = data.bindingGeneration;
         await save(bindings);
         const tab = await browser.tabs.update(existing.schoolTab, {
           active: true,
@@ -108,6 +109,7 @@ export default defineBackground(() => {
         schoolTab: tab.id,
         schoolTabs: [tab.id],
         nonce: data.nonce,
+        bindingGeneration: data.bindingGeneration,
         owner: data.owner,
         expiresAt: data.expiresAt,
         events: [{ kind: "opened", event_id: crypto.randomUUID() }],
@@ -125,7 +127,7 @@ export default defineBackground(() => {
       const appTab = check(sender),
         bindings = await load(),
         b = bindings[data.sessionId];
-      if (!b || b.owner !== data.owner || Date.parse(b.expiresAt) <= Date.now())
+      if (!b || b.owner !== data.owner || b.bindingGeneration !== data.bindingGeneration || Date.parse(b.expiresAt) <= Date.now())
         return null;
       b.appTab = appTab;
       b.nonce = data.nonce;
@@ -137,7 +139,7 @@ export default defineBackground(() => {
     queue(async () => {
       check(sender);
       const bindings = await load();
-      if (bindings[data.sessionId]?.owner === data.owner) {
+      if (bindings[data.sessionId]?.owner === data.owner && bindings[data.sessionId]?.bindingGeneration === data.bindingGeneration) {
         delete bindings[data.sessionId];
         await save(bindings);
         await browser.alarms.clear(data.sessionId);
