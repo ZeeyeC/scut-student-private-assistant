@@ -30,7 +30,7 @@ export function DraftActions({
   const fingerprint = JSON.stringify(payload);
   const [review,setReview] = useState<{fingerprint:string;report:ConflictReport}|null>(null);
   const [acknowledged,setAcknowledged] = useState(false);
-  const ready = ask && (!needsCheck || review?.fingerprint===fingerprint);
+  const ready = !needsCheck || (ask && review?.fingerprint===fingerprint);
   return <div className="draft-actions">
     {!canSave ? <p role="status">{blockedMessage}</p> : !ready ? (
     <Button type="button" disabled={busy} onClick={async () => {
@@ -77,7 +77,7 @@ export function DraftActions({
       >
         确认保存
       </Button>
-      <Button
+      {needsCheck&&<Button
         type="button"
         variant="outline"
         onClick={() => {
@@ -85,7 +85,7 @@ export function DraftActions({
         }}
       >
         继续校对
-      </Button>
+      </Button>}
     </div>
   )}
     <DeleteButton resource={saved.revision > draft.revision ? saved : draft} disabled={busy} />

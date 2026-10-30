@@ -9,13 +9,8 @@ import { LocalEntry } from "./LocalMode";
 import { BrowserImport, stopBrowserImports } from "./BrowserImport";
 import { AfterClassCheckin } from "./AfterClass";
 import {TimerHeartbeat} from "./ExecutionTimer";
-import {Goals} from "./Goals";
-import {WeeklyReview} from "./WeeklyReview";
-import {NegotiationPanel} from "./NegotiationPanel";
-import {DurationSuggestions} from "./DurationSuggestions";
-import {TaskDetail} from "./TaskDetail";
-import type {Resource} from "./types";
-import {ProactiveSuggestions} from "./ProactiveSuggestions";
+import {TasksPage} from "./TasksPage";
+import {ReviewInbox} from "./ReviewInbox";
 import {AppShell} from "./layout/AppShell";
 import {navigationFromEvent, nextNavigation, type NavigationState, type NavigationTarget} from "./layout/navigation";
 const CalendarPage = lazy(() =>
@@ -63,7 +58,6 @@ function Workspace({ local = false }: { local?: boolean }) {
   const [navigation, setNavigation] = useState<NavigationState>({page:'today',request:0});
   const {page,focusDate:calendarDate,threadId:reviewThread,request:reviewRequest}=navigation;
   const go = (target:NavigationTarget) => setNavigation(previous=>nextNavigation(previous,target));
-  const [suggestedTask,setSuggestedTask] = useState<string|null>(null);
   useEffect(() => {
     const refresh = () => { void q.invalidateQueries(); };
     window.addEventListener("campus-task-updated", refresh);
@@ -72,7 +66,7 @@ function Workspace({ local = false }: { local?: boolean }) {
   useEffect(() => {
     const listener = (event: Event) => {
       const target=navigationFromEvent(event.type,(event as CustomEvent).detail);
-      if(target) {setNavigation(previous=>nextNavigation(previous,target));if(target.taskId)setSuggestedTask(target.taskId);}
+      if(target) setNavigation(previous=>nextNavigation(previous,target));
     };
     window.addEventListener("campus-timetable-focus", listener);
     window.addEventListener("campus-navigate", listener);
@@ -170,17 +164,15 @@ function Workspace({ local = false }: { local?: boolean }) {
           </>}>
         <AfterClassCheckin />
         <TimerHeartbeat />
-        <ProactiveSuggestions onOpenTask={id=>{setSuggestedTask(id);go({page:'tasks',taskId:id});}} />
-        {suggestedTask&&<SuggestedTask id={suggestedTask} onClose={()=>setSuggestedTask(null)}/>}
-        <BrowserImport showOverview={page === "calendar"} />
+        <ReviewInbox onOpenTask={id=>go({page:'tasks',taskId:id})}/>
+        <BrowserImport showOverview={false} />
         <Suspense fallback={<p role="status">正在加载页面…</p>}>
           {page === "today" ? (
             <TodayPage />
           ) : page === "calendar" ? (
-            <CalendarPage key="calendar" focusDate={calendarDate} />
+            <CalendarPage key="calendar" focusDate={calendarDate} filter={navigation.calendarFilter} focusRequest={navigation.request}/>
           ) : page === "tasks" ? (
-            <><h1>任务</h1><div className="workspace-tabs" role="group" aria-label="任务分类">{(['todo','goals','review'] as const).map((tab,i)=><button key={tab} aria-pressed={(navigation.taskTab??'todo')===tab} onClick={()=>go({page:'tasks',taskTab:tab})}>{['待办','目标','复盘'][i]}</button>)}</div>
-            {navigation.taskTab==='goals'?<Goals/>:navigation.taskTab==='review'?<><DurationSuggestions/><WeeklyReview/><NegotiationPanel/></>:<CalendarPage key="schedule" mode="schedule"/>}</>
+            <TasksPage tab={navigation.taskTab} onTab={taskTab=>go({page:'tasks',taskTab})} taskId={navigation.taskId} focusRequest={navigation.request}/>
           ) : page === "assistant" ? (
             <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
           ) : (
@@ -189,14 +181,4 @@ function Workspace({ local = false }: { local?: boolean }) {
         </Suspense>
     </AppShell>
   );
-}
-
-function SuggestedTask({id,onClose}:{id:string;onClose:()=>void}) {
-  const task=useQuery({queryKey:["task",id],queryFn:()=>api<Resource>(`/tasks/${id}`)});
-  useEffect(()=>{if(task.data)document.getElementById("suggested-task")?.scrollIntoView({block:"start"});},[id,task.data?.id]);
-  return <section id="suggested-task" className="card" aria-label="建议关联的任务详情">
-    <h2>{task.data?.data.title??"关联任务"}</h2><Button variant="outline" onClick={onClose}>关闭关联任务详情</Button>
-    {task.isPending&&<p role="status">正在读取任务…</p>}{task.error&&<p role="alert">{String(task.error)}</p>}
-    {task.data&&<TaskDetail key={id} task={task.data}/>}
-  </section>;
 }

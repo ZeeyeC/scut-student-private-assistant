@@ -27,3 +27,51 @@ test('shared navigation keeps legacy goals, reminders and compact controls reach
   }
 });
 
+
+test('task creation keeps its unsaved input and requires review before storing a task',async({page})=>{
+  await enter(page);
+  await page.getByRole('button',{name:'任务',exact:true}).click();
+  await expect(page.locator('.fc')).toHaveCount(0);
+  await page.getByRole('button',{name:'新建任务',exact:true}).click();
+  const panel=page.getByRole('dialog',{name:'新建任务',exact:true});
+  await panel.getByLabel('作业标题').fill('新界面合成任务');
+  await panel.getByLabel('要求（一行一项）').fill('保留原有确认与真实数据写入');
+  await page.keyboard.press('Escape');
+  await expect(panel).toBeHidden();
+  await page.getByRole('button',{name:'新建任务',exact:true}).click();
+  await expect(panel.getByLabel('作业标题')).toHaveValue('新界面合成任务');
+  await panel.getByRole('button',{name:'生成校对草稿',exact:true}).click();
+  await expect(panel.getByRole('heading',{name:'核对任务草稿',exact:true})).toBeVisible();
+  expect(await (await page.request.get('/api/tasks')).json()).toHaveLength(0);
+  await panel.getByRole('button',{name:'确认保存',exact:true}).click();
+  await expect.poll(async()=> (await (await page.request.get('/api/tasks')).json()).length).toBe(1);
+});
+
+test('settings exposes five summaries and opens the original preference controls on demand',async({page})=>{
+  await enter(page);
+  await page.getByRole('button',{name:'设置',exact:true}).click();
+  for(const label of ['课程与学期','学习偏好','提醒与桌宠','模型连接','资料与备份']) {
+    await expect(page.getByRole('button',{name:label,exact:true})).toBeVisible();
+  }
+  await expect(page.getByLabel('第一周周一')).toBeHidden();
+  await page.getByRole('button',{name:'学习偏好',exact:true}).click();
+  const panel=page.getByRole('dialog',{name:'学习偏好',exact:true});
+  await expect(panel.getByRole('region',{name:'用户偏好与精力档案'})).toContainText('未知（未设置）');
+});
+
+test('native navigation during review cannot leave the workspace permanently inert',async({page})=>{
+  await enter(page);
+  await page.getByRole('button',{name:'日程',exact:true}).click();
+  await page.getByRole('button',{name:'安排学习',exact:true}).click();
+  await page.evaluate(()=>window.dispatchEvent(new Event('campus-open-review')));
+  await expect(page.getByRole('dialog',{name:'待确认',exact:true})).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog',{name:'待确认',exact:true})).toBeHidden();
+  await expect(page.getByRole('dialog',{name:'安排学习',exact:true})).toBeVisible();
+  await page.evaluate(()=>window.dispatchEvent(new Event('campus-open-review')));
+  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('campus-navigate',{detail:'任务'})));
+  await page.getByRole('button',{name:'关闭待确认',exact:true}).click();
+  await expect.poll(()=>page.locator('.workspace-shell').evaluate(element=>(element as HTMLElement).inert)).toBe(false);
+  await page.getByRole('button',{name:'新建任务',exact:true}).click();
+  await expect(page.getByRole('dialog',{name:'新建任务',exact:true})).toBeVisible();
+});

@@ -48,7 +48,7 @@ it("renders the actual linked draft through original PlanReview and keeps approv
   const html = render(null, "pending");
   expect(html).toContain('aria-label="计划草稿"');
   expect(html).toContain("下周数学复习");
-  expect(html).toContain("校对完成，准备保存");
+  expect(html).toContain("确认保存");
   expect(html).toContain("下周计划草稿等待确认");
   expect(html).not.toContain("已确认快照");
 });

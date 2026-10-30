@@ -604,3 +604,45 @@ body[data-pet-layout=compact] .workspace-sidebar nav button { flex-direction:col
 body[data-pet-layout=compact] .workspace-sidebar button[aria-current=page] { background:transparent; }
 body[data-pet-layout=compact] .workspace-settings-shortcut { display:block; position:absolute; top:12px; right:16px; z-index:20; }
 body[data-pet-layout=compact] .workspace-settings-shortcut button { border:0; background:transparent; display:flex; align-items:center; gap:5px; color:#69717e; font-size:12px; padding:6px; }
+
+.detail-host[hidden], [hidden] { display:none !important; }
+.detail-overlay { z-index:50; }
+.detail-panel { position:fixed; z-index:51; inset:0 0 0 auto; width:min(660px,100vw); max-width:100%; display:flex; flex-direction:column; background:white; border-left:1px solid #e4e7ec; box-shadow:-8px 0 36px #18223416; }
+.detail-panel > header { padding:20px 24px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e7e9ed; flex-shrink:0; gap:12px; }
+.detail-panel > header h2 { margin:0; font-size:18px; }
+.detail-panel > header button { border:0; background:transparent; color:#69717e; padding:6px; }
+.detail-panel-content { overflow:auto; padding:20px 24px; overscroll-behavior:contain; min-height:0; flex:1; }
+.detail-panel footer { padding:16px 24px; border-top:1px solid #e7e9ed; }
+.detail-panel .assignment-entry-layout { display:flex; flex-direction:column-reverse; gap:20px; }
+.detail-panel .assignment-entry-layout > form { width:100%; margin:0; }
+.detail-panel .assignment-entry-layout details form { margin:16px 0; }
+.task-filters { display:flex; gap:16px; align-items:end; }
+.task-filters label:first-child { flex:1; } .task-filters label:last-child { width:130px; }
+.task-list { border-top:1px solid #e7e9ed; }
+.task-list-row { display:flex; align-items:center; gap:14px; width:100%; padding:18px 2px; text-align:left; border:0; border-bottom:1px solid #e7e9ed; background:white; }
+.task-list-row:hover { background:#f8faff; }
+.task-list-row strong { display:block; font-size:14px; font-weight:500; }
+.task-list-row small { display:block; color:#7b808a; font-size:12px; margin-top:5px; }
+.task-status-mark { color:#7c91b4; font-size:20px; } .task-row-status { margin-left:auto; font-size:12px; color:#7b808a; flex-shrink:0; }
+.settings-list { border-top:1px solid #e7e9ed; max-width:800px; }
+.settings-list > button { display:flex; align-items:center; justify-content:space-between; width:100%; padding:22px 4px; border:0; border-bottom:1px solid #e7e9ed; background:white; text-align:left; color:#313845; }
+.settings-list strong { display:block; font-weight:500; font-size:15px; }
+.settings-list small { display:block; font-size:12px; color:#7b808a; margin-top:6px; }
+.workspace-tools { display:flex; justify-content:flex-end; margin-bottom:12px; }
+.review-inbox-button { border:1px solid #e1e5ec; border-radius:6px; background:white; color:#626e80; padding:6px 10px; font-size:12px; }
+summary { cursor:pointer; color:#54627a; padding:10px 0; font-size:14px; }
+@media(max-width:600px) { .detail-panel-content {padding:16px;} .detail-panel > header {padding:14px 16px;} }
+.today-workspace { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:40px; margin:24px 0; }
+.today-workspace > section { min-width:0; }
+.next-task { border:1px solid #e1e7f1; border-radius:8px; padding:24px; margin:16px 0 28px; background:#fbfcff; }
+.next-task h3 { font-size:19px; font-weight:600; margin:0 0 12px; }
+.next-task button { margin-right:8px; margin-top:8px; }
+.today-agenda-row { display:flex; align-items:start; gap:18px; border:0; border-bottom:1px solid #e7e9ed; padding:18px 0; width:100%; background:white; text-align:left; }
+.today-agenda-row time { color:#737d8e; font-size:13px; padding-top:2px; }
+.today-agenda-row strong { font-size:14px; font-weight:500; } .today-agenda-row small { display:block; color:#7b808a; font-size:12px; margin-top:5px; }
+.calendar-toolbar { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; }
+.calendar-toolbar .workspace-tabs { margin-bottom:0; border:0; } .calendar-toolbar .resource-actions { margin:0; }
+@media(max-width:900px) { .today-workspace {grid-template-columns:minmax(0,1fr);gap:24px;} }
+/* Existing confirmation/file dialogs must remain above a detail drawer. */
+.dialog-overlay:not(.detail-overlay) { z-index:90; }
+.import-dialog,.delete-dialog { z-index:91; }

@@ -8,6 +8,7 @@ import type { Resource } from "./types";
 import { AfterClassPreferences } from "./AfterClass";
 import {PersonalProfile} from "./PersonalProfile";
 import {StudyTypes} from "./StudyTypes";
+import {DetailPanel} from "./layout/DetailPanel";
 import {ProactiveSettings} from "./ProactiveSuggestions";
 type Form = {
   timezone: string;
@@ -21,7 +22,21 @@ type Form = {
   periodRows: { number: number; start: string; end: string }[];
   study_windows: { start: string; end: string }[];
 };
-export function Settings({ local = false }: { local?: boolean }) {
+const settingGroups = [
+  {id:'semester',title:'课程与学期',summary:'学期、节次与学校导入'},
+  {id:'preferences',title:'学习偏好',summary:'学习窗口、容量与已确认偏好'},
+  {id:'reminders',title:'提醒与桌宠',summary:'课后询问、主动建议与安静时段'},
+  {id:'models',title:'模型连接',summary:'模型、服务地址与本机密钥'},
+  {id:'data',title:'资料与备份',summary:'导出资料与删除确认'},
+] as const;
+type SettingsGroup = typeof settingGroups[number]['id'];
+export function Settings({local=false}:{local?:boolean}) {
+  const [group,setGroup]=useState<SettingsGroup>('semester'),[open,setOpen]=useState(false);
+  return <><h1>设置</h1><div className="settings-list">{settingGroups.map(item=><button type="button" key={item.id} aria-label={item.title} onClick={()=>{setGroup(item.id);setOpen(true);}}><span><strong>{item.title}</strong><small>{item.summary}</small></span><span aria-hidden="true">›</span></button>)}</div>
+    <DetailPanel open={open} title={settingGroups.find(item=>item.id===group)!.title} onClose={()=>setOpen(false)}><SettingsContent key={group} local={local} group={group}/></DetailPanel>
+  </>;
+}
+function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
   const q = useQueryClient(),
     [status, setStatus] = useState(""),
     [error, setError] = useState(""),
@@ -54,14 +69,9 @@ export function Settings({ local = false }: { local?: boolean }) {
   if (s.error) return <p role="alert">{String(s.error)}</p>;
   return (
     <>
-      <h1>学习设置</h1>
-      <PersonalProfile />
-      <StudyTypes />
-      <ProactiveSettings />
-      <p>
-        这里的默认学习窗口是个人安排建议。学期锚点和节次请按学校实际信息校对。
-      </p>
-      <form
+      {group==='preferences'&&<PersonalProfile/>}
+      {group==='reminders'&&<><AfterClassPreferences/><ProactiveSettings/></>}
+      {(group==='semester'||group==='preferences')&&<form
         onSubmit={handleSubmit(async (v) => {
           try {
             setError("");
@@ -94,7 +104,7 @@ export function Settings({ local = false }: { local?: boolean }) {
           }
         })}
       >
-        <section className="card">
+        {group==='semester'&&<><section className="card">
           <h2>学期与时区</h2>
           <div className="grid2">
             <label>
@@ -175,7 +185,8 @@ export function Settings({ local = false }: { local?: boolean }) {
             添加节次
           </Button>
         </section>
-        <section className="card">
+        </>}
+        {group==='preferences'&&<section className="card">
           <h2>学习窗口与上限</h2>
           {windows.fields.map((w, i) => (
             <div className="period-row" key={w.id}>
@@ -222,15 +233,15 @@ export function Settings({ local = false }: { local?: boolean }) {
             ))}
           </div>
         </section>
+        }
         <Button disabled={formState.isSubmitting}>保存设置</Button>
         {status && <p role="status">{status}</p>}
         {error && <p role="alert">{error}</p>}
-      </form>
-      <AfterClassPreferences />
+      </form>}
+      {group==='models'&&<>
       {local && <LocalSettings />}
-      <FixedEvents />
       <section className="card">
-        <h2>模型与课表扩展</h2>
+        <h2>连接状态</h2>
         <p>
           聊天模型：
           {health.data?.model_configured
@@ -247,13 +258,8 @@ export function Settings({ local = false }: { local?: boolean }) {
             ? "有适配配置，需逐字段核对"
             : "external_input_required，尚未提供实测配置"}
         </p>
-        <p>
-          扩展安装：构建后在 Chrome / Edge 扩展页面打开开发者模式，加载
-          extension/.output/chrome-mv3 文件夹。开发助手地址必须为
-          http://127.0.0.1:5173。共享站点按说明使用 PUBLIC_ORIGIN 重新构建。
-        </p>
-      </section>
-      <section className="card">
+      </section></>}
+      {group==='data'&&      <section className="card">
         <h2>我的数据</h2>
         <Button
           variant="outline"
@@ -303,11 +309,12 @@ export function Settings({ local = false }: { local?: boolean }) {
         >
           确认删除我的数据
         </Button>
-      </section>
+      </section>}
+      {group==='preferences'&&<details><summary>管理课程与任务分类</summary><StudyTypes/></details>}
     </>
   );
 }
-function FixedEvents() {
+export function FixedEvents() {
   const q = useQueryClient(),
     [error, setError] = useState("");
   const events = useQuery({

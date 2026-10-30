@@ -4,7 +4,10 @@ import type { Resource } from "./types";
 import { api } from "./api";
 import { Button } from "./components/ui/button";
 import { DraftActions } from "./Assignments";
-import { TodoList } from "./TodoList";
+import {TaskCard} from "./Assignments";
+import {DetailPanel} from "./layout/DetailPanel";
+import {selectTodayTasks} from "./layout/today-workspace";
+import {SmartSchedule} from "./SmartSchedule";
 import { navigate, visibleDrafts } from "./drafts";
 import type { ScheduleEvent } from "./schedule";
 import { ExecutionFeedback } from "./ExecutionFeedback";
@@ -17,6 +20,31 @@ const clock = (v: string, tz = "Asia/Shanghai") =>
     timeZone: tz,
   });
 export function TodayPage() {
+  const [panel,setPanel]=useState<'plan'|'records'|'focus'|null>(null);
+  const tasks=useQuery({queryKey:['tasks'],queryFn:()=>api<Resource[]>('/tasks')});
+  const blocks=useQuery({queryKey:['plan-blocks'],queryFn:()=>api<Resource[]>('/plan-blocks')});
+  const settings=useQuery({queryKey:['settings'],queryFn:()=>api<Resource>('/settings')});
+  const tz=settings.data?.data.timezone??'Asia/Shanghai',now=new Date();
+  const localDate=now.toLocaleDateString('en-CA',{timeZone:tz});
+  const agenda=useQuery({queryKey:['today-events',localDate,tz],queryFn:()=>api<{events:ScheduleEvent[];warnings:string[]}>(`/calendar-events?start=${localDate}&end=${localDate}`)});
+  const {next,block,others}=selectTodayTasks(tasks.data??[],blocks.data??[],now,tz);
+  const openTask=(id:string)=>window.dispatchEvent(new CustomEvent('campus-navigate',{detail:{page:'tasks',taskId:id}}));
+  return <>
+    <div className="page-head"><div><h1>今日</h1><p>{now.toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'long',timeZone:tz})}</p></div><Button variant="outline" onClick={()=>setPanel('plan')}>安排学习</Button></div>
+    {tasks.error&&<p role="alert">{String(tasks.error)}</p>}{blocks.error&&<p role="alert">{String(blocks.error)}</p>}
+    <div className="today-workspace"><section aria-label="接下来"><h2>接下来</h2>{tasks.isPending?<p role="status">正在读取任务…</p>:next?<div className="next-task"><h3>{next.data.title}</h3><p>{block?`${clock(block.data.starts_at,tz)}–${clock(block.data.ends_at,tz)}`:next.data.due_at?`截止 ${new Date(next.data.due_at).toLocaleString('zh-CN',{timeZone:tz})}`:'尚未安排时间'}</p><Button onClick={()=>setPanel('focus')}>开始专注</Button><Button variant="outline" onClick={()=>openTask(next.id)}>任务详情</Button></div>:<p>暂无待办任务。</p>}
+      {others.length>0&&<div className="today-other-tasks"><h2>其他待办</h2>{others.map(task=><button type="button" className="task-list-row" key={task.id} onClick={()=>openTask(task.id)}><span className="task-status-mark" aria-hidden="true">○</span><strong>{task.data.title}</strong></button>)}</div>}
+    </section><section aria-label="今日安排"><h2>今日安排</h2>{agenda.isPending&&<p role="status">正在读取安排…</p>}{agenda.error&&<p role="alert">{String(agenda.error)}</p>}{agenda.data?.warnings.map((warning,i)=><p role="alert" key={i}>{warning}</p>)}
+      {(agenda.data?.events??[]).filter(event=>event.kind!=='scheduling_constraint').map(event=><button type="button" className="today-agenda-row" key={event.id} onClick={()=>window.dispatchEvent(new CustomEvent('campus-calendar-saved',{detail:event.starts_at}))}><time>{clock(event.starts_at,tz)}</time><span><strong>{event.title}</strong><small>{clock(event.ends_at,tz)}{event.location?` · ${event.location}`:''}</small></span></button>)}
+      {agenda.data&&!agenda.data.events.length&&<p>今天暂无安排。</p>}
+    </section></div>
+    <div className="resource-actions"><Button variant="outline" onClick={()=>setPanel('records')}>执行与记录</Button><Button variant="outline" onClick={()=>window.dispatchEvent(new CustomEvent('campus-after-class-open',{detail:{manual:true}}))}>课后作业</Button></div>
+    <DetailPanel open={panel==='plan'} title="安排学习" onClose={()=>setPanel(null)}><SmartSchedule/></DetailPanel>
+    <DetailPanel open={panel==='records'} title="执行与记录" onClose={()=>setPanel(null)}><TodayExecutionDetails/></DetailPanel>
+    <DetailPanel open={panel==='focus'} title={next?.data.title??'专注'} onClose={()=>setPanel(null)}>{next&&<>{block&&<ExecutionFeedback task={next} block={block}/>}<TaskCard task={next} expanded/></>}</DetailPanel>
+  </>;
+}
+function TodayExecutionDetails() {
   const q = useQueryClient(),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
@@ -64,8 +92,7 @@ export function TodayPage() {
     <>
       <div className="page-head">
         <div>
-          <p className="eyebrow">A LITTLE PROGRESS, EVERY DAY</p>
-          <h1>今天，专注几件事。</h1>
+          <h2>执行与记录</h2>
           <p>
             {new Date().toLocaleDateString("zh-CN", {
               month: "long",
@@ -73,7 +100,6 @@ export function TodayPage() {
               weekday: "long",
               timeZone: tz,
             })}{" "}
-            · 给学习留出确定的时间
           </p>
         </div>
         <Button
@@ -189,7 +215,6 @@ export function TodayPage() {
         {events.data?.events.filter(e=>e.kind === "fixed_event").map(e=><div key={e.id} className="step"><strong>{clock(e.starts_at,tz)}–{clock(e.ends_at,tz)}</strong><h3>{e.title}</h3></div>)}
         <Button variant="outline" onClick={()=>navigate("作业")}>去待办与日程添加事项</Button>
       </section>
-      <TodoList />
       {visibleDrafts(drafts.data)
         .filter((d) => d.data.draft_kind === "plan")
         .map((d) => (

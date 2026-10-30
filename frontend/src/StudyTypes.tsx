@@ -10,7 +10,7 @@ const difficultyLabels:Record<string,string>={unknown:'未知（未设置）',lo
 type Entry={target:Resource;classification:Resource|null};
 type Pending={path:string;body:Record<string,unknown>;key:string};
 
-export function StudyTypes(){
+export function StudyTypes({targetId}:{targetId?:string}={}){
   const q=useQueryClient();
   const rows=useQuery({queryKey:['study-types'],queryFn:()=>api<{items:Entry[]}>('/study-types')});
   const [editor,setEditor]=useState<{entry:Entry;type:string;difficulty:string}|null>(null);
@@ -27,7 +27,7 @@ export function StudyTypes(){
     <p>类型和难度由你明确设置。未知会保持未知；导入课表、执行补记和模型猜测不会自动给任务分类。课程类型用于明确的准备规则，任务类型用于匹配深度学习或复习偏好。</p>
     {rows.isPending&&<p>正在读取课程与任务…</p>}{rows.error&&<p role="alert">{String(rows.error)}</p>}
     {rows.data?.items.length===0&&<p>保存课程或任务后，可在这里设置类型。</p>}
-    {rows.data?.items.map(entry=>{const kind=entry.target.kind;const data=entry.classification?.data;const labels=kind==='course'?courseTypeLabels:taskTypeLabels;return <article className="step" key={entry.target.id} aria-label={`类型：${entry.target.data.name??entry.target.data.title}`}>
+    {rows.data?.items.filter(entry=>!targetId||entry.target.id===targetId).map(entry=>{const kind=entry.target.kind;const data=entry.classification?.data;const labels=kind==='course'?courseTypeLabels:taskTypeLabels;return <article className="step" key={entry.target.id} aria-label={`类型：${entry.target.data.name??entry.target.data.title}`}>
       <h4>{entry.target.data.name??entry.target.data.title}</h4><p>{kind==='course'?'课程':'任务'} · {labels[data?.[kind==='course'?'course_type':'task_type']??'unknown']}{kind==='task'?` · 难度：${difficultyLabels[data?.difficulty??'unknown']}`:''}</p>
       <Button type="button" variant="outline" disabled={busy||!!pending||!!editor} onClick={()=>setEditor({entry,type:data?.[kind==='course'?'course_type':'task_type']??'unknown',difficulty:data?.difficulty??'unknown'})}>设置类型</Button>
     </article>;})}

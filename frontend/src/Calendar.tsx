@@ -12,7 +12,6 @@ import { api } from "./api";
 import type { Resource, Course, SettingsData } from "./types";
 import { DraftReview } from "./DraftReview";
 import { ChatPage } from "./Chat";
-import { AssignmentsPage } from "./Assignments";
 import { SmartSchedule } from "./SmartSchedule";
 import type { ScheduleEvent } from "./schedule";
 import { ScheduleShortcut } from "./ScheduleShortcut";
@@ -21,12 +20,21 @@ import { CourseChangeForm, CourseChangeHistory } from "./CourseChanges";
 import { TimetableRecognitionInput } from "./TimetableRecognition";
 import {CampusTransfers, ConflictReview, type ConflictReport} from "./ConflictReview";
 
+import {DetailPanel} from "./layout/DetailPanel";
+import type {CalendarFilter} from "./layout/navigation";
+import {FixedEvents} from "./Settings";
+import {StudyTypes} from "./StudyTypes";
 import { SemesterCalendar } from "./SemesterCalendar";
 
-export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: string; mode?: "timetable" | "schedule"}) {
-  const timetable = mode === "timetable";
+export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: {focusDate?: string; filter?:CalendarFilter; focusRequest?:number}) {
+  const [filter,setFilter]=useState<CalendarFilter>(requestedFilter??'all');
+  const [panel,setPanel]=useState<'import'|'plan'|'rules'|'fixed'|null>(null);
+  const [detailOpen,setDetailOpen]=useState(false);
+  const timetable=true;
+  useEffect(()=>{if(requestedFilter)setFilter(requestedFilter);},[requestedFilter,focusRequest]);
+  const included=(event:ScheduleEvent)=>filter==='all'||(filter==='courses'?event.kind==='course':event.kind==='plan_block');
   const calendar = useRef<FullCalendar>(null);
-  useEffect(()=>{if(focusDate){calendar.current?.getApi().gotoDate(focusDate);setChat(false);}},[focusDate]);
+  useEffect(()=>{if(focusDate){calendar.current?.getApi().gotoDate(focusDate);setChat(false);}},[focusDate,focusRequest]);
   const q = useQueryClient();
   const settings = useQuery({
     queryKey: ["settings"],
@@ -69,30 +77,15 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
     setSlot(null);
     setManual(false);
     setNewDraft(draft.id);
+    setPanel('import');
     await q.invalidateQueries({ queryKey: ["drafts"] });
   }
   return (
     <>
-      <div className="page-head">
-        <div>
-          <p className="eyebrow">YOUR WEEK</p>
-          <h1>{timetable ? "课表" : "待办与日程"}</h1>
-          <p>{timetable ? "人工设定的固定课程；智能排程会避让这些时间。" : "待办任务与智能学习安排，并包含固定课表和事项。"}</p>
-        </div>
-        {timetable && <Button
-          onClick={() => window.dispatchEvent(new Event("campus-start-import"))}
-        >
-          导入华工课表
-        </Button>}
+      <div className="page-head"><h1>日程</h1><Button onClick={()=>setPanel('import')}>导入课表</Button></div>
+      <div className="calendar-toolbar"><div className="workspace-tabs" aria-label="日程筛选">{([['all','全部'],['courses','课程'],['study','学习']] as const).map(([id,label])=><button type="button" key={id} aria-pressed={filter===id} onClick={()=>setFilter(id)}>{label}</button>)}</div>
+        <div className="resource-actions"><Button variant="outline" onClick={()=>setPanel('plan')}>安排学习</Button><Button variant="outline" onClick={()=>setPanel('rules')}>课程规则</Button><Button variant="outline" onClick={()=>setPanel('fixed')}>固定事项</Button></div>
       </div>
-      {!timetable && <SmartSchedule />}
-      {!timetable && <Button onClick={() => setChat(!chat)}>{chat ? "收起事项对话" : "用 AI 添加固定事项"}</Button>}
-      {!timetable && chat && <ChatPage embedded />}
-      <p>{timetable ? "这里只显示固定课程。点击周视图空白格添加课程，点击已有课程查看详情；也可使用下方手工添加。" : "蓝色：固定课程 · 紫色：固定事项 · 绿色：智能学习安排 · 灰色：禁排时段。课程仅作固定时间参考，不会被智能排程移动；点击条目可查看详情。"}</p>
-      {timetable && <p>
-        已适配本人实测的华工个人课表。请先在设置中校对开学周一、学期周数和节次时间。
-      </p>}
-      {timetable && <CampusTransfers />}
       {events.data?.conflict_report && events.data.conflict_report.issues.length>0 && <div className="card"><p>当前显示日期内的课程与固定事项检查</p><ConflictReview report={events.data.conflict_report} timezone={settings.data?.data.timezone} /></div>}
       <div className="card">
         {events.error && <p role="alert">{String(events.error)}</p>}
@@ -123,7 +116,7 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
             setSlot(courseSlot(info.dateStr, settings.data?.data as SettingsData | undefined));
             setSelected(null);
           }}
-          events={(events.data?.events ?? []).filter(e => !timetable || e.kind === "course").map((e) => ({
+          events={(events.data?.events ?? []).filter(included).map((e) => ({
             ...e,
             title: e.title + (e.location ? " · " + e.location : ""),
             start: e.starts_at,
@@ -132,7 +125,7 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
             borderColor: "transparent",
             extendedProps: {record: e},
           }))}
-          eventClick={info => {setSelected(info.event.extendedProps.record);setAdjustCourse(false);}}
+          eventClick={info => {setSelected(info.event.extendedProps.record);setAdjustCourse(false);setDetailOpen(true);}}
           datesSet={(info) =>
             setRange({
               start: info.startStr.slice(0, 10),
@@ -140,26 +133,32 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
             })
           }
         />
-        {events.data && events.data.events.filter(e => !timetable || e.kind === "course").length === 0 && (
-          <p>{timetable ? "本周还没有课程。可点击周视图空白格、手工添加或导入课表。" : "本周暂无安排。先添加待办、补齐耗时或步骤，再点击智能安排。"}</p>
+        {events.data && events.data.events.filter(included).length === 0 && (
+          <p>{timetable ? "当前筛选下暂无安排。" : "本周暂无安排。先添加待办、补齐耗时或步骤，再点击智能安排。"}</p>
         )}
       </div>
-      {selected && <section className="card" aria-label="日程详情">
+      <DetailPanel open={detailOpen} title={selected?.title??"日程详情"} onClose={()=>setDetailOpen(false)}>{selected&&<section aria-label="日程详情">
         <h2>{selected.title}</h2>
         <p>{new Date(selected.starts_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}–{new Date(selected.ends_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}</p>
         <p>{selected.kind === "course" ? "课程" : selected.kind === "fixed_event" ? "固定事项" : selected.kind === "scheduling_constraint" ? "禁排时段 · 仅约束后续任务规划，不触发提醒" : "学习安排"} {selected.location}</p>
         {selected.kind === "course" && <CourseIntervals event={selected} timezone={settings.data?.data.timezone ?? "Asia/Shanghai"} />}
-        {timetable && selected.kind === "course" && selected.course_id && <CourseCampusEditor key={selected.course_id} courseId={selected.course_id} onCreated={async id=>{setNewDraft(id);setSelected(null);await q.invalidateQueries({queryKey:["drafts"]});}} />}
+        {selected.course_id&&<StudyTypes targetId={selected.course_id}/>}
+        {timetable && selected.kind === "course" && selected.course_id && <CourseCampusEditor key={selected.course_id} courseId={selected.course_id} onCreated={async id=>{setNewDraft(id);setDetailOpen(false);setPanel('import');setSelected(null);await q.invalidateQueries({queryKey:["drafts"]});}} />}
         {selected.kind !== "scheduling_constraint" && <ScheduleShortcut key={`${selected.id}:${selected.starts_at}`} event={selected} />}
         {selected.kind === "course" && <><p>{selected.adjusted ? "本次课程已调整 · " : ""}原课日期 {selected.original_date}</p><Button variant="outline" onClick={()=>setAdjustCourse(!adjustCourse)}>调课或停课</Button></>}
-        <Button variant="outline" onClick={()=>{setSelected(null);setAdjustCourse(false);}}>关闭详情</Button>
-        {selected.kind === "course" && adjustCourse && <CourseChangeForm key={selected.id} event={selected} timezone={settings.data?.data.timezone??"Asia/Shanghai"} onClose={()=>setAdjustCourse(false)} />}
-      </section>}
-      {!timetable && <AssignmentsPage embedded />}
-      {timetable && <>
+
+        {selected.kind === "course" && adjustCourse && <CourseChangeForm key={selected.id} event={selected} timezone={settings.data?.data.timezone??"Asia/Shanghai"} onClose={()=>{setAdjustCourse(false);window.dispatchEvent(new Event("campus-open-review"));setDetailOpen(false);}} />}
+      </section>}</DetailPanel>
+      <DetailPanel open={panel==='plan'} title="安排学习" onClose={()=>setPanel(null)}><SmartSchedule/></DetailPanel>
+      <DetailPanel open={panel==='fixed'} title="固定事项" onClose={()=>setPanel(null)}><FixedEvents/><ChatPage embedded/></DetailPanel>
+      <DetailPanel open={panel==='rules'} title="课程规则" onClose={()=>setPanel(null)}><CampusTransfers/>
+
       <SemesterCalendar timezone={settings.data?.data.timezone??"Asia/Shanghai"} />
       <CourseChangeHistory timezone={settings.data?.data.timezone??"Asia/Shanghai"} />
       {drafts.data?.filter(d=>["course_change", "semester_calendar"].includes(d.data.draft_kind)).map(d=><DraftReview draft={d} key={d.id+":"+d.revision} />)}
+      </DetailPanel>
+      <DetailPanel open={panel==='import'} title="导入课表" onClose={()=>setPanel(null)}>
+      <Button onClick={()=>{setPanel(null);window.dispatchEvent(new Event('campus-start-import'));}}>学校课表</Button>
       <Button variant="outline" onClick={() => setChat(!chat)}>{chat ? "收起课表对话" : "用文字添加课表"}</Button>
       {chat && <ChatPage embedded courseEntry />}
       <TimetableRecognitionInput />
@@ -191,7 +190,7 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
         .map((d) => (
           <div key={d.id} id={`timetable-draft-${d.id}`} tabIndex={-1}><DraftReview draft={d} /></div>
         ))}
-      </>}
+      </DetailPanel>
     </>
   );
 }

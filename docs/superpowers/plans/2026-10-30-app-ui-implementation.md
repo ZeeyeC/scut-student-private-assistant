@@ -1,6 +1,6 @@
 # 独立App新界面与桌宠 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans task-by-task。用户本轮要求把NaiWa形象替换加入计划，尚未要求执行本计划；正式实施前采用已确认的视觉稿。
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans task-by-task。用户已授权在新分支开始实施，采用现有视觉稿；实现、验证与外部验收分别记录。
 
 **Goal:** 将简洁工作台落地为独立App唯一日常界面，仅学校导入打开浏览器，并使用NaiWaChatPet角色素材替换现有桌宠。
 

@@ -213,8 +213,8 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
     <div className={embedded ? "assistant-page embedded" : "assistant-page"}>
       <header className="chat-toolbar">
         <div>
-          <h1>{embedded ? courseEntry ? "用文字添加课表" : "用 AI 安排事项" : "学习助手"}</h1>
-          <p>直接说课程、任务、日程和日期，草稿校对后保存。</p>
+          <h1>{embedded ? courseEntry ? "用文字添加课表" : "用 AI 安排事项" : "助手"}</h1>
+
         </div>
         <Button
           variant="outline"
@@ -244,9 +244,9 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
         <ThreadPrimitive.Root className="chat card">
           <ThreadPrimitive.Viewport className="chat-viewport">
             <ThreadPrimitive.Empty>
-              <p>告诉我你想先处理什么，例如“明天有什么课”或“帮我加一个阅读文献的任务”。</p>
-              <p className="chat-example">也可以说“第14周之前完成 C++ 大作业”，或“把草稿截止改成明晚8点”。</p>
-              <p className="chat-example">添加课表可说“高等数学，每周一第1、2节，第1至16周”。不清楚的信息可以稍后补充。</p>
+              <p>想安排什么？</p>
+
+
             </ThreadPrimitive.Empty>
             <ThreadPrimitive.Messages
               components={{

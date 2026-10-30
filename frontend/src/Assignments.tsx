@@ -9,7 +9,7 @@ import { navigate } from "./drafts";
 import { DeleteButton } from "./DeleteButton";
 import {DraftActions} from "./ReviewedDraftActions";
 export {DraftActions} from "./ReviewedDraftActions";
-export function AssignmentsPage({embedded = false}: {embedded?: boolean}) {
+export function AssignmentsPage({embedded = false,showList=true}: {embedded?: boolean;showList?:boolean}) {
   const q = useQueryClient(),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
@@ -35,18 +35,16 @@ export function AssignmentsPage({embedded = false}: {embedded?: boolean}) {
   }, [job.data?.data.status, q]);
   return (
     <>
-      <p className="eyebrow">ONE THING AT A TIME</p>
-      {embedded ? <h2>添加与管理待办</h2> : <h1>待办与作业</h1>}
-      <p>先校对内容，再把大作业变成可以开始的小步骤。</p>
-      <section className="card">
+      {!embedded&&<h1>任务</h1>}
+      {showList&&<section className="card">
         <h2>已保存的待办与作业</h2>
         <p>普通待办也保存在这里；未确认的内容在下方草稿区。</p>
         <Button variant="outline" onClick={()=>navigate("助手")}>用自然语言添加待办</Button>
         {tasks.data?.length === 0 && <p>还没有已保存的待办。</p>}
         {tasks.data?.map(t=><TaskCard key={t.id} task={t}/>)}
-      </section>
-      <div className="grid2">
-        <form
+      </section>}
+      <div className="grid2 assignment-entry-layout">
+        <details className="task-image-entry"><summary>从截图识别</summary><form
           className="card"
           onSubmit={async (e) => {
             e.preventDefault();
@@ -114,7 +112,7 @@ export function AssignmentsPage({embedded = false}: {embedded?: boolean}) {
               }
             </p>
           )}
-        </form>
+        </form></details>
         <form
           className="card"
           onSubmit={async (e) => {
@@ -172,7 +170,7 @@ export function AssignmentsPage({embedded = false}: {embedded?: boolean}) {
         ))}
       {tasks.isPending && <p>正在读取作业…</p>}
       {tasks.error && <p role="alert">{String(tasks.error)}</p>}
-      {tasks.data?.length === 0 && (
+      {showList&&tasks.data?.length === 0 && (
         <div className="card">
           <h2>还没有作业</h2>
           <p>上传一张截图，或手工添加第一项。</p>
@@ -182,8 +180,8 @@ export function AssignmentsPage({embedded = false}: {embedded?: boolean}) {
     </>
   );
 }
-export function TaskCard({ task }: { task: Resource }) {
-  const [open, setOpen] = useState(false);
+export function TaskCard({ task,expanded=false }: { task: Resource;expanded?:boolean }) {
+  const [open, setOpen] = useState(expanded);
   const q = useQueryClient();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
