@@ -30,7 +30,17 @@ await page.getByRole('tab',{name:'复盘',exact:true}).click();await page.screen
 await page.locator('.primary-nav [data-nav="calendar"]').click();await page.getByRole('button',{name:'导入课表',exact:true}).click();
 await page.getByRole('button',{name:'使用示例预览',exact:true}).click();await page.getByRole('heading',{name:'校对课表',exact:true}).waitFor();
 await page.getByRole('button',{name:'确认导入',exact:true}).click();results.push('timetable import preview');
-await page.reload();await page.getByRole('button',{name:'紧凑窗口',exact:true}).click();await page.locator('.primary-nav [data-nav="today"]').click();
+await page.getByRole('button',{name:'导入课表',exact:true}).click();
+await page.getByRole('button',{name:'学校课表',exact:true}).click();
+await page.getByRole('heading',{name:'从学校导入',exact:true}).waitFor();
+await page.getByRole('button',{name:'模拟打开浏览器',exact:true}).click();
+await page.getByRole('heading',{name:'等待课表回传',exact:true}).waitFor();
+await page.screenshot({path:new URL('school-import-return.png',out).pathname});
+await page.getByRole('button',{name:'模拟课表回传',exact:true}).click();
+await page.getByRole('heading',{name:'校对课表',exact:true}).waitFor();
+await page.getByRole('button',{name:'确认导入',exact:true}).click();results.push('school browser step returns to App confirmation');
+
+await page.reload();await page.getByRole('button',{name:'快捷面板',exact:true}).click();await page.locator('.primary-nav [data-nav="today"]').click();
 await page.screenshot({path:new URL('today-compact.png',out).pathname});
 await page.locator('.primary-nav [data-nav="calendar"]').click();await page.screenshot({path:new URL('calendar-compact.png',out).pathname});
 for(const width of [390,320]){
