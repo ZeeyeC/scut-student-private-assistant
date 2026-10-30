@@ -48,3 +48,11 @@ it("replays past an old approval when its run has already finished", async () =>
     expect(actual).toEqual([1,2,3]);
   } finally { vi.unstubAllGlobals(); }
 });
+
+it('drains durable tail events when a truncated stream is followed by a terminal status',async()=>{
+ const {vi}=await import('vitest');const {replayEvents}=await import('./sse');
+ const frame=(seq:number,type:string,payload:object)=>`data: ${JSON.stringify({run_id:'r',seq,type,payload})}\n\n`;
+ const replies=[new Response(frame(1,'message_delta',{message_id:'m',delta:'第一段'})),Response.json({data:{status:'done',event_counter:3}}),new Response(frame(2,'message_delta',{message_id:'m',delta:'第二段'})+frame(3,'done',{}))];
+ vi.stubGlobal('fetch',async()=>replies.shift()!);
+ try{const actual:number[]=[];await replayEvents('r',0,e=>actual.push(e.seq),new AbortController().signal);expect(actual).toEqual([1,2,3]);}finally{vi.unstubAllGlobals()}
+});

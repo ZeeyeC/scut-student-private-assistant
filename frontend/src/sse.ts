@@ -77,13 +77,11 @@ export async function replayEvents(
       });
       if ([401, 403, 404].includes(status.status))
         throw new SessionError("聊天会话不可用，请刷新助手");
-      if (
-        status.ok &&
-        ["done", "failed", "waiting_approval"].includes(
-          (await status.json()).data.status,
-        )
-      )
-        return;
+      if(status.ok){
+        const latest=(await status.json()).data;
+        if(["done","failed","waiting_approval"].includes(latest.status) &&
+           !(Number.isSafeInteger(latest.event_counter) && latest.event_counter>cursor))return;
+      }
     } catch (error) {
       if (signal.aborted || error instanceof SessionError) throw error;
     }

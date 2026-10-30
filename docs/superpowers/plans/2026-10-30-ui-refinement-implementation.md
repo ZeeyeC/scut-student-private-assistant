@@ -124,7 +124,7 @@
 - [x] 写`pet_task_navigation_keeps_id_before_web_ready`及桥接测试：旧字符串兼容、合法taskId精确打开、恶意/空ID拒绝、加载前目标在ready后送达、跨页重复选择仍定位。Run `npm --prefix frontend test -- navigation pet-bridge`及原生runner，确认RED。
 - [x] 迁移原查询/完成/详情控制到同一面板；旧代次返回丢弃。勾选显式完成整个任务、右键不再完成；无完成重开接口时不显示虚假“重新打开”。在App中查看要定位所选任务而非仅进任务列表。
 - [x] 将无顶部条后的提醒/审批入口接到面板内的按需待确认操作；原系统提醒不丢，提醒不自动展开面板、不重建顶部条。测试外部点击监视器将pet和todoPanel视为内部，VoiceOver按压与单击语义相同。
-- [x] 同测试GREEN；`backend/.venv/bin/python campus-pet/verify.py --app <本轮新构建App>`实际验证数据流、透明点击、请求错误恢复及精确跳转，记录后提交。
+- [ ] 补充聊天竞态修复后需重新完整验证；`backend/.venv/bin/python campus-pet/verify.py --app <本轮新构建App>`实际验证数据流、透明点击、请求错误恢复及精确跳转，记录后提交。
 
 ### Task 6：最终视觉对照、全量回归与2.5.1发布（V2/R2）
 

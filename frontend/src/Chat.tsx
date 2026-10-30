@@ -77,24 +77,35 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
     queryFn: () => api<Resource[]>("/drafts"),
   });
   const constraintIntents = useQuery({queryKey:["constraint-intents"], queryFn:()=>api<Resource[]>("/constraint-intents")});
+  const activeRun=useRef("");
   useEffect(() => {
     if (!focusThreadId) return;
-    setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
+    activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
     cursors.current = {};
     setThreadId(focusThreadId); setEpoch(value => value + 1);
   }, [focusThreadId, focusRequest]);
   useEffect(() => {
     if (focusThreadId) scrollWithinWorkspace(document.querySelector(".review-panel"));
   }, [focusThreadId, focusRequest, approvalId, drafts.data]);
+  // History and the live stream may finish in different orders. Only the
+  // currently owned run may change the composer's busy/approval state.
+  const syncRun=(run:Resource)=>{
+    if(activeRun.current!==run.id)return;
+    setRunning(["queued","running","resume_queued"].includes(run.data.status));
+    setApprovalId(run.data.status==='waiting_approval'?run.data.approval_id??'':'');
+    if(['done','failed'].includes(run.data.status)){activeRun.current='';setStatus('');}
+    if(run.data.status==='failed')setError(run.data.error);
+  };
   const apply = (event: PublicEvent) => {
+    const ownsRun=activeRun.current===event.run_id;
     if (event.seq <= (cursors.current[event.run_id] ?? 0)) return;
     cursors.current[event.run_id] = event.seq;
     const p = event.payload;
     if (event.type === "message" || event.type === "message_delta") {
       setMessages((messages) => applyMessage(messages, event));
-      if (event.type === "message_delta") setStatus("正在回复…");
+      if (event.type === "message_delta" && ownsRun) setStatus("正在回复…");
     }
-    if (event.type === "tool_started") setStatus(labels[p.name] ?? "处理请求");
+    if (event.type === "tool_started" && ownsRun) setStatus(labels[p.name] ?? "处理请求");
     if (event.type === "tool_finished") { void q.invalidateQueries({queryKey:["constraint-intents"]}); void q.invalidateQueries({queryKey:["planning-intents"]}); }
     if (event.type === "draft_ready")
       q.invalidateQueries({ queryKey: ["drafts"] });
@@ -107,18 +118,17 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
             );
         })
         .catch((e) => setError(String(e)));
-    if (event.type === "approval_required") {
+    if (event.type === "approval_required" && ownsRun) {
       setApprovalId(p.approval_id);
       setRunning(false);
       setStatus("等待你的确认");
     }
     if (event.type === "done") {
-      setRunning(false);
-      setStatus("");
-      setApprovalId("");
+      if(ownsRun){activeRun.current='';setRunning(false);setStatus('');setApprovalId('');}
       q.invalidateQueries();
     }
-    if (event.type === "error") {
+    if (event.type === "error" && ownsRun) {
+      activeRun.current="";
       setRunning(false);
       setApprovalId("");
       setError(p.message);
@@ -136,7 +146,8 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       for (const r of runs) {
         if (abort.signal.aborted) return;
         const active = ["queued", "running", "resume_queued", "waiting_approval"].includes(r.data.status);
-        if (active) {
+        if (active && !activeRun.current) {
+          activeRun.current=r.id;
           setRunId(r.id);
           setRunning(r.data.status !== "waiting_approval");
         }
@@ -150,9 +161,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
           // The run may have finished while history was replaying.
           const latest = await api<Resource>(`/agent/runs/${r.id}`, { signal: abort.signal });
           if (abort.signal.aborted) return;
-          setRunning(["queued", "running", "resume_queued"].includes(latest.data.status));
-          setApprovalId(latest.data.status === "waiting_approval" ? latest.data.approval_id ?? "" : "");
-          if (latest.data.status === "failed") setError(latest.data.error);
+          syncRun(latest);
         }
       }
     })().catch((e) => {
@@ -163,9 +172,13 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   useEffect(() => {
     if (!runId) return;
     const abort = new AbortController();
-    replayEvents(runId, cursors.current[runId] ?? 0, apply, abort.signal).catch(
+    replayEvents(runId, cursors.current[runId] ?? 0, apply, abort.signal).then(async()=>{
+      const latest=await api<Resource>(`/agent/runs/${runId}`,{signal:abort.signal});
+      if(!abort.signal.aborted)syncRun(latest);
+    }).catch(
       (e) => {
-        if (!abort.signal.aborted) {
+        if (!abort.signal.aborted && activeRun.current===runId) {
+          activeRun.current="";
           setError(String(e));
           setRunning(false);
         }
@@ -186,7 +199,8 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
         .filter((c) => c.type === "text")
         .map((c) => c.text)
         .join("\n");
-      if (!text.trim()) return;
+      if (!text.trim() || activeRun.current) return;
+      const owner='request:'+crypto.randomUUID();activeRun.current=owner;
       setError("");
       setRunning(true);
       try {
@@ -196,6 +210,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
             method: "POST",
             body: "{}",
           });
+          if(activeRun.current!==owner)return;
           tid = t.id;
           setThreadId(tid);
         }
@@ -203,9 +218,11 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
           method: "POST",
           body: JSON.stringify({ thread_id: tid, message: text }),
         });
-        setRunId(r.id);
+        if(activeRun.current!==owner)return;
+        activeRun.current=r.id;setRunId(r.id);
       } catch (e) {
-        setError(String(e));
+        if(activeRun.current!==owner)return;
+        activeRun.current='';setError(String(e));
         setRunning(false);
       }
     },
@@ -230,7 +247,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
               method: "POST",
               body: "{}",
             });
-            setThreadId(t.id);
+            activeRun.current='';setThreadId(t.id);
             setRunId("");
             setApprovalId("");
             setError("");
@@ -311,7 +328,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       ))}
       </div>}
       </div>
-      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
+      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{activeRun.current="";setRunning(false);setStatus("");setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
     </div>
   );
 }
