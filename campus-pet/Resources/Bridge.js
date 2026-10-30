@@ -1,6 +1,6 @@
 (() => {
   if (window.__campusPet) return;
-  const pages = ['助手', '今日', '课表', '作业', '目标与复盘', '设置'];
+  const pages = ['助手', '今日', '课表', '作业', '目标与复盘', '设置', '日程', '任务', 'today', 'calendar', 'tasks', 'assistant', 'settings'];
   let lastState = '';
   let desiredPage = '助手';
   let backendState = null;
@@ -13,9 +13,6 @@
   };
   const style = document.createElement('style');
   style.textContent = `
-    body[data-pet-layout="compact"] .shell { display:block; }
-    body[data-pet-layout="compact"] .shell > aside { display:none; }
-    body[data-pet-layout="compact"] .shell > main { padding:16px; height:100dvh; }
     body[data-pet-layout="compact"] .assistant-layout { grid-template-columns:minmax(0,1fr); }
     body[data-pet-layout="compact"] .assistant-layout.has-review { overflow:auto; }
     body[data-pet-layout="compact"] .assistant-layout.has-review .chat-area { min-height:340px; }
@@ -27,10 +24,9 @@
   const navigate = (page) => {
     if (!pages.includes(page)) return false;
     desiredPage = page;
-    const button = [...document.querySelectorAll('.shell > aside nav button')]
-      .find((b) => b.textContent.trim() === (page === '作业' ? '待办与日程' : page));
-    if (!button) return false;
-    button.click(); desiredPage = null;
+    if (!document.querySelector('.workspace-shell [data-page-id]')) return false;
+    window.dispatchEvent(new CustomEvent('campus-navigate', {detail:page}));
+    desiredPage = null;
     return true;
   };
   const observe = () => {

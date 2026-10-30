@@ -36,9 +36,9 @@
 
 **Interfaces:** `PageId = 'today'|'calendar'|'tasks'|'assistant'|'settings'`；导航目标 `{page, taskId?, focusDate?, calendarFilter?, taskTab?, threadId?}`；保留并归一现有 `campus-navigate`、`campus-calendar-saved`、`campus-timetable-focus`、`campus-pet-review` 事件。目标/复盘旧入口映射到tasks子页，提醒打开calendar具体日期，审批定位assistant具体线程。
 
-- [ ] 写Vitest失败用例：旧事件正确映射新页面、待确认线程/任务ID保留、重复定位仍可生效、非法目标拒绝。
-- [ ] Run `npm --prefix frontend test -- navigation`，确认RED。
-- [ ] 实现主窗口左导航与快捷面板底导航，设置固定底部；共用真实查询缓存。仅重组壳层，不移除业务组件。
+- [x] 写Vitest失败用例：旧事件正确映射新页面、待确认线程/任务ID保留、重复定位仍可生效、非法目标拒绝。
+- [x] Run `npm --prefix frontend test -- navigation`，确认RED。
+- [x] 实现主窗口左导航与快捷面板底导航，设置固定底部；共用真实查询缓存。仅重组壳层，不移除业务组件。
 - [ ] 同命令GREEN；原型确认的尺寸与字体落到应用样式，补320/390px与实际Mac快捷面板检查，再提交。
 
 ### Task 2：页面整合与统一详情

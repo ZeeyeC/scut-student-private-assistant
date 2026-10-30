@@ -4,7 +4,10 @@ import UniformTypeIdentifiers
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, NSWindowDelegate {
-    static let pages = ["助手", "今日", "课表", "作业", "目标与复盘", "设置"]
+    static let pages = ["今日", "日程", "任务", "助手", "设置"]
+    static func displayPage(_ value: String) -> String {
+        ["课表": "日程", "作业": "任务", "目标与复盘": "任务"][value] ?? value
+    }
     let options = LaunchOptions.parse()
     lazy var service = ServiceController(options: options)
     let pet = PetView(frame: NSRect(x: 0, y: 0, width: 190, height: 210))
@@ -144,8 +147,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         let bar = NSStackView()
         bar.orientation = .horizontal; bar.spacing = 8
         bar.translatesAutoresizingMaskIntoConstraints = false
-        segments = NSSegmentedControl(labels: Self.pages.map { $0 == "作业" ? "待办与日程" : $0 }, trackingMode: .selectOne, target: self, action: #selector(changePage))
-        segments.selectedSegment = 0
+        segments = NSSegmentedControl(labels: Self.pages, trackingMode: .selectOne, target: self, action: #selector(changePage))
+        segments.selectedSegment = 3
+        segments.isHidden = true // The App content provides the shared main/compact navigation.
         bar.addArrangedSubview(segments)
         let expand = NSButton(title: "展开", target: self, action: #selector(toggleLayout))
         expand.toolTip = "切换紧凑面板 / 完整工作台"
@@ -262,7 +266,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
 
     func navigate() {
-        guard let index = Self.pages.firstIndex(of: requestedPage) else { return }
+        guard let index = Self.pages.firstIndex(of: Self.displayPage(requestedPage)) else { return }
         segments.selectedSegment = index
         let literal = String(data: try! JSONSerialization.data(withJSONObject: [requestedPage]), encoding: .utf8)!
         webView.evaluateJavaScript("window.__campusPet?.navigate(\(literal)[0]);") { _, _ in }
@@ -463,7 +467,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             pet.stopAction(); showAssistant(); return
         }
         if value == "calendar-saved" {
-            requestedPage = "作业"; segments.selectedSegment = 3; return
+            requestedPage = "日程"; segments.selectedSegment = 1; return
         }
         guard let mood = PetMood(rawValue: value) else { return }
         receiveAssistantMood(mood)

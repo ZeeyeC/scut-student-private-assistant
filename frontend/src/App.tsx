@@ -16,6 +16,8 @@ import {DurationSuggestions} from "./DurationSuggestions";
 import {TaskDetail} from "./TaskDetail";
 import type {Resource} from "./types";
 import {ProactiveSuggestions} from "./ProactiveSuggestions";
+import {AppShell} from "./layout/AppShell";
+import {navigationFromEvent, nextNavigation, type NavigationState, type NavigationTarget} from "./layout/navigation";
 const CalendarPage = lazy(() =>
   import("./Calendar").then((m) => ({ default: m.CalendarPage })),
 );
@@ -58,11 +60,10 @@ function Workspace({ local = false }: { local?: boolean }) {
   });
   const [error, setError] = useState("");
   const [register, setRegister] = useState(false);
-  const [page, setPage] = useState("今日");
-  const [calendarDate, setCalendarDate] = useState<string>();
+  const [navigation, setNavigation] = useState<NavigationState>({page:'today',request:0});
+  const {page,focusDate:calendarDate,threadId:reviewThread,request:reviewRequest}=navigation;
+  const go = (target:NavigationTarget) => setNavigation(previous=>nextNavigation(previous,target));
   const [suggestedTask,setSuggestedTask] = useState<string|null>(null);
-  const [reviewThread, setReviewThread] = useState<string>();
-  const [reviewRequest, setReviewRequest] = useState(0);
   useEffect(() => {
     const refresh = () => { void q.invalidateQueries(); };
     window.addEventListener("campus-task-updated", refresh);
@@ -70,31 +71,18 @@ function Workspace({ local = false }: { local?: boolean }) {
   }, [q]);
   useEffect(() => {
     const listener = (event: Event) => {
-      const page = (event as CustomEvent<string>).detail;
-      if (["今日", "课表", "作业", "助手", "目标与复盘", "设置"].includes(page)) {setCalendarDate(undefined); setPage(page);}
+      const target=navigationFromEvent(event.type,(event as CustomEvent).detail);
+      if(target) {setNavigation(previous=>nextNavigation(previous,target));if(target.taskId)setSuggestedTask(target.taskId);}
     };
-    const saved = (event: Event) => {
-      setCalendarDate((event as CustomEvent<string>).detail);
-      setPage("作业");
-    };
-    const focusTimetable = (event: Event) => {
-      setCalendarDate((event as CustomEvent<string>).detail); setPage("课表");
-    };
-    const review = (event: Event) => {
-      const threadId = (event as CustomEvent<{ threadId?: string }>).detail?.threadId;
-      setReviewThread(typeof threadId === "string" ? threadId : undefined);
-      setReviewRequest(value => value + 1);
-      setCalendarDate(undefined); setPage("助手");
-    };
-    window.addEventListener("campus-timetable-focus", focusTimetable);
+    window.addEventListener("campus-timetable-focus", listener);
     window.addEventListener("campus-navigate", listener);
-    window.addEventListener("campus-calendar-saved", saved);
-    window.addEventListener("campus-pet-review", review);
+    window.addEventListener("campus-calendar-saved", listener);
+    window.addEventListener("campus-pet-review", listener);
     return () => {
-      window.removeEventListener("campus-timetable-focus", focusTimetable);
+      window.removeEventListener("campus-timetable-focus", listener);
       window.removeEventListener("campus-navigate", listener);
-      window.removeEventListener("campus-calendar-saved", saved);
-      window.removeEventListener("campus-pet-review", review);
+      window.removeEventListener("campus-calendar-saved", listener);
+      window.removeEventListener("campus-pet-review", listener);
     };
   }, []);
   const form = useForm<{ email: string; password: string }>();
@@ -110,10 +98,9 @@ function Workspace({ local = false }: { local?: boolean }) {
     return (
       <main className="auth">
         <div className="brand">
-          课间 <span>Campus companion</span>
+          课间
         </div>
-        <h1>把课业，安排得从容一点。</h1>
-        <p>你的课表、作业和每天的学习安排，集中在这里。</p>
+        <h1>登录</h1>
         <form
           onSubmit={form.handleSubmit(async (v) => {
             try {
@@ -168,25 +155,8 @@ function Workspace({ local = false }: { local?: boolean }) {
       </main>
     );
   return (
-    <div className="shell">
-      <aside>
-        <div className="brand">
-          课间<span>Campus companion</span>
-        </div>
-        <nav>
-          {["今日", "课表", "作业", "助手", "目标与复盘", "设置"].map((n) => (
-            <Button
-              key={n}
-              variant={page === n ? "default" : "outline"}
-              onClick={() => {setCalendarDate(undefined); setPage(n);}}
-            >
-              {n === "作业" ? "待办与日程" : n}
-            </Button>
-          ))}
-        </nav>
-        <small>{local ? "本机个人助手 · 数据保存在本机" : me.data.email}</small>
-        {!local && (
-          <>
+    <AppShell page={page} onNavigate={go} footer={!local && <>
+            <small>{me.data.email}</small>
             <Button
               variant="outline"
               onClick={async () => {
@@ -197,32 +167,27 @@ function Workspace({ local = false }: { local?: boolean }) {
             >
               退出登录
             </Button>
-          </>
-        )}
-      </aside>
-      <main className={page === "助手" ? "assistant-main" : undefined}>
+          </>}>
         <AfterClassCheckin />
         <TimerHeartbeat />
-        <ProactiveSuggestions onOpenTask={id=>{setSuggestedTask(id);setCalendarDate(undefined);setPage("作业");}} />
+        <ProactiveSuggestions onOpenTask={id=>{setSuggestedTask(id);go({page:'tasks',taskId:id});}} />
         {suggestedTask&&<SuggestedTask id={suggestedTask} onClose={()=>setSuggestedTask(null)}/>}
-        <BrowserImport showOverview={page === "课表"} />
+        <BrowserImport showOverview={page === "calendar"} />
         <Suspense fallback={<p role="status">正在加载页面…</p>}>
-          {page === "今日" ? (
+          {page === "today" ? (
             <TodayPage />
-          ) : page === "课表" ? (
-            <CalendarPage key="timetable" focusDate={calendarDate} />
-          ) : page === "作业" ? (
-            <CalendarPage key="schedule" mode="schedule" focusDate={calendarDate} />
-          ) : page === "助手" ? (
+          ) : page === "calendar" ? (
+            <CalendarPage key="calendar" focusDate={calendarDate} />
+          ) : page === "tasks" ? (
+            <><h1>任务</h1><div className="workspace-tabs" role="group" aria-label="任务分类">{(['todo','goals','review'] as const).map((tab,i)=><button key={tab} aria-pressed={(navigation.taskTab??'todo')===tab} onClick={()=>go({page:'tasks',taskTab:tab})}>{['待办','目标','复盘'][i]}</button>)}</div>
+            {navigation.taskTab==='goals'?<Goals/>:navigation.taskTab==='review'?<><DurationSuggestions/><WeeklyReview/><NegotiationPanel/></>:<CalendarPage key="schedule" mode="schedule"/>}</>
+          ) : page === "assistant" ? (
             <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
-          ) : page === "目标与复盘" ? (
-            <><h1>目标与周复盘</h1><Goals /><DurationSuggestions /><WeeklyReview /><NegotiationPanel /></>
           ) : (
             <Settings local={local} />
           )}
         </Suspense>
-      </main>
-    </div>
+    </AppShell>
   );
 }
 

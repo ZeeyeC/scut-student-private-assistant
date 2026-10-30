@@ -8,7 +8,7 @@ const variants = cva(
   {
     variants: {
       variant: {
-        default: "bg-teal-700 text-white hover:bg-teal-800",
+        default: "bg-blue-600 text-white hover:bg-blue-700",
         outline: "border bg-white hover:bg-slate-50",
         destructive: "bg-red-700 text-white hover:bg-red-800",
       },
