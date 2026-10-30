@@ -1,6 +1,23 @@
 (() => {
   if (window.__campusPet) return;
   const pages = ['助手', '今日', '课表', '作业', '目标与复盘', '设置', '日程', '任务', 'today', 'calendar', 'tasks', 'assistant', 'settings'];
+  const nativeRequests = new Map();
+  if (window.webkit?.messageHandlers?.petState) {
+    window.addEventListener('campus-native-import-result', event => {
+      const value = event.detail;
+      const pending = nativeRequests.get(value?.requestId);
+      if (!pending) return;
+      nativeRequests.delete(value.requestId); clearTimeout(pending.timer);
+      value.ok ? pending.resolve(value.result) : pending.reject(new Error(value.error || '暂时无法打开导入'));
+    });
+    window.__campusNative = { request: (command, payload = {}) => new Promise((resolve, reject) => {
+      const requestId = crypto.randomUUID();
+      const timer = setTimeout(() => {nativeRequests.delete(requestId);reject(new Error('App未及时响应，请重试。'));}, 15000);
+      nativeRequests.set(requestId, {resolve, reject, timer});
+      window.webkit.messageHandlers.petState.postMessage({channel:'school-import-v1',requestId,command,payload});
+    })};
+    window.dispatchEvent(new Event('campus-native-ready'));
+  }
   let lastState = '';
   let desiredPage = '助手';
   let backendState = null;

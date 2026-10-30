@@ -25,7 +25,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var demoStage: NSWindow?
     var bubbleLocalMonitor: Any?
     var bubbleGlobalMonitor: Any?
-    var browserOpener: (URL) -> Bool = { NSWorkspace.shared.open($0) }
+    lazy var browserLaunchPolicy = BrowserLaunchPolicy()
+    var launchingImports = Set<String>()
     var assistant: NSWindow!
     var webView: WKWebView!
     var statusItem: NSStatusItem!
@@ -151,23 +152,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         segments.selectedSegment = 3
         segments.isHidden = true // The App content provides the shared main/compact navigation.
         bar.addArrangedSubview(segments)
-        let expand = NSButton(title: "展开", target: self, action: #selector(toggleLayout))
-        expand.toolTip = "切换紧凑面板 / 完整工作台"
+        let expand = NSButton(title: "主窗口", target: self, action: #selector(toggleLayout))
+        expand.toolTip = "切换主窗口与快捷面板"
         bar.addArrangedSubview(expand)
         content.addSubview(bar)
-        let browser = NSButton(title: "课表导入请在浏览器打开", target: self, action: #selector(openBrowser))
-        browser.bezelStyle = .inline; browser.font = .systemFont(ofSize: 11)
-        let review = NSButton(title: "查看待校对", target: self, action: #selector(showReview))
-        review.bezelStyle = .inline; review.font = .systemFont(ofSize: 11)
-        let links = NSStackView(views: [browser, review])
-        links.spacing = 14; links.translatesAutoresizingMaskIntoConstraints = false
-        content.addSubview(links)
         NSLayoutConstraint.activate([
             bar.topAnchor.constraint(equalTo: content.topAnchor, constant: 10),
             bar.centerXAnchor.constraint(equalTo: content.centerXAnchor),
-            links.topAnchor.constraint(equalTo: bar.bottomAnchor, constant: 7),
-            links.centerXAnchor.constraint(equalTo: content.centerXAnchor),
-            webView.topAnchor.constraint(equalTo: links.bottomAnchor, constant: 8),
+            webView.topAnchor.constraint(equalTo: bar.bottomAnchor, constant: 8),
             webView.leadingAnchor.constraint(equalTo: content.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: content.trailingAnchor),
             webView.bottomAnchor.constraint(equalTo: content.bottomAnchor),
@@ -226,7 +218,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         automatic.state = automaticActions ? .on : .off
         menu.addItem(automatic)
         menu.addItem(.separator())
-        menu.addItem(item("在浏览器中打开完整助手", #selector(openBrowser)))
         menu.addItem(item("重新连接本机服务", #selector(reconnect)))
         let exit = NSMenuItem(title: "关闭与退出", action: nil, keyEquivalent: "")
         let exits = NSMenu(title: "关闭与退出")
@@ -239,7 +230,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func beginService() {
         guard !starting else { return }
         starting = true; ready = false; receiveAssistantMood(.starting)
-        let startingHTML = "<html lang='zh'><meta charset='utf-8'><body style='font:15px -apple-system;padding:36px;background:#f5f8f3;color:#24453c'><h2>课间，陪你一起完成。</h2><p>正在连接本机助手…</p><p>点击奶蛙环形展开今日已安排的待办，左击任务查看详细，右击任务完成。</p></body></html>"
+        let startingHTML = "<html lang='zh'><meta charset='utf-8'><body style='font:15px -apple-system;padding:36px;background:white;color:#303640'><h2>课间</h2><p>正在连接助手…</p></body></html>"
         webView.loadHTMLString(startingHTML, baseURL: nil)
         Task {
             do {
@@ -415,7 +406,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
     @objc func toggleLayout(_ sender: NSButton) {
         compact.toggle()
-        sender.title = compact ? "展开" : "收起"
+        sender.title = compact ? "主窗口" : "快捷面板"
         webView.evaluateJavaScript("window.__campusPet?.layout(\(compact));")
         var frame = assistant.frame
         frame.size.width = compact ? 560 : 1120
@@ -429,8 +420,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
     @objc func openBrowser() {
         hidePetBubbles()
-        // WebKit does not run the existing Chrome/Edge timetable extension.
-        _ = browserOpener(assistantOrigin)
+        showAssistant(page: "日程")
+        webView.evaluateJavaScript("window.dispatchEvent(new Event('campus-start-import'));")
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -452,16 +443,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else { decisionHandler(.cancel); return }
         if trusted(url) || url.absoluteString == "about:blank" { decisionHandler(.allow); return }
-        if navigationAction.navigationType == .linkActivated && ["https", "http"].contains(url.scheme ?? "") { NSWorkspace.shared.open(url) }
+        if navigationAction.navigationType == .linkActivated { presentWebReference(url) }
         decisionHandler(.cancel)
     }
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
-        if let url = navigationAction.request.url, ["http", "https"].contains(url.scheme ?? "") { NSWorkspace.shared.open(url) }
+        if let url = navigationAction.request.url { presentWebReference(url) }
         return nil
     }
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard message.frameInfo.isMainFrame, trusted(message.frameInfo.request.url),
-              let value = message.body as? String else { return }
+        guard message.frameInfo.isMainFrame, trusted(message.frameInfo.request.url) else { return }
+        if let body = message.body as? [String: Any] { handleImportMessage(body); return }
+        guard let value = message.body as? String else { return }
         if value == "choose-reminder-file" { chooseReminderFile(); return }
         if value == "after-class-due" {
             pet.stopAction(); showAssistant(); return

@@ -5,6 +5,7 @@ struct NativeTests {
     static func main() {
         MainActor.assumeIsolated {
             _ = NSApplication.shared
+            runBrowserLaunchPolicyTests()
             for screen in [NSRect(x: 0, y: 0, width: 1200, height: 800), NSRect(x: -1200, y: 200, width: 1200, height: 800)] {
                 for x in [screen.minX, screen.midX - 95, screen.maxX - 190] {
                     for y in [screen.minY, screen.midY - 105, screen.maxY - 210] {
@@ -75,7 +76,7 @@ struct NativeTests {
             precondition(AppDelegate.displayPage("目标与复盘") == "任务", "Legacy goals entry still reaches the task subview")
             precondition(AppDelegate.displayPage("课表") == "日程")
             precondition(AppDelegate.displayPage("作业") == "任务")
-            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1", "project-completion-v1"]
+            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1", "project-completion-v1", "desktop-workspace-v1", "desktop-import-bridge-v1"]
             func rejects(_ body: [String: Any], status: Int = 200) -> Bool {
                 do { try ServiceController.validateHealth(status: status, body: body); return false }
                 catch { return true }

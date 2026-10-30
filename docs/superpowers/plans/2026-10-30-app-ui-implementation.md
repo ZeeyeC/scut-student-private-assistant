@@ -10,7 +10,7 @@
 
 **Spec:** [App界面设计](../specs/2026-10-30-ui-redesign-design.md)、[NaiWa形象设计](../specs/2026-10-30-naiwa-pet-assets-design.md)、[可点击原型](../../design/ui-redesign-v1/index.html)。
 
-**Execution records:** 开发分支`codex/demo2.5-app-ui-naiwa`；[进度追踪表](../../roadmap/Demo2.5-开发进度追踪表.md)为实际状态入口，[实施材料](../../materials/demo2.5/README.md)提供原任务书、设计与固定素材来源。每次开始任务、获得验证结果、阻塞与提交时更新追踪表和本计划复选框；当前仅准备，尚未执行功能任务。
+**Execution records:** 开发分支`codex/demo2.5-app-ui-naiwa`；[进度追踪表](../../roadmap/Demo2.5-开发进度追踪表.md)为实际状态入口，[实施材料](../../materials/demo2.5/README.md)提供原任务书、设计与固定素材来源。每次开始任务、获得验证结果、阻塞与提交时更新追踪表和本计划复选框；已开始实施，实际状态与未完成验收见追踪表。
 
 ## Global Constraints
 
@@ -61,14 +61,14 @@
 - 浏览器类型为 `SchoolImportBrowser: String`，仅 `chrome` / `edge`；本机 `UserDefaults` 键 `schoolImportBrowser` 默认 `chrome`，设置桥接只接收这两个值，非法值拒绝。明确映射Chrome的 `com.google.Chrome` 与Edge的 `com.microsoft.edgemac`，按应用URL调用 `NSWorkspace` 的指定应用开页接口，不使用 `NSWorkspace.shared.open(url)` 或修改系统默认浏览器。
 - 浏览器选择与扩展检测分开：安装了Chrome/Edge不等于已安装扩展。仅在学校导入上下文内打开受限桥接页，由现有扩展握手确认可用；握手5秒超时后在App显示安装/启用指引和显式重试，在成功握手前不打开学校页，不自动换浏览器。首次安装仍需用户在所选浏览器操作，日常启动不弹浏览器。
 
-- [ ] 写原生RED：系统默认Safari但选择Chrome时只调用Chrome；切换Edge后跨启动保留；所选应用缺失时无开页副作用并显示安装/切换入口；非法选择拒绝；不自动改用另一浏览器、Safari或WKWebView。
-- [ ] Run `backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，确认新增浏览器策略用例因未实现而RED；测试文件注册进现有测试入口，不增加第二个 `@main`。
-- [ ] 实现所选浏览器定位、明确开页和“课程与学期”中的选择设置；覆盖桥接握手超时/插件禁用、安装后显式重试。首次打开桥接与重试均受现有导入上下文及防重复约束。
-- [ ] 实现边界已确定：在App已认证会话里为原导入资源签发短期grant；外部最小桥接页URL只在fragment携带随机令牌，加载后清除fragment。服务端仅存令牌hash，绑定owner/import ID，过期不晚于原15分钟会话。grant只能读取该导入状态和提交事件/捕获，不可读写任务、模型配置或其他资源。
-- [ ] grant捕获成功后消费；同操作ID与同捕获内容可返回原收据，不同内容/跨导入重放拒绝；App取消立即使grant失效。最小桥接页继续通过现有content script/后台扩展向学校页面发起采集，回传后App轮询原导入状态，不读取学校密码或借用浏览器的助手登录Cookie。
+- [x] 写原生RED：系统默认Safari但选择Chrome时只调用Chrome；切换Edge后跨启动保留；所选应用缺失时无开页副作用并显示安装/切换入口；非法选择拒绝；不自动改用另一浏览器、Safari或WKWebView。
+- [x] Run `backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，确认新增浏览器策略用例因未实现而RED；测试文件注册进现有测试入口，不增加第二个 `@main`。
+- [x] 实现所选浏览器定位、明确开页和“课程与学期”中的选择设置；覆盖桥接握手超时/插件禁用、安装后显式重试。首次打开桥接与重试均受现有导入上下文及防重复约束。
+- [x] 实现边界已确定：在App已认证会话里为原导入资源签发短期grant；外部最小桥接页URL只在fragment携带随机令牌，加载后清除fragment。服务端仅存令牌hash，绑定owner/import ID，过期不晚于原15分钟会话。grant只能读取该导入状态和提交事件/捕获，不可读写任务、模型配置或其他资源。
+- [x] grant捕获成功后消费；同操作ID与同捕获内容可返回原收据，不同内容/跨导入重放拒绝；App取消立即使grant失效。最小桥接页继续通过现有content script/后台扩展向学校页面发起采集，回传后App轮询原导入状态，不读取学校密码或借用浏览器的助手登录Cookie。
 - [ ] 写RED：启动/导航/聊天/设置/提醒不唤浏览器；任意URL、伪造消息、跨owner、过期/取消会话被拒绝；只有用户点学校导入才允许一次发起。
 - [ ] 写RED：Chrome/Edge各自完成学校采集→回到App校对→确认后保存；未安装扩展时桥接握手5秒超时显示指引且不打开学校页，安装后重试可继续；重复回传不重复导入；拒绝/取消不保存。图片/PDF/文字全程不触发外部浏览器。
-- [ ] 移除旧完整网页版菜单、常驻浏览器链接和默认自动打开网页；外部HTTP导航和新窗口统一进入策略。需要技术桥接时只提供受限回传，不提供完整助手网页。
+- [x] 移除旧完整网页版菜单、常驻浏览器链接和默认自动打开网页；外部HTTP导航和新窗口统一进入策略。需要技术桥接时只提供受限回传，不提供完整助手网页。
 - [ ] 新用例GREEN；在实际App与Chrome/Edge验证系统默认Safari时仍打开所选浏览器、首次扩展安装、本人登录、取消/过期/重试。合成测试与真实学校登录验收分开记录，再提交。
 
 ### Task 4：NaiWa桌宠形象替换
@@ -90,4 +90,4 @@
 - [ ] 更新VERSION/说明/README后运行 `backend/.venv/bin/python scripts/release-macos.py --version 2.5.0`；产出App、应用ZIP、当前工作树源码ZIP、说明、验证结果、manifest及SHA256。
 - [ ] 校验授权声明、无旧角色混入、无Key/个人资料、ZIP与签名、浏览器仅学校导入会唤出。通过后清理明确缓存；保留旧正式包和失败证据。
 
-本文件已进行来源、路径与接口自检；所有复选框表示未来实现工作，不表示本轮已修改正式App。
+复选框随实现更新；代码验证、实际App与真实学校等外部验收分别记录，未完成项不能因阶段提交而视为完成。

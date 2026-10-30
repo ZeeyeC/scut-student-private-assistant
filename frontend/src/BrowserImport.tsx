@@ -6,7 +6,7 @@ import { ImportGuide } from "./ImportGuide";
 import { DraftReview } from "./DraftReview";
 import { Button } from "./components/ui/button";
 const nonce = crypto.randomUUID();
-function extension(action: string, payload: unknown = {}): Promise<any> {
+export function extension(action: string, payload: unknown = {}): Promise<any> {
   return new Promise((resolve, reject) => {
     const requestId = crypto.randomUUID();
     const timer = setTimeout(() => {

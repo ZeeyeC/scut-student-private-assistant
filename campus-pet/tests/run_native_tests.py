@@ -27,6 +27,7 @@ with tempfile.TemporaryDirectory(prefix="campus-pet-native-tests-") as temporary
             "WebKit",
             *map(str, sources),
             str(root / "tests/NativeTests.swift"),
+            str(root / "tests/BrowserLaunchPolicyTests.swift"),
             "-o",
             str(output / "checks"),
         ],

@@ -9,6 +9,7 @@ import { AfterClassPreferences } from "./AfterClass";
 import {PersonalProfile} from "./PersonalProfile";
 import {StudyTypes} from "./StudyTypes";
 import {DetailPanel} from "./layout/DetailPanel";
+import {ImportBrowserSettings} from "./SchoolImportPanel";
 import {ProactiveSettings} from "./ProactiveSuggestions";
 type Form = {
   timezone: string;
@@ -69,6 +70,7 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
   if (s.error) return <p role="alert">{String(s.error)}</p>;
   return (
     <>
+      {group==='semester'&&<ImportBrowserSettings/>}
       {group==='preferences'&&<PersonalProfile/>}
       {group==='reminders'&&<><AfterClassPreferences/><ProactiveSettings/></>}
       {(group==='semester'||group==='preferences')&&<form

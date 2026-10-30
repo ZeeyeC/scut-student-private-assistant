@@ -12,7 +12,7 @@ capabilities = [
     "after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders",
     "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today",
     "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1",
-    "planning-core-v1", "b-interaction-v1", "project-completion-v1",
+    "planning-core-v1", "b-interaction-v1", "project-completion-v1", "desktop-workspace-v1", "desktop-import-bridge-v1",
 ]
 
 class FixtureServer(socketserver.ThreadingTCPServer):

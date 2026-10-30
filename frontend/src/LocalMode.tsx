@@ -192,7 +192,7 @@ export function LocalSettings() {
       {error && <p role="alert">{error}</p>}
       {installation.data?.can_stop && (
         <div className="step">
-          <p>关闭网页后助手仍在本机运行。停止后，可双击桌面入口重新打开。</p>
+          <p>关闭窗口后后台仍在本机运行。停止后，可双击桌面入口重新打开。</p>
           <Button
             variant="outline"
             onClick={async () => {

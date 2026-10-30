@@ -6,7 +6,9 @@ import { Button } from "./components/ui/button";
 import { TodayPage } from "./Today";
 import { Settings } from "./Settings";
 import { LocalEntry } from "./LocalMode";
-import { BrowserImport, stopBrowserImports } from "./BrowserImport";
+import { stopBrowserImports } from "./BrowserImport";
+import {SchoolImportPanel} from "./SchoolImportPanel";
+import {ReminderLinkPanel} from "./ReminderLinkPanel";
 import { AfterClassCheckin } from "./AfterClass";
 import {TimerHeartbeat} from "./ExecutionTimer";
 import {TasksPage} from "./TasksPage";
@@ -165,7 +167,8 @@ function Workspace({ local = false }: { local?: boolean }) {
         <AfterClassCheckin />
         <TimerHeartbeat />
         <ReviewInbox onOpenTask={id=>go({page:'tasks',taskId:id})}/>
-        <BrowserImport showOverview={false} />
+        <SchoolImportPanel/>
+        <ReminderLinkPanel/>
         <Suspense fallback={<p role="status">正在加载页面…</p>}>
           {page === "today" ? (
             <TodayPage />

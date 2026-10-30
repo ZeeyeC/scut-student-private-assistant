@@ -1,0 +1,30 @@
+{
+  "stage": "U1-U2-B1 implementation checkpoint",
+  "planned_version": "2.5.0",
+  "released_version": "2.4.9",
+  "date": "2026-10-30",
+  "branch": "codex/demo2.5-app-ui-naiwa",
+  "backend_tests": 657,
+  "backend_subtests": 20,
+  "frontend_tests": 103,
+  "extension_tests": 6,
+  "new_browser_flows": 7,
+  "native_logic": "passed",
+  "native_http_scenarios": 10,
+  "real_school_import": "not_run",
+  "current_native_app_smoke": "not_run",
+  "legacy_browser_regression": "pending_selector_migration_and_run",
+  "naiwa_art_assets_in_product": false,
+  "naiwa_rights": "pending_specific_permission_evidence",
+  "evidence_sha256": {
+    "B1-backend.txt": "6cc6a7972b36e42f408bb5aff7501a38c025ac9270633e2fb7483abce70a8ca3",
+    "B1-frontend.txt": "dbcc87453d6a5aa3e65bb1b2ec6a3df7b2f0fac87ef704d819c42f32d051e3bc",
+    "B1-browser.txt": "d48fd1930b18a625e28d74686a64e13e2196705f859f7ca9b491efc2eadf9088",
+    "B1-native.txt": "bde7ba830b2363be9ddb6f77baa3ded7329a33a826afc2e90d9759f208ae7d3c",
+    "B1-native-http.txt": "d7d6cb6b86c732618c8d9d9a440e589b8d3d967fe103250b0bbd4f006b08fb21",
+    "B1-extension.txt": "6d326dce4df308cfd68f9a83c1725e1a3d40c25ba784249979249584a74a73da",
+    "B1-extension-types.txt": "0c8014ca51ec27b97c5c325fcd74d429399fd42d144d01ef021c2147d4a444a2",
+    "B1-extension-build.txt": "4c66aca2a89e044bf3857f2502e678d72613225bf4c9e9adc1f8f8f726d4183d"
+  },
+  "evidence_format": "Terminal escape sequences and trailing whitespace removed; result content unchanged."
+}

@@ -646,3 +646,7 @@ summary { cursor:pointer; color:#54627a; padding:10px 0; font-size:14px; }
 /* Existing confirmation/file dialogs must remain above a detail drawer. */
 .dialog-overlay:not(.detail-overlay) { z-index:90; }
 .import-dialog,.delete-dialog { z-index:91; }
+.school-import-bridge { max-width:560px; margin:12vh auto; padding:24px; }
+.school-import-bridge h1 { font-size:22px; }
+.import-progress { display:block; padding:8px 12px; margin-bottom:12px; border:1px solid #e1e5ec; border-radius:6px; background:#f8faff; color:#526784; font-size:13px; }
+.import-browser-setting { max-width:380px; }

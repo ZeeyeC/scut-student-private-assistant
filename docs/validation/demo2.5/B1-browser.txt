@@ -1,0 +1,18 @@
+[WebServer] INFO:     Started server process [28364]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 7 tests using 1 worker
+
+(node:28365) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/app-school-import.spec.ts:27:1 › external import has no App cookie, clears its grant from the URL and returns a draft for App approval (3.1s)
+  ✓  2 e2e/app-school-import.spec.ts:62:1 › missing extension stays in the import flow and App cancellation revokes retry (6.9s)
+  ✓  3 e2e/app-school-import.spec.ts:80:1 › App browser selection uses the native bridge and a double click starts only one import (728ms)
+  ✓  4 e2e/app-workspace.spec.ts:12:1 › shared navigation keeps legacy goals, reminders and compact controls reachable (550ms)
+  ✓  5 e2e/app-workspace.spec.ts:31:1 › task creation keeps its unsaved input and requires review before storing a task (602ms)
+  ✓  6 e2e/app-workspace.spec.ts:50:1 › settings exposes five summaries and opens the original preference controls on demand (507ms)
+  ✓  7 e2e/app-workspace.spec.ts:62:1 › native navigation during review cannot leave the workspace permanently inert (578ms)
+
+  7 passed (15.9s)

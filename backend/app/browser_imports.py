@@ -191,6 +191,91 @@ def active(r):
         raise HTTPException(409, "导入已经结束")
 
 
+
+async def apply_import_event(db, owner, rid, body):
+    r = await get_import(db, owner, rid)
+    active(r)
+    store.revision(r, body.revision)
+    allowed = {
+        "opened": {"queued"},
+        "waiting_timetable": {"queued", "waiting_login"},
+        "extracting": {"waiting_timetable"},
+        "failed": {
+            "queued",
+            "waiting_login",
+            "waiting_timetable",
+            "extracting",
+        },
+    }
+    if r.data["status"] not in allowed[body.kind]:
+        raise HTTPException(409, "导入事件顺序无效")
+    data = dict(r.data)
+    if body.kind == "opened":
+        data.update(status="waiting_login", browser_opened_at=now().isoformat())
+    elif body.kind == "extracting":
+        data.update(status="extracting", extracting_at=now().isoformat())
+    else:
+        data.update(status=body.kind, error=body.error_code)
+    r.data = data
+    r.revision += 1
+    return store.view(r)
+
+
+async def apply_import_capture(db, owner, rid, body, config):
+    r = await get_import(db, owner, rid)
+    h = store.digest(body.fragments)
+    if (
+        r.data["status"] in ("preview_ready", "completed")
+        and r.data["draft_id"]
+        and r.data["capture_hash"] == h
+    ):
+        return store.view(
+            await store.owned(db, owner, r.data["draft_id"], "draft")
+        )
+    active(r)
+    store.revision(r, body.revision)
+    if r.data["status"] != "extracting":
+        raise HTTPException(409, "尚未进入提取阶段")
+    adapter = load_adapter(config)
+    if (
+        body.adapter_version != adapter["version"]
+        or body.school_origin != adapter["school_origin"]
+    ):
+        raise HTTPException(422, "学校适配版本/origin 不符")
+    try:
+        payload = parse_capture(
+            body.fragments,
+            adapter,
+            30,
+        )
+    except (ValueError, TypeError, KeyError) as e:
+        raise HTTPException(422, str(e))
+    payload["semester_label"] = body.semester_label
+    settings = await store.settings(db, owner)
+    max_week = max(w for course in payload["courses"] for w in course["weeks"])
+    if max_week > settings.data["week_count"]:
+        payload["warnings"].append(
+            f"课程包含第 {max_week} 周；请先在设置中校对学期周数，再重新导入"
+        )
+    d = await imports.create_draft(
+        db,
+        owner,
+        "timetable",
+        payload,
+        {
+            "browser_session": rid,
+            "verified_full": False,
+        },
+    )
+    r.data = {
+        **r.data,
+        "status": "preview_ready",
+        "draft_id": d["id"],
+        "capture_hash": h,
+    }
+    r.revision += 1
+    return d
+
 def browser_router(config, get_db, current_user):
     router = APIRouter(prefix="/api/browser-imports")
 
@@ -228,32 +313,7 @@ def browser_router(config, get_db, current_user):
         db=Depends(get_db),
     ):
         async def op():
-            r = await get_import(db, str(user.id), rid)
-            active(r)
-            store.revision(r, body.revision)
-            allowed = {
-                "opened": {"queued"},
-                "waiting_timetable": {"queued", "waiting_login"},
-                "extracting": {"waiting_timetable"},
-                "failed": {
-                    "queued",
-                    "waiting_login",
-                    "waiting_timetable",
-                    "extracting",
-                },
-            }
-            if r.data["status"] not in allowed[body.kind]:
-                raise HTTPException(409, "导入事件顺序无效")
-            data = dict(r.data)
-            if body.kind == "opened":
-                data.update(status="waiting_login", browser_opened_at=now().isoformat())
-            elif body.kind == "extracting":
-                data.update(status="extracting", extracting_at=now().isoformat())
-            else:
-                data.update(status=body.kind, error=body.error_code)
-            r.data = data
-            r.revision += 1
-            return store.view(r)
+            return await apply_import_event(db, str(user.id), rid, body)
 
         return await store.mutate(
             db,
@@ -300,59 +360,7 @@ def browser_router(config, get_db, current_user):
         db=Depends(get_db),
     ):
         async def op():
-            r = await get_import(db, str(user.id), rid)
-            h = store.digest(body.fragments)
-            if (
-                r.data["status"] in ("preview_ready", "completed")
-                and r.data["draft_id"]
-                and r.data["capture_hash"] == h
-            ):
-                return store.view(
-                    await store.owned(db, str(user.id), r.data["draft_id"], "draft")
-                )
-            active(r)
-            store.revision(r, body.revision)
-            if r.data["status"] != "extracting":
-                raise HTTPException(409, "尚未进入提取阶段")
-            adapter = load_adapter(config)
-            if (
-                body.adapter_version != adapter["version"]
-                or body.school_origin != adapter["school_origin"]
-            ):
-                raise HTTPException(422, "学校适配版本/origin 不符")
-            try:
-                payload = parse_capture(
-                    body.fragments,
-                    adapter,
-                    30,
-                )
-            except (ValueError, TypeError, KeyError) as e:
-                raise HTTPException(422, str(e))
-            payload["semester_label"] = body.semester_label
-            settings = await store.settings(db, str(user.id))
-            max_week = max(w for course in payload["courses"] for w in course["weeks"])
-            if max_week > settings.data["week_count"]:
-                payload["warnings"].append(
-                    f"课程包含第 {max_week} 周；请先在设置中校对学期周数，再重新导入"
-                )
-            d = await imports.create_draft(
-                db,
-                str(user.id),
-                "timetable",
-                payload,
-                {
-                    "browser_session": rid,
-                    "verified_full": False,
-                },
-            )
-            r.data = {
-                **r.data,
-                "status": "preview_ready",
-                "draft_id": d["id"],
-                "capture_hash": h,
-            }
-            r.revision += 1
-            return d
+            return await apply_import_capture(db, str(user.id), rid, body, config)
 
         return await store.mutate(
             db,

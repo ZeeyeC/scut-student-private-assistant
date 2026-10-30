@@ -97,3 +97,13 @@ def test_health_advertises_pet_features(tmp_path):
         response = c.get("/api/healthz")
         assert response.status_code == 200
         assert set(response.json().get("capabilities", [])) >= {"after-class-checkin", "calendar-course-entry", "pet-state"}
+
+
+def test_command_line_start_never_opens_a_daily_browser(tmp_path, monkeypatch):
+    from app import launcher
+
+    calls = []
+    monkeypatch.setattr(launcher, 'start', lambda root, resources, **options: calls.append(options))
+    monkeypatch.setattr(launcher.sys, 'argv', ['CampusCompanion', '--data-dir', str(tmp_path)])
+    assert launcher.main() == 0
+    assert calls[0]['browser'] is False

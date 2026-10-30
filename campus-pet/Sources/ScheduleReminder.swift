@@ -88,7 +88,9 @@ extension AppDelegate {
                     if url.isFileURL && !FileManager.default.fileExists(atPath: url.path) {
                         throw ServiceError.message("文件已移动或删除，请在日程详情中重新选择文件。")
                     }
-                    guard NSWorkspace.shared.open(url) else { throw ServiceError.message("无法打开该内容，请检查默认应用和文件权限。") }
+                    if url.isFileURL {
+                        guard NSWorkspace.shared.open(url) else { throw ServiceError.message("无法打开该文件，请检查默认应用和文件权限。") }
+                    } else { presentWebReference(url, title: reminder.title) }
                 }
                 dismissedReminders.insert(reminder.key); pendingReminders.removeAll { $0.key == reminder.key }
                 await presentScheduleReminder()

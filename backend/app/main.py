@@ -19,6 +19,7 @@ from app.agent import agent_router, pending_approval
 from app.assignments import assignment_router
 from app.auth import UserCreate, UserRead, build_auth
 from app.browser_imports import browser_router
+from app.desktop_import_bridge import desktop_import_router
 from app.config import Config
 from app.constraints import constraint_router
 from app.contracts import SettingsUpdate
@@ -244,6 +245,8 @@ def create_app(config=None):
                 "planning-core-v1",
                 "b-interaction-v1",
                 "project-completion-v1",
+                "desktop-workspace-v1",
+                "desktop-import-bridge-v1",
             ],
             "model_configured": bool(config.text_model and config.model_api_key),
             "vision_configured": bool(config.vision_model and config.model_api_key),
@@ -284,6 +287,7 @@ def create_app(config=None):
 
     app.include_router(business_router(get_db, current_user))
     app.include_router(browser_router(config, get_db, current_user))
+    app.include_router(desktop_import_router(config, get_db, current_user))
     app.include_router(assignment_router(config, get_db, current_user))
     app.include_router(timetable_recognition_router(config, get_db, current_user))
     app.include_router(task_router(get_db, current_user))

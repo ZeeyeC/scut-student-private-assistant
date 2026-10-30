@@ -25,6 +25,7 @@ function bridge() {
   };
   runInNewContext(script, {
     window, document, AbortController,
+    Event: class { constructor(public type: string) {} },
     fetch: async () => { if (failed) throw new Error("offline"); return { ok: true, status: 200, json: async () => response }; },
     CustomEvent: class { constructor(public type: string, public init: { detail?: unknown } = {}) {} get detail() { return this.init.detail; } },
     MutationObserver: class { constructor(callback: () => void) { changed = callback; } observe() {} },

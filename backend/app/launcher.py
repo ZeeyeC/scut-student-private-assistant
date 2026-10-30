@@ -284,7 +284,7 @@ def main():
             serve(desktop_config(root, resource_root(), project=args.project))
         else:
             start(
-                root, resource_root(), project=args.project, browser=not args.no_browser
+                root, resource_root(), project=args.project, browser=False
             )
     except Exception as exc:
         root.mkdir(parents=True, exist_ok=True)
