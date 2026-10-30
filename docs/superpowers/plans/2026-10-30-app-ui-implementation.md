@@ -10,9 +10,12 @@
 
 **Spec:** [App界面设计](../specs/2026-10-30-ui-redesign-design.md)、[NaiWa形象设计](../specs/2026-10-30-naiwa-pet-assets-design.md)、[可点击原型](../../design/ui-redesign-v1/index.html)。
 
+**Execution records:** 开发分支`codex/demo2.5-app-ui-naiwa`；[进度追踪表](../../roadmap/Demo2.5-开发进度追踪表.md)为实际状态入口，[实施材料](../../materials/demo2.5/README.md)提供原任务书、设计与固定素材来源。每次开始任务、获得验证结果、阻塞与提交时更新追踪表和本计划复选框；当前仅准备，尚未执行功能任务。
+
 ## Global Constraints
 
 - 日常使用只在App内；浏览器仅由明确的学校课表导入操作打开。图片/PDF/文字导入、校对及保存留在App。
+- 学校导入默认使用Chrome，用户可在App“课程与学期”设置中切换Edge并保存选择；按所选应用明确唤起，不调用系统默认浏览器，不回退Safari/WKWebView。所选浏览器缺失时提供安装/切换入口；扩展缺失时在App提供安装和重试指引。
 - 四个主入口为今日、日程、任务、助手；设置位于底部。目标与复盘归入任务，复杂操作放详情面板，移除装饰文字和重复入口。
 - 保持原接口、owner、版本、幂等收据和明确确认；未知、0、估算、实际分开。课程/锁定计划不自动移动。
 - NaiWa固定来源及授权、原比例、原时序、64MiB帧缓存等约束以独立形象计划为准；新包全程同一角色。
@@ -24,7 +27,7 @@
 - 改导航后桌宠/提醒/审批事件找错页面或遗失目标线程（Task1）。
 - 表单收进详情后，未确认/冲突/过期数据被一键静默保存（Task2）。
 - WKWebView与Chrome会话不共享，导入不能靠旧网页版Cookie或任意网页消息认证（Task3）。
-- 学习链接、`window.open`、默认启动器或旧菜单仍无意唤出浏览器（Task3）。
+- 系统默认Safari、所选浏览器缺失或插件未安装时，错误打开不兼容浏览器；学习链接、`window.open`、默认启动器或旧菜单无意唤出浏览器（Task3）。
 - 新PNG比例/时序与旧播放器不兼容，正式包暗中使用旧形象回退（Task4）。
 
 ### Task 1：App壳层与四项导航
@@ -51,16 +54,22 @@
 
 ### Task 3：学校导入专用浏览器通道
 
-**Files:** 创建 `campus-pet/Sources/BrowserLaunchPolicy.swift`、`frontend/src/SchoolImportPanel.tsx`、`backend/app/desktop_import_bridge.py`、`backend/tests/test_desktop_import_bridge.py`、`frontend/e2e/app-school-import.spec.ts`；修改 `AppDelegate.swift`、`ServiceController.swift`、`backend/app/browser_imports.py`、`frontend/src/BrowserImport.tsx`、`ImportGuide.tsx`、`extension/entrypoints/app.content.ts`、`extension/entrypoints/background.ts`、`extension/lib/protocol.ts`、`backend/app/main.py`、启动文档和相关测试。
+**Files:** 创建 `campus-pet/Sources/BrowserLaunchPolicy.swift`、`campus-pet/tests/BrowserLaunchPolicyTests.swift`、`frontend/src/SchoolImportPanel.tsx`、`backend/app/desktop_import_bridge.py`、`backend/tests/test_desktop_import_bridge.py`、`frontend/e2e/app-school-import.spec.ts`；修改 `AppDelegate.swift`、`ServiceController.swift`、`campus-pet/Resources/Bridge.js`、`campus-pet/tests/NativeTests.swift`、`campus-pet/tests/run_native_tests.py`、`backend/app/browser_imports.py`、`frontend/src/BrowserImport.tsx`、`ImportGuide.tsx`、`Settings.tsx`、`extension/entrypoints/app.content.ts`、`extension/entrypoints/background.ts`、`extension/lib/protocol.ts`、`backend/app/main.py`、启动文档和相关测试。
 
 **Interfaces:** `BrowserLaunchPolicy`仅接受已由App创建且未取消/过期的学校导入上下文；URL限已核实学校配置/受限扩展桥接。复用现有 `/browser-imports` 状态与草稿确认；扩展回传绑定owner、导入任务、有效期及一次性授权，不共享WKWebView/Chrome Cookie假设。
 
+- 浏览器类型为 `SchoolImportBrowser: String`，仅 `chrome` / `edge`；本机 `UserDefaults` 键 `schoolImportBrowser` 默认 `chrome`，设置桥接只接收这两个值，非法值拒绝。明确映射Chrome的 `com.google.Chrome` 与Edge的 `com.microsoft.edgemac`，按应用URL调用 `NSWorkspace` 的指定应用开页接口，不使用 `NSWorkspace.shared.open(url)` 或修改系统默认浏览器。
+- 浏览器选择与扩展检测分开：安装了Chrome/Edge不等于已安装扩展。仅在学校导入上下文内打开受限桥接页，由现有扩展握手确认可用；握手5秒超时后在App显示安装/启用指引和显式重试，在成功握手前不打开学校页，不自动换浏览器。首次安装仍需用户在所选浏览器操作，日常启动不弹浏览器。
+
+- [ ] 写原生RED：系统默认Safari但选择Chrome时只调用Chrome；切换Edge后跨启动保留；所选应用缺失时无开页副作用并显示安装/切换入口；非法选择拒绝；不自动改用另一浏览器、Safari或WKWebView。
+- [ ] Run `backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，确认新增浏览器策略用例因未实现而RED；测试文件注册进现有测试入口，不增加第二个 `@main`。
+- [ ] 实现所选浏览器定位、明确开页和“课程与学期”中的选择设置；覆盖桥接握手超时/插件禁用、安装后显式重试。首次打开桥接与重试均受现有导入上下文及防重复约束。
 - [ ] 实现边界已确定：在App已认证会话里为原导入资源签发短期grant；外部最小桥接页URL只在fragment携带随机令牌，加载后清除fragment。服务端仅存令牌hash，绑定owner/import ID，过期不晚于原15分钟会话。grant只能读取该导入状态和提交事件/捕获，不可读写任务、模型配置或其他资源。
 - [ ] grant捕获成功后消费；同操作ID与同捕获内容可返回原收据，不同内容/跨导入重放拒绝；App取消立即使grant失效。最小桥接页继续通过现有content script/后台扩展向学校页面发起采集，回传后App轮询原导入状态，不读取学校密码或借用浏览器的助手登录Cookie。
 - [ ] 写RED：启动/导航/聊天/设置/提醒不唤浏览器；任意URL、伪造消息、跨owner、过期/取消会话被拒绝；只有用户点学校导入才允许一次发起。
-- [ ] 写RED：Chrome学校采集→回到App校对→确认后保存；重复回传不重复导入；拒绝/取消不保存。图片/PDF/文字全程不触发外部浏览器。
+- [ ] 写RED：Chrome/Edge各自完成学校采集→回到App校对→确认后保存；未安装扩展时桥接握手5秒超时显示指引且不打开学校页，安装后重试可继续；重复回传不重复导入；拒绝/取消不保存。图片/PDF/文字全程不触发外部浏览器。
 - [ ] 移除旧完整网页版菜单、常驻浏览器链接和默认自动打开网页；外部HTTP导航和新窗口统一进入策略。需要技术桥接时只提供受限回传，不提供完整助手网页。
-- [ ] 新用例GREEN；在实际App与Chrome/Edge验证首次扩展安装、本人登录、取消/过期/重试。合成测试与真实学校登录验收分开记录，再提交。
+- [ ] 新用例GREEN；在实际App与Chrome/Edge验证系统默认Safari时仍打开所选浏览器、首次扩展安装、本人登录、取消/过期/重试。合成测试与真实学校登录验收分开记录，再提交。
 
 ### Task 4：NaiWa桌宠形象替换
 

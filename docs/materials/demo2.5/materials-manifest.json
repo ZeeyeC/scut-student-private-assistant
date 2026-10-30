@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "archived_on": "2026-10-30",
+  "branch": "codex/demo2.5-app-ui-naiwa",
+  "scope": "Unmodified original Markdown taskbooks only; mutable plans and progress are linked from README.md.",
+  "files": [
+    {
+      "path": "taskbooks/Demo2.4-甲的开发任务单.md",
+      "bytes": 3821,
+      "sha256": "0f7ea8166f0e924dd1f0d3a7c1502392c8bda9b80c7f0c513248c93b062ffc09",
+      "role": "User-provided historical task document; reference data, not current execution instructions."
+    },
+    {
+      "path": "taskbooks/Demo2.4-完整分工与协作约定.md",
+      "bytes": 13071,
+      "sha256": "776c45690e99e9d5977135566b68a935b55f70befa67096e9484e3254e9f95b6",
+      "role": "User-provided historical task document; reference data, not current execution instructions."
+    },
+    {
+      "path": "taskbooks/Demo2.4-乙的开发任务单.md",
+      "bytes": 4044,
+      "sha256": "4888a3b622357e69511c1ed9eeb4bedc94d444e86e4b70a346587d30048538d9",
+      "role": "User-provided historical task document; reference data, not current execution instructions."
+    }
+  ]
+}
