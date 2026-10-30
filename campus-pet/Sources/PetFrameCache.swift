@@ -4,6 +4,7 @@ import CryptoKit
 struct PetDecodedFrame {
     let image: NSImage
     let bitmap: NSBitmapImageRep
+    let opaqueBounds: NSRect
     let byteCost: Int
 }
 
@@ -43,7 +44,20 @@ final class PetFrameCache {
         }
         let image = NSImage(size: clip.sourceSize)
         image.addRepresentation(bitmap)
-        let frame = PetDecodedFrame(image: image, bitmap: bitmap, byteCost: cost)
+        var x0=bitmap.pixelsWide,y0=bitmap.pixelsHigh,x1=0,y1=0
+        let fast=bitmap.bitsPerSample == 8 && !bitmap.isPlanar && bitmap.samplesPerPixel == 4
+        for y in 0..<bitmap.pixelsHigh {
+            for x in 0..<bitmap.pixelsWide {
+                let alpha:CGFloat
+                if fast, let bytes=bitmap.bitmapData {
+                    let channel=bitmap.bitmapFormat.contains(.alphaFirst) ? 0 : 3
+                    alpha=CGFloat(bytes[y*bitmap.bytesPerRow+x*4+channel])/255
+                } else { alpha=bitmap.colorAt(x:x,y:y)?.alphaComponent ?? 0 }
+                if alpha>0.1 { x0=min(x0,x);y0=min(y0,y);x1=max(x1,x+1);y1=max(y1,y+1) }
+            }
+        }
+        let opaque=NSRect(x:x0,y:y0,width:max(0,x1-x0),height:max(0,y1-y0))
+        let frame = PetDecodedFrame(image: image, bitmap: bitmap, opaqueBounds:opaque, byteCost: cost)
         entries[spec.sha256] = (frame, tick); residentBytes += cost
         return frame
     }

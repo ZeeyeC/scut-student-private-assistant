@@ -160,6 +160,8 @@ def run_checks(project, stage, version):
         ("pet_asset_freeze", [python, "scripts/verify-pet-asset-pack.py", "--release", "--app", str(stage / "课间桌宠.app")]),
         ("native_health_transport", [python, "campus-pet/tests/run_health_transport_tests.py"]),
         ("native_integration", [python, "campus-pet/verify.py", "--app", str(stage / "课间桌宠.app")]),
+        ("visual_reference", [python, "scripts/verify-ui-reference.py", "--reference", "docs/design/ui-redesign-v2",
+                              "--actual", "docs/validation/demo2.5.1/visual", "--native", "campus-pet/build/verification"]),
         ("frozen_pdf", [python, "scripts/verify-frozen-timetable.py", "--service",
                         str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"),
                         "--output", str(stage / "打包PDF检查.json")]),

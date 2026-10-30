@@ -10,18 +10,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
     let options = LaunchOptions.parse()
     lazy var service = ServiceController(options: options)
-    let pet = PetView(frame: NSRect(x: 0, y: 0, width: 190, height: 210))
+    let pet = PetView(frame: NSRect(x: 0, y: 0, width: 190, height: 240))
     var panel: PetPanel!
     var taskRingOpen = false
-    var taskBubbleWindows: [String: PetTaskBubblePanel] = [:]
-    var ringFrames: [NSRect] = []
-    var ringSlots: [String?] = []
+    var todoPanel: PetTodoPanel?
+    var todoSession=UUID()
+    var todoSelection: String?
+    var todoDetail: [String:Any]?
+    var todoError: String?
+    var detailGeneration=0
+    var completedTaskIDs=Set<String>()
+    var completionKeys:[String:(revision:Int,key:String)]=[:]
     var todayTasks: [PetScheduledTask] = []
     var taskTimezone = "Asia/Shanghai"
     var ringGeneration = 0
     var loadingTaskRing = false
     var completingTasks = Set<String>()
-    var taskDetails: TaskDetailsWindow?
     var demoStage: NSWindow?
     var bubbleLocalMonitor: Any?
     var bubbleGlobalMonitor: Any?
@@ -45,6 +49,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var compact = false
     var dragInProgress = false
     var requestedPage = "助手"
+    var requestedTaskID:String?
     var segments: NSSegmentedControl!
     var smokeStarted = false
     var automaticActions = true
@@ -99,14 +104,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         panel.contentView = pet
         pet.setAccessibilityElement(true)
         pet.setAccessibilityRole(.button)
-        pet.setAccessibilityLabel("奶蛙，点击环形展开今天已安排的待办，左击任务查看详细，右击任务完成，拖动移动，紫色时点击肚皮打开任务")
+        pet.setAccessibilityLabel("奶蛙，点击展开或收起今日待办，拖动移动，右键打开菜单")
         pet.onClick = { [weak self] in
             guard let self else { return }
             self.scheduleNextPerformance()
             if self.sleeping { self.toggleSleep() }
             self.togglePetBubbles()
         }
-        pet.onReminderClick = { [weak self] in self?.openScheduleReminder() }
+        pet.onReminderClick = { [weak self] in self?.togglePetBubbles() }
         pet.onMenu = { [weak self] event in
             guard let self else { return }
             self.hidePetBubbles()
@@ -252,7 +257,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
 
     func showAssistant(page: String? = nil) {
         hidePetBubbles()
-        if let page { requestedPage = page }
+        if let page { requestedPage = page;requestedTaskID=nil }
         NSApp.activate(ignoringOtherApps: true)
         assistant.makeKeyAndOrderFront(nil)
         navigate()
@@ -262,7 +267,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func navigate() {
         guard let index = Self.pages.firstIndex(of: Self.displayPage(requestedPage)) else { return }
         segments.selectedSegment = index
-        let literal = String(data: try! JSONSerialization.data(withJSONObject: [requestedPage]), encoding: .utf8)!
+        let target:Any=requestedTaskID.flatMap{WorkspaceNavigation.taskTarget(id:$0)} ?? (requestedPage as Any)
+        let literal = String(data: try! JSONSerialization.data(withJSONObject: [target]), encoding: .utf8)!
         webView.evaluateJavaScript("window.__campusPet?.navigate(\(literal)[0]);") { _, _ in }
     }
 
@@ -289,10 +295,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         let point = panel.convertPoint(fromScreen: NSEvent.mouseLocation)
         if NSEvent.pressedMouseButtons == 0 {
             panel.ignoresMouseEvents = !pet.isInteractive(point)
-            for window in taskBubbleWindows.values {
-                let local = window.convertPoint(fromScreen: NSEvent.mouseLocation)
-                window.ignoresMouseEvents = !window.button.containsCircle(local)
-            }
+
         }
     }
 
@@ -410,7 +413,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         statusItem.menu = petMenu()
     }
     @objc func changePage() {
-        requestedPage = Self.pages[segments.selectedSegment]
+        requestedPage = Self.pages[segments.selectedSegment];requestedTaskID=nil
         navigate()
     }
     @objc func toggleLayout(_ sender: Any?) {

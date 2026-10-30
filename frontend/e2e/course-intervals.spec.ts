@@ -80,9 +80,9 @@ test('selecting the second segment adjusts the entire occurrence and room-only c
   await expect(review).not.toContainText('新时间存在冲突');
   await review.getByRole('button',{name:'校对完成，准备保存'}).click();
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
-  await expect(page.locator('.fc-event').filter({hasText:'分段高数 · B202'})).toHaveCount(2);
+  await expect(page.locator('.fc-event').filter({hasText:/分段高数.*B202/s})).toHaveCount(2);
   await page.reload();
   await workspace(page,'courses');
-  await expect(page.locator('.fc-event').filter({hasText:'分段高数 · B202'})).toHaveCount(2);
+  await expect(page.locator('.fc-event').filter({hasText:/分段高数.*B202/s})).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
 });

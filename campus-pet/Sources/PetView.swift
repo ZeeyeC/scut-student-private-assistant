@@ -47,6 +47,10 @@ final class PetView: NSView {
     var assetClip: PetClipSpec? { playback?.currentClip }
     var assetCacheBytes: Int { frameCache.residentBytes }
     var assetActionID: String? { playback?.activeActionID }
+    var visibleCharacterBounds: NSRect {
+        guard let current=assetFrame() else { return displayRect }
+        return current.1.viewRect(fromSource:current.0.opaqueBounds)
+    }
     var assetGeometry: PetGeometry? { playback.map { geometry(for: $0.currentClip) } }
 
     override init(frame frameRect: NSRect) {
@@ -70,7 +74,7 @@ final class PetView: NSView {
     private func syncPlayback() { playback?.update(mood: mood, reminder: reminderText != nil) }
     private func geometry(for clip: PetClipSpec) -> PetGeometry {
         PetGeometry(sourceSize: clip.sourceSize, groundY: clip.groundY,
-                    targetRect: NSRect(x: 10, y: 0, width: max(0, bounds.width - 20), height: 172))
+                    targetRect: NSRect(x: 10, y: 0, width: max(0, bounds.width - 20), height: 227))
     }
     private func assetFrame() -> (PetDecodedFrame, PetGeometry)? {
         guard let playback else { return nil }
@@ -129,7 +133,6 @@ final class PetView: NSView {
         let belly = NSRect(x: r.minX + r.width * 0.28, y: r.minY + r.height * 0.20, width: r.width * 0.44, height: r.height * 0.36)
         return reminderText != nil && belly.contains(point) && isInteractive(point)
     }
-    private let bubble = NSRect(x: 13, y: 175, width: 164, height: 30)
     private var spriteRect: NSRect {
         guard let sprite else { return .zero }
         let ratio = min(170 / sprite.size.width, 172 / sprite.size.height)
@@ -167,7 +170,6 @@ final class PetView: NSView {
         return rect
     }
     func isInteractive(_ point: NSPoint) -> Bool {
-        if bubble.contains(point) { return true }
         if playback != nil {
             guard let current = paintedFrame.flatMap({ frame in paintedGeometry.map { (frame, $0) } }) ?? assetFrame(),
                   let source = current.1.sourcePoint(fromView: point) else { return false }
@@ -198,13 +200,12 @@ final class PetView: NSView {
     }
     override func mouseUp(with event: NSEvent) {
         if dragged { onMove?() }
-        else if isReminderBelly(convert(event.locationInWindow, from: nil)) { onReminderClick?() }
         else { onClick?() }
         down = nil; origin = nil
     }
     override func rightMouseDown(with event: NSEvent) { onMenu?(event) }
     override func accessibilityPerformPress() -> Bool {
-        if reminderText != nil { onReminderClick?() } else { onClick?() }; return true
+        onClick?(); return true
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -218,7 +219,6 @@ final class PetView: NSView {
                 NSColor.systemGray.setFill()
                 NSBezierPath(roundedRect: NSRect(x: 65, y: 50, width: 60, height: 60), xRadius: 20, yRadius: 20).fill()
             }
-            drawBubble()
             return
         }
         let moving = !reducedMotion && mood != .sleeping && animation == nil
@@ -244,17 +244,5 @@ final class PetView: NSView {
         if mood == .sleeping {
             ("z Z" as NSString).draw(at: NSPoint(x: 140, y: 136), withAttributes: [.font: NSFont.systemFont(ofSize: 15, weight: .semibold), .foregroundColor: accent])
         }
-        drawBubble()
-    }
-    private func drawBubble() {
-        (reminderText == nil ? NSColor.windowBackgroundColor : NSColor.systemPurple.withAlphaComponent(0.15)).setFill()
-        NSBezierPath(roundedRect: bubble, xRadius: 15, yRadius: 15).fill()
-        let style = NSMutableParagraphStyle(); style.alignment = .center
-        let message = reminderText ?? taskRingText ?? (mood == .idle ? (playback?.activeActionTitle ?? activeAction?.title ?? mood.message) : mood.message)
-        (message as NSString).draw(in: NSRect(x: 15, y: 182, width: 160, height: 18), withAttributes: [
-            .font: NSFont.systemFont(ofSize: 11, weight: .medium),
-            .foregroundColor: NSColor.labelColor,
-            .paragraphStyle: style,
-        ])
     }
 }

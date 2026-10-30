@@ -1,10 +1,10 @@
 # 课间 · 华工学生助手
 
-本轮开发位于 **`codex/demo2.5-app-ui-naiwa`**：独立App新界面、Chrome/Edge学校导入与NaiWa角色替换。[总实现计划](docs/superpowers/plans/2026-10-30-app-ui-implementation.md) · [开发进度追踪表](docs/roadmap/Demo2.5-开发进度追踪表.md) · [实施材料](docs/materials/demo2.5/README.md)。当前源码已实现Demo2.5，已完成2.5.0本地构建归档（工作区`Demo2.5/`）；下述Demo2.4.9为先前基线。实际验收状态见追踪表。
+当前开发分支为 **`codex/demo2.5.1-ui-refinement`**，按已批准的[完整窗口与桌宠参考](docs/design/ui-redesign-v2/README.md)实施。[修改计划](docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md) · [开发进度](docs/roadmap/Demo2.5-开发进度追踪表.md) · [本版说明](docs/releases/Demo2.5.1.md) · [当前验证](docs/validation/demo2.5.1/README.md)。2.5.1正在最终原生验收与打包，发布是否成功以归档manifest为准；已有2.5.0归档保留。
 
-当前界面为独立App：**今日、日程、任务、助手**，设置分五组。目标与复盘位于任务，规划与课程工具位于日程，草稿与建议集中在待确认。日常不打开浏览器；学校课表导入指定Chrome（默认）或Edge（可记忆）。NaiWa角色素材按固定提交接入，保持原时序与透明点击。[新版使用说明](campus-pet/README.md) · [Demo2.5说明](docs/releases/Demo2.5.md) · [本轮验证](docs/validation/demo2.5/README.md)。
+日常操作仅在独立App：默认完整窗口，左侧导航固定，内容独立滚动；窄窗口保持左侧图标栏。今日、日程、任务、助手共用柔和蓝灰外观，设置位于底部。课表导入默认指定Chrome或已保存的Edge，图片/PDF和文字在下方展开；只有明确点击学校导入按钮才会打开外部浏览器。
 
-用户反馈后的[新视觉参考](docs/design/ui-redesign-v2/README.md)与[修改计划](docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md)已单独记录：恢复最初完整窗口、固定左栏、柔和蓝灰配色、浏览器优先导入，以及无顶部条/单击展开方形待办。当前为设计审阅，正式App仍是2.5.0，未宣称新视觉已经实现。
+桌宠默认只显示NaiWa角色；单击展开一个328×360待办窗口，列表与详情在同一窗口切换，勾选明确完成整个任务；不再显示顶部文字条或任务环。审批、日程提醒在面板内的“待确认”可达。原任务/步骤/计时/执行反馈/校对/冲突与确认流程保留；任务详情中的“编辑与执行”展开完整工具。
 
 以下保留既有功能和协作历史资料；新版界面入口以以上说明为准。
 
@@ -28,12 +28,12 @@
 
 ## 双击打开
 
-- 当前版本入口：[Demo2.4.9 App](../Demo2.4.9/课间桌宠.app)、[应用 ZIP](../Demo2.4.9/Demo2.4.9-Mac-AppleSilicon.zip)、[源码 ZIP](../Demo2.4.9/Demo2.4.9-源码.zip)，[本版说明](docs/releases/Demo2.4.9.md)。归档由发布脚本验证成功后生成；旧 Demo2.4.7 与已有归档保留。
-- `campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台；浏览器可以同时访问 `http://127.0.0.1:5173/` 使用 Web UI，无需再启动另一个助手。
+- 新版入口将在发布门禁通过后生成于 `../Demo2.5.1/`；已有 `../Demo2.5/` 与历史归档保留。
+- `campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台，日常界面在App内完成。
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。
-- 点击“导入华工课表”立即显示分步向导，含首次扩展安装、打开目录、检测、本人进入课表、校对与保存。首次仍需用户在Chrome/Edge安装扩展一次。
-- GUI的“停止助手”停止后台服务；关闭网页后服务仍运行。重复启动复用已有服务。
+- 日程中点击“导入课表”，默认显示学校导入；扩展安装指引在底部展开。首次仍需用户在Chrome/Edge安装扩展一次。
+- 桌宠右键“关闭与退出”提供仅退出桌宠或停止后台并退出；关闭App窗口后服务仍运行。重复启动复用已有服务。
 
 详细步骤、资料位置、Windows PowerShell/macOS构建命令、扩展安装和备份见 [桌面使用说明](docs/desktop.md)。当前已实际构建并验证macOS arm64包，无需终端Python/Node运行环境；Windows/Intel Mac尚未原生验收，没有开发者签名、公证或公开发布。
 

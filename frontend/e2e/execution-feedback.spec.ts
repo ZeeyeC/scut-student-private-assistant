@@ -64,7 +64,7 @@ test("60 planned, 25 actual and unfinished survive refresh; correction retains h
   const history = await (await page.request.get(`/api/tasks/${tid}/executions`)).json();
   expect(history.map((r: any) => r.data.actual_minutes).sort()).toEqual([20, 25]);
   await region.screenshot({ path: fileURLToPath(new URL("../../docs/validation/demo2.5.1/e2e/execution/corrected20.png", import.meta.url)) });
-  await workspace(page,'tasks');await page.getByRole('button',{name:/执行反馈合成练习/}).click();
+  await workspace(page,'tasks');await page.getByRole('button',{name:/执行反馈合成练习/}).click();await page.getByText('编辑与执行',{exact:true}).click();
   await expect(page.getByRole("region", { name: "步骤执行反馈", exact: true })).toContainText("已记录实际：20 分钟");
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBeTruthy();
@@ -136,7 +136,7 @@ test("step detail can bind manual feedback to an existing estimated block", asyn
     if(!r.ok) throw new Error(await r.text());
   },bid);
   await page.reload();await workspace(page,'records');
-  await workspace(page,'tasks');await page.getByRole('button',{name:/执行反馈合成练习/}).click();
+  await workspace(page,'tasks');await page.getByRole('button',{name:/执行反馈合成练习/}).click();await page.getByText('编辑与执行',{exact:true}).click();
   const region=page.getByRole("region",{name:"步骤执行反馈",exact:true});
   await region.getByLabel("对应的学习安排").selectOption(bid);
   await region.getByLabel("实际分钟",{exact:true}).fill("25");

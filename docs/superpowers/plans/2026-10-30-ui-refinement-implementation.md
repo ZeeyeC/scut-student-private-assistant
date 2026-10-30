@@ -26,14 +26,14 @@
 | 编号 | 用户意见 | 设计落实 / 实施任务 | 当前状态 |
 | --- | --- | --- | --- |
 | F01 | 第二种更好，但只在点击桌宠时出现 | 单个列表窗口；默认收起；Task4/5 | 已写入新参考，待用户继续反馈 |
-| F02 | 最后效果严格与设计一样 | 固定参数、同数据截图、差异门槛、禁止擅自替换基准；Task1/2/6 | 已写入规格及验收 |
+| F02 | 最后效果严格与设计一样 | 固定参数、同数据截图、差异门槛、禁止擅自替换基准；Task1/2/6 | 六页/默认导入均通过1%像素及2点几何门槛；桌宠待最终对照 |
 | F03 | 当前结果与最初设计差别大，复刻完整窗口 | 使用v1左栏/工作台比例，恢复完整App默认尺寸、移除额外切换按钮行；Task1/2 | 新完整窗口已出参考 |
-| F04 | 导航不能跟其他部分上下滑动 | 根不滚，内容区独立滚动，宽窄均为左栏；Task1 | 原型滚动检查通过；产品未改 |
+| F04 | 导航不能跟其他部分上下滑动 | 根不滚，内容区独立滚动，宽窄均为左栏；Task1 | 正式UI跨7种宽度滚动检查通过 |
 | F05 | 页面与桌宠均要视觉平衡 | 固定左右栏比例、对齐/留白、任务窗与角色光学间距；Task2/4 | 已写入参考及几何 |
 | F06 | 色彩过渡生硬 | 接近的蓝灰色面、浅线、低饱和主色、无厚重背景块；Task1/2/4 | 新参数表已记录 |
 | F07 | 浏览器导入默认，下面另两种方法 | 默认学校卡片，下方图片/PDF、文字折叠；Task3 | 新参考已演示 |
 | F08 | 去掉桌宠上面的条，单击弹出方一点窗口 | draw/hitTest一起去条，列表/详情统一一个328×360面板；Task4/5 | 新参考已演示 |
-| F09 | 今日安排中的竖线与课程标题重叠，实施时修复 | 时间、竖线、文字分列；竖线宽2点，与标题及次行文字净距至少12点；Task0/2 | 参考已RED→GREEN，净距12点；正式UI待Task2实现 |
+| F09 | 今日安排中的竖线与课程标题重叠，实施时修复 | 时间、竖线、文字分列；竖线宽2点，与标题及次行文字净距至少12点；Task0/2 | 参考已RED→GREEN，净距12点；正式UI已通过长标题、7种宽度及125%/200%文字检查 |
 
 ## Review Focus
 
@@ -106,12 +106,12 @@
 
 **Interfaces:** `PetTodoLayout.frame(near characterRect: NSRect, within visibleFrame: NSRect, preferredSide: Side) -> NSRect`返回328×360或可用屏裁限后的框，按左右/上下候选选择、内缩12、视觉间距32，不改角色位置。`PetTodoPanel: NSPanel`提供`render(_ state: PetTodoPanelState)`和关闭/选中/完成/全部任务回调；状态为loading、list、detail、error，列表和详情共用同一窗口。新增测试文件注册进现有runner，不增加第二个@main。
 
-- [ ] 写`pet_todo_geometry_is_visible_without_covering_character`：四角、负坐标、420×560原图的透明边、0.75/1/1.5倍角色、空间不足、屏幕切换，框在可用区域且不盖可见角色；多个候选可用时位置稳定。
-- [ ] 写`pet_has_no_top_strip_and_old_area_clicks_through`：7业务状态/提醒/动作均无文字条，旧条仅透明像素区域`isInteractive==false`，角色实际不透明像素仍命中；拖拽4点阈值不变。
-- [ ] Run `backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，确认RED；随后实现原生布局/结构化视图和与JSON一致的外观，移除`drawBubble`及其旧命中区域，而非仅隐藏文字。
-- [ ] 使用一个非激活NSPanel，65头部/49底部/58任务行/18边距/12圆角；列表正文滚动，加载/空态/失败在正文，取消独立圆球窗和旧奶黄文本窗呈现。保持现有透明PNG、状态机、动作、缓存与署名。
-- [ ] 写实际App烟测：单击角色开/关，默认不显示，Esc/外点关闭，内部滚动/勾选不误关，拖动只移动并收面板，右键仍菜单；隐藏/退出清理监听器和面板。原生烟测必须检查实际NSPanel，不只测坐标算法。
-- [ ] 同测试GREEN，实际App固定源帧截图与pet-idle/pet-todos/pet-detail对照；分别记录真实单屏与模拟多屏结果后提交。
+- [x] 写`pet_todo_geometry_is_visible_without_covering_character`：四角、负坐标、420×560原图的透明边、0.75/1/1.5倍角色、空间不足、屏幕切换，框在可用区域且不盖可见角色；多个候选可用时位置稳定。
+- [x] 写`pet_has_no_top_strip_and_old_area_clicks_through`：7业务状态/提醒/动作均无文字条，旧条仅透明像素区域`isInteractive==false`，角色实际不透明像素仍命中；拖拽4点阈值不变。
+- [x] Run `backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，确认RED；随后实现原生布局/结构化视图和与JSON一致的外观，移除`drawBubble`及其旧命中区域，而非仅隐藏文字。
+- [x] 使用一个非激活NSPanel，65头部/49底部/58任务行/18边距/12圆角；列表正文滚动，加载/空态/失败在正文，取消独立圆球窗和旧奶黄文本窗呈现。保持现有透明PNG、状态机、动作、缓存与署名。
+- [x] 写实际App烟测：单击角色开/关，默认不显示，Esc/外点关闭，内部滚动/勾选不误关，拖动只移动并收面板，右键仍菜单；隐藏/退出清理监听器和面板。原生烟测必须检查实际NSPanel，不只测坐标算法。
+- [x] 同测试GREEN，实际App固定源帧截图与pet-idle/pet-todos/pet-detail对照；分别记录真实单屏与模拟多屏结果后提交。
 
 ### Task 5：真实待办、完成、详情与精确导航（N5b）
 
@@ -119,12 +119,12 @@
 
 **Interfaces:** 数据筛选继续用`PetScheduledTask.today(tasks:blocks:timezone:now:)`；新控制器只管理选中ID、请求代次、pending完成和面板展开。新增`AppDelegate.showTaskInAssistant(id: String)`发送序列化的`{page:'tasks',taskId:id}`；Bridge `navigate(target)`接受旧字符串或严格验证后的任务目标，WK尚未就绪时保存最近一个有效目标，ready后只投递该目标。详情和完成继续使用现有真实接口。
 
-- [ ] 写失败用例`todo_stale_results_never_replace_selection`：A→B快速切换、关闭后旧详情返回、展开后刷新、任务被删除；窗口不重弹、B不显示A、404给刷新入口。
-- [ ] 写`todo_completion_is_revision_checked_and_single_flight`：连击只请求一次、请求中禁用、成功保留划线并减数量、409/离线回滚且可重试、重新展开以服务端为准；保留幂等键与原revision，不把前端示例状态代码搬进正式程序。
-- [ ] 写`pet_task_navigation_keeps_id_before_web_ready`及桥接测试：旧字符串兼容、合法taskId精确打开、恶意/空ID拒绝、加载前目标在ready后送达、跨页重复选择仍定位。Run `npm --prefix frontend test -- navigation pet-bridge`及原生runner，确认RED。
-- [ ] 迁移原查询/完成/详情控制到同一面板；旧代次返回丢弃。勾选显式完成整个任务、右键不再完成；无完成重开接口时不显示虚假“重新打开”。在App中查看要定位所选任务而非仅进任务列表。
-- [ ] 将无顶部条后的提醒/审批入口接到面板内的按需待确认操作；原系统提醒不丢，提醒不自动展开面板、不重建顶部条。测试外部点击监视器将pet和todoPanel视为内部，VoiceOver按压与单击语义相同。
-- [ ] 同测试GREEN；`backend/.venv/bin/python campus-pet/verify.py --app <本轮新构建App>`实际验证数据流、透明点击、请求错误恢复及精确跳转，记录后提交。
+- [x] 写失败用例`todo_stale_results_never_replace_selection`：A→B快速切换、关闭后旧详情返回、展开后刷新、任务被删除；窗口不重弹、B不显示A、404给刷新入口。
+- [x] 写`todo_completion_is_revision_checked_and_single_flight`：连击只请求一次、请求中禁用、成功保留划线并减数量、409/离线回滚且可重试、重新展开以服务端为准；保留幂等键与原revision，不把前端示例状态代码搬进正式程序。
+- [x] 写`pet_task_navigation_keeps_id_before_web_ready`及桥接测试：旧字符串兼容、合法taskId精确打开、恶意/空ID拒绝、加载前目标在ready后送达、跨页重复选择仍定位。Run `npm --prefix frontend test -- navigation pet-bridge`及原生runner，确认RED。
+- [x] 迁移原查询/完成/详情控制到同一面板；旧代次返回丢弃。勾选显式完成整个任务、右键不再完成；无完成重开接口时不显示虚假“重新打开”。在App中查看要定位所选任务而非仅进任务列表。
+- [x] 将无顶部条后的提醒/审批入口接到面板内的按需待确认操作；原系统提醒不丢，提醒不自动展开面板、不重建顶部条。测试外部点击监视器将pet和todoPanel视为内部，VoiceOver按压与单击语义相同。
+- [x] 同测试GREEN；`backend/.venv/bin/python campus-pet/verify.py --app <本轮新构建App>`实际验证数据流、透明点击、请求错误恢复及精确跳转，记录后提交。
 
 ### Task 6：最终视觉对照、全量回归与2.5.1发布（V2/R2）
 

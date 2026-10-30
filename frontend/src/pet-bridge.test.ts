@@ -7,6 +7,7 @@ const flush = async () => { for (let i = 0; i < 12; i++) await Promise.resolve()
 
 function bridge() {
   const states: string[] = [], events: { type: string; detail?: unknown }[] = [];
+  let workspaceReady = false;
   let reviewVisible = true, response = { state: "approval", review_thread_id: "older-thread" }, failed = false;
   let changed = () => {};
   const timers = new Map<number, { callback: () => unknown; delay: number }>();
@@ -21,7 +22,7 @@ function bridge() {
     head: { append: () => {} }, body: { dataset: {} }, defaultView: window,
     createElement: () => ({}), addEventListener: () => {},
     querySelectorAll: () => [{ textContent: "助手", click: () => {} }],
-    querySelector: (selector: string) => selector === ".review-panel" && reviewVisible ? {} : null,
+    querySelector: (selector: string) => selector === ".workspace-shell [data-page-id]" ? (workspaceReady ? {} : null) : selector === ".review-panel" && reviewVisible ? {} : null,
   };
   runInNewContext(script, {
     window, document, AbortController,
@@ -35,6 +36,7 @@ function bridge() {
   });
   return {
     states, events, window,
+    ready:()=>{workspaceReady=true;changed();},
     removeChat: () => { reviewVisible = false; changed(); },
     setState: (state: string) => { response = { ...response, state }; },
     offline: (value: boolean) => { failed = value; },
@@ -66,4 +68,16 @@ describe("native pet bridge", () => {
     app.offline(false); app.setState("thinking"); await app.poll();
     expect(app.states.at(-1)).toBe("thinking");
   });
+  it("queues the latest exact task before React is ready and rejects unsafe targets",async()=>{
+    const app=bridge();await flush();
+    expect(app.window.__campusPet.navigate({page:'tasks',taskId:'task-A'})).toBe(false);
+    app.window.__campusPet.navigate({page:'tasks',taskId:'task-B'});
+    for(const taskId of ['', '<script>', '../task', 'x\n', 'a'.repeat(201)])expect(app.window.__campusPet.navigate({page:'tasks',taskId})).toBe(false);
+    app.ready();await flush();
+    expect(app.events.filter(e=>e.type==='campus-navigate').map(e=>e.detail)).toEqual([{page:'tasks',taskId:'task-B'}]);
+    expect(app.window.__campusPet.navigate('日程')).toBe(true);
+    expect(app.window.__campusPet.navigate({page:'tasks',taskId:'task-B'})).toBe(true);
+    expect(app.events.at(-1)?.detail).toEqual({page:'tasks',taskId:'task-B'});
+  });
+
 });

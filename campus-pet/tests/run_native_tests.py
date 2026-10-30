@@ -29,6 +29,7 @@ with tempfile.TemporaryDirectory(prefix="campus-pet-native-tests-") as temporary
             str(root / "tests/NativeTests.swift"),
             str(root / "tests/BrowserLaunchPolicyTests.swift"),
             str(root / "tests/WorkspaceWindowTests.swift"),
+            str(root / "tests/PetTodoPanelTests.swift"),
             str(root / "tests/PetAssetTests.swift"),
             "-o",
             str(output / "checks"),

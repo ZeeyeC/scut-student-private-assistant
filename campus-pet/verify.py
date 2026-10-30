@@ -46,7 +46,7 @@ with tempfile.TemporaryDirectory(prefix="campus-pet-smoke-") as temporary:
             else:
                 raise RuntimeError("Test server startup timed out")
             native = subprocess.Popen([str(app), "--external-service", "--port", "5189", "--data-dir", str(data), "--smoke-test", str(output)], stdout=native_log, stderr=subprocess.STDOUT)
-            native.wait(timeout=100)
+            native.wait(timeout=180)
             result = json.loads(result_path.read_text())
             print(json.dumps(result, ensure_ascii=False, indent=2))
             if not result["passed"]:

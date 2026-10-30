@@ -46,32 +46,3 @@ struct PetScheduledTask {
         (data["starts_at"] as? String).flatMap(ScheduleReminder.parseDate) ?? .distantFuture
     }
 }
-
-enum PetTaskRingLayout {
-    static let capacity = 6
-    static let diameter: CGFloat = 54
-
-    static func frames(near pet: NSRect, within screen: NSRect) -> [NSRect] {
-        // Pick a visible arc of the same orbit near screen edges; never move the pet.
-        let candidates = (0..<16).compactMap { index -> NSRect? in
-            let angle = (90 + Double(index) * 22.5) * .pi / 180
-            let center = NSPoint(x: pet.midX + cos(angle) * 186, y: pet.midY + sin(angle) * 186)
-            let rect = NSRect(x: center.x - diameter / 2, y: center.y - diameter / 2, width: diameter, height: diameter)
-            guard screen.insetBy(dx: 6, dy: 6).contains(rect), !pet.insetBy(dx: -6, dy: -6).intersects(rect) else { return nil }
-            return rect
-        }
-        let count = min(capacity, candidates.count)
-        return (0..<count).map { candidates[$0 * candidates.count / count] }
-    }
-
-    static func slots(_ current: [String?], tasks: [String], capacity: Int) -> [String?] {
-        var used = Set<String>()
-        var result = (0..<capacity).map { index -> String? in
-            guard index < current.count, let id = current[index], tasks.contains(id), used.insert(id).inserted else { return nil }
-            return id
-        }
-        var pending = tasks.filter { !used.contains($0) }.makeIterator()
-        for index in result.indices where result[index] == nil { result[index] = pending.next() }
-        return result
-    }
-}

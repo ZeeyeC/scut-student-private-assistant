@@ -25,3 +25,13 @@ enum WorkspaceAppearance {
     static let selected = color(0xeaeefa, 0x303b59)
     static let panelSize = NSSize(width: 328, height: 360)
 }
+
+// Typed targets are serialized as data, never interpolated as JavaScript source.
+enum WorkspaceNavigation {
+    static func taskTarget(id:String)->[String:String]? {
+        let allowed=CharacterSet(charactersIn:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._:-")
+        let start=CharacterSet.alphanumerics
+        guard !id.isEmpty,id.utf8.count<=200,let first=id.unicodeScalars.first,start.contains(first),id.unicodeScalars.allSatisfy({allowed.contains($0)}) else{return nil}
+        return ["page":"tasks","taskId":id]
+    }
+}

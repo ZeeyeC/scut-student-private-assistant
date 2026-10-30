@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 from PIL import Image, ImageChops
 
@@ -27,6 +28,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--actual", type=Path, required=True)
+    parser.add_argument("--native", type=Path, help="Require fresh actual native pet captures too")
     args = parser.parse_args()
     project = args.reference.resolve().parents[2]
     manifest = json.loads((args.reference / "reference-manifest.json").read_text())
@@ -43,7 +45,13 @@ def main():
     geometry_path = args.actual / "geometry.json"
     if geometry_path.exists():
         geometry = json.loads(geometry_path.read_text())
-        result["geometry"] = {"passed": all(abs(g["x"]-214)<=2 and abs(g["y"]-31)<=2 and abs(g["width"]-1028)<=2 and abs(g["height"]-43)<=2 for g in geometry.values()), "actual": geometry}
+        result["geometry"] = {"passed": isinstance(geometry,dict) and set(geometry)=={"today","calendar","tasks","assistant","settings"} and all(isinstance(g,dict) and all(isinstance(g.get(k),(int,float)) and math.isfinite(g[k]) and abs(g[k]-v)<=2 for k,v in {"x":214,"y":31,"width":1028,"height":43}.items()) for g in geometry.values()), "actual": geometry}
+    else:
+        result["geometry"]={"passed":False,"error":"missing geometry evidence"}
+    if args.native:
+        for name in ("pet-idle","pet-todos","pet-detail"):
+            actual=args.native/(name+".png")
+            result[name]=compare(args.reference/"screens"/(name+".png"),actual) if actual.exists() else {"passed":False,"error":"missing native capture"}
     passed = all(r["passed"] for r in result.values())
     report = {"passed": passed, "kind": "same-fixture-design-comparison", "results": result}
     (args.actual / "comparison.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")

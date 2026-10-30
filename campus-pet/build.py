@@ -66,6 +66,8 @@ if destination.exists():
     shutil.rmtree(destination)
 shutil.copytree(service, destination, symlinks=True)
 shutil.copy2(root / "Resources/Bridge.js", resources / "Bridge.js")
+shutil.copy2(root / "Resources/PetTodo.html", resources / "PetTodo.html")
+shutil.copy2(root / "Resources/Lucide-LICENSE", resources / "Lucide-LICENSE")
 for legacy in [resources / "naiwa.png", resources / "Animations", resources / "NaiWa"]:
     if legacy.is_dir(): shutil.rmtree(legacy)
     elif legacy.exists(): legacy.unlink()

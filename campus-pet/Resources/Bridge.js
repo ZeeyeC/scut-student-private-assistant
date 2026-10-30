@@ -38,8 +38,11 @@
   `;
   document.head.append(style);
   document.body.dataset.petLayout = window.innerWidth < 640 ? 'compact' : 'full';
-  const navigate = (page) => {
-    if (!pages.includes(page)) return false;
+  const navigate = (target) => {
+    let page;
+    if(typeof target === 'string' && pages.includes(target))page=target;
+    else if(target && typeof target === 'object' && !Array.isArray(target) && target.page==='tasks' && typeof target.taskId==='string' && target.taskId.length>0 && target.taskId.length<=200 && !/[^A-Za-z0-9._:-]/.test(target.taskId) && /^[A-Za-z0-9]/.test(target.taskId) && Object.keys(target).every(k=>['page','taskId'].includes(k)))page={page:'tasks',taskId:target.taskId};
+    else return false;
     desiredPage = page;
     if (!document.querySelector('.workspace-shell [data-page-id]')) return false;
     window.dispatchEvent(new CustomEvent('campus-navigate', {detail:page}));

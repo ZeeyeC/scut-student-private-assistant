@@ -34,7 +34,7 @@ test('shared calendar filters fixed courses; smart schedule includes facts and n
   await expect(page.locator('.fc-event').filter({hasText:'固定高数课'})).toHaveCount(1);
   await expect(page.locator('.fc-event').filter({hasText:'单独固定事项'})).toHaveCount(0);
   await expect(page.getByRole('button',{name:'智能安排未来 7 天'})).toBeHidden();
-  await page.getByRole('button',{name:'导入课表',exact:true}).click();await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toBeVisible();await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'导入课表',exact:true}).click();await page.getByRole('button',{name:'文字导入',exact:true}).click();await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toBeVisible();await page.keyboard.press('Escape');
   await page.screenshot({path:'/private/tmp/demo21-fixed-timetable.png',fullPage:true});
   await workspace(page,'planning');
   await expect(page.getByRole('dialog',{name:'安排学习',exact:true})).toBeVisible();

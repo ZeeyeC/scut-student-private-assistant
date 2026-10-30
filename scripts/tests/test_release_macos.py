@@ -18,6 +18,23 @@ SPEC.loader.exec_module(release)
 
 
 class ReleaseSafetyTests(unittest.TestCase):
+    def test_release_requires_accepted_visual_comparison_after_actual_native_capture(self):
+        with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
+            project=Path(temp);stage=project/"stage";stage.mkdir()
+            verification=project/"campus-pet/build/verification";verification.mkdir(parents=True)
+            (verification/"result.json").write_text('{"passed":true}')
+            calls=[]
+            def external(command,**kwargs):
+                calls.append(command)
+                return subprocess.CompletedProcess(command,0)
+            with patch.object(release.subprocess,"run",side_effect=external):
+                release.run_checks(project,stage,"2.5.1")
+            visual=[c for c in calls if "scripts/verify-ui-reference.py" in c]
+            self.assertEqual(len(visual),1,"Visual fidelity is a required release gate")
+            self.assertIn("--native",visual[0]);self.assertNotIn("--update-reference",visual[0])
+            native=next(c for c in calls if "campus-pet/verify.py" in c)
+            self.assertGreater(calls.index(visual[0]),calls.index(native))
+
     def test_extension_release_uses_observed_school_adapter_and_local_origin(self):
         with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
             project = Path(temp)

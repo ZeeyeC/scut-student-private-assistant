@@ -7,29 +7,8 @@ struct NativeTests {
             _ = NSApplication.shared
             runBrowserLaunchPolicyTests()
             runWorkspaceWindowTests()
+            runPetTodoPanelTests()
             runPetAssetTests()
-            for screen in [NSRect(x: 0, y: 0, width: 1200, height: 800), NSRect(x: -1200, y: 200, width: 1200, height: 800)] {
-                for x in [screen.minX, screen.midX - 95, screen.maxX - 190] {
-                    for y in [screen.minY, screen.midY - 105, screen.maxY - 210] {
-                        let pet = NSRect(x: x, y: y, width: 190, height: 210)
-                        let bubbles = PetTaskRingLayout.frames(near: pet, within: screen)
-                        precondition(bubbles.count == 6, "Six bubbles must fit even at display corners")
-                        for (index, bubble) in bubbles.enumerated() {
-                            precondition(screen.contains(bubble), "Bubbles must stay on their display")
-                            precondition(!pet.intersects(bubble), "Leave the pet clickable")
-                            for other in bubbles.dropFirst(index + 1) { precondition(!bubble.intersects(other)) }
-                        }
-                    }
-                }
-            }
-            let slots = PetTaskRingLayout.slots([], tasks: (1...8).map(String.init), capacity: 6)
-            precondition(slots == (1...6).map { String($0) })
-            let filled = PetTaskRingLayout.slots(slots, tasks: ["1","2","4","5","6","7","8"], capacity: 6)
-            precondition(filled == ["1","2","7","4","5","6"], "Only the completed slot should change")
-            precondition(PetScheduledTask.abbreviation("完成高数作业") == "高数")
-            precondition(PetScheduledTask.abbreviation("阅读论文") == "论文")
-            precondition(PetScheduledTask.abbreviation("题") == "题")
-            precondition(PetScheduledTask.abbreviation(" ! ") == "待办")
             let date = ScheduleReminder.parseDate("2026-10-18T00:30:00+08:00")!
             func task(_ id: String, _ status: String = "open") -> [String: Any] {
                 ["id":id, "revision":1, "data":["title":id,"status":status,"due_at":"2026-10-18T18:00:00+08:00"]]
@@ -53,9 +32,6 @@ struct NativeTests {
             precondition(today[1].blocks.count == 2, "Multiple blocks must share one bubble")
             let tomorrow = PetScheduledTask.today(tasks: tasks, blocks: blocks, timezone: "Asia/Shanghai", now: date.addingTimeInterval(86400))
             precondition(tomorrow.map(\.id) == ["tomorrow"], "Rollover must not retain yesterday's tasks")
-            let button = PetTaskBubbleButton(frame: NSRect(x: 0, y: 0, width: 54, height: 54))
-            precondition(button.containsCircle(NSPoint(x: 27, y: 27)))
-            precondition(!button.containsCircle(NSPoint(x: 1, y: 1)), "Transparent circle corners must pass through")
             let app = AppDelegate()
             app.pet.mood = .approval
             app.toggleSleep()

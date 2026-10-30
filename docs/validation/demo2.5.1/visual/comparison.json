@@ -70,8 +70,8 @@
     },
     "import-default": {
       "passed": true,
-      "different_pixels": 8561,
-      "difference_ratio": 0.00855278932225064,
+      "different_pixels": 8560,
+      "difference_ratio": 0.008551790281329923,
       "threshold": 0.12,
       "maximum_difference_ratio": 0.01,
       "size": [
@@ -113,6 +113,39 @@
           "height": 43
         }
       }
+    },
+    "pet-idle": {
+      "passed": true,
+      "different_pixels": 1457,
+      "difference_ratio": 0.002421875,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        470
+      ]
+    },
+    "pet-todos": {
+      "passed": true,
+      "different_pixels": 5478,
+      "difference_ratio": 0.009105718085106383,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        470
+      ]
+    },
+    "pet-detail": {
+      "passed": true,
+      "different_pixels": 5601,
+      "difference_ratio": 0.009310172872340426,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        470
+      ]
     }
   }
 }
