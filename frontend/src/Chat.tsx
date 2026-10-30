@@ -55,7 +55,7 @@ const labels: Record<string, string> = {
   set_task_status: "更新作业状态",
   set_task_deadline: "更新截止时间",
 };
-export function ChatPage({ embedded = false, courseEntry = false, focusThreadId, focusRequest = 0 }: { embedded?: boolean; courseEntry?: boolean; focusThreadId?: string; focusRequest?: number }) {
+export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=false, focusThreadId, focusRequest = 0 }: { embedded?: boolean; courseEntry?: boolean; reviewOutside?:boolean;focusThreadId?: string; focusRequest?: number }) {
   const q = useQueryClient(),
     [threadId, setThreadId] = useState(focusThreadId ?? ""),
     [runId, setRunId] = useState(""),
@@ -210,7 +210,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
       }
     },
   });
-  const pendingDrafts = visibleDrafts(drafts.data).filter(d=>!d.data.source?.constraint_intent_id).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
+  const pendingDrafts = visibleDrafts(drafts.data).filter(d=>!reviewOutside&&!d.data.source?.constraint_intent_id).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
   const hasIntents = constraintIntents.data?.some(r=>["clarifying","ready_for_review"].includes(r.data.status));
   useEffect(()=>{if(hasIntents)setShowConstraints(true);},[hasIntents]);
   const hasReview = !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
@@ -273,7 +273,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
               placeholder="说说你想安排什么"
               aria-label="给助手的消息"
             />
-            <div className="composer-bottom"><button type="button" className="workspace-text-button" onClick={()=>window.dispatchEvent(new Event('campus-start-import'))}><Paperclip size={16}/>附件</button><ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId}><ArrowUp size={16}/>发送</ComposerPrimitive.Send></div>
+            <div className="composer-bottom"><button type="button" className="workspace-text-button" onClick={()=>window.dispatchEvent(new CustomEvent('campus-start-import',{detail:{method:'image'}}))}><Paperclip size={16}/>附件</button><ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId}><ArrowUp size={16}/>发送</ComposerPrimitive.Send></div>
           </ComposerPrimitive.Root>
         </ThreadPrimitive.Root>
       </AssistantRuntimeProvider>

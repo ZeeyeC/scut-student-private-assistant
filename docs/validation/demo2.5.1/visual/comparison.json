@@ -59,8 +59,19 @@
     },
     "task-detail": {
       "passed": true,
-      "different_pixels": 7103,
-      "difference_ratio": 0.0070961876598465475,
+      "different_pixels": 7059,
+      "difference_ratio": 0.007052229859335038,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "import-default": {
+      "passed": true,
+      "different_pixels": 8561,
+      "difference_ratio": 0.00855278932225064,
       "threshold": 0.12,
       "maximum_difference_ratio": 0.01,
       "size": [

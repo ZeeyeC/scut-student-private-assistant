@@ -13,6 +13,11 @@ const items=[
 ] as const;
 export async function visualFixture(page:Page,{taskCount=9,longTitle=false}:{taskCount?:number;longTitle?:boolean}={}){
  let visibleTaskCount=taskCount;
+ await page.addInitScript(()=>{(window as any).__campusNative={request:async(command:string)=>{
+  if(command==='get-browser')return {browser:'chrome',installed:true};
+  if(command==='get-pet-attribution')return {status:'unavailable',declarations:[]};
+  throw Error('Unexpected native mutation in read-only visual fixture');
+ }};});
  await page.clock.setFixedTime(new Date('2026-10-30T05:30:00Z'));
  const tasks=items.map(([id,title,course,due,minutes,time,requirements])=>resource(id,'task',{title:longTitle?'长标题和English混排 '.repeat(8):title,course_id:course,due_at:due,due_text:null,deadline_basis:null,submission_method:null,requirements:[requirements],priority:2,status:'open',remedy_due_at:null}));
  const courses=[...new Set(items.map(t=>t[2]))].map(name=>resource(name,'course',{name,teacher:null,location:'A1-201',campus:null,weekday:1,weeks_text:'1-16周',periods:[1,2]}));

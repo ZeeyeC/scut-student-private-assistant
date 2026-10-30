@@ -7,7 +7,7 @@ import { TodayPage } from "./Today";
 import { Settings } from "./Settings";
 import { LocalEntry } from "./LocalMode";
 import { stopBrowserImports } from "./BrowserImport";
-import {SchoolImportPanel} from "./SchoolImportPanel";
+import {TimetableImportHost} from "./TimetableImportPanel";
 import {ReminderLinkPanel} from "./ReminderLinkPanel";
 import { AfterClassCheckin } from "./AfterClass";
 import {TimerHeartbeat} from "./ExecutionTimer";
@@ -171,7 +171,7 @@ function Workspace({ local = false }: { local?: boolean }) {
         <AfterClassCheckin />
         <TimerHeartbeat />
         <ReviewInbox onOpenTask={id=>go({page:'tasks',taskId:id})}>
-        <SchoolImportPanel/>
+        <TimetableImportHost/>
         <ReminderLinkPanel/>
         <Suspense fallback={<p role="status">正在加载页面…</p>}>
           {page === "today" ? (

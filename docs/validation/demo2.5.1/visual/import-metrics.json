@@ -1,0 +1,110 @@
+[
+  [
+    "",
+    {
+      "x": 1,
+      "y": 0,
+      "w": 447,
+      "h": 76,
+      "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "margin": "0px",
+      "padding": "24px 25px 19px"
+    }
+  ],
+  [
+    "import-school-primary",
+    {
+      "x": 26,
+      "y": 101,
+      "w": 397,
+      "h": 181.34375,
+      "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "margin": "0px",
+      "padding": "20px"
+    }
+  ],
+  [
+    "import-school-heading",
+    {
+      "x": 47,
+      "y": 122,
+      "w": 355,
+      "h": 46.5625,
+      "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "margin": "0px 0px 17px",
+      "padding": "0px"
+    }
+  ],
+  [
+    "lucide lucide-globe",
+    {
+      "x": 47,
+      "y": 137.28125,
+      "w": 16,
+      "h": 16,
+      "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "margin": "0px",
+      "padding": "0px"
+    }
+  ],
+  [
+    "",
+    {
+      "x": 47,
+      "y": 185.5625,
+      "w": 355,
+      "h": 21.59375,
+      "font": "12px / 21.6px -apple-system-body, ui-sans-serif, -apple-system, system-ui, \"Segoe UI\", Helvetica, \"Apple Color Emoji\", Arial, sans-serif, \"Segoe UI Emoji\", \"Segoe UI Symbol\"",
+      "margin": "0px 0px 18px",
+      "padding": "0px"
+    }
+  ],
+  [
+    "import-other-heading",
+    {
+      "x": 26,
+      "y": 308.34375,
+      "w": 397,
+      "h": 21.765625,
+      "font": "500 14px / 21.7778px -apple-system-body, ui-sans-serif, -apple-system, system-ui, \"Segoe UI\", Helvetica, \"Apple Color Emoji\", Arial, sans-serif, \"Segoe UI Emoji\", \"Segoe UI Symbol\"",
+      "margin": "26px 0px 8px",
+      "padding": "0px"
+    }
+  ],
+  [
+    "timetable-import-method",
+    {
+      "x": 26,
+      "y": 338.109375,
+      "w": 397,
+      "h": 80.765625,
+      "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "margin": "0px",
+      "padding": "18px 0px"
+    }
+  ],
+  [
+    "timetable-import-method",
+    {
+      "x": 26,
+      "y": 418.875,
+      "w": 397,
+      "h": 80.765625,
+      "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "margin": "0px",
+      "padding": "18px 0px"
+    }
+  ],
+  [
+    "import-extension-guide",
+    {
+      "x": 26,
+      "y": 522.640625,
+      "w": 397,
+      "h": 21.59375,
+      "font": "12px / 21.6px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "margin": "23px 0px 0px",
+      "padding": "0px"
+    }
+  ]
+]

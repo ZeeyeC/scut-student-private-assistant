@@ -67,7 +67,7 @@ test('missing extension stays in the import flow and App cancellation revokes re
   await expect(external.getByRole('status')).toContainText('未检测到课表扩展',{timeout:10000});
   expect(context.pages()).toHaveLength(1);
   await page.locator('.import-progress').click();
-  const panel=page.getByRole('dialog',{name:'学校课表',exact:true});
+  const panel=page.getByRole('dialog',{name:'导入课表',exact:true});
   await expect(panel).toContainText('未检测到扩展',{timeout:10000});
   await panel.getByRole('button',{name:'取消导入',exact:true}).click();
   await expect.poll(async()=>(await(await page.request.get(`/api/browser-imports/${issued.session.id}`)).json()).data.status).toBe('cancelled');
@@ -97,8 +97,7 @@ test('App browser selection uses the native bridge and a double click starts onl
   await page.addScriptTag({content:readFileSync(new URL('../../campus-pet/Resources/Bridge.js',import.meta.url),'utf8')});
   await page.getByRole('button',{name:'日程',exact:true}).click();
   await page.getByRole('button',{name:'导入课表',exact:true}).click();
-  await page.getByRole('button',{name:'学校课表',exact:true}).click();
-  const panel=page.getByRole('dialog',{name:'学校课表',exact:true});
+  const panel=page.getByRole('dialog',{name:'导入课表',exact:true});
   await expect(panel.getByLabel('课表导入浏览器')).toHaveValue('chrome');
   await panel.getByLabel('课表导入浏览器').selectOption('edge');
   await expect(panel.getByLabel('课表导入浏览器')).toHaveValue('edge');

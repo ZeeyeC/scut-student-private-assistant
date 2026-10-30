@@ -36,8 +36,8 @@ def main():
         if hashlib.sha256((project / entry["path"]).read_bytes()).hexdigest() != entry["sha256"]:
             raise SystemExit("Reference changed without acceptance: " + entry["path"])
     result = {}
-    for page in ("today", "calendar", "tasks", "assistant", "settings", "task-detail"):
-        name = page + (".png" if page == "task-detail" else "-desktop.png")
+    for page in ("today", "calendar", "tasks", "assistant", "settings", "task-detail", "import-default"):
+        name = page + (".png" if page in ("task-detail", "import-default") else "-desktop.png")
         actual = args.actual / name
         result[page] = compare(args.reference / "screens" / name, actual) if actual.exists() else {"passed": False, "error": "missing actual capture"}
     geometry_path = args.actual / "geometry.json"

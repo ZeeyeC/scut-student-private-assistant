@@ -93,12 +93,12 @@
 
 **Interfaces:** `TimetableImportPanel({open,onClose}: {open:boolean;onClose:()=>void})`持有`method: 'school'|'image'|'text'`展示状态，默认school。学校流程复用现有`nativeImport`、`ImportBrowserSettings`和`campus-start-import`，将`SchoolImportPanel`中的流程内容提取为`SchoolImportContent`以嵌入同一面板；全局事件打开同一入口，避免新旧面板叠两层。校对仍使用`DraftReview`/识别校对，手工课程编辑原接口保留。
 
-- [ ] 写失败用例`browser_is_primary_without_side_effect`：初开学校卡片可见、图片/PDF和文字折叠；拦截native开页及识别POST并断言0次；只有点主按钮才一次打开。已有Edge偏好正确显示。
-- [ ] 写`secondary_methods_preserve_input_and_do_not_launch_browser`：展开文件/文字输入、切换/关闭重开仍保留；未同意识别不能POST；显式提交才创建原任务；两方式不唤浏览器；手工单门课程入口仍可达。
-- [ ] Run `npm --prefix frontend run test:e2e -- timetable-import-layout.spec.ts app-school-import.spec.ts`，确认新增断言RED。
-- [ ] 按默认导入截图实现主卡片+下方两行；只在展开方法内显示其限制/同意/错误/进度。扩展安装指引放底部折叠；完成后仍在App校对/冲突确认，不在关闭面板时擅自取消有效导入。
-- [ ] 缺浏览器/插件、5秒握手失败、取消/过期/重试、重复回传用现有链路回归；样式调整不能改变grant、owner、bindingGeneration与收据语义。真实学校本人往返仍单列待验收。
-- [ ] 同命令GREEN；默认与展开状态截图对照参考，更新进度后提交。
+- [x] 写失败用例`browser_is_primary_without_side_effect`：初开学校卡片可见、图片/PDF和文字折叠；拦截native开页及识别POST并断言0次；只有点主按钮才一次打开。已有Edge偏好正确显示。
+- [x] 写`secondary_methods_preserve_input_and_do_not_launch_browser`：展开文件/文字输入、切换/关闭重开仍保留；未同意识别不能POST；显式提交才创建原任务；两方式不唤浏览器；手工单门课程入口仍可达。
+- [x] Run `npm --prefix frontend run test:e2e -- timetable-import-layout.spec.ts app-school-import.spec.ts`，确认新增断言RED。
+- [x] 按默认导入截图实现主卡片+下方两行；只在展开方法内显示其限制/同意/错误/进度。扩展安装指引放底部折叠；完成后仍在App校对/冲突确认，不在关闭面板时擅自取消有效导入。
+- [x] 缺浏览器/插件、5秒握手失败、取消/过期/重试、重复回传用现有链路回归；样式调整不能改变grant、owner、bindingGeneration与收据语义。真实学校本人往返仍单列待验收。
+- [x] 同命令GREEN；默认与展开状态截图对照参考，更新进度后提交。
 
 ### Task 4：单个原生方形面板与无条角色（N5a）
 

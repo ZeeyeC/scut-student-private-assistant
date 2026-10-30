@@ -62,12 +62,12 @@ test("timetable embedded chat shows one text review and keeps it when collapsed"
   await enter(page);await workspace(page,'import');
   let invalidAssetRequests=0;
   page.on("request",r=>{if(r.url().includes("timetable-assets/undefined"))invalidAssetRequests++;});
-  await page.getByRole("button",{name:"用文字添加课表",exact:true}).click();
+  await page.getByRole("button",{name:"文字导入",exact:true}).click();
   await say(page,"添加文字课表：数学周一1、2节，周次待补。");
   const review=page.getByRole("region",{name:"文字课表校对",exact:true});
   await expect(review).toHaveCount(1);await expect(review).toBeVisible();
   expect(await review.evaluate(e=>e.scrollWidth<=e.clientWidth+1)).toBe(true);
-  await page.getByRole("button",{name:"收起课表对话",exact:true}).click();
+  await page.getByRole("button",{name:"文字导入",exact:true}).click();
   await expect(review).toHaveCount(1);await expect(review).toBeVisible();
   expect(invalidAssetRequests).toBe(0);
   expect(await (await page.request.get("/api/courses")).json()).toEqual([]);

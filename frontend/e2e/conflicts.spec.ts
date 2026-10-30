@@ -38,6 +38,7 @@ async function addDirection(page:Page){
 }
 async function manual(page:Page){
   await workspace(page,'import');
+  await page.getByRole('button',{name:'文字导入',exact:true}).click();
   await page.getByRole('button',{name:'手工添加课程',exact:true}).click();
   const form=page.locator('form').filter({has:page.getByRole('heading',{name:'添加一门课程',exact:true})});
   await form.getByLabel('课程名称').fill('大学城英语');

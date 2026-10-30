@@ -19,7 +19,7 @@ async function enter(page: Page) {
     const r=await fetch("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json","X-CSRF-Token":token,"Idempotency-Key":crypto.randomUUID()},body:JSON.stringify(s)});
     if (!r.ok) throw new Error(await r.text());
   });
-  await workspace(page,'import');
+  await workspace(page,'import');await page.getByRole('button',{name:'图片 / PDF',exact:true}).click();
 }
 
 async function selectFile(page: Page) {
@@ -88,7 +88,7 @@ test("lost upload response reuses the same private original; preview refreshes a
   await review.getByLabel("课程名称",{exact:true}).fill("数学修订");
   await expect(review.getByRole("button",{name:"校对完成，准备保存"})).toHaveCount(0);
   await expect(review.getByLabel("已校对本课程全部填写值；空缺教师、教室或校区按未知保留")).not.toBeChecked();
-  await page.reload(); await workspace(page,'import');
+  await page.reload(); await workspace(page,'import');await page.getByRole('button',{name:'图片 / PDF',exact:true}).click();
   await expect(page.getByRole("region",{name:"课表识别校对",exact:true})).toBeVisible();
   expect((await (await page.request.get("/api/timetable-jobs")).json()).length).toBe(1);
 });

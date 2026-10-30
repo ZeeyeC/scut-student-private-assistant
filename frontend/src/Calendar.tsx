@@ -17,7 +17,7 @@ import type { ScheduleEvent } from "./schedule";
 import { ScheduleShortcut } from "./ScheduleShortcut";
 import { courseSlot, type CourseSlot } from "./course-slot";
 import { CourseChangeForm, CourseChangeHistory } from "./CourseChanges";
-import { TimetableRecognitionInput } from "./TimetableRecognition";
+import {CourseForm} from './CourseForm';
 import {CampusTransfers, ConflictReview, type ConflictReport} from "./ConflictReview";
 
 import {DetailPanel} from "./layout/DetailPanel";
@@ -31,7 +31,7 @@ import {scrollWithinWorkspace} from './layout/scrollWithin';
 
 export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: {focusDate?: string; filter?:CalendarFilter; focusRequest?:number}) {
   const [filter,setFilter]=useState<CalendarFilter>(requestedFilter??'all');
-  const [panel,setPanel]=useState<'import'|'plan'|'rules'|'fixed'|null>(null);
+  const [panel,setPanel]=useState<'plan'|'rules'|'fixed'|null>(null);
   const [detailOpen,setDetailOpen]=useState(false);
   const timetable=true;
   useEffect(()=>{if(requestedFilter)setFilter(requestedFilter);},[requestedFilter,focusRequest]);
@@ -46,7 +46,7 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
     return()=>query.removeEventListener('change',resize);
   },[]);
   useEffect(()=>{calendar.current?.getApi().changeView(narrowCalendar?'listWeek':'timeGridWeek');},[narrowCalendar]);
-  useEffect(()=>{if(focusDate){calendar.current?.getApi().gotoDate(focusDate);setChat(false);}},[focusDate,focusRequest]);
+  useEffect(()=>{if(focusDate){calendar.current?.getApi().gotoDate(focusDate);}},[focusDate,focusRequest]);
   const q = useQueryClient();
   const settings = useQuery({
     queryKey: ["settings"],
@@ -65,8 +65,6 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
     queryKey: ["drafts"],
     queryFn: () => api<Resource[]>("/drafts"),
   });
-  const [manual, setManual] = useState(false);
-  const [chat, setChat] = useState(false);
   const [adjustCourse, setAdjustCourse] = useState(false);
   useEffect(()=>{ const saved=()=>{setSelected(null);setAdjustCourse(false);};window.addEventListener("campus-course-change-saved",saved);return()=>window.removeEventListener("campus-course-change-saved",saved); },[]);
   const [selected, setSelected] = useState<ScheduleEvent | null>(null);
@@ -92,14 +90,13 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
       body: JSON.stringify({ courses: [course], semester_label: "手工录入", completeness: "partial" }),
     });
     setSlot(null);
-    setManual(false);
     setNewDraft(draft.id);
-    setPanel('import');
+    window.dispatchEvent(new Event('campus-start-import'));
     await q.invalidateQueries({ queryKey: ["drafts"] });
   }
   return (
     <>
-      <PageHeader title="日程"><Button variant="outline" onClick={()=>setPanel('import')}><Upload size={16}/>导入课表</Button><Button aria-label="安排学习" onClick={()=>setPanel('plan')}>安排</Button></PageHeader>
+      <PageHeader title="日程"><Button variant="outline" onClick={()=>window.dispatchEvent(new Event('campus-start-import'))}><Upload size={16}/>导入课表</Button><Button aria-label="安排学习" onClick={()=>setPanel('plan')}>安排</Button></PageHeader>
       <div className="workspace-tabs calendar-filters" aria-label="日程筛选">{([['all','全部'],['courses','课程'],['study','学习']] as const).map(([id,label])=><button type="button" key={id} aria-pressed={filter===id} onClick={()=>setFilter(id)}>{label}</button>)}</div>
       <div className="calendar-toolbar"><div className="calendar-date-controls"><strong className="fc-toolbar-title">{calendarTitle}</strong><button type="button" className="calendar-date-icon" aria-label="上一周" onClick={()=>calendar.current?.getApi().prev()}><ChevronLeft size={16}/></button><button type="button" className="calendar-date-icon" aria-label="下一周" onClick={()=>calendar.current?.getApi().next()}><ChevronRight size={16}/></button><button type="button" className="workspace-text-button" onClick={()=>calendar.current?.getApi().today()}>本周</button></div>
         <div className="calendar-secondary-actions"><button type="button" className="workspace-text-button" onClick={()=>setPanel('rules')}>课程规则</button><button type="button" className="workspace-text-button" onClick={()=>setPanel('fixed')}>固定事项</button></div>
@@ -165,7 +162,7 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
         <p>{selected.kind === "course" ? "课程" : selected.kind === "fixed_event" ? "固定事项" : selected.kind === "scheduling_constraint" ? "禁排时段 · 仅约束后续任务规划，不触发提醒" : "学习安排"} {selected.location}</p>
         {selected.kind === "course" && <CourseIntervals event={selected} timezone={settings.data?.data.timezone ?? "Asia/Shanghai"} />}
         {selected.course_id&&<StudyTypes targetId={selected.course_id}/>}
-        {timetable && selected.kind === "course" && selected.course_id && <CourseCampusEditor key={selected.course_id} courseId={selected.course_id} onCreated={async id=>{setNewDraft(id);setDetailOpen(false);setPanel('import');setSelected(null);await q.invalidateQueries({queryKey:["drafts"]});}} />}
+        {timetable && selected.kind === "course" && selected.course_id && <CourseCampusEditor key={selected.course_id} courseId={selected.course_id} onCreated={async id=>{setNewDraft(id);setDetailOpen(false);window.dispatchEvent(new Event('campus-start-import'));setSelected(null);await q.invalidateQueries({queryKey:["drafts"]});}} />}
         {selected.kind !== "scheduling_constraint" && <ScheduleShortcut key={`${selected.id}:${selected.starts_at}`} event={selected} />}
         {selected.kind === "course" && <><p>{selected.adjusted ? "本次课程已调整 · " : ""}原课日期 {selected.original_date}</p><Button variant="outline" onClick={()=>setAdjustCourse(!adjustCourse)}>调课或停课</Button></>}
 
@@ -179,15 +176,6 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
       <CourseChangeHistory timezone={settings.data?.data.timezone??"Asia/Shanghai"} />
       {drafts.data?.filter(d=>["course_change", "semester_calendar"].includes(d.data.draft_kind)).map(d=><DraftReview draft={d} key={d.id+":"+d.revision} />)}
       </DetailPanel>
-      <DetailPanel open={panel==='import'} title="导入课表" onClose={()=>setPanel(null)}>
-      <Button onClick={()=>{setPanel(null);window.dispatchEvent(new Event('campus-start-import'));}}>学校课表</Button>
-      <Button variant="outline" onClick={() => setChat(!chat)}>{chat ? "收起课表对话" : "用文字添加课表"}</Button>
-      {chat && <ChatPage embedded courseEntry />}
-      <TimetableRecognitionInput />
-      <Button variant="outline" onClick={() => setManual(!manual)}>
-        手工添加课程
-      </Button>
-      {manual && <CourseForm onSave={saveCourse} />}
       <Dialog.Root open={slot !== null} onOpenChange={open => { if (!open) setSlot(null); }}>
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
@@ -207,12 +195,6 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-      {drafts.data
-        ?.filter((d) => ["timetable", "timetable_recognition", "timetable_text"].includes(d.data.draft_kind) && !(chat && d.data.draft_kind === "timetable_text"))
-        .map((d) => (
-          <div key={d.id} id={`timetable-draft-${d.id}`} tabIndex={-1}><DraftReview draft={d} /></div>
-        ))}
-      </DetailPanel>
     </>
   );
 }
@@ -235,64 +217,4 @@ function CourseCampusEditor({courseId,onCreated}:{courseId:string;onCreated:(id:
       {error&&<p role="alert">{error}</p>}
     </form>}
   </div>;
-}
-function CourseForm({ onSave, initial }: { onSave: (c: Course) => Promise<void>; initial?: CourseSlot }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  return (
-    <form
-      className="card"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        if (busy) return;
-        const f = new FormData(e.currentTarget);
-        setBusy(true); setError("");
-        try { await onSave({
-          source_key: crypto.randomUUID(),
-          name: String(f.get("name")),
-          weekday: Number(f.get("weekday")),
-          weeks: String(f.get("weeks")).split(",").map(Number),
-          periods: String(f.get("periods")).split(",").map(Number),
-          location: String(f.get("location")),
-          campus: String(f.get("campus")) || null,
-        }); } catch (e) { setError(String(e)); } finally { setBusy(false); }
-      }}
-    >
-      {!initial && <h2>添加一门课程</h2>}
-      <label>
-        课程名称
-        <input name="name" required />
-      </label>
-      <div className="grid2">
-        <label>
-          星期
-          <select name="weekday" defaultValue={initial?.weekday ?? 1}>
-            {["一", "二", "三", "四", "五", "六", "日"].map((n, i) => (
-              <option key={n} value={i + 1}>
-                星期{n}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          校区
-          <input name="campus" maxLength={100} placeholder="按实际校区填写，可稍后补充" />
-        </label>
-        <label>
-          地点
-          <input name="location" />
-        </label>
-        <label>
-          周次（逗号分隔）
-          <input name="weeks" required placeholder="1,3,5,7" defaultValue={initial?.weeks ?? ""} />
-        </label>
-        <label>
-          节次（逗号分隔）
-          <input name="periods" required placeholder="1,2" defaultValue={initial?.periods ?? ""} />
-        </label>
-      </div>
-      {error && <p role="alert">{error}</p>}
-      <Button disabled={busy}>{busy ? "正在生成…" : "生成校对草稿"}</Button>
-    </form>
-  );
 }
