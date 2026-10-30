@@ -1,0 +1,66 @@
+{
+  "version": "2.4.9",
+  "scope": "current source pre-release App and isolated automated data; final independently rebuilt release is verified by its own manifest",
+  "branch": "codex/demo2.4.9-project-completion",
+  "base_commit": "05e798131c7fedb4526bacffe4b05d3ae84d2ad4",
+  "backend": {
+    "passed": 652,
+    "subtests_passed": 20,
+    "exit_code": 0
+  },
+  "frontend": {
+    "passed": 86,
+    "exit_code": 0,
+    "typecheck": 0,
+    "build": 0
+  },
+  "extension": {
+    "passed": 4,
+    "exit_code": 0,
+    "typecheck": 0,
+    "build": 0
+  },
+  "browser": {
+    "passed": 56,
+    "exit_code": 0
+  },
+  "native_logic": {
+    "exit_code": 0
+  },
+  "native_health_transport": {
+    "scenarios": 10,
+    "exit_code": 0
+  },
+  "native_app": {
+    "checks": 56,
+    "passed": true,
+    "exit_code": 0
+  },
+  "frozen_pdf": {
+    "checks": 16,
+    "passed": true,
+    "exit_code": 0
+  },
+  "frozen_ab": {
+    "checks": 32,
+    "passed": true,
+    "exit_code": 0
+  },
+  "frozen_b_interaction": {
+    "checks": 15,
+    "passed": true,
+    "exit_code": 0
+  },
+  "real_ocr_acceptance": "not_evaluated; real samples=0",
+  "paid_model_calls": 0,
+  "lulu": {
+    "user_requested_default_allow": true,
+    "passiveMode": true,
+    "passiveModeAction": 0,
+    "passiveModeRules": 0,
+    "disabled": false,
+    "blockMode": false,
+    "existing_rules_sha256_before": "1ba720bf82340c7cf8deab25b164d8896f61e66b0faa02ffd035f8124a287065",
+    "existing_rules_sha256_after": "1ba720bf82340c7cf8deab25b164d8896f61e66b0faa02ffd035f8124a287065"
+  }
+}

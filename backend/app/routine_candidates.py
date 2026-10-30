@@ -13,6 +13,7 @@ from app.calendar import occupied_course_events
 from app.constraints import local_instant, planning_constraints
 from app.contracts import ResourceView, StrictModel
 from app.db import Resource
+from app.study_types import CourseType
 
 
 class RoutineWindow(StrictModel):
@@ -32,6 +33,18 @@ class RoutineWindow(StrictModel):
         return self
 
 
+class CourseTypeRule(StrictModel):
+    course_type: CourseType
+    preparation_minutes: int = Field(0, ge=0, le=180, strict=True)
+    review_minutes: int = Field(0, ge=0, le=180, strict=True)
+
+    @model_validator(mode="after")
+    def explicit_type(self):
+        if self.course_type == "unknown":
+            raise ValueError("类型规则需要明确课程类型，未知课程不套用推断规则")
+        return self
+
+
 class RoutineRequest(StrictModel):
     confirmed: Literal[True]
     target_date: date | None = None
@@ -40,6 +53,15 @@ class RoutineRequest(StrictModel):
     preparation_minutes: int = Field(0, ge=0, le=180)
     review_minutes: int = Field(0, ge=0, le=180)
     include_campus_transfer: bool = False
+    course_type_rules: list[CourseTypeRule] = Field(default_factory=list, max_length=5)
+
+    @model_validator(mode="after")
+    def unique_types(self):
+        if len({r.course_type for r in self.course_type_rules}) != len(
+            self.course_type_rules
+        ):
+            raise ValueError("同一课程类型只允许一条明确规则")
+        return self
 
 
 class Candidate(StrictModel):
@@ -51,6 +73,7 @@ class Candidate(StrictModel):
     can_add: bool
     dismissed: bool
     conflicts: list[str]
+    basis: dict = Field(default_factory=dict)
 
 
 class RoutinePreview(StrictModel):
@@ -96,7 +119,7 @@ async def preview_candidates(db, owner, request):
         else None
     )
 
-    def add(kind, title, a, b, source):
+    def add(kind, title, a, b, source, basis=None):
         if b <= lower or a >= upper:
             return
         identity = store.digest(
@@ -127,6 +150,7 @@ async def preview_candidates(db, owner, request):
             dismissed=identity in dismissed,
             can_add=not conflicts and identity not in dismissed,
             conflicts=list(dict.fromkeys(conflicts)),
+            basis=basis or {},
         )
 
     try:
@@ -141,7 +165,10 @@ async def preview_candidates(db, owner, request):
                         "explicit_daily_window",
                     )
         course_events = inputs["occurrences"]
-        if request.review_minutes and interval:
+        if (
+            request.review_minutes
+            or any(r.review_minutes for r in request.course_type_rules)
+        ) and interval:
             course_events = expand_calendar(
                 inputs["settings"],
                 [store.view(r) for r in await store.rows(db, owner, "course")],
@@ -158,15 +185,43 @@ async def preview_candidates(db, owner, request):
             source = course.get(
                 "id", course.get("course_id", course.get("title", "course"))
             )
-            if request.preparation_minutes:
+            classification = (
+                inputs.get("study_classifications", {})
+                .get("course", {})
+                .get(course.get("course_id"), {})
+            )
+            course_type = classification.get("course_type", "unknown")
+            rule = next(
+                (r for r in request.course_type_rules if r.course_type == course_type),
+                None,
+            )
+            prepare_minutes = (
+                rule.preparation_minutes if rule else request.preparation_minutes
+            )
+            review_minutes = rule.review_minutes if rule else request.review_minutes
+            basis = {
+                "course_type": course_type,
+                "rule_source": "explicit_course_type_rule"
+                if rule
+                else "explicit_general_minutes",
+                "classification_id": classification.get("id"),
+                "classification_revision": classification.get("revision"),
+            }
+            if request.course_type_rules and course_type == "unknown":
+                warnings.append(
+                    course.get("title", "课程") + "类型未知，未猜测或套用课程类型规则"
+                )
+            source = f"{source}:type:{course_type}:prepare:{prepare_minutes}:review:{review_minutes}"
+            if prepare_minutes:
                 add(
                     "preparation",
                     course.get("title", "课程") + " · 课前准备",
-                    a - timedelta(minutes=request.preparation_minutes),
+                    a - timedelta(minutes=prepare_minutes),
                     a,
                     source,
+                    {**basis, "minutes": prepare_minutes},
                 )
-            if request.review_minutes:
+            if review_minutes:
                 profile = active_profile(inputs, b)
                 profile_zone = ZoneInfo(profile["timezone"]) if profile else zone
                 delay = profile.get("preferences", {}).get("review_interval_days") or 0
@@ -181,10 +236,11 @@ async def preview_candidates(db, owner, request):
                     "review",
                     course.get("title", "课程") + " · 课后复习",
                     review_start,
-                    review_start + timedelta(minutes=request.review_minutes),
+                    review_start + timedelta(minutes=review_minutes),
                     f"{source}:profile:{inputs.get('profile_context', {}).get('revision', 0)}"
                     if delay
                     else source,
+                    {**basis, "minutes": review_minutes},
                 )
         if request.include_campus_transfer:
             matrix = {
@@ -218,6 +274,7 @@ async def preview_candidates(db, owner, request):
         not request.daily_windows
         and not request.preparation_minutes
         and not request.review_minutes
+        and not request.course_type_rules
         and not request.include_campus_transfer
     ):
         warnings.append("未提供明确作息或准备规则，不猜测用餐、午休或课程类型")
@@ -277,6 +334,7 @@ def routine_router(get_db, current_user):
                 {
                     "routine_candidate_id": selected.id,
                     "explicit_rules": body.request.model_dump(mode="json"),
+                    "candidate_basis": selected.basis,
                 },
             )
 

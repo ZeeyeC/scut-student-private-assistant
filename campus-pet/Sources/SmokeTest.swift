@@ -109,6 +109,9 @@ extension AppDelegate {
                 guard pet.mood == .approval else { throw ServiceError.message("恢复后未保留审批状态") }
                 showReview()
                 try await waitFor("document.querySelector('.review-panel')?.getBoundingClientRect().top < innerHeight / 2")
+                // Restoring the target conversation is asynchronous. A draft
+                // panel may render before its current approval has loaded.
+                try await waitFor("[...document.querySelectorAll('.confirm button')].some(b => b.textContent.trim() === '批准并执行' && !b.disabled)")
                 let pendingSnapshot = try await webView.takeSnapshot(configuration: nil)
                 try saveImage(pendingSnapshot, to: output.appendingPathComponent("approval.png"))
                 _ = try await js("[...document.querySelectorAll('.confirm button')].find(b => b.textContent.trim() === '批准并执行').click(); return true;")
@@ -153,9 +156,8 @@ extension AppDelegate {
                 for _ in 0..<20 where exitConfirmation != nil { try await Task.sleep(nanoseconds: 50_000_000) }
                 guard exitConfirmation == nil, !stoppingService, ready else { throw ServiceError.message("取消停止不应退出或改变服务状态") }
                 try await service.verifyHealth()
-                // A second web session uses the same test backend before shutdown.
-                let peer = try await URLSession.shared.data(from: assistantOrigin.appendingPathComponent("api/healthz"))
-                guard (peer.1 as? HTTPURLResponse)?.statusCode == 200 else { throw ServiceError.message("共享后台检查失败") }
+                // A second independent native connection checks the same backend.
+                try await service.verifyHealth()
                 try await verifyScheduleReminder(output: output)
                 try await stopBackend()
                 guard !ready else { throw ServiceError.message("停止后台后仍标记为已连接") }
@@ -499,6 +501,11 @@ extension AppDelegate {
     func finishSmoke(error: String?) {
         if let output = options.smokeDirectory {
             try? FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+            let healthEncoder = JSONEncoder()
+            healthEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            if let health = try? healthEncoder.encode(service.healthDiagnostics) {
+                try? health.write(to: output.appendingPathComponent("health-diagnostics.json"))
+            }
             let result: [String: Any] = ["passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["local session", "chat composer", "real draft confirmation", "task/settings navigation", "preference profile entry", "goals and weekly review entry", "compact layout", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "three video action assets", "20 fps playback and completion", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown", "silent purple schedule reminder", "belly-only shortcut hit target", "disabled reminder restores yellow", "pet click opens only today task orbit", "scheduled tasks only and task deduplication", "six round abbreviation bubbles and overflow", "repeat click collapses task orbit", "left click reads current task details and steps", "right click persists completion once", "completion synchronizes existing task UI", "stable slots refill hidden tasks", "revision conflict retains task and reloads", "complete remaining tasks and empty state", "future and due-only tasks remain unchanged", "drag and hide collapse task orbit", "outside click collapses task orbit"]]
             if let data = try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]) {
                 try? data.write(to: output.appendingPathComponent("result.json"))

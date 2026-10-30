@@ -1,0 +1,12 @@
+
+> campus-assistant-web@0.1.0 test
+> vitest run src
+
+
+ RUN  v5.0.4 /Users/czy/ProjectManagement/agentbuild/frontend
+
+
+ Test Files  23 passed (23)
+      Tests  86 passed (86)
+   Start at  12:59:16
+   Duration  641ms (tests 42%, import 35%, transform 19%, worker 4%)

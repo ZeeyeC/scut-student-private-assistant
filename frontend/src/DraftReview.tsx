@@ -8,7 +8,11 @@ import { CourseChangeReview } from "./CourseChanges";
 import { ConstraintReview } from "./SchedulingConstraints";
 import { TimetableRecognitionReview } from "./TimetableRecognition";
 
+import { SemesterCalendarReview } from "./SemesterCalendar";
+
 export function DraftReview({ draft }: { draft: Resource }) {
+  if (draft.data.draft_kind === "semester_calendar")
+    return <SemesterCalendarReview draft={draft} key={draft.id+":"+draft.revision} />;
   if (draft.data.draft_kind === "course_change")
     return <CourseChangeReview draft={draft} key={draft.id+":"+draft.revision} />;
   if (["timetable_recognition", "timetable_text"].includes(draft.data.draft_kind))

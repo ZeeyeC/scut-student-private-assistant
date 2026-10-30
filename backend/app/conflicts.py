@@ -18,6 +18,7 @@ REVIEW_KINDS = {
     "timetable_text",
     "calendar_event",
     "course_change",
+    "semester_calendar",
 }
 CONFLICT_VERSION = "course-conflicts-1"
 
@@ -166,6 +167,22 @@ async def draft_conflicts(db, owner, draft, payload):
     if kind not in REVIEW_KINDS or draft.data["status"] != "pending":
         raise HTTPException(409, "请选择尚未保存的课表、固定事项或课程调整草稿")
     payload = validate_payload(kind, payload)
+    if kind == "semester_calendar":
+        from app.semester_calendar import preview_semester
+
+        if payload != draft.data["payload"]:
+            raise HTTPException(422, "校历规则与原预览绑定，请重新生成草稿")
+        preview = await preview_semester(db, owner, payload)
+        return {
+            **preview["conflict_report"],
+            "complete": True,
+            "configuration_warnings": [],
+            "timezone": preview["timezone"],
+            "conflict_token": store.digest(
+                [owner, draft.id, CONFLICT_VERSION, payload, preview["versions"]]
+            ),
+            "message": "仅检查本批实际课程。校区和转移时间以确认信息为准，已有计划不会自动移动。",
+        }
     s = await store.settings(db, owner)
     courses = [store.view(r) for r in await store.rows(db, owner, "course")]
     exceptions = await store.rows(db, owner, "exception")

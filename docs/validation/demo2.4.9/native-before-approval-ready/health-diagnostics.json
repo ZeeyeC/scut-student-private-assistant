@@ -1,0 +1,21 @@
+[
+  {
+    "elapsedMilliseconds" : 37,
+    "port" : 5189,
+    "probeID" : "F76C8230-89ED-488C-8AC0-08EC36C18DB6",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  }
+]

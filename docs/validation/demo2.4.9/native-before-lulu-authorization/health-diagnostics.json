@@ -1,0 +1,22 @@
+[
+  {
+    "elapsedMilliseconds" : 3008,
+    "errorCode" : -1001,
+    "errorDomain" : "NSURLErrorDomain",
+    "port" : 5189,
+    "probeID" : "B9C3AE2F-A611-4E95-840F-0A687D853F07",
+    "transactions" : [
+      {
+        "connectStarted" : false,
+        "connected" : false,
+        "connectionReused" : false,
+        "dnsStarted" : false,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : false,
+        "resourceFetchType" : 1,
+        "responseStarted" : false
+      }
+    ]
+  }
+]

@@ -1,0 +1,212 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+__ test_confirmed_makeup_survives_clock_or_period_changes_and_can_undo[clock] __
+
+sessions = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x109b03690>, autoflush=True, expire_on_commit=False)
+change = 'clock'
+
+    @pytest.mark.parametrize("change", ["clock", "course_periods"])
+    async def test_confirmed_makeup_survives_clock_or_period_changes_and_can_undo(sessions, change):
+        async with sessions() as db:
+            await seed(db)
+            course = await db.get(Resource, "math")
+            course.data = {**course.data, "periods": [1, 3], "weeks": [1]}
+            await db.commit()
+            d = await draft(db, rule(course_ids=["math"], action="move", start_date=None, end_date=None,
+                                     mappings=[{"original_date":"2026-10-14", "target_date":"2026-10-18"}]))
+            await commit(db, d)
+            expected = next(e for e in await occurrences(db) if e["id"] == "math:2026-10-14")
+            if change == "clock":
+                settings = await store.settings(db, "alice")
+                settings.data = {**settings.data, "periods": {"1": {"start":"09:10", "end":"10:10"}, "3":{"start":"14:10", "end":"15:10"}}}
+                settings.revision += 1
+            else:
+                # Current unadjusted course now uses one period; its confirmed
+                # makeup remains the exact two-run fact the user reviewed.
+                course.data = {**course.data, "periods": [3]}
+                course.revision += 1
+            await store.bump(db, "alice")
+            await db.commit()
+>           actual = next(e for e in await occurrences(db) if e["id"] == "math:2026-10-14")
+                                     ^^^^^^^^^^^^^^^^^^^^^
+
+backend/tests/test_semester_calendar.py:639:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend/tests/test_semester_calendar.py:112: in occurrences
+    return expand_calendar(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+settings = {'timezone': 'Asia/Shanghai', 'semester_name': '', 'week1_monday': '2026-10-12', 'week_count': 4, ...}
+courses = [{'id': 'math', 'kind': 'course', 'revision': 1, 'data': {'source_key': 'math', 'name': 'math', 'weekday': 3, 'weeks':... 'course', 'revision': 1, 'data': {'source_key': 'physics', 'name': 'physics', 'weekday': 3, 'weeks': [1, 2, 3], ...}}]
+exceptions = [{'course_id': 'math', 'date': '2026-10-14', 'cancelled': False, 'starts_at': '2026-10-18T09:00:00+08:00', ...}]
+start = datetime.date(2026, 10, 12), end = datetime.date(2026, 11, 8)
+
+    def expand_calendar(settings, courses, exceptions, start, end):
+        if not courses:
+            return []
+        if not settings.get("week1_monday"):
+            raise ValueError("请配置学期第一周周一")
+        anchor = date.fromisoformat(settings["week1_monday"])
+        tz = ZoneInfo(settings["timezone"])
+        result = []
+        lower = datetime.combine(start, time.min, tz).astimezone(timezone.utc)
+        upper = datetime.combine(end + timedelta(days=1), time.min, tz).astimezone(
+            timezone.utc
+        )
+        for course in courses:
+            c, cid = course["data"], course["id"]
+            for week in c["weeks"]:
+                if week > settings["week_count"]:
+                    raise ValueError("课程周次超出学期范围")
+                d = anchor + timedelta(weeks=week - 1, days=c["weekday"] - 1)
+                ex = next(
+                    (
+                        e
+                        for e in reversed(exceptions)
+                        if e.get("active", True)
+                        and e["course_id"] == cid
+                        and e["date"] == d.isoformat()
+                    ),
+                    None,
+                )
+                if ex and ex.get("cancelled"):
+                    continue
+                intervals = course_intervals(settings, c, d)
+                starts = datetime.fromisoformat(
+                    intervals["teaching_intervals"][0]["starts_at"]
+                )
+                ends = datetime.fromisoformat(
+                    intervals["teaching_intervals"][-1]["ends_at"]
+                )
+                if ex and ex.get("starts_at"):
+                    moved_start, moved_end = (
+                        datetime.fromisoformat(ex["starts_at"]),
+                        datetime.fromisoformat(ex["ends_at"]),
+                    )
+                    source = ex.get("source", {})
+                    if source.get("kind") == "semester_calendar" and source.get("preserve_periods"):
+                        from app.constraints import local_instant
+
+                        target = moved_start.astimezone(tz).date()
+                        if source.get("original_date", d.isoformat()) != d.isoformat() or source.get("target_date", target.isoformat()) != target.isoformat():
+                            raise ValueError("校历映射的原日期或目标日期与课程发生不一致")
+                        intervals = course_intervals(settings, c, target)
+                        for group in ("teaching_intervals", "break_intervals", "occupied_intervals"):
+                            for part in intervals[group]:
+                                for key in ("starts_at", "ends_at"):
+                                    local = datetime.fromisoformat(part[key]).replace(tzinfo=None)
+                                    part[key] = local_instant(local, tz).isoformat()
+                        expected_start = datetime.fromisoformat(intervals["teaching_intervals"][0]["starts_at"])
+                        expected_end = datetime.fromisoformat(intervals["teaching_intervals"][-1]["ends_at"])
+                        if moved_start.astimezone(timezone.utc) != expected_start.astimezone(timezone.utc) or moved_end.astimezone(timezone.utc) != expected_end.astimezone(timezone.utc):
+>                           raise ValueError("保留节次的校历映射只能改变日期，修改钟点请使用单次调课")
+E                           ValueError: 保留节次的校历映射只能改变日期，修改钟点请使用单次调课
+
+backend/app/calendar.py:198: ValueError
+_ test_confirmed_makeup_survives_clock_or_period_changes_and_can_undo[course_periods] _
+
+sessions = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x10a0731d0>, autoflush=True, expire_on_commit=False)
+change = 'course_periods'
+
+    @pytest.mark.parametrize("change", ["clock", "course_periods"])
+    async def test_confirmed_makeup_survives_clock_or_period_changes_and_can_undo(sessions, change):
+        async with sessions() as db:
+            await seed(db)
+            course = await db.get(Resource, "math")
+            course.data = {**course.data, "periods": [1, 3], "weeks": [1]}
+            await db.commit()
+            d = await draft(db, rule(course_ids=["math"], action="move", start_date=None, end_date=None,
+                                     mappings=[{"original_date":"2026-10-14", "target_date":"2026-10-18"}]))
+            await commit(db, d)
+            expected = next(e for e in await occurrences(db) if e["id"] == "math:2026-10-14")
+            if change == "clock":
+                settings = await store.settings(db, "alice")
+                settings.data = {**settings.data, "periods": {"1": {"start":"09:10", "end":"10:10"}, "3":{"start":"14:10", "end":"15:10"}}}
+                settings.revision += 1
+            else:
+                # Current unadjusted course now uses one period; its confirmed
+                # makeup remains the exact two-run fact the user reviewed.
+                course.data = {**course.data, "periods": [3]}
+                course.revision += 1
+            await store.bump(db, "alice")
+            await db.commit()
+>           actual = next(e for e in await occurrences(db) if e["id"] == "math:2026-10-14")
+                                     ^^^^^^^^^^^^^^^^^^^^^
+
+backend/tests/test_semester_calendar.py:639:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend/tests/test_semester_calendar.py:112: in occurrences
+    return expand_calendar(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+settings = {'timezone': 'Asia/Shanghai', 'semester_name': '', 'week1_monday': '2026-10-12', 'week_count': 4, ...}
+courses = [{'id': 'math', 'kind': 'course', 'revision': 2, 'data': {'source_key': 'math', 'name': 'math', 'weekday': 3, 'weeks':... 'course', 'revision': 1, 'data': {'source_key': 'physics', 'name': 'physics', 'weekday': 3, 'weeks': [1, 2, 3], ...}}]
+exceptions = [{'course_id': 'math', 'date': '2026-10-14', 'cancelled': False, 'starts_at': '2026-10-18T09:00:00+08:00', ...}]
+start = datetime.date(2026, 10, 12), end = datetime.date(2026, 11, 8)
+
+    def expand_calendar(settings, courses, exceptions, start, end):
+        if not courses:
+            return []
+        if not settings.get("week1_monday"):
+            raise ValueError("请配置学期第一周周一")
+        anchor = date.fromisoformat(settings["week1_monday"])
+        tz = ZoneInfo(settings["timezone"])
+        result = []
+        lower = datetime.combine(start, time.min, tz).astimezone(timezone.utc)
+        upper = datetime.combine(end + timedelta(days=1), time.min, tz).astimezone(
+            timezone.utc
+        )
+        for course in courses:
+            c, cid = course["data"], course["id"]
+            for week in c["weeks"]:
+                if week > settings["week_count"]:
+                    raise ValueError("课程周次超出学期范围")
+                d = anchor + timedelta(weeks=week - 1, days=c["weekday"] - 1)
+                ex = next(
+                    (
+                        e
+                        for e in reversed(exceptions)
+                        if e.get("active", True)
+                        and e["course_id"] == cid
+                        and e["date"] == d.isoformat()
+                    ),
+                    None,
+                )
+                if ex and ex.get("cancelled"):
+                    continue
+                intervals = course_intervals(settings, c, d)
+                starts = datetime.fromisoformat(
+                    intervals["teaching_intervals"][0]["starts_at"]
+                )
+                ends = datetime.fromisoformat(
+                    intervals["teaching_intervals"][-1]["ends_at"]
+                )
+                if ex and ex.get("starts_at"):
+                    moved_start, moved_end = (
+                        datetime.fromisoformat(ex["starts_at"]),
+                        datetime.fromisoformat(ex["ends_at"]),
+                    )
+                    source = ex.get("source", {})
+                    if source.get("kind") == "semester_calendar" and source.get("preserve_periods"):
+                        from app.constraints import local_instant
+
+                        target = moved_start.astimezone(tz).date()
+                        if source.get("original_date", d.isoformat()) != d.isoformat() or source.get("target_date", target.isoformat()) != target.isoformat():
+                            raise ValueError("校历映射的原日期或目标日期与课程发生不一致")
+                        intervals = course_intervals(settings, c, target)
+                        for group in ("teaching_intervals", "break_intervals", "occupied_intervals"):
+                            for part in intervals[group]:
+                                for key in ("starts_at", "ends_at"):
+                                    local = datetime.fromisoformat(part[key]).replace(tzinfo=None)
+                                    part[key] = local_instant(local, tz).isoformat()
+                        expected_start = datetime.fromisoformat(intervals["teaching_intervals"][0]["starts_at"])
+                        expected_end = datetime.fromisoformat(intervals["teaching_intervals"][-1]["ends_at"])
+                        if moved_start.astimezone(timezone.utc) != expected_start.astimezone(timezone.utc) or moved_end.astimezone(timezone.utc) != expected_end.astimezone(timezone.utc):
+>                           raise ValueError("保留节次的校历映射只能改变日期，修改钟点请使用单次调课")
+E                           ValueError: 保留节次的校历映射只能改变日期，修改钟点请使用单次调课
+
+backend/app/calendar.py:198: ValueError
+=========================== short test summary info ============================
+FAILED backend/tests/test_semester_calendar.py::test_confirmed_makeup_survives_clock_or_period_changes_and_can_undo[clock]
+FAILED backend/tests/test_semester_calendar.py::test_confirmed_makeup_survives_clock_or_period_changes_and_can_undo[course_periods]
+2 failed, 22 deselected in 0.40s

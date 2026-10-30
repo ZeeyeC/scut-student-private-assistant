@@ -1,0 +1,21 @@
+
+> campus-assistant-web@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 878 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.37 kB │ gzip:   0.30 kB
+dist/assets/index-BdO9c2oM.css     20.62 kB │ gzip:   5.53 kB
+dist/assets/Calendar-CA8LKlkC.js  297.38 kB │ gzip:  87.00 kB
+dist/assets/Chat-o_hki-m4.js      379.37 kB │ gzip: 112.82 kB
+dist/assets/index-BdUESYax.js     634.68 kB │ gzip: 194.12 kB
+
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 204ms

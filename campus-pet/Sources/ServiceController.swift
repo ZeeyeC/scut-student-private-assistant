@@ -46,7 +46,16 @@ enum ServiceError: LocalizedError {
 final class ServiceController {
     let options: LaunchOptions
     private var launcher: Process?
+    private let healthTransport = LocalHealthTransport(origin: assistantOrigin)
+    private(set) var healthDiagnostics: [HealthDiagnostic] = []
     init(options: LaunchOptions) { self.options = options }
+
+    private func probeHealth(timeout: TimeInterval) async -> HealthProbe {
+        let result = await healthTransport.fetch(timeout: timeout)
+        healthDiagnostics.append(result.diagnostic)
+        if healthDiagnostics.count > 64 { healthDiagnostics.removeFirst(healthDiagnostics.count - 64) }
+        return result
+    }
 
     // Runs in the trusted WKWebView so the existing selected profile, cookies,
     // Origin and CSRF protections apply exactly as they do in the web settings.
@@ -71,10 +80,8 @@ final class ServiceController {
         let deadline = ProcessInfo.processInfo.systemUptime + 10
         var refused = 0
         while ProcessInfo.processInfo.systemUptime < deadline {
-            var request = URLRequest(url: assistantOrigin.appendingPathComponent("api/healthz"), cachePolicy: .reloadIgnoringLocalCacheData)
-            request.timeoutInterval = 1
             do {
-                _ = try await URLSession.shared.data(for: request)
+                _ = try await probeHealth(timeout: 1).get()
                 refused = 0
             } catch let error as URLError where error.code == .cannotConnectToHost || error.code == .networkConnectionLost {
                 refused += 1
@@ -126,13 +133,11 @@ final class ServiceController {
     }
 
     func verifyHealth() async throws {
-        var request = URLRequest(url: assistantOrigin.appendingPathComponent("api/healthz"))
-        request.timeoutInterval = 3
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await probeHealth(timeout: 3).get()
         guard let body = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             throw ServiceError.message("本机端口返回了无法识别的服务。")
         }
-        try Self.validateHealth(status: (response as? HTTPURLResponse)?.statusCode ?? 0, body: body)
+        try Self.validateHealth(status: response?.statusCode ?? 0, body: body)
     }
 
     nonisolated static func validateHealth(status: Int, body: [String: Any]) throws {
@@ -141,7 +146,7 @@ final class ServiceController {
               body["mode"] as? String == "local" else {
             throw ServiceError.message("5173 端口不是本机个人助手。请先关闭冲突服务。")
         }
-        let required: Set<String> = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1"]
+        let required: Set<String> = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1", "project-completion-v1"]
         guard let available = body["capabilities"] as? [String], required.isSubset(of: Set(available)) else {
             throw ServiceError.message("检测到旧版后台，缺少新版桌宠功能。请在旧助手设置中停止服务，再点击「重新连接本机服务」。浏览器和桌宠仍可共用升级后的后台，个人资料无需删除。")
         }

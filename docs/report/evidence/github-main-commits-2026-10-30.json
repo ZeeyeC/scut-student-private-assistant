@@ -1,0 +1,27 @@
+{
+  "repository": "ZeeyeC/scut-student-private-assistant",
+  "queried_at_utc": "2026-10-30T04:45:30.076722+00:00",
+  "request": "repos/ZeeyeC/scut-student-private-assistant/commits?per_page=100",
+  "page_count": 1,
+  "record_count": 2,
+  "records": [
+    {
+      "sha": "16bc02a94d2a2430505b766e5dd1eed30159ea14",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/16bc02a94d2a2430505b766e5dd1eed30159ea14",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-15T11:38:42Z",
+      "message": "demo1",
+      "parents": [
+        "38f4f69fe38706a43378398ed9a7a7a32414677d"
+      ]
+    },
+    {
+      "sha": "38f4f69fe38706a43378398ed9a7a7a32414677d",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/38f4f69fe38706a43378398ed9a7a7a32414677d",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-15T11:25:41Z",
+      "message": "Initial commit",
+      "parents": []
+    }
+  ]
+}

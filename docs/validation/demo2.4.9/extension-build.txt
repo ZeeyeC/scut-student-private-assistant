@@ -1,0 +1,20 @@
+
+> campus-assistant-bridge@0.1.1 build
+> wxt build
+
+
+WXT 0.21.4
+ℹ Building chrome-mv3 for production with Vite 8.3.4
+
+⠋ Preparing...
+⠋ [1/3] app
+⠋ [2/3] background
+⠋ [3/3] scut
+
+✔ Built extension in 142 ms
+  ├─ .output/chrome-mv3/manifest.json            488 B
+  ├─ .output/chrome-mv3/background.js            7.69 kB
+  ├─ .output/chrome-mv3/content-scripts/app.js   6.97 kB
+  └─ .output/chrome-mv3/content-scripts/scut.js  40.32 kB
+Σ Total size: 55.47 kB
+✔ Finished in 238 ms

@@ -18,6 +18,31 @@ SPEC.loader.exec_module(release)
 
 
 class ReleaseSafetyTests(unittest.TestCase):
+    def test_extension_release_uses_observed_school_adapter_and_local_origin(self):
+        with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
+            project = Path(temp)
+            stage = project / "stage"
+            stage.mkdir()
+            verification = project / "campus-pet/build/verification"
+            verification.mkdir(parents=True)
+            (verification / "result.json").write_text('{"passed":true}')
+            extension_environments = []
+
+            def external(command, **kwargs):
+                if command[:3] == ["npm", "--prefix", "extension"]:
+                    extension_environments.append(kwargs["env"])
+                return subprocess.CompletedProcess(command, 0)
+
+            with patch.object(release.subprocess, "run", side_effect=external):
+                release.run_checks(project, stage, "2.4.9")
+            self.assertEqual(len(extension_environments), 3)
+            for env in extension_environments:
+                self.assertEqual(env.get("PUBLIC_ORIGIN"), "http://127.0.0.1:5173")
+                self.assertEqual(
+                    env.get("SCUT_ADAPTER_PATH"),
+                    str(project / "config/scut-undergraduate-2026-10-14.json"),
+                )
+
     def test_native_timeout_keeps_first_failure_and_requires_a_successful_retry(self):
         with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
             project = Path(temp)

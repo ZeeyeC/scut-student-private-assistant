@@ -360,6 +360,7 @@ def build_plan(p):
             .get("data", {})
             .get("priority", 0),
             -tasks[all_steps[k]["task_id"]].get("priority", 2),
+            -{"high":3,"medium":2,"low":1}.get(p.get("study_classifications",{}).get("task",{}).get(all_steps[k]["task_id"],{}).get("difficulty"),0),
             all_steps[k]["task_id"],
             k,
         ),
@@ -407,8 +408,14 @@ def build_plan(p):
                 dict(goal_used),
                 remaining[sid],
             )
+            classification=p.get("study_classifications",{}).get("task",{}).get(s["task_id"],{})
+            step_preferences=planning_constraints(p,"soft")+profile_windows(p,classification.get("task_type","unknown"))[0]
             for d in free:
-                for a, b in list(free[d]):
+                step_windows=list(free[d])
+                if p.get("planning_strategy")=="preferred":
+                    from app.planning_options import preferred_windows
+                    step_windows=preferred_windows(step_windows,step_preferences)
+                for a, b in step_windows:
                     a = max(a, earliest)
                     b = min(b, deadline)
                     while remaining[sid] > 0 and a < b:
@@ -497,6 +504,7 @@ def build_plan(p):
                                         "profile_context", {}
                                     ).get("revision", 0),
                                     "goal_id": gid,
+                                    "classification_basis": classification,
                                     "constraint_revisions": {
                                         r.get("constraint_id", r["id"]): r["revision"]
                                         for r in protected
@@ -541,13 +549,13 @@ def build_plan(p):
                                                         instant(r["data"]["starts_at"]),
                                                         instant(r["data"]["ends_at"]),
                                                     )
-                                                    for r in preferences
+                                                    for r in step_preferences
                                                 ],
                                             )
                                             else "偏好窗口不足，使用其他可用时间；硬约束仍满足"
                                         ]
                                         if p.get("planning_strategy") == "preferred"
-                                        and preferences
+                                        and step_preferences
                                         else []
                                     )
                                     + (

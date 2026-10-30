@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "scope": "actual frozen backend, temporary local profile, no model calls",
+  "checks": [
+    "isolated database identity",
+    "frozen today planner creates review-only one-day draft",
+    "frozen course move, cancel, restore and audit history",
+    "frozen nonconsecutive course intervals and stable segment IDs",
+    "frozen planner uses the nonteaching gap and confirms one block",
+    "frozen unified conflict preview is read-only, checks directional transfer shortfall and saves a reviewed receipt",
+    "frozen weekly protection preview identifies existing plans and blocks next-week scheduling without silently changing saved blocks",
+    "frozen capacity endpoint matches planner windows, reports blocked work and preserves all resources without superseding a pending draft",
+    "frozen repair preview is read-only, repeated requests reuse one draft, confirmation removes only an invalid old suggestion and retains a snapshot",
+    "frozen soft preferences, read-only comparison and risk reports, selected plan confirmation",
+    "frozen explicit routine preview, durable dismissal and reviewed event save",
+    "PDFium dynamic library loads",
+    "PDF upload and render",
+    "page PNG served",
+    "original and page export",
+    "asset cleanup"
+  ]
+}

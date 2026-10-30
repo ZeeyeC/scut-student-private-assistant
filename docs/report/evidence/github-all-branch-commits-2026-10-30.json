@@ -1,0 +1,546 @@
+{
+  "repository": "ZeeyeC/scut-student-private-assistant",
+  "queried_at_utc": "2026-10-30T04:46:16.452600+00:00",
+  "method": "Read commits endpoint with every observed branch SHA and paginate until exhausted; deduplicate by full SHA. Branch membership means reachable ancestry, not PR merge.",
+  "page_counts_by_branch": {
+    "codex/demo2.4.7-b-interaction": 1,
+    "demo1": 1,
+    "demo1.1": 1,
+    "demo2.1": 1,
+    "demo2.2": 1,
+    "demo2.4": 1,
+    "feat/macos-pet-homework-checkin": 1,
+    "feat/person-a-planning-demo2.4.7": 1,
+    "integration/person-b-delivery-2.4.7": 1,
+    "main": 1
+  },
+  "record_count": 35,
+  "records": [
+    {
+      "sha": "38f4f69fe38706a43378398ed9a7a7a32414677d",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/38f4f69fe38706a43378398ed9a7a7a32414677d",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-15T11:25:41Z",
+      "message": "Initial commit",
+      "parents": [],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "demo1",
+        "demo1.1",
+        "demo2.1",
+        "demo2.2",
+        "demo2.4",
+        "feat/macos-pet-homework-checkin",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7",
+        "main"
+      ]
+    },
+    {
+      "sha": "16bc02a94d2a2430505b766e5dd1eed30159ea14",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/16bc02a94d2a2430505b766e5dd1eed30159ea14",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-15T11:38:42Z",
+      "message": "demo1",
+      "parents": [
+        "38f4f69fe38706a43378398ed9a7a7a32414677d"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "demo1",
+        "demo1.1",
+        "demo2.1",
+        "demo2.2",
+        "demo2.4",
+        "feat/macos-pet-homework-checkin",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7",
+        "main"
+      ]
+    },
+    {
+      "sha": "ee614e69eddfedd47a699e9a9646bba599157f7b",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ee614e69eddfedd47a699e9a9646bba599157f7b",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-15T13:11:11Z",
+      "message": "修改了启动脚本 实现了一键启动",
+      "parents": [
+        "16bc02a94d2a2430505b766e5dd1eed30159ea14"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "demo1.1",
+        "demo2.1",
+        "demo2.2",
+        "demo2.4",
+        "feat/macos-pet-homework-checkin",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "327bf1d389e49193a4d9fff3761d508389435357",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/327bf1d389e49193a4d9fff3761d508389435357",
+      "author_login": "CYA0915",
+      "date": "2026-10-17T02:51:51Z",
+      "message": "feat: add macOS desktop pet and after-class homework check-in",
+      "parents": [
+        "ee614e69eddfedd47a699e9a9646bba599157f7b"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "demo2.1",
+        "demo2.2",
+        "demo2.4",
+        "feat/macos-pet-homework-checkin",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "ebe9ea1a89be2412e49fe656e64db137932029bf",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ebe9ea1a89be2412e49fe656e64db137932029bf",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-17T04:45:01Z",
+      "message": "demo2.1",
+      "parents": [
+        "327bf1d389e49193a4d9fff3761d508389435357"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "demo2.1",
+        "demo2.2",
+        "demo2.4",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "ec5ee94c42f1bdbb79e0f6a29a07607ac7b115be",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ec5ee94c42f1bdbb79e0f6a29a07607ac7b115be",
+      "author_login": "CYA0915",
+      "date": "2026-10-18T02:19:23Z",
+      "message": "Demo2.2: scheduled task orbit, silent reminders and separate timetable",
+      "parents": [
+        "ebe9ea1a89be2412e49fe656e64db137932029bf"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "demo2.2",
+        "demo2.4",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "36c9bef93cd8fb961a955842f7d2b2db4dee44cc",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/36c9bef93cd8fb961a955842f7d2b2db4dee44cc",
+      "author_login": "CYA0915",
+      "date": "2026-10-28T13:04:33Z",
+      "message": "Demo2.4: reviewed timetable input, today plans and course changes",
+      "parents": [
+        "ec5ee94c42f1bdbb79e0f6a29a07607ac7b115be"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "demo2.4",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "764c9ecaa2f46612a7e48f67f8adfcefb135c1f1",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/764c9ecaa2f46612a7e48f67f8adfcefb135c1f1",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T14:09:28Z",
+      "message": "feat: define versioned execution feedback contracts",
+      "parents": [
+        "36c9bef93cd8fb961a955842f7d2b2db4dee44cc"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "2e18b9965ec2aa96a9e2c0ec014d4a1c299c04e9",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/2e18b9965ec2aa96a9e2c0ec014d4a1c299c04e9",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T14:13:04Z",
+      "message": "feat: persist actual execution and auditable corrections",
+      "parents": [
+        "764c9ecaa2f46612a7e48f67f8adfcefb135c1f1"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "ea21bf0f526730a5535496af1bfc1a17142b83fd",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ea21bf0f526730a5535496af1bfc1a17142b83fd",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T14:15:25Z",
+      "message": "fix: reconcile legacy duration estimates with execution facts",
+      "parents": [
+        "2e18b9965ec2aa96a9e2c0ec014d4a1c299c04e9"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "c515d585b9311d789b390c88e5e5f0961622dbac",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/c515d585b9311d789b390c88e5e5f0961622dbac",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T14:18:48Z",
+      "message": "feat: add shared execution feedback and correction interface",
+      "parents": [
+        "ea21bf0f526730a5535496af1bfc1a17142b83fd"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "31e707332f5b5bbfb072986e1a0ff21c76bb6c5e",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/31e707332f5b5bbfb072986e1a0ff21c76bb6c5e",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T14:33:13Z",
+      "message": "test: verify execution feedback migration browser and frozen service",
+      "parents": [
+        "c515d585b9311d789b390c88e5e5f0961622dbac"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "ad51d8e9c21117ab3e26348410a57ee3fb4a2e12",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ad51d8e9c21117ab3e26348410a57ee3fb4a2e12",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T15:14:19Z",
+      "message": "fix: preserve execution coverage across legacy total edits",
+      "parents": [
+        "31e707332f5b5bbfb072986e1a0ff21c76bb6c5e"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "5136504d1ddaf23b4d1f1fa8d7a1e649f94c6aff",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/5136504d1ddaf23b4d1f1fa8d7a1e649f94c6aff",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T15:57:40Z",
+      "message": "fix: finish SQLite cleanup before propagating request cancellation",
+      "parents": [
+        "ad51d8e9c21117ab3e26348410a57ee3fb4a2e12"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "9d7f5c800faf88221ff8e944baadd0efc0d229c5",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/9d7f5c800faf88221ff8e944baadd0efc0d229c5",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T16:01:09Z",
+      "message": "feat: add recoverable execution timers and manual source conversion",
+      "parents": [
+        "5136504d1ddaf23b4d1f1fa8d7a1e649f94c6aff"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "a3dac2fff4d7d196d3b081b88ef187faa5f13b47",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/a3dac2fff4d7d196d3b081b88ef187faa5f13b47",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T16:04:33Z",
+      "message": "feat: add confirmed preference and energy profiles with reset",
+      "parents": [
+        "9d7f5c800faf88221ff8e944baadd0efc0d229c5"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "e502fb1493726cb6cf540634c2de529a908ea5f6",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/e502fb1493726cb6cf540634c2de529a908ea5f6",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T16:05:02Z",
+      "message": "feat: add traceable weekly review and versioned improvement intent",
+      "parents": [
+        "86e97e034e17c3c30235bddbe78baa8e72fc5def"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "86e97e034e17c3c30235bddbe78baa8e72fc5def",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/86e97e034e17c3c30235bddbe78baa8e72fc5def",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-28T16:05:02Z",
+      "message": "feat: manage confirmed goals budgets subtasks and pause state",
+      "parents": [
+        "a3dac2fff4d7d196d3b081b88ef187faa5f13b47"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "b8c85648afb9da7086d9d61d10d7776da13983eb",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/b8c85648afb9da7086d9d61d10d7776da13983eb",
+      "author_login": "CYA0915",
+      "date": "2026-10-29T05:04:27Z",
+      "message": "feat: deliver person A planning core and handoff contracts",
+      "parents": [
+        "36c9bef93cd8fb961a955842f7d2b2db4dee44cc"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "cb84277e1799523a24b87a6c9b92ab3e1b6c8170",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/cb84277e1799523a24b87a6c9b92ab3e1b6c8170",
+      "author_login": "CYA0915",
+      "date": "2026-10-29T05:08:38Z",
+      "message": "docs: clarify person A completion and person B dependencies",
+      "parents": [
+        "b8c85648afb9da7086d9d61d10d7776da13983eb"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "feat/person-a-planning-demo2.4.7",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "251cd2f6e4301eca20a0073b1c7cf8a00975fa1f",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/251cd2f6e4301eca20a0073b1c7cf8a00975fa1f",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T05:47:58Z",
+      "message": "test: verify independent workflows and reject incompatible desktop services",
+      "parents": [
+        "e502fb1493726cb6cf540634c2de529a908ea5f6"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "7c3b1d5379abcf7e9ad527cdac88f5646e6422c7",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/7c3b1d5379abcf7e9ad527cdac88f5646e6422c7",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T05:53:00Z",
+      "message": "fix: preserve timer facts across validation settings and plan changes",
+      "parents": [
+        "251cd2f6e4301eca20a0073b1c7cf8a00975fa1f"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "a4be550ed09f26c491dccc4928527635706f35a8",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/a4be550ed09f26c491dccc4928527635706f35a8",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T06:00:33Z",
+      "message": "feat: expose goals and weekly review in the compact desktop",
+      "parents": [
+        "7c3b1d5379abcf7e9ad527cdac88f5646e6422c7"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "5a818802e7c371181c0726e34c7da722242451c6",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/5a818802e7c371181c0726e34c7da722242451c6",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T06:00:44Z",
+      "message": "fix: finish SSE database snapshots before propagating disconnect cancellation",
+      "parents": [
+        "a4be550ed09f26c491dccc4928527635706f35a8"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "7867b5ef930cf7dc4d911de5ed925acfb121956d",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/7867b5ef930cf7dc4d911de5ed925acfb121956d",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T06:17:48Z",
+      "message": "docs: record independent delivery verification and pending A integrations",
+      "parents": [
+        "5a818802e7c371181c0726e34c7da722242451c6"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "e38054c1cd2a54588f14daa854677b5b8db54009",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/e38054c1cd2a54588f14daa854677b5b8db54009",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T06:18:25Z",
+      "message": "docs: mark verified independent implementation plan complete",
+      "parents": [
+        "7867b5ef930cf7dc4d911de5ed925acfb121956d"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "fd1f398ad4de02e547ef94d39c518847866f0e62",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/fd1f398ad4de02e547ef94d39c518847866f0e62",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T06:48:29Z",
+      "message": "Merge person A planning 2.4.7 with B independent features",
+      "parents": [
+        "e38054c1cd2a54588f14daa854677b5b8db54009",
+        "cb84277e1799523a24b87a6c9b92ab3e1b6c8170"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "26931ad564af25d10cec9b9a6317cfe43a700277",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/26931ad564af25d10cec9b9a6317cfe43a700277",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T06:56:05Z",
+      "message": "docs: record verified A B integration readiness and remaining adapters",
+      "parents": [
+        "fd1f398ad4de02e547ef94d39c518847866f0e62"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "635314265ef9005b74685bc6f6e8b69ac6185f1b",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/635314265ef9005b74685bc6f6e8b69ac6185f1b",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T07:02:23Z",
+      "message": "fix: make merged weekly browser verification portable",
+      "parents": [
+        "26931ad564af25d10cec9b9a6317cfe43a700277"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "c8eedf563a2232167e4fe8c3c9483b39a7dc8d74",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/c8eedf563a2232167e4fe8c3c9483b39a7dc8d74",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T11:13:19Z",
+      "message": "feat: complete person B interaction and planning review workflows",
+      "parents": [
+        "635314265ef9005b74685bc6f6e8b69ac6185f1b"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "d6f8ed7a717a8fdbd3f5fee5846e891d682341bc",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/d6f8ed7a717a8fdbd3f5fee5846e891d682341bc",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T11:19:58Z",
+      "message": "docs: record person B interaction verification and preview handoff",
+      "parents": [
+        "c8eedf563a2232167e4fe8c3c9483b39a7dc8d74"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "6eb8576ca02fb7c99b545c3679005cf2039a4dd1",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/6eb8576ca02fb7c99b545c3679005cf2039a4dd1",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T11:30:37Z",
+      "message": "fix: release the current version without a historical baseline",
+      "parents": [
+        "d6f8ed7a717a8fdbd3f5fee5846e891d682341bc"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "fc5cf4a8f991bb485eb8087153e3b8822f1340f8",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/fc5cf4a8f991bb485eb8087153e3b8822f1340f8",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T11:32:50Z",
+      "message": "test: tidy current release safety fixtures",
+      "parents": [
+        "6eb8576ca02fb7c99b545c3679005cf2039a4dd1"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "596b4d06ff8930661b46c1115cab78e1a71ad2f7",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/596b4d06ff8930661b46c1115cab78e1a71ad2f7",
+      "author_login": "ZeeyeC",
+      "date": "2026-10-29T11:38:16Z",
+      "message": "fix: retain and bound native timeout retries during release",
+      "parents": [
+        "fc5cf4a8f991bb485eb8087153e3b8822f1340f8"
+      ],
+      "reachable_from_branches": [
+        "codex/demo2.4.7-b-interaction",
+        "integration/person-b-delivery-2.4.7"
+      ]
+    },
+    {
+      "sha": "05e798131c7fedb4526bacffe4b05d3ae84d2ad4",
+      "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/05e798131c7fedb4526bacffe4b05d3ae84d2ad4",
+      "author_login": "CYA0915",
+      "date": "2026-10-29T16:35:35Z",
+      "message": "feat(planning): connect A follow-up services for Demo2.4.8",
+      "parents": [
+        "596b4d06ff8930661b46c1115cab78e1a71ad2f7"
+      ],
+      "reachable_from_branches": [
+        "integration/person-b-delivery-2.4.7"
+      ]
+    }
+  ]
+}

@@ -68,6 +68,8 @@ test('mobile missing direction stays pending and editing the course invalidates 
   const review=await manual(page);
   await review.getByRole('button',{name:'校对完成，准备保存'}).click();
   await expect(review.getByRole('region',{name:'冲突检查'})).toContainText('暂不能判断能否赶上');
+  await expect(review.getByRole('button',{name:'确认保存',exact:true})).toBeDisabled();
+  await review.getByRole('checkbox',{name:'我已核对上述提示，仍按已确认的课程或事项保存'}).check();
   await expect(review.getByRole('button',{name:'确认保存',exact:true})).toBeEnabled();
   await review.getByLabel('节次',{exact:true}).fill('1');
   await expect(review.getByRole('button',{name:'确认保存',exact:true})).toHaveCount(0);

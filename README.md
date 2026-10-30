@@ -1,14 +1,14 @@
 # 课间 · 华工学生助手
 
-当前源码为 **Demo2.4.8 甲乙规划接通版**，基于乙交付 `596b4d0`，本地分支 `integration/person-b-delivery-2.4.7`。甲方后续 A-01～A-05 核心已接通：权威执行输入、变化事件到重排建议、档案个性化、共享目标预算及步骤时长建议生成，沿用乙的领域存储和确认界面。
+当前源码为 **Demo2.4.9 项目收尾与联合交付版**，在甲乙接通基准 `05e7981` 上开发，本地分支 `codex/demo2.4.9-project-completion`。现已增加学校校历批量停课/明确补课/精确撤销、显式课程与任务分类、匹配 deep/review 的偏好与课程类型准备规则，以及独立OCR准确率评测工具。原执行、档案、目标、复盘、计时、协商与权威规划链路继续共用。
 
-[本版说明](docs/releases/Demo2.4.8.md) · [核心功能、接口、乙方兼容补丁和未完成清单](docs/roadmap/demo2.4.8-a-followup.md) · [收到的后续任务单](docs/roadmap/reference/甲同学后续开发任务单-Demo2.4.7.md)
+[本版说明](docs/releases/Demo2.4.9.md) · [完整项目汇报与甲乙实现清单](docs/report/项目汇报-Demo2.4.9.md) · [汇报讲述提纲](docs/report/项目汇报讲述提纲-Demo2.4.9.md) · [GitHub历史与贡献证据](docs/report/项目历史与甲乙贡献证据-2026-10-30.md)
 
-正式App是否通过完整发布，以工作区README入口和归档中的验证结果为准。保留Demo2.2、所有原正式版本、旧失败暂存和个人资料。真实OCR/校历、批量调整专项、类型规则和细评分仍需后续；不将合成自动化当作真实样本验收。
+当前版本按 [发布流程](docs/releases/发布流程.md) 从源码独立构建、验证和打包，不要求任何历史基线。发布是否通过，以归档 `manifest.json` 和 `验证结果.json` 为准。真实OCR目前没有30份匿名标注/5种布局/完整输入覆盖，不能宣称95%；学校校历内容、实地转移耗时、Windows/Intel与长期使用仍需真实验收。[OCR评测说明](docs/validation/课表准确率评测说明.md)与[当前状态](docs/validation/ocr-acceptance-status.json)明确记录缺口。
 
 [乙方接收复核](docs/roadmap/乙方交付接收与进度复核-Demo2.4.7.md)保留为接收时记录；此前“乙接口待交付”及“未接入生成”清单均为历史状态，当前交接以本轮清单和代码为准。
 
-用户最新核心流程与本轮验收见 [核心使用流程补充](docs/roadmap/core-flow-2026-10-28.md)。当日排程、单次课程调整、统一冲突、每周硬禁排、软偏好及固定事实局部重排已接入；通勤候选仅使用已确认耗时。完整学期例外和乙方执行事件联调继续按任务书推进。
+用户最新核心流程与本轮验收见 [核心使用流程补充](docs/roadmap/core-flow-2026-10-28.md)。当日排程、单次课程调整、统一冲突、每周硬禁排、软偏好及固定事实局部重排已接入；通勤候选仅使用已确认耗时。校历批量例外和执行事件已接通；学校通知内容与真实使用效果仍需实际资料验收。
 
 后续双人协作以 Demo2.4 提交为共同基线，分工、接口、交接与验收见 [双人开发任务分配](docs/roadmap/demo2.4-two-person-plan.md)，分别领取 [甲：课表与排程](docs/roadmap/demo2.4-person-a.md) 和 [乙：执行与助手](docs/roadmap/demo2.4-person-b.md)。
 
@@ -20,7 +20,7 @@
 
 ## 双击打开
 
-- 最新入口：[Demo2.4.7 App](../Demo2.4.7/课间桌宠.app)、[应用 ZIP](../Demo2.4.7/Demo2.4.7-Mac-AppleSilicon.zip)、[当前源码 ZIP](../Demo2.4.7/Demo2.4.7-源码.zip)，[本版说明](docs/releases/Demo2.4.7.md)。当前版本独立构建验证，无历史基线前置条件；旧[乙交互预览](.development-previews/demo2.4.7-b-interaction/课间桌宠.app)与[甲乙联合预览](.development-previews/demo2.4.7-ab-integration/课间桌宠.app)保留。
+- 当前版本入口：[Demo2.4.9 App](../Demo2.4.9/课间桌宠.app)、[应用 ZIP](../Demo2.4.9/Demo2.4.9-Mac-AppleSilicon.zip)、[源码 ZIP](../Demo2.4.9/Demo2.4.9-源码.zip)，[本版说明](docs/releases/Demo2.4.9.md)。归档由发布脚本验证成功后生成；旧 Demo2.4.7 与已有归档保留。
 - `campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台；浏览器可以同时访问 `http://127.0.0.1:5173/` 使用 Web UI，无需再启动另一个助手。
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。

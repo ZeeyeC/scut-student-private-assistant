@@ -167,7 +167,12 @@ def test_a_selective_replan_cannot_remove_a_b_timer_target(tmp_path):
         assert ids["block"] in report["retained_ids"]
         assert ids["block"] not in [r["id"] for r in report["removed"]]
         assert report["warnings"]
-        assert write(c, h, "/replan-drafts", {"target_date": "2026-10-14", "horizon_days": 7}).status_code == 409
+        assert (
+            write(
+                c, h, "/replan-drafts", {"target_date": "2026-10-14", "horizon_days": 7}
+            ).status_code
+            == 409
+        )
         assert resources(c, "plan_snapshot") == []
         assert any(b["id"] == ids["block"] for b in get(c, "/plan-blocks"))
         command(c, h, timer, "discard")
@@ -198,7 +203,7 @@ def test_a_snapshots_and_b_corrections_remain_separate_in_weekly_review(tmp_path
         assert corrected["plans"] == report["plans"]
 
 
-def test_profile_and_goals_consumed_with_explicit_deferred_typed_preferences(
+def test_profile_and_goals_consumed_without_guessing_unknown_task_type(
     tmp_path,
 ):
     with make_client(tmp_path) as c:
@@ -224,8 +229,11 @@ def test_profile_and_goals_consumed_with_explicit_deferred_typed_preferences(
 
         assert allocations(before) != allocations(after)  # focus45 changes blocks
         assert all(o["proposed_minutes"] == 60 for o in after["options"])
-        assert after["profile_context"]["application"]["deferred_fields"]["preferred_study_windows.deep/review"]
-        assert after["goal_allocation"]["task_goal_ids"][ids["task"]] == saved_goal["id"]
+        assert after["profile_context"]["application"]["deferred_fields"] == {}
+        assert after["profile_context"]["application"]["classification_count"] == 0
+        assert (
+            after["goal_allocation"]["task_goal_ids"][ids["task"]] == saved_goal["id"]
+        )
         assert get(c, "/profile")["data"]["confirmed"]
         assert saved_goal["data"]["weekly_budget_minutes"] == 600
         assert saved_goal["capacity"]["weekly_available_minutes"] is None

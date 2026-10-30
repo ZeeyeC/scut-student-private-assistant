@@ -4,6 +4,7 @@ import { api } from './api';
 import type { components } from './generated-api';
 import { Button } from './components/ui/button';
 import { PlanningFacts } from './PlanningFacts';
+import {courseTypeLabels} from './StudyTypes';
 type Options = components['schemas']['Options'];
 type Risks = components['schemas']['Risks'];
 type RoutineRequest = components['schemas']['RoutineRequest'];
@@ -16,6 +17,7 @@ export function PlanningWorkbench() {
   const [busy,setBusy]=useState(false),[error,setError]=useState('');
   const [name,setName]=useState(''),[start,setStart]=useState(''),[end,setEnd]=useState('');
   const [prepare,setPrepare]=useState(''),[review,setReview]=useState(''),[commute,setCommute]=useState(false),[confirmed,setConfirmed]=useState(false);
+  const [typeRules,setTypeRules]=useState<{course_type:'lab'|'lecture'|'seminar'|'exam'|'other';preparation_minutes:number;review_minutes:number}[]>([]);
   const [preview,setPreview]=useState<Preview|null>(null),[request,setRequest]=useState<RoutineRequest|null>(null);
   const act=async(action:()=>Promise<void>)=>{setBusy(true);setError('');try{await action();}catch(e){setError(String(e));}finally{setBusy(false);}};
   return <section className="card" aria-label="规划方案与日常候选">
@@ -44,12 +46,19 @@ export function PlanningWorkbench() {
     <p>填写你明确希望的时间或时长；留空表示本次不生成，不推测你的作息。可预览未来 7 天，忽略的同一候选不会重新建议。</p>
     <form onSubmit={e=>{e.preventDefault();void act(async()=>{
       if((start||end||name)&&!(start&&end&&name.trim()))throw new Error('作息需要同时填写名称、开始及结束时间');
-      const body:RoutineRequest={confirmed:true,horizon_days:7,daily_windows:start&&end?[{title:name.trim(),start,end,weekdays:[1,2,3,4,5,6,7]}]:[],preparation_minutes:prepare?Number(prepare):0,review_minutes:review?Number(review):0,include_campus_transfer:commute};
+      const body:RoutineRequest={confirmed:true,horizon_days:7,daily_windows:start&&end?[{title:name.trim(),start,end,weekdays:[1,2,3,4,5,6,7]}]:[],preparation_minutes:prepare?Number(prepare):0,review_minutes:review?Number(review):0,include_campus_transfer:commute,course_type_rules:typeRules};
       const result=await api<Preview>('/daily-routine-preview',{method:'POST',body:JSON.stringify(body)});setRequest(body);setPreview(result);
     });}}>
       <label>作息名称（可留空）<input value={name} maxLength={100} onChange={e=>setName(e.target.value)}/></label>
       <div className="grid2"><label>作息开始<input type="time" value={start} onChange={e=>setStart(e.target.value)}/></label><label>作息结束<input type="time" value={end} onChange={e=>setEnd(e.target.value)}/></label></div>
       <div className="grid2"><label>课前准备分钟（可留空）<input type="number" min="0" max="180" value={prepare} onChange={e=>setPrepare(e.target.value)}/></label><label>课后复习分钟（可留空）<input type="number" min="0" max="180" value={review} onChange={e=>setReview(e.target.value)}/></label></div>
+      <fieldset disabled={busy}><legend>按已确认课程类型设置准备规则</legend><p>在设置中明确课程类型后生效。每种类型最多一条，本次未指定的课程继续使用上面的通用分钟；未知类型不自动猜测。</p>
+      {typeRules.map((r,i)=><div className="grid2" key={i}>
+        <label>课程规则类型<select aria-label={`课程规则类型${i+1}`} value={r.course_type} onChange={e=>setTypeRules(typeRules.map((v,j)=>i===j?{...v,course_type:e.target.value as typeof r.course_type}:v))}>{Object.entries(courseTypeLabels).filter(([k])=>k!=='unknown').map(([v,name])=><option key={v} value={v}>{name}</option>)}</select></label>
+        <label>该类型课前准备分钟<input aria-label={`该类型课前准备分钟${i+1}`} type="number" min="0" max="180" required value={r.preparation_minutes} onChange={e=>setTypeRules(typeRules.map((v,j)=>i===j?{...v,preparation_minutes:Number(e.target.value)}:v))}/></label>
+        <label>该类型课后复习分钟<input aria-label={`该类型课后复习分钟${i+1}`} type="number" min="0" max="180" required value={r.review_minutes} onChange={e=>setTypeRules(typeRules.map((v,j)=>i===j?{...v,review_minutes:Number(e.target.value)}:v))}/></label>
+        <Button type="button" variant="outline" onClick={()=>setTypeRules(typeRules.filter((_,j)=>i!==j))}>移除此类型规则</Button>
+      </div>)}<Button type="button" variant="outline" disabled={typeRules.length>=5} onClick={()=>setTypeRules([...typeRules,{course_type:'lab',preparation_minutes:0,review_minutes:0}])}>添加课程类型规则</Button></fieldset>
       <label className="check"><input type="checkbox" checked={commute} onChange={e=>setCommute(e.target.checked)}/>使用已确认的跨校区转移时长</label>
       <label className="check"><input type="checkbox" required checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/>上述规则由我明确指定，仅生成待确认候选</label>
       <Button disabled={busy||!confirmed}>预览日常候选</Button>

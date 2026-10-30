@@ -83,7 +83,18 @@ class Risks(StrictModel):
 def compare_plans(inputs):
     from app.planner import build_plan, instant
 
-    preferences = planning_constraints(inputs, "soft") + profile_windows(inputs)[0]
+    kinds = {"any"} | {
+        inputs.get("study_classifications", {})
+        .get("task", {})
+        .get(task["id"], {})
+        .get("task_type", "unknown")
+        for task in inputs["tasks"]
+    }
+    preferences = planning_constraints(inputs, "soft") + list(
+        {
+            r["id"]: r for kind in kinds for r in profile_windows(inputs, kind)[0]
+        }.values()
+    )
     options = []
     for strategy, title in [("earliest", "更早开始"), ("preferred", "遵循软偏好")]:
         p = {**deepcopy(inputs), "planning_strategy": strategy}
@@ -104,9 +115,19 @@ def compare_plans(inputs):
             # Subtract the union, so overlapping preferences are not double-counted.
             from app.planner import subtract
 
+            work_type = (
+                inputs.get("study_classifications", {})
+                .get("task", {})
+                .get(b["task_id"], {})
+                .get("task_type", "unknown")
+            )
+            matching = (
+                planning_constraints(inputs, "soft")
+                + profile_windows(inputs, work_type)[0]
+            )
             busy = [
                 (instant(r["data"]["starts_at"]), instant(r["data"]["ends_at"]))
-                for r in preferences
+                for r in matching
             ]
             total = (
                 instant(b["ends_at"]) - instant(b["starts_at"])

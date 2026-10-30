@@ -7,6 +7,7 @@ import { LocalSettings } from "./LocalMode";
 import type { Resource } from "./types";
 import { AfterClassPreferences } from "./AfterClass";
 import {PersonalProfile} from "./PersonalProfile";
+import {StudyTypes} from "./StudyTypes";
 import {ProactiveSettings} from "./ProactiveSuggestions";
 type Form = {
   timezone: string;
@@ -55,6 +56,7 @@ export function Settings({ local = false }: { local?: boolean }) {
     <>
       <h1>学习设置</h1>
       <PersonalProfile />
+      <StudyTypes />
       <ProactiveSettings />
       <p>
         这里的默认学习窗口是个人安排建议。学期锚点和节次请按学校实际信息校对。

@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "status": "not_evaluated",
+  "passed": false,
+  "assessment_scope": "reviewed_anonymized_real_original_predictions_only",
+  "pending_real_material": true,
+  "normalization": {
+    "strings": "NFKC; trim and collapse Unicode whitespace; retain internal word boundaries; case-sensitive",
+    "weekday": "strict integer 1..7; no string/boolean coercion",
+    "weeks_periods": "strict integers 1..30; sorted unique set; null is unknown",
+    "pairing": "human-verified slot_id only; no name or position guessing",
+    "extra_predictions": "add one error/denominator to each required field; supplied optional fields likewise",
+    "accuracy": "correct / denominator (0..1); null when denominator=0; gate uses unrounded ratio"
+  },
+  "groups": {
+    "real": {
+      "sample_count": 0,
+      "layout_ids": [],
+      "input_kind_counts": {
+        "image": 0,
+        "text_pdf": 0,
+        "scanned_pdf": 0
+      },
+      "courses": {
+        "expected": 0,
+        "matched": 0,
+        "missing": 0,
+        "extra": 0
+      },
+      "fields": {
+        "name": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "weekday": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "weeks": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "periods": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "teacher": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "location": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "campus": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        }
+      },
+      "layout_count": 0
+    },
+    "synthetic": {
+      "sample_count": 0,
+      "layout_ids": [],
+      "input_kind_counts": {
+        "image": 0,
+        "text_pdf": 0,
+        "scanned_pdf": 0
+      },
+      "courses": {
+        "expected": 0,
+        "matched": 0,
+        "missing": 0,
+        "extra": 0
+      },
+      "fields": {
+        "name": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "weekday": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "weeks": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "periods": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "teacher": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "location": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "campus": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        }
+      },
+      "layout_count": 0
+    },
+    "excluded_real": {
+      "sample_count": 0,
+      "layout_ids": [],
+      "input_kind_counts": {
+        "image": 0,
+        "text_pdf": 0,
+        "scanned_pdf": 0
+      },
+      "courses": {
+        "expected": 0,
+        "matched": 0,
+        "missing": 0,
+        "extra": 0
+      },
+      "fields": {
+        "name": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "weekday": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "weeks": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "periods": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "teacher": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "location": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "campus": {
+          "denominator": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        }
+      },
+      "layout_count": 0
+    }
+  },
+  "excluded_samples": [],
+  "errors": [],
+  "gaps": [
+    {
+      "code": "real_sample_count",
+      "actual": 0,
+      "minimum": 30
+    },
+    {
+      "code": "layout_count",
+      "actual": 0,
+      "minimum": 5
+    },
+    {
+      "code": "input_kind_coverage",
+      "missing": [
+        "image",
+        "scanned_pdf",
+        "text_pdf"
+      ]
+    },
+    {
+      "code": "field_accuracy",
+      "field": "name",
+      "minimum": 0.95,
+      "denominator": 0,
+      "correct": 0,
+      "incorrect": 0,
+      "accuracy": null
+    },
+    {
+      "code": "field_accuracy",
+      "field": "weekday",
+      "minimum": 0.95,
+      "denominator": 0,
+      "correct": 0,
+      "incorrect": 0,
+      "accuracy": null
+    },
+    {
+      "code": "field_accuracy",
+      "field": "weeks",
+      "minimum": 0.95,
+      "denominator": 0,
+      "correct": 0,
+      "incorrect": 0,
+      "accuracy": null
+    },
+    {
+      "code": "field_accuracy",
+      "field": "periods",
+      "minimum": 0.95,
+      "denominator": 0,
+      "correct": 0,
+      "incorrect": 0,
+      "accuracy": null
+    }
+  ]
+}

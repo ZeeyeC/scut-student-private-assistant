@@ -1,0 +1,59 @@
+{
+  "repository": "ZeeyeC/scut-student-private-assistant",
+  "queried_at_utc": "2026-10-30T04:45:31.229150+00:00",
+  "request": "repos/ZeeyeC/scut-student-private-assistant/branches?per_page=100",
+  "page_count": 1,
+  "record_count": 10,
+  "records": [
+    {
+      "name": "codex/demo2.4.7-b-interaction",
+      "sha": "596b4d06ff8930661b46c1115cab78e1a71ad2f7",
+      "protected": false
+    },
+    {
+      "name": "demo1",
+      "sha": "16bc02a94d2a2430505b766e5dd1eed30159ea14",
+      "protected": false
+    },
+    {
+      "name": "demo1.1",
+      "sha": "ee614e69eddfedd47a699e9a9646bba599157f7b",
+      "protected": false
+    },
+    {
+      "name": "demo2.1",
+      "sha": "ebe9ea1a89be2412e49fe656e64db137932029bf",
+      "protected": false
+    },
+    {
+      "name": "demo2.2",
+      "sha": "ec5ee94c42f1bdbb79e0f6a29a07607ac7b115be",
+      "protected": false
+    },
+    {
+      "name": "demo2.4",
+      "sha": "36c9bef93cd8fb961a955842f7d2b2db4dee44cc",
+      "protected": false
+    },
+    {
+      "name": "feat/macos-pet-homework-checkin",
+      "sha": "327bf1d389e49193a4d9fff3761d508389435357",
+      "protected": false
+    },
+    {
+      "name": "feat/person-a-planning-demo2.4.7",
+      "sha": "cb84277e1799523a24b87a6c9b92ab3e1b6c8170",
+      "protected": false
+    },
+    {
+      "name": "integration/person-b-delivery-2.4.7",
+      "sha": "05e798131c7fedb4526bacffe4b05d3ae84d2ad4",
+      "protected": false
+    },
+    {
+      "name": "main",
+      "sha": "16bc02a94d2a2430505b766e5dd1eed30159ea14",
+      "protected": false
+    }
+  ]
+}

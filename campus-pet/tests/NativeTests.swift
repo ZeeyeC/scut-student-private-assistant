@@ -73,7 +73,7 @@ struct NativeTests {
             let identity: [String: Any] = ["application": "campus-companion", "mode": "local", "desktop_protocol": 1]
             precondition(AppDelegate.pages[4] == "目标与复盘", "Compact desktop must expose goals and weekly review")
             precondition(AppDelegate.pages.last == "设置", "Adding goals must preserve settings navigation")
-            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1"]
+            let capabilities = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1", "project-completion-v1"]
             func rejects(_ body: [String: Any], status: Int = 200) -> Bool {
                 do { try ServiceController.validateHealth(status: status, body: body); return false }
                 catch { return true }
@@ -87,6 +87,10 @@ struct NativeTests {
             precondition(rejects(compatible, status: 503))
             precondition(rejects(compatible.merging(["application": "other"]) { _, new in new }))
             precondition(rejects(compatible.merging(["mode": "shared"]) { _, new in new }))
+            precondition((try? LocalHealthTransport.healthURL(for: URL(string: "http://127.0.0.1:5189")!))?.absoluteString == "http://127.0.0.1:5189/api/healthz")
+            for origin in ["https://127.0.0.1:5189", "http://localhost:5189", "http://127.0.0.1.example.com:5189", "http://192.0.2.1:5189", "http://127.0.0.1:80", "http://user:pass@127.0.0.1:5189", "http://127.0.0.1:5189/other", "http://127.0.0.1:5189?q=1", "http://127.0.0.1:5189/#fragment"] {
+                precondition((try? LocalHealthTransport.healthURL(for: URL(string: origin)!)) == nil, "Health must refuse non-loopback, credentials, untrusted ports and alternate paths before networking")
+            }
             let reminder: [String: Any] = ["key":"test", "title":"阅读", "starts_at":"2026-10-17T20:00:00.123456+08:00", "target_kind":"website", "target":"https://example.com/work"]
             precondition(ScheduleReminder(reminder)?.destination?.host == "example.com")
             precondition(ScheduleReminder(reminder.merging(["target":"javascript:alert(1)"]) { _, new in new })?.destination == nil)

@@ -21,6 +21,8 @@ import { CourseChangeForm, CourseChangeHistory } from "./CourseChanges";
 import { TimetableRecognitionInput } from "./TimetableRecognition";
 import {CampusTransfers, ConflictReview, type ConflictReport} from "./ConflictReview";
 
+import { SemesterCalendar } from "./SemesterCalendar";
+
 export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: string; mode?: "timetable" | "schedule"}) {
   const timetable = mode === "timetable";
   const calendar = useRef<FullCalendar>(null);
@@ -155,8 +157,9 @@ export function CalendarPage({focusDate, mode = "timetable"}: {focusDate?: strin
       </section>}
       {!timetable && <AssignmentsPage embedded />}
       {timetable && <>
+      <SemesterCalendar timezone={settings.data?.data.timezone??"Asia/Shanghai"} />
       <CourseChangeHistory timezone={settings.data?.data.timezone??"Asia/Shanghai"} />
-      {drafts.data?.filter(d=>d.data.draft_kind==="course_change").map(d=><DraftReview draft={d} key={d.id+":"+d.revision} />)}
+      {drafts.data?.filter(d=>["course_change", "semester_calendar"].includes(d.data.draft_kind)).map(d=><DraftReview draft={d} key={d.id+":"+d.revision} />)}
       <Button variant="outline" onClick={() => setChat(!chat)}>{chat ? "收起课表对话" : "用文字添加课表"}</Button>
       {chat && <ChatPage embedded courseEntry />}
       <TimetableRecognitionInput />

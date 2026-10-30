@@ -26,7 +26,7 @@ export function DraftActions({
     [busy, setBusy] = useState(false),
     [saved, setSaved] = useState<Resource>(draft),
     [key] = useState(crypto.randomUUID());
-  const needsCheck = ["timetable", "timetable_recognition", "timetable_text", "calendar_event", "course_change"].includes(draft.data.draft_kind);
+  const needsCheck = ["timetable", "timetable_recognition", "timetable_text", "calendar_event", "course_change", "semester_calendar"].includes(draft.data.draft_kind);
   const fingerprint = JSON.stringify(payload);
   const [review,setReview] = useState<{fingerprint:string;report:ConflictReport}|null>(null);
   const [acknowledged,setAcknowledged] = useState(false);
@@ -42,11 +42,11 @@ export function DraftActions({
     }}>{busy ? "正在检查冲突…" : "校对完成，准备保存"}</Button>
   ) : (
     <div className="confirm">
-      {needsCheck && review && <><ConflictReview report={review.report} />{(review.report.conflict_count>0 || review.report.complete===false) && <label className="check"><input type="checkbox" checked={acknowledged} onChange={e=>setAcknowledged(e.target.checked)} />我已核对上述提示，仍按已确认的课程或事项保存</label>}</>}
-      <p>{draft.data.draft_kind === "course_change" ? "确认仅调整本次课程？其他周课程和已有学习安排保留。" : draft.data.draft_kind === "scheduling_constraint" ? "确认保存禁排？后续新计划将遵守它；已有安排需重新规划并确认后才调整。" : ["timetable", "timetable_recognition", "timetable_text"].includes(draft.data.draft_kind) ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
+      {needsCheck && review && <><ConflictReview report={review.report} />{(review.report.conflict_count>0 || review.report.pending_count>0 || review.report.complete===false) && <label className="check"><input type="checkbox" checked={acknowledged} onChange={e=>setAcknowledged(e.target.checked)} />我已核对上述提示，仍按已确认的课程或事项保存</label>}</>}
+      <p>{draft.data.draft_kind === "semester_calendar" ? "确认保存本批课程调整？已有学习安排保留，受影响计划需重新规划后确认。" : draft.data.draft_kind === "course_change" ? "确认仅调整本次课程？其他周课程和已有学习安排保留。" : draft.data.draft_kind === "scheduling_constraint" ? "确认保存禁排？后续新计划将遵守它；已有安排需重新规划并确认后才调整。" : ["timetable", "timetable_recognition", "timetable_text"].includes(draft.data.draft_kind) ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
       <Button
         type="button"
-        disabled={busy || (needsCheck && (!!review?.report.conflict_count || review?.report.complete===false) && !acknowledged)}
+        disabled={busy || (needsCheck && (!!review?.report.conflict_count || !!review?.report.pending_count || review?.report.complete===false) && !acknowledged)}
         onClick={async () => {
           setBusy(true);
           try {

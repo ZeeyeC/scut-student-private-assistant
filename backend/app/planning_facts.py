@@ -84,9 +84,12 @@ async def load_facts(db, owner, inputs):
         ],
     }
     inputs["profile_context"] = await profiles.read_profile(db, owner)
+    from app.study_types import classifications
+
+    inputs["study_classifications"] = await classifications(db, owner)
     inputs["profile_context"]["application"] = {
         "supported_fields": [
-            "preferred_study_windows.any",
+            "preferred_study_windows.any/deep/review（匹配已确认任务类型）",
             "energy_windows",
             "focus_minutes",
             "break_minutes",
@@ -99,9 +102,10 @@ async def load_facts(db, owner, inputs):
             for key, value in inputs["profile_context"]["data"]["preferences"].items()
             if value is not None and value != []
         ],
-        "deferred_fields": {
-            "preferred_study_windows.deep/review": "任务尚无确认的类型，不猜测分类"
-        },
+        "deferred_fields": {},
+        "classification_count": sum(
+            len(rows) for rows in inputs["study_classifications"].values()
+        ),
         "active_at_planning_time": bool(active_profile(inputs, inputs["now_utc"])),
         "semantics": "仅已确认且在有效期内的偏好参与；不是新增永久禁排规则",
     }
@@ -124,7 +128,7 @@ def active_profile(p, instant):
     return data
 
 
-def profile_windows(p):
+def profile_windows(p, task_type="any"):
     from app.constraints import local_instant
     from app.planner import instant
 
@@ -142,13 +146,16 @@ def profile_windows(p):
     preferred, low_energy = [], []
     prefs = data["preferences"]
     windows = [
-        (r, "preferred")
-        for r in prefs.get("preferred_study_windows") or []
-        if r["task_type"] == "any"
+        (index, r, "preferred")
+        for index, r in enumerate(prefs.get("preferred_study_windows") or [])
+        if r["task_type"] in ("any", task_type)
     ]
-    windows += [(r, r["level"]) for r in prefs.get("energy_windows") or []]
+    windows += [
+        (f"energy:{index}", r, r["level"])
+        for index, r in enumerate(prefs.get("energy_windows") or [])
+    ]
     while day <= last:
-        for index, (row, kind) in enumerate(windows):
+        for index, row, kind in windows:
             if day.isoweekday() not in row["weekdays"]:
                 continue
             a = local_instant(

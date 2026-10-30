@@ -1174,6 +1174,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/study-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["read_api_study_types_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/study-types/{kind}/{rid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save */
+        put: operations["save_api_study_types__kind___rid__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/semester-calendars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listing */
+        get: operations["listing_api_semester_calendars_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/drafts/semester-calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Draft */
+        post: operations["draft_api_drafts_semester_calendar_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/planning-intents": {
         parameters: {
             query?: never;
@@ -2183,6 +2251,10 @@ export interface components {
             dismissed: boolean;
             /** Conflicts */
             conflicts: string[];
+            /** Basis */
+            basis?: {
+                [key: string]: unknown;
+            };
         };
         /** CandidateDraft */
         CandidateDraft: {
@@ -2471,6 +2543,24 @@ export interface components {
             campus?: string | null;
             /** Reason */
             reason: string;
+        };
+        /** CourseTypeRule */
+        CourseTypeRule: {
+            /**
+             * Course Type
+             * @enum {string}
+             */
+            course_type: "unknown" | "lecture" | "lab" | "seminar" | "exam" | "other";
+            /**
+             * Preparation Minutes
+             * @default 0
+             */
+            preparation_minutes: number;
+            /**
+             * Review Minutes
+             * @default 0
+             */
+            review_minutes: number;
         };
         /** Decision */
         Decision: {
@@ -3866,6 +3956,8 @@ export interface components {
              * @default false
              */
             include_campus_transfer: boolean;
+            /** Course Type Rules */
+            course_type_rules?: components["schemas"]["CourseTypeRule"][];
         };
         /** RoutineWindow */
         RoutineWindow: {
@@ -3929,6 +4021,63 @@ export interface components {
              * Format: date-time
              */
             ends_at: string;
+        };
+        /** SemesterDateMapping */
+        SemesterDateMapping: {
+            /**
+             * Original Date
+             * Format: date
+             */
+            original_date: string;
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+        };
+        /** SemesterRule */
+        SemesterRule: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            operation: "apply";
+            /**
+             * Rule Kind
+             * @enum {string}
+             */
+            rule_kind: "practice_week" | "holiday" | "makeup" | "custom";
+            /** Title */
+            title: string;
+            /** Reason */
+            reason: string;
+            /** Source Scope */
+            source_scope: string;
+            /** Course Ids */
+            course_ids: string[];
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "cancel" | "move";
+            /** Start Date */
+            start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
+            /** Mappings */
+            mappings?: components["schemas"]["SemesterDateMapping"][];
+        };
+        /** SemesterUndo */
+        SemesterUndo: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            operation: "undo";
+            /** Batch Id */
+            batch_id: string;
+            /** Reason */
+            reason: string;
         };
         /** SettingsUpdate */
         SettingsUpdate: {
@@ -4173,6 +4322,23 @@ export interface components {
              * @constant
              */
             consent: true;
+        };
+        /** TypeWrite */
+        TypeWrite: {
+            /** Revision */
+            revision: number;
+            /** Target Revision */
+            target_revision: number;
+            /** Course Type */
+            course_type?: ("unknown" | "lecture" | "lab" | "seminar" | "exam" | "other") | null;
+            /** Task Type */
+            task_type?: ("unknown" | "any" | "deep" | "review" | "exercise" | "other") | null;
+            /**
+             * Difficulty
+             * @default unknown
+             * @enum {string}
+             */
+            difficulty: "unknown" | "low" | "medium" | "high";
         };
         /** UnallocatedWork */
         UnallocatedWork: {
@@ -6917,6 +7083,119 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_api_study_types_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    save_api_study_types__kind___rid__put: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                kind: "course" | "task";
+                rid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TypeWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listing_api_semester_calendars_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"][];
+                };
+            };
+        };
+    };
+    draft_api_drafts_semester_calendar_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SemesterRule"] | components["schemas"]["SemesterUndo"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceView"];
                 };
             };
             /** @description Validation Error */

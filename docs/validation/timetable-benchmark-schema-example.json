@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "samples": [
+    {
+      "sample_id": "synthetic-format-example-001",
+      "layout_id": "synthetic-grid-01",
+      "input_kind": "image",
+      "source_sha256": "439df52c65ca98fb3341a2a8ff32d842b231306a2b6b2f0138bc76be43898444",
+      "anonymized": true,
+      "reviewed": true,
+      "synthetic": true,
+      "prediction_stage": "original",
+      "date_range": {
+        "starts_on": "2026-09-01",
+        "ends_on": "2026-12-31"
+      },
+      "expected": [
+        {
+          "slot_id": "p1-r1-c1",
+          "name": "合成示例课程A",
+          "weekday": 1,
+          "weeks": [
+            1,
+            2,
+            3
+          ],
+          "periods": [
+            1,
+            3
+          ],
+          "teacher": null,
+          "location": "SYNTHETIC-A101",
+          "campus": "SYNTHETIC-CAMPUS"
+        }
+      ],
+      "predicted": [
+        {
+          "slot_id": "p1-r1-c1",
+          "name": "合成示例课程Ａ",
+          "weekday": 1,
+          "weeks": [
+            3,
+            2,
+            1
+          ],
+          "periods": [
+            1,
+            3
+          ],
+          "teacher": null,
+          "location": "SYNTHETIC-A101",
+          "campus": "SYNTHETIC-CAMPUS"
+        }
+      ]
+    }
+  ]
+}

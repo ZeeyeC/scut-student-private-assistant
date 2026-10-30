@@ -17,6 +17,10 @@ from app.timetable_contracts import TimetableRecognition
 
 
 def validate_payload(kind, payload):
+    if kind == "semester_calendar":
+        from app.semester_calendar import validate_semester_payload
+
+        return validate_semester_payload(payload)
     if kind == "course_change":
         from app.course_changes import CourseChange
 
@@ -118,7 +122,7 @@ async def edit_draft(db, owner, rid, expected, payload):
     store.revision(r, expected)
     if r.data["status"] != "pending":
         raise HTTPException(409, "草稿已确认或失效")
-    if r.data["draft_kind"] == "course_change":
+    if r.data["draft_kind"] in {"course_change", "semester_calendar"}:
         raise HTTPException(422, "课程调整与预览绑定，请删除后重新生成草稿")
     validated = validate_payload(r.data["draft_kind"], payload)
     if r.data["draft_kind"] in {"timetable_recognition", "timetable_text"}:
@@ -155,7 +159,12 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     # New independent facts do not depend on every unrelated database change.
     # Plans/timetable replacements retain their full source version guard;
     # decompositions validate the actual task version in save_steps below.
-    if d.data["draft_kind"] in {"plan", "timetable", "course_change"} or d.data.get("source", {}).get("routine_candidate_id"):
+    if d.data["draft_kind"] in {
+        "plan",
+        "timetable",
+        "course_change",
+        "semester_calendar",
+    } or d.data.get("source", {}).get("routine_candidate_id"):
         store.revision(s, d.data["source_revision"])
     payload = validate_payload(d.data["draft_kind"], d.data["payload"])
     from app.conflicts import REVIEW_KINDS, draft_conflicts
@@ -163,9 +172,18 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     conflict_report = None
     if d.data["draft_kind"] in REVIEW_KINDS:
         conflict_report = await draft_conflicts(db, owner, d, payload)
-        if conflict_token is not None and conflict_token != conflict_report["conflict_token"]:
-            raise HTTPException(409, "课程、固定事项或转移设置已变化，请重新检查冲突后保存")
+        if (
+            conflict_token is not None
+            and conflict_token != conflict_report["conflict_token"]
+        ):
+            raise HTTPException(
+                409, "课程、固定事项或转移设置已变化，请重新检查冲突后保存"
+            )
     ids = []
+    if d.data["draft_kind"] == "semester_calendar":
+        from app.semester_calendar import save_semester
+
+        ids = await save_semester(db, owner, d, payload)
     if d.data["draft_kind"] == "course_change":
         from app.course_changes import save_change
 
@@ -235,7 +253,10 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     await store.bump(db, owner)
     summary = {"draft_id": d.id, "saved_ids": ids}
     if conflict_report is not None:
-        summary.update(conflict_report=conflict_report, conflict_reviewed=conflict_token is not None)
+        summary.update(
+            conflict_report=conflict_report,
+            conflict_reviewed=conflict_token is not None,
+        )
     d.data = {**d.data, "status": "confirmed", "summary": summary}
     d.revision += 1
     if d.data.get("source", {}).get("browser_session"):

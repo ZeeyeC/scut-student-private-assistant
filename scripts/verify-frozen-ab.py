@@ -49,9 +49,12 @@ def verify(service):
         assert facts["actual_minutes"] == 45 and len(facts["effective_record_ids"]) == 2
         followup = module("a_followup_checks", "verify-a-followup-checks.py")
         additional = followup.checks(get, write, task_id, local_day)
+        completion = module("project_completion_checks", "verify-project-completion-checks.py")
+        completion_checks = completion.checks(get, write, task_id, local_day)
         return [
             *verified,
             *additional,
+            *completion_checks,
             "real-B-actual45-to-A-remaining15",
             "two-real-options-use-corrected-remaining15",
             "replanning-and-risk-read-real-execution-projection",

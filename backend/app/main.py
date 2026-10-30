@@ -243,6 +243,7 @@ def create_app(config=None):
                 "weekly-review-v1",
                 "planning-core-v1",
                 "b-interaction-v1",
+                "project-completion-v1",
             ],
             "model_configured": bool(config.text_model and config.model_api_key),
             "vision_configured": bool(config.vision_model and config.model_api_key),
@@ -291,8 +292,8 @@ def create_app(config=None):
     app.include_router(profile_router(get_db, current_user))
     app.include_router(goal_router(get_db, current_user))
     app.include_router(review_router(get_db, current_user))
-    from app.duration_suggestions_routes import duration_suggestions_router
     from app.conversation_constraint_routes import conversation_constraint_router
+    from app.duration_suggestions_routes import duration_suggestions_router
     from app.goal_capacity_routes import goal_capacity_router
     from app.negotiation_routes import negotiation_router
     from app.proactive_routes import proactive_router
@@ -303,6 +304,12 @@ def create_app(config=None):
     app.include_router(generator_router(get_db, current_user))
     app.include_router(conversation_constraint_router(get_db, current_user))
     app.include_router(goal_capacity_router(get_db, current_user))
+    from app.study_types import study_type_router
+
+    app.include_router(study_type_router(get_db, current_user))
+    from app.semester_routes import semester_calendar_router
+
+    app.include_router(semester_calendar_router(get_db, current_user))
     app.include_router(negotiation_router(get_db, current_user))
     app.include_router(proactive_router(get_db, current_user))
     app.include_router(planner_router(get_db, current_user))

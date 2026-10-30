@@ -1,4 +1,5 @@
 import re
+from copy import deepcopy
 from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -167,7 +168,18 @@ def expand_calendar(settings, courses, exceptions, start, end):
             )
             if ex and ex.get("cancelled"):
                 continue
-            intervals = course_intervals(settings, c, d)
+            source = ex.get("source", {}) if ex else {}
+            snapshot = (
+                source.get("interval_snapshot")
+                if source.get("kind") == "semester_calendar"
+                and source.get("preserve_periods")
+                else None
+            )
+            # Confirmed makeup intervals are explicit immutable facts. Consume
+            # them before reading a subsequently changed period-clock mapping.
+            intervals = (
+                deepcopy(snapshot) if snapshot else course_intervals(settings, c, d)
+            )
             starts = datetime.fromisoformat(
                 intervals["teaching_intervals"][0]["starts_at"]
             )
@@ -179,9 +191,72 @@ def expand_calendar(settings, courses, exceptions, start, end):
                     datetime.fromisoformat(ex["starts_at"]),
                     datetime.fromisoformat(ex["ends_at"]),
                 )
+                source = ex.get("source", {})
+                if source.get("kind") == "semester_calendar" and source.get(
+                    "preserve_periods"
+                ):
+                    from app.constraints import local_instant
+
+                    target = moved_start.astimezone(
+                        ZoneInfo(source.get("timezone") or settings["timezone"])
+                    ).date()
+                    if (
+                        source.get("original_date", d.isoformat()) != d.isoformat()
+                        or source.get("target_date", target.isoformat())
+                        != target.isoformat()
+                    ):
+                        raise ValueError("校历映射的原日期或目标日期与课程发生不一致")
+                    if not snapshot:
+                        intervals = course_intervals(settings, c, target)
+                        for group in (
+                            "teaching_intervals",
+                            "break_intervals",
+                            "occupied_intervals",
+                        ):
+                            for part in intervals[group]:
+                                for key in ("starts_at", "ends_at"):
+                                    local = datetime.fromisoformat(part[key]).replace(
+                                        tzinfo=None
+                                    )
+                                    part[key] = local_instant(local, tz).isoformat()
+                    else:
+                        if intervals.get("interval_version") != COURSE_INTERVAL_VERSION:
+                            raise ValueError("补课分段快照版本不受支持，请核对课程调整")
+                        for group in (
+                            "teaching_intervals",
+                            "break_intervals",
+                            "occupied_intervals",
+                        ):
+                            for part in intervals[group]:
+                                a, b = (
+                                    datetime.fromisoformat(part[key])
+                                    for key in ("starts_at", "ends_at")
+                                )
+                                if (
+                                    a.utcoffset() is None
+                                    or b.utcoffset() is None
+                                    or not moved_start <= a < b <= moved_end
+                                ):
+                                    raise ValueError("补课分段快照超出已确认时间")
+                    expected_start = datetime.fromisoformat(
+                        intervals["teaching_intervals"][0]["starts_at"]
+                    )
+                    expected_end = datetime.fromisoformat(
+                        intervals["teaching_intervals"][-1]["ends_at"]
+                    )
+                    if moved_start.astimezone(
+                        timezone.utc
+                    ) != expected_start.astimezone(
+                        timezone.utc
+                    ) or moved_end.astimezone(timezone.utc) != expected_end.astimezone(
+                        timezone.utc
+                    ):
+                        raise ValueError(
+                            "保留节次的校历映射只能改变日期，修改钟点请使用单次调课"
+                        )
                 # Changing only the room does not destroy known period structure.
                 # A new explicit interval is authoritative; never invent breaks.
-                if moved_start != starts or moved_end != ends:
+                elif moved_start != starts or moved_end != ends:
                     interval = {
                         "periods": [],
                         "starts_at": moved_start.isoformat(),
@@ -208,7 +283,12 @@ def expand_calendar(settings, courses, exceptions, start, end):
                         "title": c["name"],
                         "campus": (ex.get("campus") or None)
                         if ex and "campus" in ex
-                        else (None if ex and ex.get("location") not in (None, c.get("location")) else c.get("campus")),
+                        else (
+                            None
+                            if ex
+                            and ex.get("location") not in (None, c.get("location"))
+                            else c.get("campus")
+                        ),
                         "starts_at": starts.isoformat(),
                         "ends_at": ends.isoformat(),
                         "location": ex.get("location")

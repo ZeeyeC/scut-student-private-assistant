@@ -23,6 +23,7 @@ FACT_KINDS = (
     "execution_timer",
     "user_profile",
     "goal",
+    "study_classification",
 )
 EVENT_TYPES = {
     "execution_changed",
@@ -33,6 +34,8 @@ EVENT_TYPES = {
     "course_exception_changed",
     "duration_suggestion_action",
     "planning_sources_changed",
+    "study_classification_changed",
+    "semester_calendar_changed",
 }
 
 

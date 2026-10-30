@@ -1,0 +1,22 @@
+Native health host: /Users/czy/ProjectManagement/agentbuild/campus-pet/build/health-transport-tests/HealthProbe
+origins: []
+PASS origins
+stale: [{"transactions":[{"fetchStarted":true,"dnsStarted":true,"requestStarted":true,"connectionReused":false,"connectStarted":true,"responseStarted":true,"proxyConnection":false,"resourceFetchType":1,"connected":true}],"elapsedMilliseconds":11,"statusCode":200,"probeID":"106C784A-AF52-49BD-9EA0-B1ECDB415831","port":56142},{"transactions":[{"fetchStarted":true,"dnsStarted":true,"requestStarted":true,"connectionReused":false,"connectStarted":true,"responseStarted":true,"proxyConnection":false,"resourceFetchType":1,"connected":true}],"elapsedMilliseconds":1,"statusCode":200,"probeID":"99283931-619D-4BA7-95AD-0CBD322A5D29","port":56142}]
+PASS stale
+cache: [{"probeID":"E9E6A440-5D5C-4B65-A638-8F83D8489EB6","statusCode":200,"transactions":[{"requestStarted":true,"connectionReused":false,"fetchStarted":true,"resourceFetchType":1,"dnsStarted":true,"connected":true,"responseStarted":true,"connectStarted":true,"proxyConnection":false}],"elapsedMilliseconds":9,"port":56151},{"probeID":"E2B5B3AC-5C33-4363-B407-F7BA43CF2925","statusCode":200,"transactions":[{"requestStarted":true,"connectionReused":false,"fetchStarted":true,"resourceFetchType":1,"dnsStarted":true,"connected":true,"responseStarted":true,"connectStarted":true,"proxyConnection":false}],"elapsedMilliseconds":2,"port":56151}]
+PASS cache
+application: [{"probeID":"ECB5F459-B7E6-4CE8-BD38-A4E9E4EA6367","port":56156,"statusCode":200,"elapsedMilliseconds":8,"transactions":[{"proxyConnection":false,"connectStarted":true,"responseStarted":true,"requestStarted":true,"connectionReused":false,"connected":true,"dnsStarted":true,"fetchStarted":true,"resourceFetchType":1}]}]
+PASS reject
+mode: [{"elapsedMilliseconds":8,"port":56164,"statusCode":200,"probeID":"B76B823D-BD31-4D08-920C-0FCCACFF4098","transactions":[{"requestStarted":true,"dnsStarted":true,"connected":true,"connectionReused":false,"responseStarted":true,"fetchStarted":true,"connectStarted":true,"proxyConnection":false,"resourceFetchType":1}]}]
+PASS reject
+capability: [{"transactions":[{"dnsStarted":true,"fetchStarted":true,"connected":true,"requestStarted":true,"resourceFetchType":1,"responseStarted":true,"connectStarted":true,"proxyConnection":false,"connectionReused":false}],"statusCode":200,"port":56168,"elapsedMilliseconds":9,"probeID":"454E0964-DF35-486F-913B-C4C17F892152"}]
+PASS reject
+status: [{"elapsedMilliseconds":9,"statusCode":503,"probeID":"44FC3D46-FAA8-4CCE-9356-492D1F805190","transactions":[{"proxyConnection":false,"connectStarted":true,"responseStarted":true,"connectionReused":false,"resourceFetchType":1,"connected":true,"dnsStarted":true,"fetchStarted":true,"requestStarted":true}],"port":56170}]
+PASS reject
+malformed: [{"probeID":"F1EF70D1-91A7-40C6-BD9C-2D673CB43B8E","port":56172,"elapsedMilliseconds":9,"statusCode":200,"transactions":[{"connected":true,"requestStarted":true,"connectionReused":false,"proxyConnection":false,"fetchStarted":true,"resourceFetchType":1,"connectStarted":true,"responseStarted":true,"dnsStarted":true}]}]
+PASS reject
+redirect: [{"probeID":"A6F04EAC-A90F-4ACE-875A-CCDE78C14692","elapsedMilliseconds":9,"statusCode":302,"transactions":[{"resourceFetchType":1,"fetchStarted":true,"proxyConnection":false,"connectStarted":true,"connected":true,"responseStarted":true,"dnsStarted":true,"requestStarted":true,"connectionReused":false}],"port":56174}]
+PASS reject
+timeout: [{"elapsedMilliseconds":3007,"errorDomain":"NSURLErrorDomain","errorCode":-1001,"transactions":[{"fetchStarted":true,"proxyConnection":false,"responseStarted":false,"requestStarted":true,"connectionReused":false,"resourceFetchType":1,"connected":true,"connectStarted":true,"dnsStarted":true}],"probeID":"E305F17B-9063-4ACF-8DB9-78E3B35B479B","port":56197}]
+PASS timeout
+Native health transport checks passed (10 scenarios)

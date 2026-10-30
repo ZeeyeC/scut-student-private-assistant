@@ -144,6 +144,9 @@ def run_checks(project, stage, version):
     env["PYTHONPATH"] = str(project / "backend")
     env["PATH"] = str(project / ".tools/macos/node/bin") + os.pathsep + env.get("PATH", "")
     commands = [
+        ("extension_tests", ["npm", "--prefix", "extension", "test"]),
+        ("extension_types", ["npm", "--prefix", "extension", "run", "typecheck"]),
+        ("extension_build", ["npm", "--prefix", "extension", "run", "build"]),
         # Build the current frontend and binary before tests consume static assets.
         ("build", [python, "campus-pet/build.py", "--output-dir", str(stage),
                    "--version", version]),
@@ -152,6 +155,7 @@ def run_checks(project, stage, version):
         ("browser", [str(project / "frontend/node_modules/.bin/playwright"), "test",
                      "--config=frontend/playwright.pet.config.ts"]),
         ("native_logic", [python, "campus-pet/tests/run_native_tests.py"]),
+        ("native_health_transport", [python, "campus-pet/tests/run_health_transport_tests.py"]),
         ("native_integration", [python, "campus-pet/verify.py", "--app", str(stage / "课间桌宠.app")]),
         ("frozen_pdf", [python, "scripts/verify-frozen-timetable.py", "--service",
                         str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"),
@@ -167,9 +171,18 @@ def run_checks(project, stage, version):
     for name, command in commands:
         print("Release check:", name, flush=True)
         log_path = stage / (name + ".log")
+        command_env = env
+        if name.startswith("extension_"):
+            # Production builds must never inherit an E2E adapter/origin or
+            # silently produce a bridge without the observed school scope.
+            command_env = {
+                **env,
+                "PUBLIC_ORIGIN": "http://127.0.0.1:5173",
+                "SCUT_ADAPTER_PATH": str(project / "config/scut-undergraduate-2026-10-14.json"),
+            }
         try:
             with log_path.open("w") as log:
-                subprocess.run(command, cwd=project, env=env, stdout=log,
+                subprocess.run(command, cwd=project, env=command_env, stdout=log,
                                stderr=subprocess.STDOUT, check=True)
         except subprocess.CalledProcessError as failure:
             if name != "native_integration":
@@ -193,6 +206,9 @@ def run_checks(project, stage, version):
         else:
             results[name] = "passed"
     shutil.copy2(project / "campus-pet/build/verification/result.json", stage / "原生集成检查.json")
+    health_metrics = project / "campus-pet/build/verification/health-diagnostics.json"
+    if health_metrics.is_file():
+        shutil.copy2(health_metrics, stage / "原生健康诊断.json")
     return results
 
 

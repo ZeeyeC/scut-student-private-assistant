@@ -1,0 +1,105 @@
+{
+  "repository": "ZeeyeC/scut-student-private-assistant",
+  "queried_at_utc": "2026-10-30T04:47:42.727178+00:00",
+  "records": [
+    {
+      "number": 1,
+      "request": "repos/ZeeyeC/scut-student-private-assistant/pulls/1/commits?per_page=100",
+      "page_count": 1,
+      "commits": [
+        {
+          "sha": "ee614e69eddfedd47a699e9a9646bba599157f7b",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ee614e69eddfedd47a699e9a9646bba599157f7b",
+          "message": "修改了启动脚本 实现了一键启动"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "request": "repos/ZeeyeC/scut-student-private-assistant/pulls/2/commits?per_page=100",
+      "page_count": 1,
+      "commits": [
+        {
+          "sha": "327bf1d389e49193a4d9fff3761d508389435357",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/327bf1d389e49193a4d9fff3761d508389435357",
+          "message": "feat: add macOS desktop pet and after-class homework check-in"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "request": "repos/ZeeyeC/scut-student-private-assistant/pulls/3/commits?per_page=100",
+      "page_count": 1,
+      "commits": [
+        {
+          "sha": "ee614e69eddfedd47a699e9a9646bba599157f7b",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ee614e69eddfedd47a699e9a9646bba599157f7b",
+          "message": "修改了启动脚本 实现了一键启动"
+        },
+        {
+          "sha": "327bf1d389e49193a4d9fff3761d508389435357",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/327bf1d389e49193a4d9fff3761d508389435357",
+          "message": "feat: add macOS desktop pet and after-class homework check-in"
+        },
+        {
+          "sha": "ebe9ea1a89be2412e49fe656e64db137932029bf",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ebe9ea1a89be2412e49fe656e64db137932029bf",
+          "message": "demo2.1"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "request": "repos/ZeeyeC/scut-student-private-assistant/pulls/4/commits?per_page=100",
+      "page_count": 1,
+      "commits": [
+        {
+          "sha": "ec5ee94c42f1bdbb79e0f6a29a07607ac7b115be",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/ec5ee94c42f1bdbb79e0f6a29a07607ac7b115be",
+          "message": "Demo2.2: scheduled task orbit, silent reminders and separate timetable"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "request": "repos/ZeeyeC/scut-student-private-assistant/pulls/5/commits?per_page=100",
+      "page_count": 1,
+      "commits": [
+        {
+          "sha": "36c9bef93cd8fb961a955842f7d2b2db4dee44cc",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/36c9bef93cd8fb961a955842f7d2b2db4dee44cc",
+          "message": "Demo2.4: reviewed timetable input, today plans and course changes"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "request": "repos/ZeeyeC/scut-student-private-assistant/pulls/6/commits?per_page=100",
+      "page_count": 1,
+      "commits": [
+        {
+          "sha": "b8c85648afb9da7086d9d61d10d7776da13983eb",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/b8c85648afb9da7086d9d61d10d7776da13983eb",
+          "message": "feat: deliver person A planning core and handoff contracts"
+        },
+        {
+          "sha": "cb84277e1799523a24b87a6c9b92ab3e1b6c8170",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/cb84277e1799523a24b87a6c9b92ab3e1b6c8170",
+          "message": "docs: clarify person A completion and person B dependencies"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "request": "repos/ZeeyeC/scut-student-private-assistant/pulls/7/commits?per_page=100",
+      "page_count": 1,
+      "commits": [
+        {
+          "sha": "05e798131c7fedb4526bacffe4b05d3ae84d2ad4",
+          "html_url": "https://github.com/ZeeyeC/scut-student-private-assistant/commit/05e798131c7fedb4526bacffe4b05d3ae84d2ad4",
+          "message": "feat(planning): connect A follow-up services for Demo2.4.8"
+        }
+      ]
+    }
+  ]
+}
