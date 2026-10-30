@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "scope": "static design prototype only, sample data, no product backend",
+  "results": [
+    "today desktop rendered",
+    "calendar desktop rendered",
+    "tasks desktop rendered",
+    "assistant desktop rendered",
+    "settings desktop rendered",
+    "plan preview and explicit confirmation",
+    "focus and execution drawer",
+    "create task in prototype memory",
+    "timetable import preview",
+    "390px all views fit",
+    "320px all views fit"
+  ],
+  "console_errors": []
+}
