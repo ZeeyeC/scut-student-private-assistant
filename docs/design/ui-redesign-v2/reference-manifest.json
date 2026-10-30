@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "status": "proposal-awaiting-user-feedback",
+  "formalProductChanged": false,
+  "basisCommit": "f39d82291f363c9ad306e2747a48e05a778de7e1",
+  "canonicalProductContent": {
+    "width": 1280,
+    "height": 782
+  },
+  "referenceCrop": {
+    "x": 0,
+    "y": 38,
+    "width": 1280,
+    "height": 782
+  },
+  "files": [
+    {
+      "path": "docs/design/ui-redesign-v2/README.md",
+      "sha256": "dbc723ca9940c61f469f8b527fc5a39e2efe0390ff12adf50cff7de82b6150b0",
+      "bytes": 4069
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/builder-check.md",
+      "sha256": "1b61060487c4e2dccf5e6f28dc8ff1c819f480e1510b448918a1c202ce2cee03",
+      "bytes": 1229
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/index.html",
+      "sha256": "8c14b7817e027963cfa529ca4998e539bc8ee1235894ddac06770513665b0e3f",
+      "bytes": 314722
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/preview-verification.json",
+      "sha256": "05d516fdc849b6b4d3e9b2b9d7475663bf8cb55d821554b033ef2bd7ea5ad54f",
+      "bytes": 1246
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/assistant-desktop.png",
+      "sha256": "80d7bb1de5b28d0ff1544c12d432315cc30b473b1fcf7ee143d6436fa9ac7d8b",
+      "bytes": 42886
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/calendar-desktop.png",
+      "sha256": "d39dcd4eb3e9c19818b00f6cc37877629fe558501e787c20f5667a9beaf23a74",
+      "bytes": 52105
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/import-compact.png",
+      "sha256": "03d38fe9c4a1be9250f403184035f3800c47081ee3b06d9385aa4140c86f5807",
+      "bytes": 33974
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/import-default.png",
+      "sha256": "9b4aee54d5e9e31680c68b06037f1ab84ac28bccf091c654442037db5c97f043",
+      "bytes": 71261
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/pet-detail.png",
+      "sha256": "7fe1e2e98cf46a30f25760dccc4ed3ed77e29566ba94d5869f6b43d2a1b76cdd",
+      "bytes": 48921
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/pet-idle.png",
+      "sha256": "a8b59b568d30cd98e086f392139b8e70f0735f713042b23c527afb9f1d7352b6",
+      "bytes": 28016
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/pet-todos.png",
+      "sha256": "24f12bdd6d4074ca91ba35177c72e59884d1eb3e1e3ac0ebf611d4604f6481f0",
+      "bytes": 50241
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/settings-desktop.png",
+      "sha256": "1107cb783f942b2a4c90569b6e1341016b857316a48ac98363023570ccca8be0",
+      "bytes": 43889
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/task-detail.png",
+      "sha256": "3c3998de37e6f7a820b5aa69f2b14ee418a2523f897a6d2bdf9b26ef621d05f7",
+      "bytes": 71692
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/tasks-desktop.png",
+      "sha256": "e7c565f180b509a2f6b5cf8c713a7fe61a7186af500110e831874cfb980af57b",
+      "bytes": 59095
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/today-dark.png",
+      "sha256": "687aacd4067466fc1a4b38e8f168ee9d1141ce73948855ee7f85c7d093f62571",
+      "bytes": 74863
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/screens/today-desktop.png",
+      "sha256": "1f71a3f523448f5bc5dab0342f9dab0b96991189c477b59ae1dae464513c6abc",
+      "bytes": 74296
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/verify-reference.mjs",
+      "sha256": "c66f7bc4718f2ce214dce03c444596c7371ca0993a2b3f0ee8d1dedc43805a9f",
+      "bytes": 7227
+    },
+    {
+      "path": "docs/design/ui-redesign-v2/visual-contract.json",
+      "sha256": "669b399a3484db178554e5a992d43f8ac34f1c1e85920593fd892049fe61c4ce",
+      "bytes": 2671
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md",
+      "sha256": "9362513bfa794b6f3576c8deebd0ce0986d22ca59f883dba1429f603c14e177f",
+      "bytes": 20099
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-30-ui-refinement-design.md",
+      "sha256": "76b76c6a7dabfe367e9407fa673d2ed8d2c7019136ac221959e440d574a789bb",
+      "bytes": 13234
+    }
+  ]
+}

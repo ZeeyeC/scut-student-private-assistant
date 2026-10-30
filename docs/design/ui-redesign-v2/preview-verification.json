@@ -1,0 +1,71 @@
+{
+  "kind": "design-prototype-only",
+  "productImplementation": false,
+  "fixture": "synthetic",
+  "errors": [],
+  "overflow": [],
+  "widths": [
+    1280,
+    1024,
+    960,
+    768,
+    560,
+    390,
+    320
+  ],
+  "metrics": {
+    "window": {
+      "width": 1280,
+      "height": 820
+    },
+    "productContent": {
+      "width": 1280,
+      "height": 782
+    },
+    "sidebar": 176,
+    "mainPadding": "31px 38px 38px",
+    "bodyScroll": 0
+  },
+  "petGeometry": {
+    "panel": {
+      "width": 328,
+      "height": 360
+    },
+    "visibleGap": 32.095238095238074,
+    "sourceAlphaBounds": [
+      104,
+      37,
+      372,
+      541
+    ],
+    "sourceSize": [
+      420,
+      560
+    ]
+  },
+  "sidebarScroll": {
+    "scrollTop": 259,
+    "before": {
+      "x": 16,
+      "y": 106,
+      "width": 176,
+      "height": 782
+    },
+    "after": {
+      "x": 16,
+      "y": 106,
+      "width": 176,
+      "height": 782
+    }
+  },
+  "checks": [
+    "five pages",
+    "browser import primary; two secondary methods collapsed",
+    "local import preview",
+    "sidebar stationary during content scroll",
+    "pet closed by default; click toggles",
+    "pet selected task opens exact App detail",
+    "responsive overflow",
+    "dark appearance"
+  ]
+}

@@ -12,6 +12,14 @@
 
 **Execution records:** 与[总计划](2026-10-30-app-ui-implementation.md)共用`codex/demo2.5-app-ui-naiwa`和[进度追踪表](../../roadmap/Demo2.5-开发进度追踪表.md)；本计划Task1–4分别对应追踪项N1–N4。原任务书、已归档调研与待补素材见[实施材料](../../materials/demo2.5/README.md)。
 
+## 2.5.0后交互修订
+
+本计划的素材/播放器与N1–N4结果保留；用户最新要求以[新修改计划Task4/5](2026-10-30-ui-refinement-implementation.md)和[v2桌宠规格](../specs/2026-10-30-ui-refinement-design.md)为准，替代下文历史任务环/顶部条呈现要求。
+
+- [x] 新参考记录：去常驻顶部条，单击展开一个方形待办窗，列表和详情内部切换。
+- [ ] 正式原生实现去条/透明穿透、单面板、真实任务与提醒接线。
+- [ ] 按新参考截图对照和真实App验收，不用旧任务环测试作为新面板完成依据。
+
 ## Global Constraints
 
 - 固定上游提交 `008eb12636f517aedecee6f1a1fc773c2f0df6c4`；角色授权依据明确后才纳入正式包，保留适用许可和署名。

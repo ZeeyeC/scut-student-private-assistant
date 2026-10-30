@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "proposal-awaiting-user-feedback",
+  "date": "2026-10-30",
+  "reference": "index.html",
+  "purpose": "视觉规格；不是正式产品实现或新版验收结果",
+  "window": {"previewWidth": 1280, "previewHeight": 820, "previewTitlebarHeight": 38, "productContentWidth": 1280, "productContentHeight": 782, "nativeOuterFrame": "derive-from-content-size-and-actual-system-chrome", "radius": 12},
+  "layout": {
+    "sidebar": {"wide": 176, "medium": 144, "compact": 56, "rowHeight": 43, "rowGap": 7},
+    "breakpoints": {"wide": 960, "compactRail": 640, "wideAgenda": 1200},
+    "contentPadding": {"top": 31, "right": 38, "bottom": 38, "left": 38},
+    "today": {"agendaWidthWide": 280, "agendaGapWide": 43, "agendaWidth": 236, "agendaGap": 32},
+    "drawerWidth": 448,
+    "buttonRadius": 6,
+    "cardRadius": 8,
+    "contentScrollOnly": true,
+    "navigationAlwaysLeft": true
+  },
+  "typography": {"family": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang SC, Microsoft YaHei, sans-serif", "pageTitle": 25, "sectionTitle": 16, "body": 14, "button": 13, "secondary": 12, "minimum": 11},
+  "colors": {
+    "light": {"ink": "#252a35", "muted": "#71798b", "line": "#e8ebf1", "paper": "#fefefe", "sidebar": "#f5f6fa", "soft": "#f7f8fc", "accent": "#596bc6", "onAccent": "#ffffff", "selected": "#eaeefa", "focus": "#f7f8fd", "desktopPreviewOnly": "#edf0f4", "shadow": "#29375018", "buttonBorder": "#dfe3ec"},
+    "dark": {"ink": "#e5e8ef", "muted": "#a3adbf", "line": "#323a48", "paper": "#202630", "sidebar": "#242b36", "soft": "#282f3c", "accent": "#a1afea", "onAccent": "#1e263e", "selected": "#303b59", "focus": "#272f40", "desktopPreviewOnly": "#1b212a", "shadow": "#00000040", "buttonBorder": "#414b5d"}
+  },
+  "import": {"default": "school-browser", "secondaryOrder": ["image-pdf", "text"], "secondaryCollapsed": true, "launchOnlyOnExplicitButton": true, "defaultBrowser": "chrome", "allowedBrowsers": ["chrome", "edge"]},
+  "pet": {"panelWidth": 328, "panelHeight": 360, "radius": 12, "headerMinimum": 65, "footerMinimum": 49, "rowMinimum": 58, "horizontalPadding": 18, "opticalGap": 32, "screenInset": 12, "defaultOpen": false, "persistentTopStrip": false, "characterFrame": {"width": 170, "height": 227}, "characterSource": "campus-pet/Resources/NaiWa/frames/392079aa9673b02527ffd4c14d5cb3d65ae3253b62f2a92a60fcc20680599f89.png"},
+  "acceptance": {"geometryToleranceLogicalPx": 2, "colorTokensExact": true, "sameFixturePixelDifferenceMaximum": 0.01, "pixelComparisonThreshold": 0.12, "forbidMaskingLayoutOrNavigation": true, "nativeSystemTitlebarExcludedFromPixelDiff": true, "approveReferenceBeforeChangingBaseline": true}
+}

@@ -8,6 +8,8 @@
 
 | 材料 | 位置 | 用途 |
 | --- | --- | --- |
+| 最新视觉修改计划 | [ui-refinement-implementation](../../superpowers/plans/2026-10-30-ui-refinement-implementation.md) | 用户八项新意见、逐任务实施与严格截图验收；当前为设计审阅阶段 |
+| 最新完整窗口与桌宠参考 | [v2参考入口](../../design/ui-redesign-v2/README.md)、[v2规格](../../superpowers/specs/2026-10-30-ui-refinement-design.md) | 固定左导航、柔和色彩、浏览器优先、无顶部条及单击方形待办 |
 | 总实现计划 | [2026-10-30-app-ui-implementation.md](../../superpowers/plans/2026-10-30-app-ui-implementation.md) | 五项总任务、浏览器选择/授权边界、回归与发布 |
 | 开发进度 | [Demo2.5-开发进度追踪表.md](../../roadmap/Demo2.5-开发进度追踪表.md) | 逐项记录实际状态、提交、验证、缺口及下一步 |
 | 界面设计说明 | [2026-10-30-ui-redesign-design.md](../../superpowers/specs/2026-10-30-ui-redesign-design.md) | 页面归位、视觉及原功能接线 |
