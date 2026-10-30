@@ -1,0 +1,17 @@
+{
+  "removed_generated_paths": [
+    "agentbuild/campus-pet/build",
+    "agentbuild/frontend/test-results",
+    "agentbuild/backend/.pytest_cache",
+    "agentbuild/scripts/tests/__pycache__"
+  ],
+  "preserved": [
+    "existing archives",
+    "Demo2.5",
+    "active source project",
+    ".env / model.env",
+    "data / backups",
+    "installed dependencies",
+    "development taskbook"
+  ]
+}

@@ -1,0 +1,12 @@
+
+> campus-assistant-bridge@0.1.2 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/czy/ProjectManagement/agentbuild/extension
+
+
+ Test Files  5 passed (5)
+      Tests  7 passed (7)
+   Start at  21:14:17
+   Duration  357ms (import 78%, tests 15%, transform 5%, worker 2%)

@@ -1,6 +1,6 @@
 # 课间 · Mac桌宠与独立助手
 
-当前开发分支为 `codex/demo2.5-app-ui-naiwa`。已发布版仍为Demo2.4.9；Demo2.5的构建及验收结果见[进度表](../docs/roadmap/Demo2.5-开发进度追踪表.md)，不要把开发预览当作已发布版。
+当前开发分支为 `codex/demo2.5-app-ui-naiwa`。本地2.5.0已归档于工作区`Demo2.5/`；构建及验收结果见[进度表](../docs/roadmap/Demo2.5-开发进度追踪表.md)，已有Demo2.4.9及其他归档保留。
 
 日常操作在独立App中完成，使用Swift/AppKit窗口和内部WebKit工作台。外部浏览器只用于学校课表登录与导入：默认指定Chrome，可在设置选择Edge并记住选择；不使用系统默认Safari。
 

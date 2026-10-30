@@ -1,0 +1,30 @@
+{
+  "release": "Demo2.5",
+  "version": "2.5.0",
+  "created_at": "2026-10-30T13:19:50.206719+00:00",
+  "base_commit": "5acbe3ffd6a19b7be0b2c191422349efb8f43c07",
+  "source": "current working tree, including uncommitted changes",
+  "platform": "macOS Apple Silicon",
+  "minimum_macos": "13.0",
+  "checks": {
+    "extension_tests": "passed",
+    "extension_types": "passed",
+    "extension_build": "passed",
+    "build": "passed",
+    "backend": "passed",
+    "frontend": "passed",
+    "browser": "passed",
+    "browser_local": "passed",
+    "native_logic": "passed",
+    "pet_asset_freeze": "passed",
+    "native_health_transport": "passed",
+    "native_integration": "passed",
+    "frozen_pdf": "passed",
+    "frozen_ab": "passed",
+    "frozen_b_interaction": "passed"
+  },
+  "credentials_and_personal_data_in_package": false,
+  "release_basis": "current version built and verified independently; no historical baseline required",
+  "real_model_smoke": "development evidence copied; no paid calls during release",
+  "real_scut_accuracy_acceptance": "pending; no 30-sample benchmark"
+}

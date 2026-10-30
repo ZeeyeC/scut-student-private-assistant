@@ -3,13 +3,13 @@
   "backend_tests": 681,
   "backend_subtests": 20,
   "frontend_tests": 103,
-  "extension_tests": 6,
-  "browser_tests": 65,
+  "extension_tests": 7,
+  "browser_tests": 68,
   "local_session_test": 1,
   "native_health_scenarios": 10,
   "actual_native_app": true,
   "actual_pet_art": true,
-  "formal_release": "not yet packaged",
+  "formal_release": "Demo2.5 / 2.5.0; 15/15 checks and 32 SHA256 entries verified",
   "asset_rights_basis": "user-provided-repository-license; separate character-art grant not independently verified",
   "remaining_external_acceptance": [
     "current Chrome/Edge real school login/import",
@@ -18,13 +18,17 @@
     "Windows/Intel"
   ],
   "log_sha256": {
-    "V1-backend.txt": "20107f18869b7c1bbf1fdf78d4929aa5a5dfe17b1b57117584ced6c53ad64828",
-    "V1-frontend.txt": "272ad006777edf2b67b80ccd42bbec12f22bee0385f452c1e4660df8114127d4",
-    "V1-browser.txt": "70a67c4ccdc2d1b236a07c2d39442b3e76652631e5df03c02662867a46425c40",
-    "V1-local-session.txt": "673cd5736d1483b0bce08c45bed9cd39eaab9f793230c5ee8a32efc45740e33b",
-    "V1-native-http.txt": "d60a571abfe3284d48634a77e38a8e179c59b8652193b58c18a5c9fcc30ad29e",
+    "V1-backend.txt": "728668b21c1d6c8f4d8e2fa629ec5c3b205dc7f0221ec2c4870f4c2eb4e36198",
+    "V1-frontend.txt": "0cd866f616d3aec97b44b37cc66384ed459edfee82ecadacf8b7c93bfa96bee8",
+    "V1-browser.txt": "b5f8b23e7111d8fd9343fda38770ef1c179d2c6add5c6209a8484e38c396df70",
+    "V1-local-session.txt": "08e914878f91d071f3894cf15654bfd130d37afa83900af472dd0a1bd56107c1",
+    "V1-native-http.txt": "b1691aa4f5ea0ce5d7f84b92589e0dab72851a4fff3b80cb9fa490122a39d4c9",
     "N-tooling.txt": "60cc5335f1ade9c098714ce9838e849ed1d43c652cf314dfd0def1d3b8e364a2",
     "N-native.txt": "bde7ba830b2363be9ddb6f77baa3ded7329a33a826afc2e90d9759f208ae7d3c",
-    "N-app-real.txt": "136d3018db6dd1e3fcb128b853e0bc80848e591a8d19510ffb4566cc80c5e833"
-  }
+    "N-app-real.txt": "136d3018db6dd1e3fcb128b853e0bc80848e591a8d19510ffb4566cc80c5e833",
+    "V1-extension.txt": "a9ee5518f26118f46721d814891feef240b9a6ad0c20646849509ce1991b77ca",
+    "V1-extension-types.txt": "c2e6eec65b8386357ff4bae436e31488058bb452811d8f2faf0fb1378cae482a",
+    "V1-extension-build.txt": "32e28fb8f3bb084273cd000126800ddb12d81b8f1a44c51c06cfb48b1ab2f5a5"
+  },
+  "code_commit": "5acbe3ffd6a19b7be0b2c191422349efb8f43c07"
 }
