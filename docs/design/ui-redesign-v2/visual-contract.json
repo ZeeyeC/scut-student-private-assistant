@@ -9,7 +9,7 @@
     "sidebar": {"wide": 176, "medium": 144, "compact": 56, "rowHeight": 43, "rowGap": 7},
     "breakpoints": {"wide": 960, "compactRail": 640, "wideAgenda": 1200},
     "contentPadding": {"top": 31, "right": 38, "bottom": 38, "left": 38},
-    "today": {"agendaWidthWide": 280, "agendaGapWide": 43, "agendaWidth": 236, "agendaGap": 32},
+    "today": {"agendaWidthWide": 280, "agendaGapWide": 43, "agendaWidth": 236, "agendaGap": 32, "agendaMarkerWidth": 2, "agendaMarkerTextGapMinimum": 12, "agendaMarkerSeparateColumn": true},
     "drawerWidth": 448,
     "buttonRadius": 6,
     "cardRadius": 8,

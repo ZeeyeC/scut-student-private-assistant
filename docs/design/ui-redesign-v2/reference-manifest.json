@@ -17,8 +17,8 @@
   "files": [
     {
       "path": "docs/design/ui-redesign-v2/README.md",
-      "sha256": "dbc723ca9940c61f469f8b527fc5a39e2efe0390ff12adf50cff7de82b6150b0",
-      "bytes": 4069
+      "sha256": "744e4bbe531c39e3a6564f8d8784fa390f451285a3286a08c0fbbb80a9149dd3",
+      "bytes": 4394
     },
     {
       "path": "docs/design/ui-redesign-v2/builder-check.md",
@@ -102,18 +102,26 @@
     },
     {
       "path": "docs/design/ui-redesign-v2/visual-contract.json",
-      "sha256": "669b399a3484db178554e5a992d43f8ac34f1c1e85920593fd892049fe61c4ce",
-      "bytes": 2671
+      "sha256": "08876725cbf48c8a9f428bc9e31bf61c2c8935d5faab109112282ad401f6b27a",
+      "bytes": 2765
     },
     {
       "path": "docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md",
-      "sha256": "9362513bfa794b6f3576c8deebd0ce0986d22ca59f883dba1429f603c14e177f",
-      "bytes": 20099
+      "sha256": "4f7ddd9a177c352a1e6689448003800b7e1dbab7e3471f0d0c30782d89bc5617",
+      "bytes": 21215
     },
     {
       "path": "docs/superpowers/specs/2026-10-30-ui-refinement-design.md",
-      "sha256": "76b76c6a7dabfe367e9407fa673d2ed8d2c7019136ac221959e440d574a789bb",
-      "bytes": 13234
+      "sha256": "83aabfd80d9932f1d3a1910efa098995ba120fbb13206c9aabc29f8ac7ecea5f",
+      "bytes": 13787
+    }
+  ],
+  "knownIssues": [
+    {
+      "id": "F09",
+      "region": "today-agenda",
+      "status": "reference-fix-required-before-acceptance",
+      "requirement": "Separate 2px marker column; at least 12 logical px clear space to every text line; verify narrow windows, long titles, and enlarged text."
     }
   ]
 }
