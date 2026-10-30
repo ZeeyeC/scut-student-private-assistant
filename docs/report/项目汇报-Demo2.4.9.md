@@ -209,7 +209,7 @@
 | --- | --- |
 | 代码/版本 | `codex/demo2.4.9-project-completion`，VERSION `2.4.9`，基于 `05e7981`；实际构建提交SHA见归档manifest的base_commit，源码包包含当时工作树 |
 | 执行环境 | macOS26.5.1 / arm64，Python3.12.11，Node26.0.0，Chrome156.0.8078.76，Swift6.2.1（Swift5语言模式、macOS13部署目标）。源码声明Node22，本轮本机使用26并通过构建，不将其说成Node22环境验收 |
-| 后端/脚本完整回归 | **652 passed，20 subtests passed，exit0**；[完整日志](../validation/demo2.4.9/backend-final.txt) |
+| 后端/脚本完整回归 | **653 passed，20 subtests passed，exit0**；[完整日志](../validation/demo2.4.9/backend-final.txt) |
 | 前端单元/类型/生产构建 | **86 passed，exit0**；类型与生产构建exit0。Vite仍提示单个chunk超过500KiB，为体积提示；[单元](../validation/demo2.4.9/frontend-full.txt)、[构建](../validation/demo2.4.9/frontend-build.txt) |
 | 扩展验证 | **4 passed，exit0**；WXT类型检查与生产构建均exit0，正式打包流程已增加三项扩展门禁；[测试](../validation/demo2.4.9/extension-tests.txt)、[类型](../validation/demo2.4.9/extension-typecheck.txt)、[构建](../validation/demo2.4.9/extension-build.txt) |
 | 完整浏览器流程 | **56 passed，exit0**，包括校历批量确认/撤销、390px补课分段、分类保存/刷新及课程类型准备候选；[完整日志](../validation/demo2.4.9/browser-final.txt) |
@@ -219,10 +219,10 @@
 | 应用/源码包与隐私 | 正式发布门禁要求当前App签名、版本、配置/Key扫描、应用和源码ZIP CRC全部通过后才创建归档；实际结果见同版验证结果，不以旧包复制代替新构建 |
 | 正式版本入口 | [App](../../../Demo2.4.9/课间桌宠.app)、[应用ZIP](../../../Demo2.4.9/Demo2.4.9-Mac-AppleSilicon.zip)、[源码ZIP](../../../Demo2.4.9/Demo2.4.9-源码.zip)；实际绝对目录 `/Users/czy/ProjectManagement/Demo2.4.9` |
 | 使用说明与校验 | [使用说明](../../../Demo2.4.9/使用说明.md)、[验证结果](../../../Demo2.4.9/验证结果.json)、[manifest](../../../Demo2.4.9/manifest.json)、[SHA256SUMS](../../../Demo2.4.9/SHA256SUMS.txt)；文件由发布脚本成功门禁生成 |
-| 失败与修复证据 | 节次变化阻断补课/撤销：2个RED后修复快照并补时区覆盖，完整652/56重跑通过。原生首次LuLu连接前超时、后续测试审批恢复竞争分别保留[首个结果](../validation/demo2.4.9/native-before-lulu-authorization/result.json)、[审批等待前结果](../validation/demo2.4.9/native-before-approval-ready/result.json)；均未计为通过 |
+| 失败与修复证据 | 节次变化阻断补课/撤销：2个RED后修复快照并补时区覆盖，完整653/56重跑通过。原生首次LuLu连接前超时、后续测试审批恢复竞争分别保留[首个结果](../validation/demo2.4.9/native-before-lulu-authorization/result.json)、[审批等待前结果](../validation/demo2.4.9/native-before-approval-ready/result.json)；均未计为通过 |
 | 本机防火墙闭环 | 原生0连接来自未授权新程序身份。用户后续明确要求LuLu默认放行未知连接、保留原阻止；UI设置被动模式true/新连接允许/不创建规则，LuLu继续启用且原规则SHA前后完全一致。设置后HTTP10项和实际App均通过。[诊断](../roadmap/native-health-diagnosis-2026-10-30.md)；不把系统防火墙设置当作甲乙业务代码贡献 |
 | 清理与保留 | 正式包检查成功后仅按发布脚本清理明确缓存/测试输出，详情见归档整理记录；旧版本/归档、失败证据、源码、私有配置、data、backups、依赖及任务书保留 |
-| OCR真实验收 | **未评测，真实样本0，准确率null**。[当前状态](../validation/ocr-acceptance-status.json)；44项评测工具测试包含在后端652中，不重复累计为真实样本 |
+| OCR真实验收 | **未评测，真实样本0，准确率null**。[当前状态](../validation/ocr-acceptance-status.json)；44项评测工具测试包含在后端653中，不重复累计为真实样本 |
 | GitHub与发布动作 | 本轮本地提交和分支交付；未自动推送、建PR、合并main、公开上传、付费模型测试或录屏。历史快照中的7个PR仍open；后续状态应重新查询，不能把本地新版称为已合入main |
 
 本版同源浏览器截图：[校历批量预览](../validation/demo2.4.9/semester-batch-preview.png)、[手机补课分段](../validation/demo2.4.9/makeup-mobile-preview.png)、[明确类型准备候选](../validation/demo2.4.9/course-type-candidates.png)。截图只展示合成验收数据。

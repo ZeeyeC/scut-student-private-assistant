@@ -5,4 +5,4 @@
 
 WXT 0.21.4
 ℹ Generating types...
-✔ Finished in 122 ms
+✔ Finished in 114 ms

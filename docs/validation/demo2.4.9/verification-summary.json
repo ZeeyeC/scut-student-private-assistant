@@ -1,10 +1,10 @@
 {
   "version": "2.4.9",
-  "scope": "current source pre-release App and isolated automated data; final independently rebuilt release is verified by its own manifest",
+  "scope": "current source full checks and actual pre-release App; final independently rebuilt release verified by its own manifest",
   "branch": "codex/demo2.4.9-project-completion",
   "base_commit": "05e798131c7fedb4526bacffe4b05d3ae84d2ad4",
   "backend": {
-    "passed": 652,
+    "passed": 653,
     "subtests_passed": 20,
     "exit_code": 0
   },

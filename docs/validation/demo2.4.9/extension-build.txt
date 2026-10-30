@@ -11,10 +11,10 @@ WXT 0.21.4
 ⠋ [2/3] background
 ⠋ [3/3] scut
 
-✔ Built extension in 142 ms
+✔ Built extension in 106 ms
   ├─ .output/chrome-mv3/manifest.json            488 B
   ├─ .output/chrome-mv3/background.js            7.69 kB
   ├─ .output/chrome-mv3/content-scripts/app.js   6.97 kB
   └─ .output/chrome-mv3/content-scripts/scut.js  40.32 kB
 Σ Total size: 55.47 kB
-✔ Finished in 238 ms
+✔ Finished in 165 ms
