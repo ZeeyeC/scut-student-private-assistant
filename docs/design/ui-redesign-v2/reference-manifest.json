@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-10-30",
-  "status": "proposal-awaiting-user-feedback",
+  "status": "accepted",
   "formalProductChanged": false,
   "basisCommit": "f39d82291f363c9ad306e2747a48e05a778de7e1",
   "canonicalProductContent": {
@@ -17,8 +17,8 @@
   "files": [
     {
       "path": "docs/design/ui-redesign-v2/README.md",
-      "sha256": "744e4bbe531c39e3a6564f8d8784fa390f451285a3286a08c0fbbb80a9149dd3",
-      "bytes": 4394
+      "sha256": "f23570621267e3523f0d13fb5e1b377ee3d11ca22ef5e8879ab4aedf586d8aac",
+      "bytes": 4487
     },
     {
       "path": "docs/design/ui-redesign-v2/builder-check.md",
@@ -27,13 +27,13 @@
     },
     {
       "path": "docs/design/ui-redesign-v2/index.html",
-      "sha256": "8c14b7817e027963cfa529ca4998e539bc8ee1235894ddac06770513665b0e3f",
-      "bytes": 314722
+      "sha256": "9a8c0b1a45ab8632e6e37ea7deddf4823540a57315a7873c89e63671d79ac1d8",
+      "bytes": 314875
     },
     {
       "path": "docs/design/ui-redesign-v2/preview-verification.json",
-      "sha256": "05d516fdc849b6b4d3e9b2b9d7475663bf8cb55d821554b033ef2bd7ea5ad54f",
-      "bytes": 1246
+      "sha256": "0aa294780bf441d5389730022fa80eccc3cf9dcab3fe2852e2f661085ac7b6b6",
+      "bytes": 1407
     },
     {
       "path": "docs/design/ui-redesign-v2/screens/assistant-desktop.png",
@@ -87,41 +87,29 @@
     },
     {
       "path": "docs/design/ui-redesign-v2/screens/today-dark.png",
-      "sha256": "687aacd4067466fc1a4b38e8f168ee9d1141ce73948855ee7f85c7d093f62571",
-      "bytes": 74863
+      "sha256": "6041d0e661f89e99f94a8f11aa1122720796e8b0ee12b6399ca3dc20be72c07b",
+      "bytes": 75055
     },
     {
       "path": "docs/design/ui-redesign-v2/screens/today-desktop.png",
-      "sha256": "1f71a3f523448f5bc5dab0342f9dab0b96991189c477b59ae1dae464513c6abc",
-      "bytes": 74296
+      "sha256": "1bcc714007c28fb7518ad8bdae9607e6449b6e69c7e79c5359d9316c5615fc50",
+      "bytes": 74503
     },
     {
       "path": "docs/design/ui-redesign-v2/verify-reference.mjs",
-      "sha256": "c66f7bc4718f2ce214dce03c444596c7371ca0993a2b3f0ee8d1dedc43805a9f",
-      "bytes": 7227
+      "sha256": "99cd7139b492a1f4c0eb9302fccbd71c890583ba7979ed32ef0fa06f9dcbd5c5",
+      "bytes": 8099
     },
     {
       "path": "docs/design/ui-redesign-v2/visual-contract.json",
-      "sha256": "08876725cbf48c8a9f428bc9e31bf61c2c8935d5faab109112282ad401f6b27a",
-      "bytes": 2765
-    },
-    {
-      "path": "docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md",
-      "sha256": "4f7ddd9a177c352a1e6689448003800b7e1dbab7e3471f0d0c30782d89bc5617",
-      "bytes": 21215
-    },
-    {
-      "path": "docs/superpowers/specs/2026-10-30-ui-refinement-design.md",
-      "sha256": "83aabfd80d9932f1d3a1910efa098995ba120fbb13206c9aabc29f8ac7ecea5f",
-      "bytes": 13787
+      "sha256": "75c7b7455a81415c7d4bf94c092511e2a52fe0a689b8573133fe9f11ff75c0ec",
+      "bytes": 2742
     }
   ],
-  "knownIssues": [
-    {
-      "id": "F09",
-      "region": "today-agenda",
-      "status": "reference-fix-required-before-acceptance",
-      "requirement": "Separate 2px marker column; at least 12 logical px clear space to every text line; verify narrow windows, long titles, and enlarged text."
-    }
-  ]
+  "knownIssues": [],
+  "acceptance": {
+    "date": "2026-10-30",
+    "userInstruction": "开始实现",
+    "F09": "corrected; marker/text gap 12px; regression RED to GREEN"
+  }
 }

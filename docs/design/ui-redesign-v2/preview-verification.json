@@ -13,6 +13,16 @@
     390,
     320
   ],
+  "agendaMarkerTextGaps": [
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12
+  ],
   "metrics": {
     "window": {
       "width": 1280,
@@ -66,6 +76,7 @@
     "pet closed by default; click toggles",
     "pet selected task opens exact App detail",
     "responsive overflow",
-    "dark appearance"
+    "dark appearance",
+    "F09: marker to title and secondary text gap at least 12px"
   ]
 }
