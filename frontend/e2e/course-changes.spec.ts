@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import {test,expect,type Page} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
 
@@ -8,7 +9,7 @@ async function enter(page:Page){
   await page.getByLabel('邮箱').fill(`change-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   await page.getByRole('button',{name:'注册并登录'}).click();
-  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今日',exact:true})).toBeVisible();
   const courses=await page.evaluate(async()=>{
     const csrf=(await(await fetch('/api/csrf')).json()).csrf_token;
     const write=async(path:string,body:unknown,method='POST')=>{
@@ -26,19 +27,21 @@ async function enter(page:Page){
     await write(`/drafts/${d.id}/confirm`,{revision:d.revision});
     return(await(await fetch('/api/courses')).json());
   });
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await workspace(page,'courses');
   return courses;
 }
 async function save(page:Page){
+  await inbox(page);
   const r=page.getByRole('region',{name:'课程调整草稿',exact:true});
   await r.getByRole('button',{name:'校对完成，准备保存'}).click();
   await expect(r.getByRole('button',{name:'确认保存',exact:true})).toBeVisible();
   const acknowledgment=r.getByRole('checkbox',{name:'我已核对上述提示，仍按已确认的课程或事项保存'});
   if(await acknowledgment.count())await acknowledgment.check();
   await r.getByRole('button',{name:'确认保存',exact:true}).click();
-  await expect(r).toHaveCount(0);
+  await expect(r).toHaveCount(0);await page.keyboard.press('Escape');
 }
 async function select(page:Page){
+  await workspace(page,'courses');
   await page.locator('.fc-event').filter({hasText:'待调整高数'}).click();
   await page.getByRole('button',{name:'调课或停课',exact:true}).click();
   return page.getByRole('form',{name:'调整本次课程',exact:true});
@@ -58,21 +61,22 @@ test('one occurrence moves after review, warns about overlaps, preserves the nex
   await expect(review).toContainText('新时间存在冲突');
   expect(await(await page.request.get('/api/course-changes')).json()).toEqual([]);
   expect(await(await page.request.get('/api/occurrences?start=2026-10-12&end=2026-10-25')).json()).toEqual(original);
-  await page.reload();await page.getByRole('button',{name:'课表',exact:true}).click();
+  await page.reload();await inbox(page);
   await expect(review).toContainText('教师通知');
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/course-change-review.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/course-change-review.png',import.meta.url))});
   await save(page);
   const changed=await(await page.request.get('/api/occurrences?start=2026-10-12&end=2026-10-25')).json();
   expect(changed.find((e:any)=>e.title==='待调整高数'&&e.original_date==='2026-10-14').starts_at).toContain('2026-10-15T10:00');
   expect(changed.find((e:any)=>e.title==='待调整高数'&&e.original_date==='2026-10-21')).toEqual(original.find((e:any)=>e.title==='待调整高数'&&e.original_date==='2026-10-21'));
   expect(await(await page.request.get('/api/courses')).json()).toEqual(courses);
+  await workspace(page,'rules');
   const history=page.getByRole('region',{name:'已确认课程调整',exact:true});
   await expect(history).toContainText('B202');
   await history.getByRole('button',{name:'恢复原课（先预览）'}).click();
   await expect(review.getByRole('heading',{name:'待调整高数 · 恢复原课'})).toBeVisible();
   await save(page);
   expect(await(await page.request.get('/api/occurrences?start=2026-10-12&end=2026-10-25')).json()).toEqual(original);
-  await expect(history).toContainText('已恢复原课');
+  await workspace(page,'rules');await expect(history).toContainText('已恢复原课');
 });
 
 test('mobile cancellation retries one lost response, removes only this occurrence and can restore after reload',async({page})=>{
@@ -89,13 +93,14 @@ test('mobile cancellation retries one lost response, removes only this occurrenc
   await form.getByRole('button',{name:'预览课程调整'}).click();
   await expect(form.getByRole('alert')).toBeVisible();
   await form.getByRole('button',{name:'预览课程调整'}).click();
+  await expect(page.getByRole('region',{name:'课程调整草稿',exact:true})).toBeVisible();
   const drafts=await(await page.request.get('/api/drafts')).json();
   expect(drafts.filter((d:any)=>d.data.draft_kind==='course_change')).toHaveLength(1);
   await save(page);
   await expect(page.locator('.fc-event').filter({hasText:'待调整高数'})).toHaveCount(0);
   const later=await(await page.request.get('/api/occurrences?start=2026-10-21&end=2026-10-21')).json();
   expect(later.filter((e:any)=>e.title==='待调整高数')).toHaveLength(1);
-  await page.reload();await page.getByRole('button',{name:'课表',exact:true}).click();
+  await page.reload();await workspace(page,'rules');
   await expect(page.getByRole('region',{name:'已确认课程调整'})).toContainText('本次已停课');
   await page.getByRole('button',{name:'恢复原课（先预览）'}).click();await save(page);
   await expect(page.locator('.fc-event').filter({hasText:'待调整高数'})).toHaveCount(1);

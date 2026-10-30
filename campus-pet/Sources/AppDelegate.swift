@@ -30,6 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var assistant: NSWindow!
     var webView: WKWebView!
     var statusItem: NSStatusItem!
+    var lastAnimationTime = ProcessInfo.processInfo.systemUptime
     var timer: Timer?
     var reminderTimer: Timer?
     var pendingReminders: [ScheduleReminder] = []
@@ -75,7 +76,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         makePet()
         makeAssistant()
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0 / 20.0, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.animate() }
         }
         reminderTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in
@@ -206,9 +207,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         menu.addItem(item("暂停 / 恢复动画", #selector(toggleSleep)))
         let actionItem = NSMenuItem(title: "表演动作", action: nil, keyEquivalent: "")
         let actions = NSMenu(title: "表演动作")
-        for action in PetAction.allCases {
+        for action in pet.availableActions {
             let entry = item(action.title, #selector(performAction(_:)))
-            entry.representedObject = action.rawValue
+            entry.representedObject = action.id
             actions.addItem(entry)
         }
         actions.addItem(.separator())
@@ -264,15 +265,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
 
     func animate() {
-        guard let panel, panel.isVisible else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        let delta = min(0.25, max(0, now - lastAnimationTime))
+        lastAnimationTime = now
+        guard let panel else { return }
+        pet.animationsVisible = panel.isVisible
+        guard panel.isVisible else { return }
         pet.reducedMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
-        if pet.reducedMotion, pet.activeAction != nil { pet.stopAction() }
+        if pet.reducedMotion, pet.hasActiveAction { pet.stopAction() }
         if !sleeping && !pet.reducedMotion {
-            pet.advanceAnimation(by: 0.05)
-            if automaticActions, !taskRingOpen, pet.reminderText == nil, pet.mood == .idle, pet.activeAction == nil,
+            pet.advanceAnimation(by: delta)
+            if automaticActions, !taskRingOpen, pet.reminderText == nil, pet.mood == .idle, !pet.hasActiveAction,
                NSEvent.pressedMouseButtons == 0,
                ProcessInfo.processInfo.systemUptime >= nextPerformanceAt {
-                if let action = PetAction.allCases.randomElement() { pet.play(action) }
+                if let action = pet.availableActions.randomElement() { pet.playAction(action.id) }
                 scheduleNextPerformance()
             }
         }
@@ -315,8 +321,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         showAssistant(page: "助手")
         webView.evaluateJavaScript("window.__campusPet?.showReview();")
     }
-    @objc func showPet() { panel.orderFrontRegardless(); constrainAndSave(); scheduleNextPerformance() }
-    @objc func hidePet() { hidePetBubbles(); panel.orderOut(nil) }
+    @objc func showPet() { pet.animationsVisible = true; lastAnimationTime = ProcessInfo.processInfo.systemUptime; panel.orderFrontRegardless(); constrainAndSave(); scheduleNextPerformance() }
+    @objc func hidePet() { hidePetBubbles(); pet.animationsVisible = false; panel.orderOut(nil) }
     @objc func closePanel() { assistant.orderOut(nil) }
     @objc func quit() { NSApp.terminate(nil) }
     @objc func stopServiceAndQuit() {
@@ -386,10 +392,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         nextPerformanceAt = ProcessInfo.processInfo.systemUptime + Double.random(in: 18...32)
     }
     @objc func performAction(_ sender: NSMenuItem) {
-        guard let key = sender.representedObject as? String, let action = PetAction(rawValue: key) else { return }
+        guard let key = sender.representedObject as? String else { return }
         pet.reducedMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
         if sleeping { toggleSleep() }
-        pet.play(action)
+        pet.animationsVisible = true
+        pet.playAction(key)
         scheduleNextPerformance()
         panel.orderFrontRegardless()
     }

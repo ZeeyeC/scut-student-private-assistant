@@ -52,7 +52,9 @@ export function LocalEntry({ children }: { children: ReactNode }) {
         <Button onClick={() => location.reload()}>重新连接</Button>
       </main>
     );
-  if (status.data?.needs_selection)
+  // A concurrent status read may observe the user commit before LocalProfile.
+  // A successful session is authoritative and must not be hidden by that stale read.
+  if (status.data?.needs_selection && !session.data)
     return (
       <main className="auth">
         <div className="brand">课间</div>

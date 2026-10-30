@@ -1,0 +1,100 @@
+{
+  "ref": "008eb12636f517aedecee6f1a1fc773c2f0df6c4",
+  "scope": "Read-only source inspection; no art copied into product or Git.",
+  "rights_status": "pending",
+  "canvas": {
+    "width": 420,
+    "height": 560
+  },
+  "selected_frame_count": 219,
+  "clips": [
+    {
+      "clip": "idle",
+      "frames": 28,
+      "unique_frame_hashes": 16,
+      "duration_ns": 85000000,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "greet",
+      "frames": 1,
+      "unique_frame_hashes": 1,
+      "fps": 12,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "ponder",
+      "frames": 1,
+      "unique_frame_hashes": 1,
+      "fps": 12,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "focused",
+      "frames": 1,
+      "unique_frame_hashes": 1,
+      "fps": 12,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "curious",
+      "frames": 1,
+      "unique_frame_hashes": 1,
+      "fps": 12,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "worried",
+      "frames": 1,
+      "unique_frame_hashes": 1,
+      "fps": 12,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "sleepy",
+      "frames": 1,
+      "unique_frame_hashes": 1,
+      "fps": 12,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "smile",
+      "frames": 1,
+      "unique_frame_hashes": 1,
+      "fps": 12,
+      "loop": true,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "surprised_in",
+      "frames": 14,
+      "unique_frame_hashes": 14,
+      "fps": 18,
+      "loop": false,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "surprised",
+      "frames": 95,
+      "unique_frame_hashes": 95,
+      "fps": 30,
+      "loop": false,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    },
+    {
+      "clip": "surprised_out",
+      "frames": 75,
+      "unique_frame_hashes": 75,
+      "fps": 30,
+      "loop": false,
+      "all_declared_hashes_dimensions_alpha_checked": true
+    }
+  ]
+}

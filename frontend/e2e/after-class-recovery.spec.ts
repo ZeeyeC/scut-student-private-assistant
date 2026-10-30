@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from "@playwright/test";
 
 async function setup(page: Page) {
@@ -10,7 +11,7 @@ async function setup(page: Page) {
   const bootstrap=page.waitForResponse(r=>r.url().endsWith('/api/after-class/open')&&r.request().method()==='POST');
   await page.getByRole("button", { name: "注册并登录" }).click();
   await (await bootstrap).finished();
-  await expect(page.getByRole("heading", { name: "今天，专注几件事。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "今日",exact:true })).toBeVisible();
   await page.evaluate(async () => {
     const csrf = (await (await fetch("/api/csrf")).json()).csrf_token;
     const write = async (path: string, body: unknown, method = "POST") => {
@@ -24,7 +25,7 @@ async function setup(page: Page) {
     const draft = await write("/drafts/timetable", { semester_label: "test", courses: ["数学", "物理"].map((name, index) => ({ source_key: `c${index}`, name, weekday: 3, weeks: [1], periods: [1] })) });
     await write(`/drafts/${draft.id}/confirm`, { revision: draft.revision });
   });
-  await page.getByRole("button", { name: "查看课后作业询问" }).click();
+  await page.getByRole("button", { name: "课后作业", exact:true }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
 }
 

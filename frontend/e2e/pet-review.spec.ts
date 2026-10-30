@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { readFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
 
@@ -7,7 +8,7 @@ test("pet repeatedly locates approval in an older conversation after opening a n
   await page.getByLabel("邮箱").fill(`review-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button", { name: "注册并登录" }).click();
-  await expect(page.getByRole("heading", { name: "今天，专注几件事。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "今日",exact:true })).toBeVisible();
   const target = await page.evaluate(async () => {
     const token = (await (await fetch("/api/csrf")).json()).csrf_token;
     const post = async (path: string, body: unknown) => {
@@ -37,7 +38,7 @@ test("a late history response cannot replace the review selected by the pet", as
   await page.getByLabel("邮箱").fill(`race-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button", { name: "注册并登录" }).click();
-  await expect(page.getByRole("heading", { name: "今天，专注几件事。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "今日",exact:true })).toBeVisible();
   const runs = await page.evaluate(async () => {
     const token = (await (await fetch("/api/csrf")).json()).csrf_token;
     const post = async (path: string, body: unknown) => {
@@ -66,10 +67,10 @@ test("a late history response cannot replace the review selected by the pet", as
   await page.addScriptTag({ content: readFileSync(new URL("../../campus-pet/Resources/Bridge.js", import.meta.url), "utf8") });
   await expect.poll(() => held).toBe(true);
   await page.evaluate(() => (window as any).__campusPet.showReview());
-  await expect(page.locator(".confirm")).toContainText("目标审批");
+  await expect(page.getByRole("region",{name:"助手操作确认",exact:true})).toContainText("目标审批");
   release(); await expect.poll(() => delivered).toBe(true);
   // Let the deliberately delayed callback and any resulting React effects settle.
   await page.waitForTimeout(300);
-  await expect(page.locator(".confirm")).toContainText("目标审批");
-  await expect(page.locator(".confirm")).not.toContainText("过期请求的审批");
+  await expect(page.getByRole("region",{name:"助手操作确认",exact:true})).toContainText("目标审批");
+  await expect(page.getByRole("region",{name:"助手操作确认",exact:true})).not.toContainText("过期请求的审批");
 });

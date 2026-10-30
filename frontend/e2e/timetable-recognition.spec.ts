@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from "@playwright/test";
 import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
@@ -9,7 +10,7 @@ async function enter(page: Page) {
   await page.getByLabel("邮箱").fill(`recognition-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button",{name:"注册并登录"}).click();
-  await expect(page.getByRole("heading",{name:"今天，专注几件事。"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"今日",exact:true})).toBeVisible();
   await page.evaluate(async () => {
     const s = await (await fetch("/api/settings")).json();
     const token=(await (await fetch("/api/csrf")).json()).csrf_token;
@@ -18,7 +19,7 @@ async function enter(page: Page) {
     const r=await fetch("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json","X-CSRF-Token":token,"Idempotency-Key":crypto.randomUUID()},body:JSON.stringify(s)});
     if (!r.ok) throw new Error(await r.text());
   });
-  await page.getByRole("button",{name:"课表",exact:true}).click();
+  await workspace(page,'import');
 }
 
 async function selectFile(page: Page) {
@@ -50,7 +51,7 @@ test("two-page PDF evidence, correction, difference preview and explicit course 
   await review.getByRole("button",{name:"检查导入差异",exact:true}).click();
   await expect(review).toContainText("将新增 1 条：高等数学");
   await expect(page.getByText("已识别，请校对下方课表草稿",{exact:true})).toBeVisible();
-  await review.screenshot({path:fileURLToPath(new URL("../../docs/roadmap/evidence/timetable-recognition-review.png", import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL("../../docs/validation/demo2.5/e2e/timetable-recognition-review.png", import.meta.url))});
   await review.getByRole("button",{name:"校对完成，准备保存",exact:true}).click();
   await review.getByRole("button",{name:"确认保存",exact:true}).click();
   await expect(review).toHaveCount(0);
@@ -87,7 +88,7 @@ test("lost upload response reuses the same private original; preview refreshes a
   await review.getByLabel("课程名称",{exact:true}).fill("数学修订");
   await expect(review.getByRole("button",{name:"校对完成，准备保存"})).toHaveCount(0);
   await expect(review.getByLabel("已校对本课程全部填写值；空缺教师、教室或校区按未知保留")).not.toBeChecked();
-  await page.reload(); await page.getByRole("button",{name:"课表",exact:true}).click();
+  await page.reload(); await workspace(page,'import');
   await expect(page.getByRole("region",{name:"课表识别校对",exact:true})).toBeVisible();
   expect((await (await page.request.get("/api/timetable-jobs")).json()).length).toBe(1);
 });

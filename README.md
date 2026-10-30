@@ -1,8 +1,8 @@
 # 课间 · 华工学生助手
 
-下一轮开发准备位于 **`codex/demo2.5-app-ui-naiwa`**：独立App新界面、Chrome/Edge学校导入与NaiWa角色替换。[总实现计划](docs/superpowers/plans/2026-10-30-app-ui-implementation.md) · [开发进度追踪表](docs/roadmap/Demo2.5-开发进度追踪表.md) · [实施材料](docs/materials/demo2.5/README.md)。当前已按方案开始实施，实际实现与验收状态见追踪表；下述Demo2.4.9仍为已发布版本。
+本轮开发位于 **`codex/demo2.5-app-ui-naiwa`**：独立App新界面、Chrome/Edge学校导入与NaiWa角色替换。[总实现计划](docs/superpowers/plans/2026-10-30-app-ui-implementation.md) · [开发进度追踪表](docs/roadmap/Demo2.5-开发进度追踪表.md) · [实施材料](docs/materials/demo2.5/README.md)。当前已按方案开始实施，实际实现与验收状态见追踪表；下述Demo2.4.9仍为已发布版本。
 
-当前源码为 **Demo2.4.9 项目收尾与联合交付版**，在甲乙接通基准 `05e7981` 上开发，本地分支 `codex/demo2.4.9-project-completion`。现已增加学校校历批量停课/明确补课/精确撤销、显式课程与任务分类、匹配 deep/review 的偏好与课程类型准备规则，以及独立OCR准确率评测工具。原执行、档案、目标、复盘、计时、协商与权威规划链路继续共用。
+已发布基线为 **Demo2.4.9 项目收尾与联合交付版**，在甲乙接通基准 `05e7981` 上开发，本地分支 `codex/demo2.4.9-project-completion`。现已增加学校校历批量停课/明确补课/精确撤销、显式课程与任务分类、匹配 deep/review 的偏好与课程类型准备规则，以及独立OCR准确率评测工具。原执行、档案、目标、复盘、计时、协商与权威规划链路继续共用。
 
 [本版说明](docs/releases/Demo2.4.9.md) · [完整项目汇报与甲乙实现清单](docs/report/项目汇报-Demo2.4.9.md) · [汇报讲述提纲](docs/report/项目汇报讲述提纲-Demo2.4.9.md) · [GitHub历史与贡献证据](docs/report/项目历史与甲乙贡献证据-2026-10-30.md)
 

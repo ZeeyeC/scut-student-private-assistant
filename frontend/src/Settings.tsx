@@ -9,6 +9,7 @@ import { AfterClassPreferences } from "./AfterClass";
 import {PersonalProfile} from "./PersonalProfile";
 import {StudyTypes} from "./StudyTypes";
 import {DetailPanel} from "./layout/DetailPanel";
+import {SettingsAbout} from "./SettingsAbout";
 import {ImportBrowserSettings} from "./SchoolImportPanel";
 import {ProactiveSettings} from "./ProactiveSuggestions";
 type Form = {
@@ -261,6 +262,7 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
             : "external_input_required，尚未提供实测配置"}
         </p>
       </section></>}
+      {group==='data'&&<SettingsAbout/>}
       {group==='data'&&      <section className="card">
         <h2>我的数据</h2>
         <Button

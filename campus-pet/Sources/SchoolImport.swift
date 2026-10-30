@@ -22,6 +22,9 @@ extension AppDelegate {
               let payload = body["payload"] as? [String: Any] else { return }
         func settings() -> [String: Any] { ["browser": browserLaunchPolicy.selectedBrowser.rawValue, "installed": browserLaunchPolicy.installed] }
         do {
+            if command == "get-pet-attribution" {
+                importReply(requestId, result: PetAttribution.read(resources: Bundle.main.resourceURL)); return
+            }
             if command == "get-browser" { importReply(requestId, result: settings()); return }
             if command == "set-browser" {
                 guard let raw = payload["browser"] as? String else { throw ServiceError.message("请选择Chrome或Edge。") }

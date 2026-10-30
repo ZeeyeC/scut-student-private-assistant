@@ -21,16 +21,69 @@ class PetPanel: NSPanel {
 }
 
 final class PetView: NSView {
-    var mood: PetMood = .starting { didSet { needsDisplay = true } }
+    var mood: PetMood = .starting { didSet { syncPlayback(); needsDisplay = true } }
     var onClick: (() -> Void)?
-    var reminderText: String?
+    var reminderText: String? { didSet { syncPlayback(); needsDisplay = true } }
     var taskRingText: String? { didSet { needsDisplay = true } }
     var onReminderClick: (() -> Void)?
     var onMenu: ((NSEvent) -> Void)?
     var onMove: (() -> Void)?
     var onDragStart: (() -> Void)?
     var tick = 0.0
-    var reducedMotion = false
+    var reducedMotion = false { didSet { playback?.reducedMotion = reducedMotion; if reducedMotion { stopAction() } } }
+    var animationsVisible = true { didSet { playback?.visible = animationsVisible; if !animationsVisible { stopAction() } } }
+    private var playback: PetPlayback?
+    private let frameCache = PetFrameCache()
+    private var paintedFrame: PetDecodedFrame?
+    private var paintedGeometry: PetGeometry?
+    private var assetPackInvalid = false
+    var hasActiveAction: Bool { playback?.activeActionID != nil || activeAction != nil }
+    var availableActions: [(id: String, title: String)] {
+        playback?.pack.actions.map { ($0.id, $0.title) } ?? []
+    }
+    var assetClipName: String? { playback?.currentClip.name }
+    var decodedFrameCount: Int { frameCache.decodeCount }
+    var assetFrameIndex: Int { playback?.frameIndex ?? 0 }
+    var assetClip: PetClipSpec? { playback?.currentClip }
+    var assetCacheBytes: Int { frameCache.residentBytes }
+    var assetActionID: String? { playback?.activeActionID }
+    var assetGeometry: PetGeometry? { playback.map { geometry(for: $0.currentClip) } }
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        loadBundledPack()
+    }
+    required init?(coder: NSCoder) { super.init(coder: coder); loadBundledPack() }
+    private func loadBundledPack() {
+        guard let root = Bundle.main.resourceURL?.appendingPathComponent("NaiWa"),
+              FileManager.default.fileExists(atPath: root.path) else { return }
+        do { configureAssetPack(try PetAssetPack.load(from: root)) }
+        catch { assetPackInvalid = true }
+    }
+    func configureAssetPack(_ pack: PetAssetPack) {
+        animation = nil; actionElapsed = 0; frameCache.removeAll()
+        paintedFrame = nil; paintedGeometry = nil; assetPackInvalid = false
+        playback = PetPlayback(pack: pack)
+        playback?.visible = animationsVisible; playback?.reducedMotion = reducedMotion
+        syncPlayback(); needsDisplay = true
+    }
+    private func syncPlayback() { playback?.update(mood: mood, reminder: reminderText != nil) }
+    private func geometry(for clip: PetClipSpec) -> PetGeometry {
+        PetGeometry(sourceSize: clip.sourceSize, groundY: clip.groundY,
+                    targetRect: NSRect(x: 10, y: 0, width: max(0, bounds.width - 20), height: 172))
+    }
+    private func assetFrame() -> (PetDecodedFrame, PetGeometry)? {
+        guard let playback else { return nil }
+        let clip = playback.currentClip
+        if let frame = frameCache.decodedFrame(clip: clip, index: playback.frameIndex) { return (frame, geometry(for: clip)) }
+        let fallback = playback.pack.defaultClip
+        return frameCache.decodedFrame(clip: fallback, index: 0).map { ($0, geometry(for: fallback)) }
+    }
+    @discardableResult
+    func playAction(_ id: String) -> Bool {
+        guard let playback, playback.play(id) else { return false }
+        needsDisplay = true; return true
+    }
     private(set) var animation: PetAnimationClip?
     private(set) var actionElapsed = 0.0
     var activeAction: PetAction? { animation?.action }
@@ -66,6 +119,12 @@ final class PetView: NSView {
         return image
     }()
     func isReminderBelly(_ point: NSPoint) -> Bool {
+        if playback != nil {
+            guard reminderText != nil, let current = paintedFrame.flatMap({ frame in paintedGeometry.map { (frame, $0) } }) ?? assetFrame(),
+                  let source = current.1.sourcePoint(fromView: point),
+                  NSRect(x: 140, y: 240, width: 190, height: 150).contains(source) else { return false }
+            return opaque(current.0.bitmap, at: source)
+        }
         let r = displayRect
         let belly = NSRect(x: r.minX + r.width * 0.28, y: r.minY + r.height * 0.20, width: r.width * 0.44, height: r.height * 0.36)
         return reminderText != nil && belly.contains(point) && isInteractive(point)
@@ -81,13 +140,17 @@ final class PetView: NSView {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     @discardableResult
     func play(_ action: PetAction) -> Bool {
-        guard reminderText == nil, !reducedMotion, let clip = PetAnimationClip(action: action) else { return false }
+        guard playback == nil, !assetPackInvalid, reminderText == nil, !reducedMotion, let clip = PetAnimationClip(action: action) else { return false }
         animation = clip; actionElapsed = 0; needsDisplay = true
         return true
     }
-    func stopAction() { animation = nil; actionElapsed = 0; needsDisplay = true }
+    func stopAction() { playback?.stopAction(); animation = nil; actionElapsed = 0; needsDisplay = true }
     func advanceAnimation(by delta: Double) {
-        guard !reducedMotion, mood != .sleeping else { return }
+        guard animationsVisible, delta.isFinite, delta > 0, !reducedMotion, mood != .sleeping else { return }
+        if let playback {
+            if playback.advance(by: delta) { needsDisplay = true }
+            return
+        }
         tick += delta
         if let animation {
             actionElapsed += delta
@@ -105,12 +168,23 @@ final class PetView: NSView {
     }
     func isInteractive(_ point: NSPoint) -> Bool {
         if bubble.contains(point) { return true }
+        if playback != nil {
+            guard let current = paintedFrame.flatMap({ frame in paintedGeometry.map { (frame, $0) } }) ?? assetFrame(),
+                  let source = current.1.sourcePoint(fromView: point) else { return false }
+            return opaque(current.0.bitmap, at: source)
+        }
+        if assetPackInvalid { return NSRect(x: 65, y: 50, width: 60, height: 60).contains(point) }
         let rect = displayRect
         let pixels = animation.map { $0.pixels[actionFrameIndex] } ?? self.pixels
         guard rect.contains(point), let pixels else { return false }
         let x = min(pixels.pixelsWide - 1, max(0, Int((point.x - rect.minX) / rect.width * CGFloat(pixels.pixelsWide))))
         let y = min(pixels.pixelsHigh - 1, max(0, Int((rect.maxY - point.y) / rect.height * CGFloat(pixels.pixelsHigh))))
         return (pixels.colorAt(x: x, y: y)?.alphaComponent ?? 0) > 0.1
+    }
+    private func opaque(_ bitmap: NSBitmapImageRep, at source: NSPoint) -> Bool {
+        let x = Int(source.x), y = Int(source.y)
+        guard x >= 0, y >= 0, x < bitmap.pixelsWide, y < bitmap.pixelsHigh else { return false }
+        return (bitmap.colorAt(x: x, y: y)?.alphaComponent ?? 0) > 0.1
     }
     override func mouseDown(with event: NSEvent) {
         down = NSEvent.mouseLocation; origin = window?.frame.origin; dragged = false
@@ -135,6 +209,18 @@ final class PetView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         NSColor.clear.setFill(); bounds.fill(using: .copy)
+        if playback != nil || assetPackInvalid {
+            if let current = assetFrame() {
+                paintedFrame = current.0; paintedGeometry = current.1
+                current.0.image.draw(in: current.1.imageRect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: [.interpolation: NSImageInterpolation.high])
+            } else {
+                paintedFrame = nil; paintedGeometry = nil
+                NSColor.systemGray.setFill()
+                NSBezierPath(roundedRect: NSRect(x: 65, y: 50, width: 60, height: 60), xRadius: 20, yRadius: 20).fill()
+            }
+            drawBubble()
+            return
+        }
         let moving = !reducedMotion && mood != .sleeping && animation == nil
         let rect = displayRect
         NSGraphicsContext.saveGraphicsState()
@@ -158,13 +244,16 @@ final class PetView: NSView {
         if mood == .sleeping {
             ("z Z" as NSString).draw(at: NSPoint(x: 140, y: 136), withAttributes: [.font: NSFont.systemFont(ofSize: 15, weight: .semibold), .foregroundColor: accent])
         }
-        NSColor(srgbRed: 1, green: 0.99, blue: 0.94, alpha: 0.98).setFill()
+        drawBubble()
+    }
+    private func drawBubble() {
+        (reminderText == nil ? NSColor.windowBackgroundColor : NSColor.systemPurple.withAlphaComponent(0.15)).setFill()
         NSBezierPath(roundedRect: bubble, xRadius: 15, yRadius: 15).fill()
         let style = NSMutableParagraphStyle(); style.alignment = .center
-        let message = reminderText ?? taskRingText ?? (mood == .idle ? (activeAction?.title ?? mood.message) : mood.message)
+        let message = reminderText ?? taskRingText ?? (mood == .idle ? (playback?.activeActionTitle ?? activeAction?.title ?? mood.message) : mood.message)
         (message as NSString).draw(in: NSRect(x: 15, y: 182, width: 160, height: 18), withAttributes: [
             .font: NSFont.systemFont(ofSize: 11, weight: .medium),
-            .foregroundColor: NSColor(srgbRed: 0.29, green: 0.32, blue: 0.18, alpha: 1),
+            .foregroundColor: NSColor.labelColor,
             .paragraphStyle: style,
         ])
     }

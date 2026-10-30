@@ -1,0 +1,30 @@
+{
+  "branch": "codex/demo2.5-app-ui-naiwa",
+  "backend_tests": 681,
+  "backend_subtests": 20,
+  "frontend_tests": 103,
+  "extension_tests": 6,
+  "browser_tests": 65,
+  "local_session_test": 1,
+  "native_health_scenarios": 10,
+  "actual_native_app": true,
+  "actual_pet_art": true,
+  "formal_release": "not yet packaged",
+  "asset_rights_basis": "user-provided-repository-license; separate character-art grant not independently verified",
+  "remaining_external_acceptance": [
+    "current Chrome/Edge real school login/import",
+    "real OCR benchmark",
+    "multiple physical monitors and long-term use",
+    "Windows/Intel"
+  ],
+  "log_sha256": {
+    "V1-backend.txt": "20107f18869b7c1bbf1fdf78d4929aa5a5dfe17b1b57117584ced6c53ad64828",
+    "V1-frontend.txt": "8b2bc7fe1c0307e3e9741a0a78becd0d6a504cdf78fd5ec2b2eabc12e7d5a639",
+    "V1-browser.txt": "70a67c4ccdc2d1b236a07c2d39442b3e76652631e5df03c02662867a46425c40",
+    "V1-local-session.txt": "673cd5736d1483b0bce08c45bed9cd39eaab9f793230c5ee8a32efc45740e33b",
+    "V1-native-http.txt": "d60a571abfe3284d48634a77e38a8e179c59b8652193b58c18a5c9fcc30ad29e",
+    "N-tooling.txt": "60cc5335f1ade9c098714ce9838e849ed1d43c652cf314dfd0def1d3b8e364a2",
+    "N-native.txt": "bde7ba830b2363be9ddb6f77baa3ded7329a33a826afc2e90d9759f208ae7d3c",
+    "N-app-real.txt": "136d3018db6dd1e3fcb128b853e0bc80848e591a8d19510ffb4566cc80c5e833"
+  }
+}

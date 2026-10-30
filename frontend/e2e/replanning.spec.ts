@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 
@@ -8,7 +9,7 @@ async function prepare(page:Page, locked=false) {
   await page.getByLabel('邮箱').fill(`repair-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   const bootstrap=page.waitForResponse(r=>r.url().endsWith('/api/after-class/open')&&r.request().method()==='POST');await page.getByRole('button',{name:'注册并登录'}).click();await (await bootstrap).finished();
-  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今日',exact:true})).toBeVisible();
   return page.evaluate(async(locked)=>{
     const csrf=(await (await fetch('/api/csrf')).json()).csrf_token;
     const write=async(path:string,body:unknown,method='POST')=>{
@@ -35,7 +36,7 @@ async function prepare(page:Page, locked=false) {
 
 test('repairs a calendar conflict after review while retaining the exact unaffected arrangement',async({page})=>{
   const old=await prepare(page);
-  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await workspace(page,'planning');
   const panel=page.getByRole('region',{name:'日程变化检查',exact:true});
   await expect(panel).toContainText('保留 1 项 · 替换或移除 1 项 · 新增 1 项');
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual(old);
@@ -45,8 +46,8 @@ test('repairs a calendar conflict after review while retaining the exact unaffec
   await panel.getByRole('button',{name:'生成重排草稿',exact:true}).click();
   expect((await (await page.request.get('/api/drafts')).json()).filter((d:any)=>d.data.draft_kind==='plan')).toHaveLength(1);
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual(old);
-  await panel.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/replanning.png',import.meta.url))});
-  await review.getByRole('button',{name:'校对完成，准备保存'}).click();
+  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/replanning.png',import.meta.url))});
+
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect(review).toHaveCount(0);
   await expect(panel).toContainText('没有需要替换或新增的安排');
@@ -55,14 +56,14 @@ test('repairs a calendar conflict after review while retaining the exact unaffec
   const kept=old.find((b:any)=>b.data.starts_at.includes('12:00:00'));
   expect(kept).toBeTruthy(); expect(blocks.find((b:any)=>b.id===kept.id)).toEqual(kept);
   await page.reload();
-  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await workspace(page,'planning');
   await expect(panel).toContainText('没有需要替换或新增的安排');
 });
 
 test('mobile locked conflict reports a warning without replacing or marking work completed',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   const old=await prepare(page,true);
-  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await workspace(page,'planning');
   const panel=page.getByRole('region',{name:'日程变化检查',exact:true});
   await expect(panel.getByRole('alert').first()).toContainText('解锁');
   await expect(panel.getByRole('button',{name:'生成重排草稿',exact:true})).toBeDisabled();

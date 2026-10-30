@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import {test, expect, type Page} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
 
@@ -8,7 +9,7 @@ async function enter(page: Page) {
   await page.getByLabel('邮箱').fill(`intervals-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   await page.getByRole('button', {name:'注册并登录'}).click();
-  await expect(page.getByRole('heading', {name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading', {name:'今日',exact:true})).toBeVisible();
   return page.evaluate(async () => {
     const csrf = (await (await fetch('/api/csrf')).json()).csrf_token;
     const write = async (path:string, body:unknown, method='POST') => {
@@ -37,7 +38,7 @@ async function enter(page: Page) {
 
 test('nonconsecutive courses leave usable gaps and adjacent breaks are explicitly protected',async({page})=>{
   const before = await enter(page);
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await workspace(page,'courses');
   await expect(page.locator('.fc-event').filter({hasText:'分段高数'})).toHaveCount(2);
   await expect(page.locator('.fc-event').filter({hasText:'连堂实验'})).toHaveCount(1);
   await page.locator('.fc-event').filter({hasText:'连堂实验'}).click();
@@ -45,10 +46,10 @@ test('nonconsecutive courses leave usable gaps and adjacent breaks are explicitl
   await expect(detail.getByLabel('授课与课间休息')).toContainText('第1节 09:00–09:40');
   await expect(detail.getByLabel('授课与课间休息')).toContainText('第2节 10:00–10:40');
   await expect(detail).toContainText('课间休息（不安排任务）：09:40–10:00');
-  await detail.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/course-intervals-review.png',import.meta.url))});
-  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await detail.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/course-intervals-review.png',import.meta.url))});
+  await workspace(page,'planning');
   await page.getByRole('button',{name:'智能安排未来 7 天'}).click();
-  await expect(page.getByRole('region',{name:'智能安排',exact:true}).getByRole('button',{name:'校对完成，准备保存'})).toBeVisible();
+  await expect(page.getByRole('region',{name:'智能安排',exact:true}).getByRole('button',{name:'确认保存',exact:true})).toBeVisible();
   const drafts = await (await page.request.get('/api/drafts')).json();
   const plan = drafts.find((d:any)=>d.data.draft_kind==='plan').data.payload;
   expect(plan.blocks).toHaveLength(1);
@@ -56,7 +57,7 @@ test('nonconsecutive courses leave usable gaps and adjacent breaks are explicitl
   expect(new Date(plan.blocks[0].ends_at).toISOString()).toBe('2026-10-15T02:20:00.000Z');
   expect(await (await page.request.get('/api/plan-blocks')).json()).toHaveLength(0);
   const review = page.getByRole('region',{name:'智能安排',exact:true});
-  await review.getByRole('button',{name:'校对完成，准备保存'}).click();
+
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect.poll(async()=> (await (await page.request.get('/api/plan-blocks')).json()).length).toBe(1);
   expect(await (await page.request.get('/api/courses')).json()).toEqual(before);
@@ -65,7 +66,7 @@ test('nonconsecutive courses leave usable gaps and adjacent breaks are explicitl
 test('selecting the second segment adjusts the entire occurrence and room-only change preserves the gap',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await enter(page);
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await workspace(page,'courses');
   await page.locator('.fc-event').filter({hasText:'分段高数'}).nth(1).click();
   await page.getByRole('button',{name:'调课或停课',exact:true}).click();
   const form = page.getByRole('form',{name:'调整本次课程',exact:true});
@@ -81,7 +82,7 @@ test('selecting the second segment adjusts the entire occurrence and room-only c
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect(page.locator('.fc-event').filter({hasText:'分段高数 · B202'})).toHaveCount(2);
   await page.reload();
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await workspace(page,'courses');
   await expect(page.locator('.fc-event').filter({hasText:'分段高数 · B202'})).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
 });

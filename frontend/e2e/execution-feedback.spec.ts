@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from "@playwright/test";
 import { fileURLToPath } from "node:url";
 
@@ -8,7 +9,7 @@ async function seed(page: Page, estimatedMinutes = 60) {
   await page.getByLabel("邮箱").fill(`execution-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button", { name: "注册并登录" }).click();
-  await expect(page.getByRole("heading", { name: "今天，专注几件事。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "今日",exact:true })).toBeVisible();
   const ids = await page.evaluate(async (estimate) => {
     const csrf = (await (await fetch("/api/csrf")).json()).csrf_token;
     const write = async (path: string, body: unknown, method = "POST") => {
@@ -34,7 +35,7 @@ async function seed(page: Page, estimatedMinutes = 60) {
     const blocks = await (await fetch("/api/plan-blocks")).json();
     return { tid, bid: blocks[0].id };
   }, estimatedMinutes);
-  await page.reload();
+  await page.reload();await workspace(page,'records');
   return ids;
 }
 
@@ -52,7 +53,7 @@ test("60 planned, 25 actual and unfinished survive refresh; correction retains h
   await expect(region).toContainText("已记录实际：25 分钟");
   const task = await (await page.request.get(`/api/tasks/${tid}`)).json();
   expect(task.data.status).toBe("open");
-  await page.reload();
+  await page.reload();await workspace(page,'records');
   await expect(region).toContainText("已记录实际：25 分钟");
   await region.locator("summary").click();
   await region.getByRole("button", { name: "更正此记录" }).click();
@@ -62,8 +63,8 @@ test("60 planned, 25 actual and unfinished survive refresh; correction retains h
   await expect(region).toContainText("手工补记 25 分钟 · 已被更正");
   const history = await (await page.request.get(`/api/tasks/${tid}/executions`)).json();
   expect(history.map((r: any) => r.data.actual_minutes).sort()).toEqual([20, 25]);
-  await region.screenshot({ path: fileURLToPath(new URL("../../docs/roadmap/evidence/execution/corrected20.png", import.meta.url)) });
-  await page.getByRole("button", { name: "查看 / 拆解步骤", exact: true }).click();
+  await region.screenshot({ path: fileURLToPath(new URL("../../docs/validation/demo2.5/e2e/execution/corrected20.png", import.meta.url)) });
+  await workspace(page,'tasks');await page.getByRole('button',{name:/执行反馈合成练习/}).click();
   await expect(page.getByRole("region", { name: "步骤执行反馈", exact: true })).toContainText("已记录实际：20 分钟");
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBeTruthy();
@@ -106,7 +107,7 @@ test("explicit zero remains distinct from no feedback", async ({ page }) => {
   await region.getByLabel("本次执行结果").selectOption("not_started");
   await region.getByRole("button", { name: "保存执行反馈", exact: true }).click();
   await expect(region).toContainText("已记录实际：0 分钟");
-  await page.reload();
+  await page.reload();await workspace(page,'records');
   await expect(region).toContainText("已记录实际：0 分钟");
   const result = await (await page.request.get(`/api/tasks/${tid}/execution-summary`)).json();
   expect(result.actual_minutes).toBe(0);
@@ -134,8 +135,8 @@ test("step detail can bind manual feedback to an existing estimated block", asyn
     const r=await fetch('/api/plan-blocks/'+id,{method:'PATCH',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({revision:block.revision,completed:true})});
     if(!r.ok) throw new Error(await r.text());
   },bid);
-  await page.reload();
-  await page.getByRole("button", { name: "查看 / 拆解步骤", exact: true }).click();
+  await page.reload();await workspace(page,'records');
+  await workspace(page,'tasks');await page.getByRole('button',{name:/执行反馈合成练习/}).click();
   const region=page.getByRole("region",{name:"步骤执行反馈",exact:true});
   await region.getByLabel("对应的学习安排").selectOption(bid);
   await region.getByLabel("实际分钟",{exact:true}).fill("25");

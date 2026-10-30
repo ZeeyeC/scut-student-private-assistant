@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/SbongeBobybl/NaiWaChatPet",
+  "upstream_ref": "008eb12636f517aedecee6f1a1fc773c2f0df6c4",
+  "rights": {
+    "status": "verified",
+    "basis": "User confirmed on 2026-10-30 that author authorization/licensing was available and supplied the NaiWaChatPet repository and its GPL-3.0-only project statement. Root LICENSE and NOTICE were inspected and are preserved. This records the user-provided repository-level basis; no separate character-art grant has been independently verified and no transfer of character rights is claimed.",
+    "source_notice": "https://github.com/SbongeBobybl/NaiWaChatPet/blob/008eb12636f517aedecee6f1a1fc773c2f0df6c4/NOTICE.md",
+    "evidence_type": "user-provided-repository-license",
+    "independent_character_license_verified": false,
+    "scope": "User-directed project use and local build; no public release upload authorized"
+  },
+  "canvas": {
+    "width": 420,
+    "height": 560
+  },
+  "ground_y": 540,
+  "clips": {
+    "idle": {
+      "runtime": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/runtime.json",
+      "runtime_clip": "idle",
+      "runtime_sha256": "bfc4234ae4737d0a5013c3aa030fa9bb69b4355f4097ef92ff1253a8faebdcba"
+    },
+    "greet": {
+      "manifest": "Source/NaiWaChatPet/animations/greet/manifest.json",
+      "manifest_sha256": "1c11bc8c6bc8e9d7fb68c2a0fc2c4caef00a5d9bdc371e4a23a15522517aa5f4",
+      "pose_hold_ms": 800
+    },
+    "ponder": {
+      "manifest": "Source/NaiWaChatPet/animations/ponder/manifest.json",
+      "manifest_sha256": "0f58f4f65a4d38c5da318d6399acb543df2d0b14d47663025ae24790726f3ebe"
+    },
+    "focused": {
+      "manifest": "Source/NaiWaChatPet/animations/focused/manifest.json",
+      "manifest_sha256": "1f9d0429e460ca20e621b1065cb2ef4b97ce0c3d2045ab0c2443592d4d145829"
+    },
+    "curious": {
+      "manifest": "Source/NaiWaChatPet/animations/curious/manifest.json",
+      "manifest_sha256": "1856d3f8d7b20fb29d7258998bd377dfa14ef51eef915ddcfc22e775a8166936"
+    },
+    "worried": {
+      "manifest": "Source/NaiWaChatPet/animations/worried/manifest.json",
+      "manifest_sha256": "9a9bb457c3d16f0bb10fae88822704028ecc7e4719f250d91ce3643714be592d"
+    },
+    "sleepy": {
+      "manifest": "Source/NaiWaChatPet/animations/sleepy/manifest.json",
+      "manifest_sha256": "defb348df7bcb667303ccdd1a076d6ef91238d883b1a26643dd7370162be2c91"
+    },
+    "smile": {
+      "manifest": "Source/NaiWaChatPet/animations/smile/manifest.json",
+      "manifest_sha256": "ecab0da3349cd5e92cddb016104ba62c663eaca4cb647da92b2bfccb42e435e6",
+      "pose_hold_ms": 800
+    },
+    "surprised_in": {
+      "manifest": "Source/NaiWaChatPet/animations/surprised_in/manifest.json",
+      "manifest_sha256": "78374037792cc4cea23072ced15fefdaca9f0a68f3ae8590216ddf89faa2440f"
+    },
+    "surprised": {
+      "manifest": "Source/NaiWaChatPet/animations/surprised/manifest.json",
+      "manifest_sha256": "5d15eb81bd6c6343d403e5d86d04143a8891c013be8b81c632249b0d6e8d17d2"
+    },
+    "surprised_out": {
+      "manifest": "Source/NaiWaChatPet/animations/surprised_out/manifest.json",
+      "manifest_sha256": "286de1e913a7fb701541b108d5e114b837a29bd3b7329b343bd4a17e3bd4df86"
+    }
+  },
+  "states": {
+    "starting": "greet",
+    "idle": "idle",
+    "thinking": "ponder",
+    "replying": "focused",
+    "approval": "curious",
+    "error": "worried",
+    "sleeping": "sleepy"
+  },
+  "actions": [
+    {
+      "id": "greet",
+      "title": "打招呼",
+      "clips": [
+        "greet"
+      ],
+      "hold_ms": 800
+    },
+    {
+      "id": "smile",
+      "title": "微笑",
+      "clips": [
+        "smile"
+      ],
+      "hold_ms": 800
+    },
+    {
+      "id": "surprised",
+      "title": "惊讶",
+      "clips": [
+        "surprised_in",
+        "surprised",
+        "surprised_out"
+      ]
+    }
+  ],
+  "icon": {
+    "source": "Source/NaiWaChatPet/icons/icon-256.png",
+    "sha256": "92d7730b4ff9966a5febec641ea18d0952350cddd52e0ab0856e979157c5bc6f"
+  },
+  "declarations": [
+    {
+      "source": "LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "source": "NOTICE.md",
+      "sha256": "26d2ef749cb89c855740829ab1a1036d9e4a91d6fe47a42a561423efd515c47a"
+    }
+  ]
+}

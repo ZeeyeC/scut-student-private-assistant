@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from "@playwright/test";
 import { fileURLToPath } from "node:url";
 
@@ -8,8 +9,8 @@ async function enter(page: Page) {
   await page.getByLabel("邮箱").fill(`constraint-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button", { name: "注册并登录" }).click();
-  await expect(page.getByRole("heading", { name: "今天，专注几件事。" })).toBeVisible();
-  await page.getByRole("button", { name: "待办与日程", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "今日",exact:true })).toBeVisible();
+  await workspace(page,'planning');
 }
 
 async function prepare(page: Page, title = "不可安排") {
@@ -23,7 +24,7 @@ async function prepare(page: Page, title = "不可安排") {
 
 async function save(page: Page) {
   const review = page.getByRole("region", { name: "禁排草稿", exact: true });
-  await review.getByRole("button", { name: "校对完成，准备保存" }).click();
+
   await review.getByRole("button", { name: "确认保存", exact: true }).click();
   await expect(review).toHaveCount(0);
 }
@@ -47,16 +48,17 @@ test("one-off protection is reviewed, persists, changes plans and does not becom
   await prepare(page);
   expect(await (await page.request.get("/api/scheduling-constraints")).json()).toEqual([]);
   await page.reload();
-  await page.getByRole("button", { name: "待办与日程", exact: true }).click();
+  await workspace(page,'planning');
   await expect(page.getByRole("region", { name: "禁排草稿", exact: true })).toContainText("尚未生效");
   await save(page);
   await expect(page.getByRole("heading", { name: "不可安排 · 已启用", exact: true })).toBeVisible();
   await expect(page.locator(".fc-event").filter({ hasText: "不可安排" })).toHaveCount(1);
+  await workspace(page,'calendar');
   await page.locator(".fc-event").filter({ hasText: "不可安排" }).click();
   const detail = page.getByRole("region", { name: "日程详情", exact: true });
   await expect(detail).toContainText("不触发提醒");
   await expect(detail.getByRole("region", { name: "提醒与快捷打开" })).toHaveCount(0);
-  await page.getByRole("button", { name: "关闭详情" }).click();
+  await workspace(page,'planning');
   await page.getByRole("button", { name: "智能安排未来 7 天" }).click();
   const plan = page.getByRole("region", { name: "智能安排", exact: true });
   await expect(plan.getByRole("heading", { name: "仍未安排" })).toBeVisible();
@@ -69,7 +71,7 @@ test("one-off protection is reviewed, persists, changes plans and does not becom
   await page.getByRole("button", { name: "智能安排未来 7 天" }).click();
   await expect(plan).not.toContainText("仍未安排");
   await expect(plan).toContainText("本次分配 60 分钟");
-  await plan.getByRole("button", { name: "校对完成，准备保存" }).click();
+
   await plan.getByRole("button", { name: "确认保存", exact: true }).click();
   await expect.poll(async () => (await (await page.request.get("/api/plan-blocks")).json()).length).toBe(1);
   const exported = await (await page.request.get("/api/data-export")).json();
@@ -77,7 +79,7 @@ test("one-off protection is reviewed, persists, changes plans and does not becom
   await page.getByRole("button", { name: "启用禁排" }).click();
   await expect(page.getByRole("heading", { name: "不可安排 · 已启用", exact: true })).toBeVisible();
   expect((await (await page.request.get("/api/plan-blocks")).json()).length).toBe(1);
-  await page.getByRole("button", { name: "课表", exact: true }).click();
+  await workspace(page,'courses');
   await expect(page.locator(".fc-event").filter({ hasText: "不可安排" })).toHaveCount(0);
 });
 
@@ -140,9 +142,9 @@ test('weekly protection previews dates, survives reload and guides today and sev
   await expect(review.getByLabel('禁排发生预览').locator('p')).toHaveCount(4);
   await expect(review).toContainText('每周三、五');
   expect(await(await page.request.get('/api/scheduling-constraints')).json()).toHaveLength(0);
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/weekly-constraints-review.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/weekly-constraints-review.png',import.meta.url))});
   await save(page);
-  await page.reload();await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await page.reload();await workspace(page,'planning');
   await expect(page.getByRole('heading',{name:'每周固定安排 · 已启用',exact:true})).toBeVisible();
   await expect(page.locator('.fc-event').filter({hasText:'每周固定安排'})).toHaveCount(2);
   await page.getByRole('button',{name:'一键生成当日日程',exact:true}).click();
@@ -156,7 +158,7 @@ test('weekly protection previews dates, survives reload and guides today and sev
   expect(generated.blocks).toHaveLength(2);
   expect(generated.blocks.every((b:any)=>b.starts_at.startsWith('2026-10-15'))).toBeTruthy();
   expect(await(await page.request.get('/api/plan-blocks')).json()).toHaveLength(0);
-  await plan.getByRole('button',{name:'校对完成，准备保存'}).click();
+
   await plan.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect.poll(async()=> (await(await page.request.get('/api/plan-blocks')).json()).length).toBe(2);
 });
@@ -188,4 +190,21 @@ test('weekly series can be amended and disabled on mobile without duplicating ru
   await expect(page.getByRole('heading',{name:'不可安排 · 已停用'})).toBeVisible();
   await expect(page.locator('.fc-event').filter({hasText:'不可安排'})).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
+});
+
+
+test('a rule being refreshed cannot submit its stale revision after reviewed editing',async({page})=>{
+  await enter(page);await prepare(page);await save(page);
+  await page.getByRole('button',{name:'修改时段',exact:true}).click();
+  await page.getByLabel('禁排名称',{exact:true}).fill('修改后的保护');
+  await page.getByRole('button',{name:'生成禁排草稿',exact:true}).click();
+  let release!:()=>void;const gate=new Promise<void>(resolve=>{release=resolve;});
+  await page.route('**/api/scheduling-constraints',async route=>{if(route.request().method()==='GET')await gate;await route.continue();});
+  try{
+    await save(page);
+    await expect(page.getByRole('button',{name:'停用禁排',exact:true})).toBeDisabled();
+  }finally{release();}
+  await expect(page.getByRole('heading',{name:'修改后的保护 · 已启用',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'停用禁排',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'修改后的保护 · 已停用',exact:true})).toBeVisible();
 });

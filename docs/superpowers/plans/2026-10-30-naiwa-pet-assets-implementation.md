@@ -35,9 +35,9 @@
 **Interfaces:** CLI `import-naiwa-assets.py --source <只读上游检出> --selection <清单> --output <资源目录>`；输出 `asset-pack.json`，含schema_version、upstream_ref、源路径/SHA256、canvas、default_frame、clips（frames/duration_ns/loop/transitions）、states及资源授权记录。fps归一为每帧`round(1_000_000_000/fps)`纳秒，原fps另存来源；单帧手动姿态单独使用`pose_hold_ms=800`，不重复解码或篡改其源fps。
 
 - [ ] 选材固定为基础idle28帧、状态用greet/ponder/focused/curious/worried/sleepy、手动smile及surprised三段、原icons/icon-256.png。记录各自授权依据；读取原始PNG并制作静态/逐帧预览，确认不是错误目录、占位图或不相符姿态。原始记录与既有素材分开。
-- [ ] 写失败测试：篡改SHA、420×560声明对应错误尺寸、缺帧、非法路径/符号链接、无效帧时长、未知来源版本、失败导入后原资源包保持原样。
-- [ ] Run `PYTHONPATH=backend backend/.venv/bin/python -m pytest scripts/tests/test_import_naiwa_assets.py -q`，确认RED。
-- [ ] 实现原字节校验、受限路径、明确字段和暂存后原子替换；只复制选中PNG与必要声明，输出同来源默认帧。基线待机按28帧×85,000,000ns；表情按各自清单。
+- [x] 写失败测试：篡改SHA、420×560声明对应错误尺寸、缺帧、非法路径/符号链接、无效帧时长、未知来源版本、失败导入后原资源包保持原样。
+- [x] Run `PYTHONPATH=backend backend/.venv/bin/python -m pytest scripts/tests/test_import_naiwa_assets.py -q`，确认RED。
+- [x] 实现原字节校验、受限路径、明确字段和暂存后原子替换；只复制选中PNG与必要声明，输出同来源默认帧。基线待机按28帧×85,000,000ns；表情按各自清单。
 - [ ] 同命令GREEN；检查清单的帧/文件/来源一一对应，再本地提交。授权未明确时继续做UI/合成测试，不把未明确素材放入发布包。
 
 ### Task 2：元数据播放器、按需缓存和公共坐标

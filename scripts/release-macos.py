@@ -21,7 +21,7 @@ WORKSPACE = PROJECT.parent
 EXCLUDED_PARTS = {
     ".git", ".tools", ".venv", "node_modules", "__pycache__", ".pytest_cache",
     ".ruff_cache", "build", "dist", ".output", ".output-e2e", ".wxt", "data",
-    "backups", "test-results", "playwright-report", "desktop-extension",
+    "backups", "test-results", "test-results-local", "playwright-report", "desktop-extension",
 }
 PREVIEWS = ("Demo2.2后续开发预览", "Demo2.2后续开发预览-课表识别")
 
@@ -154,7 +154,10 @@ def run_checks(project, stage, version):
         ("frontend", ["npm", "--prefix", "frontend", "test"]),
         ("browser", [str(project / "frontend/node_modules/.bin/playwright"), "test",
                      "--config=frontend/playwright.pet.config.ts"]),
+        ("browser_local", [str(project / "frontend/node_modules/.bin/playwright"), "test",
+                           "--config=frontend/playwright.local.config.ts"]),
         ("native_logic", [python, "campus-pet/tests/run_native_tests.py"]),
+        ("pet_asset_freeze", [python, "scripts/verify-pet-asset-pack.py", "--release", "--app", str(stage / "课间桌宠.app")]),
         ("native_health_transport", [python, "campus-pet/tests/run_health_transport_tests.py"]),
         ("native_integration", [python, "campus-pet/verify.py", "--app", str(stage / "课间桌宠.app")]),
         ("frozen_pdf", [python, "scripts/verify-frozen-timetable.py", "--service",

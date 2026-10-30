@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 
@@ -8,7 +9,7 @@ async function enter(page: Page) {
   await page.getByLabel('邮箱').fill(`today-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   await page.getByRole('button',{name:'注册并登录'}).click();
-  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今日',exact:true})).toBeVisible();
 }
 
 async function seed(page: Page) {
@@ -37,7 +38,7 @@ async function seed(page: Page) {
 test('today preview avoids fixed courses and protection, saves only after review and survives reload',async({page})=>{
   await enter(page);
   const courses=await seed(page);
-  await page.getByRole('button',{name:'一键生成当日日程',exact:true}).click();
+  await workspace(page,'records');await page.getByRole('button',{name:'一键生成当日日程',exact:true}).click();
   const review=page.getByRole('region',{name:'计划草稿',exact:true});
   await expect(review.getByRole('heading',{name:'2026-10-14 当日日程'})).toBeVisible();
   await expect(review).toContainText('未自动延至明天');
@@ -54,16 +55,16 @@ test('today preview avoids fixed courses and protection, saves only after review
       expect(new Date(b.ends_at)<=new Date(fixed.starts_at)||new Date(b.starts_at)>=new Date(fixed.ends_at)).toBeTruthy();
   }
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual([]);
-  await page.reload();
+  await page.reload();await workspace(page,'records');
   await expect(review.getByRole('heading',{name:'2026-10-14 当日日程'})).toBeVisible();
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/today-plan-review.png',import.meta.url))});
-  await review.getByRole('button',{name:'校对完成，准备保存'}).click();
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/today-plan-review.png',import.meta.url))});
+
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual([]);
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect(review).toHaveCount(0);
   await expect.poll(async()=>(await (await page.request.get('/api/plan-blocks')).json()).length).toBe(p.blocks.length);
   expect(await (await page.request.get('/api/courses')).json()).toEqual(courses);
-  await page.reload();
+  await page.reload();await workspace(page,'records');
   await expect(page.getByRole('heading',{name:'今日练习',exact:true}).first()).toBeVisible();
   const saved=await (await page.request.get('/api/plan-blocks')).json();
   const exports=await (await page.request.get('/api/data-export')).json();
@@ -73,7 +74,7 @@ test('today preview avoids fixed courses and protection, saves only after review
 
 test('schedule offers both modes; an empty day shows why without fabricating work',async({page})=>{
   await enter(page);
-  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await workspace(page,'planning');
   const schedule=page.getByRole('region',{name:'智能安排',exact:true});
   await expect(schedule.getByRole('button',{name:'智能安排未来 7 天'})).toBeVisible();
   await schedule.getByRole('button',{name:'一键生成当日日程',exact:true}).click();

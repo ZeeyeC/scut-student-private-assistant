@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 
@@ -10,7 +11,7 @@ async function enter(page: Page) {
   const bootstrap = page.waitForResponse(r => r.url().endsWith('/api/after-class/open') && r.request().method() === 'POST');
   await page.getByRole('button', {name:'注册并登录'}).click();
   await (await bootstrap).finished();
-  await expect(page.getByRole('heading', {name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading', {name:'今日',exact:true})).toBeVisible();
 }
 
 async function seed(page: Page) {
@@ -41,7 +42,7 @@ test('capacity is read-only, distinguishes shortage and unknown work, matches th
   await page.request.get('/api/planning-capacity?scope=today');
   expect((await (await page.request.get('/api/data-export')).json()).resources).toEqual(before);
   const consumed=page.waitForResponse(r=>r.url().endsWith('/api/replanning/changes')&&r.request().method()==='POST');
-  await page.getByRole('button', {name:'待办与日程',exact:true}).click();
+  await workspace(page,'planning');
   await (await consumed).finished();
   const afterNavigation=(await (await page.request.get('/api/data-export')).json()).resources;
   // Mounting the new active change consumer may write its notice/event cursor;
@@ -57,7 +58,7 @@ test('capacity is read-only, distinguishes shortage and unknown work, matches th
   await panel.getByText('查看可用空档', {exact:true}).click();
   await expect(panel).toContainText('20:30–22:00');
   expect((await (await page.request.get('/api/data-export')).json()).resources).toEqual(before);
-  await panel.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/planning-capacity.png',import.meta.url))});
+  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/planning-capacity.png',import.meta.url))});
   await panel.getByRole('button', {name:'未来7天容量',exact:true}).click();
   await expect(panel).toContainText('本范围可排 180 分钟 · 仍未排 0 分钟');
   await expect(panel.getByRole('article')).toHaveCount(7);
@@ -66,18 +67,18 @@ test('capacity is read-only, distinguishes shortage and unknown work, matches th
   await expect(panel).toContainText('本范围可排 90 分钟');
   await page.getByRole('region', {name:'智能安排',exact:true}).getByRole('button', {name:'一键生成当日日程',exact:true}).click();
   const review = page.getByRole('region', {name:'计划草稿',exact:true});
-  await expect(review.getByRole('button', {name:'校对完成，准备保存'})).toBeVisible();
+  await expect(review.getByRole('button', {name:'确认保存',exact:true})).toBeVisible();
   const drafts = await (await page.request.get('/api/drafts')).json();
   const p = drafts.find((d:any) => d.data.draft_kind === 'plan' && d.data.status === 'pending').data.payload;
   expect(p.capacity.proposed_minutes).toBe(90);
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual([]);
-  await review.getByRole('button', {name:'校对完成，准备保存'}).click();
+
   await review.getByRole('button', {name:'确认保存',exact:true}).click();
   await expect(review).toHaveCount(0);
   await panel.getByRole('button', {name:'刷新容量',exact:true}).click();
   await expect(panel).toContainText(`保留 ${p.blocks.length} 项`);
   await page.reload();
-  await page.getByRole('button', {name:'待办与日程',exact:true}).click();
+  await workspace(page,'planning');
   await expect(panel).toContainText('本范围可排 90 分钟');
 });
 
@@ -92,7 +93,7 @@ test('mobile capacity reports an empty window and recovers from a failed read wi
     if (!r.ok) throw new Error(await r.text());
   });
   await page.route('**/api/planning-capacity?*', route => route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({detail:'合成离线'})}));
-  await page.getByRole('button', {name:'待办与日程',exact:true}).click();
+  await workspace(page,'planning');
   const panel = page.getByRole('region', {name:'时间容量检查',exact:true});
   await expect(panel.getByRole('alert')).toContainText('容量检查失败');
   await page.unroute('**/api/planning-capacity?*');

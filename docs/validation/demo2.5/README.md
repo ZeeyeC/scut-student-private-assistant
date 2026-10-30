@@ -1,18 +1,21 @@
-# Demo2.5 当前验证记录
+# Demo2.5 验证记录
 
-当前为开发中的U1/U2/B1阶段，尚未生成Demo2.5正式App或归档。[进度表](../../roadmap/Demo2.5-开发进度追踪表.md)区分代码实现、自动化验证与外部验收。
+当前开发分支`codex/demo2.5-app-ui-naiwa`。本轮已完成全量界面回归和真实素材App验收，正式归档尚在进行。[进度表](../../roadmap/Demo2.5-开发进度追踪表.md)继续区分实现、当前构建与外部验收。
 
-首轮实现快照见[B1-verification-summary.json](B1-verification-summary.json)，各日志SHA256随该文件保存。
+最新快照见[V1-verification-summary.json](V1-verification-summary.json)，日志哈希随文件保存；B1文件保留为早期检查点。
 
-| 检查 | 当前结果 | 证据 |
+| 检查 | 结果 | 证据 |
 | --- | --- | --- |
-| 后端及脚本 | 657通过，20子测试通过 | [B1-backend.txt](B1-backend.txt) |
-| 前端单元 | 103通过，类型与构建通过 | [B1-frontend.txt](B1-frontend.txt) |
-| 新工作台与独立导入流程 | 7通过；使用真实API与合成学校/原生桥接替身 | [B1-browser.txt](B1-browser.txt) |
-| 扩展 | 6通过，类型与生产构建通过 | [B1-extension.txt](B1-extension.txt)、[类型](B1-extension-types.txt)、[构建](B1-extension-build.txt) |
-| 原生逻辑 | 通过，包括Chrome/Edge选择、失效上下文及旧后台拒绝 | [B1-native.txt](B1-native.txt) |
-| 原生HTTP健康 | 10场景通过 | [B1-native-http.txt](B1-native-http.txt) |
+| 后端及脚本 | 681通过，20子测试 | [日志](V1-backend.txt) |
+| 前端 | 103通过，类型/构建通过 | [日志](V1-frontend.txt) |
+| 新导航下的全部业务与独立导入 | 65通过 | [日志](V1-browser.txt) |
+| 本地首次启动竞态与资料复用 | 1通过，已观察RED→GREEN | [日志](V1-local-session.txt) |
+| 扩展 | 6通过，类型与指定华工配置构建通过 | B1及最终归档记录 |
+| 素材工具与发布脚本 | 36通过，15子测试 | [日志](N-tooling.txt) |
+| 原生逻辑/缓存/坐标/状态 | 通过 | [日志](N-native.txt) |
+| 原生HTTP | 10场景通过 | [日志](V1-native-http.txt) |
+| 实际App与真实NaiWa素材 | 通过，qa_asset_fixture=false | [日志](N-app-real.txt) |
 
-浏览器流程覆盖：旧导航映射、320/390px、任务草稿确认前不保存、抽屉关闭保留输入、五组设置、原生导航与嵌套抽屉交错、无App Cookie的外部采集回传、URL授权清除、扩展缺失/取消失效、实际桥接脚本调用与双击去重。
+[实际待机图](N-state-idle.png) · [思考状态](N-state-thinking.png) · [待确认状态](N-state-approval.png) · [休息状态](N-state-sleeping.png) · [短测性能](N-pet-playback-profile.json)。性能记录只包含本机原生进程，排除独立WebKit进程，不能当作整机或长期结论。真实角色来源及许可依据的层级见[来源记录](../../../campus-pet/art/naiwa/SOURCES.md)。
 
-尚未完成：旧版全部浏览器交互选择器迁移及全量执行、当前实际Mac App界面/冻结后台验证、NaiWa素材授权与正式接入、真实学校Chrome/Edge扩展完整流程及其他设备验收。自动化中的学校采集与原生开页替身不代表上述外部验收。旧Demo2.4.9结果也不代替新版结果。
+自动化保留了原执行、计时、冲突校对、调课/校历、偏好、目标、协商、容量与重排等数据断言。学校采集使用隔离合成样本，原生开页单元测试使用明确替身；不能替代本人当前Chrome/Edge真实学校往返。真实OCR30份/5布局/95%准确率、多物理显示器、长期使用及其他平台仍未验收。正式构建、冻结后台、签名和ZIP检查以本版归档为准。

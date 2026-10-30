@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import {test,expect,type Page} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
 
@@ -8,7 +9,7 @@ async function enter(page:Page){
   await page.getByLabel('邮箱').fill(`conflicts-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   await page.getByRole('button',{name:'注册并登录'}).click();
-  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今日',exact:true})).toBeVisible();
   await page.evaluate(async()=>{
     const csrf=(await(await fetch('/api/csrf')).json()).csrf_token;
     const write=async(path:string,body:unknown,method='POST')=>{
@@ -22,9 +23,10 @@ async function enter(page:Page){
     const d=await write('/drafts/timetable',{semester_label:'合成冲突课表',courses:[{source_key:'math',name:'五山高数',campus:'五山',weekday:3,weeks:[1],periods:[1]}]});
     await write(`/drafts/${d.id}/confirm`,{revision:d.revision});
   });
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await workspace(page,'courses');
 }
 async function addDirection(page:Page){
+  await workspace(page,'rules');
   await page.getByRole('button',{name:'设置校区转移时间',exact:true}).click();
   const form=page.getByRole('form',{name:'编辑校区转移时间'});
   await form.getByRole('button',{name:'添加一个方向'}).click();
@@ -35,6 +37,7 @@ async function addDirection(page:Page){
   await expect.poll(async()=> (await(await page.request.get('/api/settings')).json()).data.campus_transfers.length).toBe(1);
 }
 async function manual(page:Page){
+  await workspace(page,'import');
   await page.getByRole('button',{name:'手工添加课程',exact:true}).click();
   const form=page.locator('form').filter({has:page.getByRole('heading',{name:'添加一门课程',exact:true})});
   await form.getByLabel('课程名称').fill('大学城英语');
@@ -53,11 +56,11 @@ test('directional transfer shortfall is reviewed before a fixed fact is saved an
   await expect(review.getByRole('region',{name:'冲突检查'})).toContainText('需 40 分钟，实际间隔 10 分钟，不足 30 分钟');
   await expect(review.getByRole('button',{name:'确认保存',exact:true})).toBeDisabled();
   expect((await(await page.request.get('/api/courses')).json())).toHaveLength(1);
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/roadmap/evidence/course-conflicts-review.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/course-conflicts-review.png',import.meta.url))});
   await review.getByRole('checkbox',{name:'我已核对上述提示，仍按已确认的课程或事项保存'}).check();
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect(review).toHaveCount(0);
-  await page.reload();await page.getByRole('button',{name:'课表',exact:true}).click();
+  await page.reload();await workspace(page,'courses');
   await expect(page.getByRole('region',{name:'冲突检查',exact:true})).toContainText('不足 30 分钟');
   expect((await(await page.request.get('/api/courses')).json())).toHaveLength(2);
 });
@@ -86,7 +89,7 @@ test('fixed event cannot use a conflict review after other fixed facts change',a
     const csrf=(await(await fetch('/api/csrf')).json()).csrf_token;
     await fetch('/api/drafts/calendar-event',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({title:'合成下午事项',starts_at:'2026-10-14T14:00:00+08:00',ends_at:'2026-10-14T15:00:00+08:00'})});
   });
-  await page.reload();await page.getByRole('button',{name:'助手',exact:true}).click();
+  await page.reload();await inbox(page);
   const review=page.locator('section').filter({has:page.getByRole('heading',{name:'核对日程事项',exact:true})});
   await review.getByRole('button',{name:'校对完成，准备保存'}).click();
   await page.evaluate(async()=>{

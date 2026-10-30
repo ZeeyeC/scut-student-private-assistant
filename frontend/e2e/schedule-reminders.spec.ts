@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect } from '@playwright/test';
 
 test('calendar shortcut persists website and file choices and controls reminders', async ({page}) => {
@@ -6,20 +7,20 @@ test('calendar shortcut persists website and file choices and controls reminders
   await page.getByLabel('邮箱').fill(`reminder-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   await page.getByRole('button',{name:'注册并登录'}).click();
-  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今日',exact:true})).toBeVisible();
   await page.evaluate(async()=>{
     const token=(await (await fetch('/api/csrf')).json()).csrf_token;
     const start=new Date(Date.now()+240000); const end=new Date(start.getTime()+3600000);
     const response=await fetch('/api/fixed-events',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':token,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({title:'提醒验收任务',starts_at:start.toISOString(),ends_at:end.toISOString()})});
     if(!response.ok) throw new Error(await response.text());
   });
-  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
+  await workspace(page,'calendar');
   await page.locator('.fc-event').filter({hasText:'提醒验收任务'}).first().click();
   await page.getByLabel('点击奶娃时打开').selectOption('website');
   await page.getByLabel('完整网站地址').fill('https://example.com/homework');
   await page.getByRole('button',{name:'保存提醒设置'}).click();
   await expect(page.getByRole('status').filter({hasText:'已保存'})).toBeVisible();
-  await page.getByRole('button',{name:'关闭详情'}).click();
+  await page.keyboard.press('Escape');
   await page.locator('.fc-event').filter({hasText:'提醒验收任务'}).first().click();
   await expect(page.getByLabel('完整网站地址')).toHaveValue('https://example.com/homework');
   await page.getByLabel('点击奶娃时打开').selectOption('file');

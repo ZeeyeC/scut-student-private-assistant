@@ -41,8 +41,8 @@ export function SchedulingConstraints() {
       <h3>{r.data.title} · {r.data.active ? "已启用" : "已停用"}</h3>
       <p>{r.data.strength==="soft"?"软偏好（优先学习，可让步）":"硬禁排（不安排任务）"}</p>
       <ConstraintSummary data={r.data} />
-      <Button variant="outline" disabled={busy} onClick={() => setEditor(r)}>修改时段</Button>
-      <Button variant="outline" disabled={busy} onClick={async () => {
+      <Button variant="outline" disabled={busy || constraints.isFetching} onClick={() => setEditor(r)}>修改时段</Button>
+      <Button variant="outline" disabled={busy || constraints.isFetching} onClick={async () => {
         setBusy(true); setError("");
         try {
           await api(`/scheduling-constraints/${r.id}`, { method: "PATCH", body: JSON.stringify({ revision: r.revision, active: !r.data.active }), headers: { "Idempotency-Key": `${r.id}:${r.revision}:${!r.data.active}` } });

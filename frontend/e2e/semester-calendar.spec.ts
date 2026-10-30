@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import {test,expect,type Page} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
 
@@ -8,7 +9,7 @@ async function seed(page:Page){
   await page.getByLabel('邮箱').fill(`semester-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   await page.getByRole('button',{name:'注册并登录'}).click();
-  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今日',exact:true})).toBeVisible();
   await page.evaluate(async()=>{
     const csrf=(await(await fetch('/api/csrf')).json()).csrf_token;
     const write=async(path:string,body:unknown,method='POST')=>{
@@ -25,7 +26,7 @@ async function seed(page:Page){
       {source_key:'physics',name:'校历物理',weekday:3,weeks:[1,2,3],periods:[1],location:'102',campus:'主校区'},
     ]});await write(`/drafts/${d.id}/confirm`,{revision:d.revision});
   });
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await workspace(page,'rules');
   return page.getByRole('region',{name:'学期校历与批量调课',exact:true});
 }
 async function prepareRule(page:Page,kind:string){
@@ -55,11 +56,11 @@ test('practice range previews four actual classes then atomically saves and rest
   await section.getByRole('button',{name:'预览批量调整',exact:true}).click();
   const review=page.getByRole('region',{name:'校历批量调整草稿',exact:true});
   await expect(review).toContainText('共 4 次课程');
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.4.9/semester-batch-preview.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/semester-batch-preview.png',import.meta.url))});
   expect(await(await page.request.get('/api/course-changes')).json()).toHaveLength(0);
   await confirm(page);
   await expect.poll(async()=> (await(await page.request.get('/api/course-changes')).json()).length).toBe(4);
-  await page.reload();await page.getByRole('button',{name:'课表',exact:true}).click();
+  await page.reload();await workspace(page,'rules');
   await page.getByRole('button',{name:'撤销整批（先预览）',exact:true}).click();
   await expect(page.getByRole('region',{name:'校历批量调整草稿',exact:true})).toContainText('恢复本批次之前的课程例外');
   await confirm(page);
@@ -80,7 +81,7 @@ test('mobile makeup requires explicit mapping and keeps nonconsecutive periods a
   await section.getByRole('button',{name:'预览批量调整',exact:true}).click();
   const review=page.getByRole('region',{name:'校历批量调整草稿',exact:true});
   await expect(review).toContainText('保留 2 段授课');
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.4.9/makeup-mobile-preview.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/makeup-mobile-preview.png',import.meta.url))});
   await confirm(page);
   const occurrences=await(await page.request.get('/api/occurrences?start=2026-10-18&end=2026-10-18')).json();
   expect(occurrences).toHaveLength(1);

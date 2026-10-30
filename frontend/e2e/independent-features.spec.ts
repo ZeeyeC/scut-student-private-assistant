@@ -1,8 +1,9 @@
+import {workspace,inbox,negotiation} from './workspace';
 import {test,expect,type Page} from "@playwright/test";
 import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
 
-const evidence=(name:string)=>fileURLToPath(new URL(`../../docs/roadmap/evidence/independent/${name}.png`,import.meta.url));
+const evidence=(name:string)=>fileURLToPath(new URL(`../../docs/validation/demo2.5/e2e/independent/${name}.png`,import.meta.url));
 
 test('compact desktop bridge opens goals and weekly review',async({page})=>{
   await enter(page);
@@ -10,8 +11,9 @@ test('compact desktop bridge opens goals and weekly review',async({page})=>{
   await page.addScriptTag({content:readFileSync(new URL('../../campus-pet/Resources/Bridge.js',import.meta.url),'utf8')});
   expect(await page.evaluate(()=>(window as any).__campusPet.navigate('目标与复盘'))).toBe(true);
   await expect(page.getByRole('region',{name:'长期目标',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'复盘',exact:true}).click();
   await expect(page.getByRole('region',{name:'每周复盘',exact:true})).toBeVisible();
-  await expect(page.locator('.shell > aside')).toBeHidden();
+  for(const name of ['今日','日程','任务','助手'])await expect(page.getByRole('button',{name,exact:true})).toBeVisible();
 });
 
 async function enter(page:Page) {
@@ -21,7 +23,7 @@ async function enter(page:Page) {
   await page.getByLabel("邮箱").fill(`independent-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button",{name:"注册并登录"}).click();
-  await expect(page.getByRole("heading",{name:"今天，专注几件事。"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"今日",exact:true})).toBeVisible();
 }
 
 async function seed(page:Page) {
@@ -43,7 +45,7 @@ async function seed(page:Page) {
 }
 
 test('timer pauses, resumes after reload and switches to manual exactly once',async({page})=>{
-  await enter(page);const tid=await seed(page);await page.reload();
+  await enter(page);const tid=await seed(page);await page.reload();await workspace(page,'records');
   const feedback=page.getByRole('region',{name:'本次安排执行反馈',exact:true});
   const timer=feedback.getByRole('region',{name:'自愿计时',exact:true});
   await timer.getByRole('button',{name:'开始计时',exact:true}).click();
@@ -51,7 +53,7 @@ test('timer pauses, resumes after reload and switches to manual exactly once',as
   await timer.getByRole('button',{name:'暂停计时',exact:true}).click();
   await expect(timer.getByRole('timer')).toContainText('已暂停');
   await page.screenshot({path:evidence('timer-paused'),fullPage:true});
-  await page.reload();
+  await page.reload();await workspace(page,'records');
   await expect(timer.getByRole('timer')).toContainText('已暂停');
   await timer.getByRole('button',{name:'继续计时',exact:true}).click();
   await timer.getByLabel('改为手工补记，替代本次计时投入').check();
@@ -71,7 +73,7 @@ test('timer pauses, resumes after reload and switches to manual exactly once',as
 
 test('confirmed profile survives reload and reset preserves task facts',async({page})=>{
   await enter(page);const tid=await seed(page);
-  await page.getByRole('button',{name:'设置',exact:true}).click();
+  await workspace(page,'preferences');
   const profile=page.getByRole('region',{name:'用户偏好与精力档案'});
   await expect(profile).toContainText('未知（未设置）');
   await profile.getByRole('button',{name:'编辑偏好',exact:true}).click();
@@ -82,7 +84,7 @@ test('confirmed profile survives reload and reset preserves task facts',async({p
   await expect(profile).toContainText('45 分钟');
   await page.screenshot({path:evidence('profile-confirmed'),fullPage:true});
   expect((await(await page.request.get('/api/profile')).json()).data.preferences.break_minutes).toBe(0);
-  await page.reload();await page.getByRole('button',{name:'设置',exact:true}).click();
+  await page.reload();await workspace(page,'preferences');
   await expect(profile).toContainText('45 分钟');
   await profile.getByRole('button',{name:'重置档案',exact:true}).click();
   await profile.getByRole('button',{name:'确认重置偏好',exact:true}).click();
@@ -94,7 +96,7 @@ test('confirmed profile survives reload and reset preserves task facts',async({p
 
 test('goal pause preserves completed subtasks and excludes its budget from shared capacity',async({page})=>{
   await enter(page);const tid=await seed(page);
-  await page.getByRole('button',{name:'目标与复盘',exact:true}).click();
+  await workspace(page,'goals');
   const goals=page.getByRole('region',{name:'长期目标',exact:true});
   await goals.getByRole('button',{name:'新建目标',exact:true}).click();
   await goals.getByLabel('目标名称').fill('合成英语目标');
@@ -126,7 +128,7 @@ test('weekly review reads actual25 and accepts an intent without changing the pl
     if(!r.ok)throw new Error(await r.text());
   },tid);
   const before=await(await page.request.get('/api/plan-blocks')).json();
-  await page.getByRole('button',{name:'目标与复盘',exact:true}).click();
+  await workspace(page,'review');
   const review=page.getByRole('region',{name:'每周复盘',exact:true});
   await review.getByLabel('选择周内日期').fill('2026-10-12');
   await expect(review).toContainText('25 分钟');

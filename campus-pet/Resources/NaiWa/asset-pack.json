@@ -1,0 +1,1511 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/SbongeBobybl/NaiWaChatPet",
+  "upstream_ref": "008eb12636f517aedecee6f1a1fc773c2f0df6c4",
+  "rights": {
+    "status": "verified",
+    "basis": "User confirmed on 2026-10-30 that author authorization/licensing was available and supplied the NaiWaChatPet repository and its GPL-3.0-only project statement. Root LICENSE and NOTICE were inspected and are preserved. This records the user-provided repository-level basis; no separate character-art grant has been independently verified and no transfer of character rights is claimed.",
+    "source_notice": "https://github.com/SbongeBobybl/NaiWaChatPet/blob/008eb12636f517aedecee6f1a1fc773c2f0df6c4/NOTICE.md",
+    "evidence_type": "user-provided-repository-license",
+    "independent_character_license_verified": false,
+    "scope": "User-directed project use and local build; no public release upload authorized"
+  },
+  "canvas": {
+    "width": 420,
+    "height": 560
+  },
+  "ground_y": 540,
+  "default_frame": "frames/392079aa9673b02527ffd4c14d5cb3d65ae3253b62f2a92a60fcc20680599f89.png",
+  "clips": {
+    "idle": {
+      "source_manifest": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/runtime.json",
+      "source_manifest_sha256": "bfc4234ae4737d0a5013c3aa030fa9bb69b4355f4097ef92ff1253a8faebdcba",
+      "source_duration_ns": 85000000,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/392079aa9673b02527ffd4c14d5cb3d65ae3253b62f2a92a60fcc20680599f89.png",
+          "sha256": "392079aa9673b02527ffd4c14d5cb3d65ae3253b62f2a92a60fcc20680599f89",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_000.png"
+        },
+        {
+          "file": "frames/3b10a921fdb40c3a3f4acf95f843a0f0509d2ea3c7c4ea53e8a1d06410bf4740.png",
+          "sha256": "3b10a921fdb40c3a3f4acf95f843a0f0509d2ea3c7c4ea53e8a1d06410bf4740",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_001.png"
+        },
+        {
+          "file": "frames/e361b2840e39bbffd7a8e02c34c53832b6d684c39b5524461edd363a2ce0ce02.png",
+          "sha256": "e361b2840e39bbffd7a8e02c34c53832b6d684c39b5524461edd363a2ce0ce02",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_002.png"
+        },
+        {
+          "file": "frames/e361b2840e39bbffd7a8e02c34c53832b6d684c39b5524461edd363a2ce0ce02.png",
+          "sha256": "e361b2840e39bbffd7a8e02c34c53832b6d684c39b5524461edd363a2ce0ce02",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_003.png"
+        },
+        {
+          "file": "frames/99d11d9a4737dcda3eab67ada2e75092fdf9bfdc42baef4c02a75a1ae1247e15.png",
+          "sha256": "99d11d9a4737dcda3eab67ada2e75092fdf9bfdc42baef4c02a75a1ae1247e15",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_004.png"
+        },
+        {
+          "file": "frames/99d11d9a4737dcda3eab67ada2e75092fdf9bfdc42baef4c02a75a1ae1247e15.png",
+          "sha256": "99d11d9a4737dcda3eab67ada2e75092fdf9bfdc42baef4c02a75a1ae1247e15",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_005.png"
+        },
+        {
+          "file": "frames/c8d4540a94336cc79bf3e624a4c8e56445a60029b829ea9f290036b2d7679dff.png",
+          "sha256": "c8d4540a94336cc79bf3e624a4c8e56445a60029b829ea9f290036b2d7679dff",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_006.png"
+        },
+        {
+          "file": "frames/caa74ddeadf364fccdafa9c65a5c2d6de8840d7facb1e71b1781ac35f60e6fa9.png",
+          "sha256": "caa74ddeadf364fccdafa9c65a5c2d6de8840d7facb1e71b1781ac35f60e6fa9",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_007.png"
+        },
+        {
+          "file": "frames/c8d4540a94336cc79bf3e624a4c8e56445a60029b829ea9f290036b2d7679dff.png",
+          "sha256": "c8d4540a94336cc79bf3e624a4c8e56445a60029b829ea9f290036b2d7679dff",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_008.png"
+        },
+        {
+          "file": "frames/c4f7175a5dd4ae35d194c6bc941c6153a52b377567e2596af24c54f1e90c395f.png",
+          "sha256": "c4f7175a5dd4ae35d194c6bc941c6153a52b377567e2596af24c54f1e90c395f",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_009.png"
+        },
+        {
+          "file": "frames/c4f7175a5dd4ae35d194c6bc941c6153a52b377567e2596af24c54f1e90c395f.png",
+          "sha256": "c4f7175a5dd4ae35d194c6bc941c6153a52b377567e2596af24c54f1e90c395f",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_010.png"
+        },
+        {
+          "file": "frames/779706a486d558b9289e06ddc3881f53321bf4f8a476e85a4ab5242b93076bc1.png",
+          "sha256": "779706a486d558b9289e06ddc3881f53321bf4f8a476e85a4ab5242b93076bc1",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_011.png"
+        },
+        {
+          "file": "frames/779706a486d558b9289e06ddc3881f53321bf4f8a476e85a4ab5242b93076bc1.png",
+          "sha256": "779706a486d558b9289e06ddc3881f53321bf4f8a476e85a4ab5242b93076bc1",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_012.png"
+        },
+        {
+          "file": "frames/0475df7832a799ae3e987c653fb2636a372148a20c59dec20999048ceefcf652.png",
+          "sha256": "0475df7832a799ae3e987c653fb2636a372148a20c59dec20999048ceefcf652",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_013.png"
+        },
+        {
+          "file": "frames/73a312ba561c58c47b67db514abe4dfd3882f33aa7e4050ed1549b569c1d82bb.png",
+          "sha256": "73a312ba561c58c47b67db514abe4dfd3882f33aa7e4050ed1549b569c1d82bb",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_014.png"
+        },
+        {
+          "file": "frames/0475df7832a799ae3e987c653fb2636a372148a20c59dec20999048ceefcf652.png",
+          "sha256": "0475df7832a799ae3e987c653fb2636a372148a20c59dec20999048ceefcf652",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_015.png"
+        },
+        {
+          "file": "frames/e846e2a9b855fc90672b017c4d004d91d1b3528e8efc5ddcfae0be55b2835093.png",
+          "sha256": "e846e2a9b855fc90672b017c4d004d91d1b3528e8efc5ddcfae0be55b2835093",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_016.png"
+        },
+        {
+          "file": "frames/e846e2a9b855fc90672b017c4d004d91d1b3528e8efc5ddcfae0be55b2835093.png",
+          "sha256": "e846e2a9b855fc90672b017c4d004d91d1b3528e8efc5ddcfae0be55b2835093",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_017.png"
+        },
+        {
+          "file": "frames/095e56a5eea720de863c49e00b7caccb1c5eb19c4ae1cdb407c86375f3e191f1.png",
+          "sha256": "095e56a5eea720de863c49e00b7caccb1c5eb19c4ae1cdb407c86375f3e191f1",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_018.png"
+        },
+        {
+          "file": "frames/095e56a5eea720de863c49e00b7caccb1c5eb19c4ae1cdb407c86375f3e191f1.png",
+          "sha256": "095e56a5eea720de863c49e00b7caccb1c5eb19c4ae1cdb407c86375f3e191f1",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_019.png"
+        },
+        {
+          "file": "frames/e51d7155d788ffbb37053090af907787e447f090d55c2cfe8a8a3dc452b77462.png",
+          "sha256": "e51d7155d788ffbb37053090af907787e447f090d55c2cfe8a8a3dc452b77462",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_020.png"
+        },
+        {
+          "file": "frames/d48aecd6b676abbea0969f26a012b44ceb937c46fd8a78bef30d1bd9f2d713f6.png",
+          "sha256": "d48aecd6b676abbea0969f26a012b44ceb937c46fd8a78bef30d1bd9f2d713f6",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_021.png"
+        },
+        {
+          "file": "frames/e51d7155d788ffbb37053090af907787e447f090d55c2cfe8a8a3dc452b77462.png",
+          "sha256": "e51d7155d788ffbb37053090af907787e447f090d55c2cfe8a8a3dc452b77462",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_022.png"
+        },
+        {
+          "file": "frames/716d98e3a65d61b3a4debca460cb5c991228ae15ce66e2d7639011c52a13889c.png",
+          "sha256": "716d98e3a65d61b3a4debca460cb5c991228ae15ce66e2d7639011c52a13889c",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_023.png"
+        },
+        {
+          "file": "frames/716d98e3a65d61b3a4debca460cb5c991228ae15ce66e2d7639011c52a13889c.png",
+          "sha256": "716d98e3a65d61b3a4debca460cb5c991228ae15ce66e2d7639011c52a13889c",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_024.png"
+        },
+        {
+          "file": "frames/61a21a8d83d4514c05535ce84c16df1b2c58a224cef2cb4569638b43721cdca3.png",
+          "sha256": "61a21a8d83d4514c05535ce84c16df1b2c58a224cef2cb4569638b43721cdca3",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_025.png"
+        },
+        {
+          "file": "frames/61a21a8d83d4514c05535ce84c16df1b2c58a224cef2cb4569638b43721cdca3.png",
+          "sha256": "61a21a8d83d4514c05535ce84c16df1b2c58a224cef2cb4569638b43721cdca3",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_026.png"
+        },
+        {
+          "file": "frames/3b10a921fdb40c3a3f4acf95f843a0f0509d2ea3c7c4ea53e8a1d06410bf4740.png",
+          "sha256": "3b10a921fdb40c3a3f4acf95f843a0f0509d2ea3c7c4ea53e8a1d06410bf4740",
+          "duration_ns": 85000000,
+          "source_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_027.png"
+        }
+      ]
+    },
+    "greet": {
+      "source_manifest": "Source/NaiWaChatPet/animations/greet/manifest.json",
+      "source_manifest_sha256": "1c11bc8c6bc8e9d7fb68c2a0fc2c4caef00a5d9bdc371e4a23a15522517aa5f4",
+      "source_fps": 12,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "pose_hold_ms": 800,
+      "frames": [
+        {
+          "file": "frames/d5c0cf2bffdbaa0ef8500c6bc7335fa009fb922b781f10b13ea0cff85951c32b.png",
+          "sha256": "d5c0cf2bffdbaa0ef8500c6bc7335fa009fb922b781f10b13ea0cff85951c32b",
+          "duration_ns": 83333333,
+          "source_path": "Source/NaiWaChatPet/animations/greet/0000.png"
+        }
+      ]
+    },
+    "ponder": {
+      "source_manifest": "Source/NaiWaChatPet/animations/ponder/manifest.json",
+      "source_manifest_sha256": "0f58f4f65a4d38c5da318d6399acb543df2d0b14d47663025ae24790726f3ebe",
+      "source_fps": 12,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/02ea8d80fe422bfa53e56d797dd287912083ab5449e9d9e5ff61168ded5d3f1d.png",
+          "sha256": "02ea8d80fe422bfa53e56d797dd287912083ab5449e9d9e5ff61168ded5d3f1d",
+          "duration_ns": 83333333,
+          "source_path": "Source/NaiWaChatPet/animations/ponder/0000.png"
+        }
+      ]
+    },
+    "focused": {
+      "source_manifest": "Source/NaiWaChatPet/animations/focused/manifest.json",
+      "source_manifest_sha256": "1f9d0429e460ca20e621b1065cb2ef4b97ce0c3d2045ab0c2443592d4d145829",
+      "source_fps": 12,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/53086e3a8a295bda18a0d26138ade000966c0df2705f03ed98c88c893ca85267.png",
+          "sha256": "53086e3a8a295bda18a0d26138ade000966c0df2705f03ed98c88c893ca85267",
+          "duration_ns": 83333333,
+          "source_path": "Source/NaiWaChatPet/animations/focused/0000.png"
+        }
+      ]
+    },
+    "curious": {
+      "source_manifest": "Source/NaiWaChatPet/animations/curious/manifest.json",
+      "source_manifest_sha256": "1856d3f8d7b20fb29d7258998bd377dfa14ef51eef915ddcfc22e775a8166936",
+      "source_fps": 12,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/978318cc54cc3695aabe9a0e8324cfb49f7fe85b65f9873b85bbdf563618485a.png",
+          "sha256": "978318cc54cc3695aabe9a0e8324cfb49f7fe85b65f9873b85bbdf563618485a",
+          "duration_ns": 83333333,
+          "source_path": "Source/NaiWaChatPet/animations/curious/0000.png"
+        }
+      ]
+    },
+    "worried": {
+      "source_manifest": "Source/NaiWaChatPet/animations/worried/manifest.json",
+      "source_manifest_sha256": "9a9bb457c3d16f0bb10fae88822704028ecc7e4719f250d91ce3643714be592d",
+      "source_fps": 12,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/17cb03228e4c625f620c25fdafc1839f08dd67f16d3ce05543f31ba729c45907.png",
+          "sha256": "17cb03228e4c625f620c25fdafc1839f08dd67f16d3ce05543f31ba729c45907",
+          "duration_ns": 83333333,
+          "source_path": "Source/NaiWaChatPet/animations/worried/0000.png"
+        }
+      ]
+    },
+    "sleepy": {
+      "source_manifest": "Source/NaiWaChatPet/animations/sleepy/manifest.json",
+      "source_manifest_sha256": "defb348df7bcb667303ccdd1a076d6ef91238d883b1a26643dd7370162be2c91",
+      "source_fps": 12,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/67bf332aba771b36f7b2d8b8bf9a5df7f1d0974fae69238bac2a76ddbfb3904a.png",
+          "sha256": "67bf332aba771b36f7b2d8b8bf9a5df7f1d0974fae69238bac2a76ddbfb3904a",
+          "duration_ns": 83333333,
+          "source_path": "Source/NaiWaChatPet/animations/sleepy/0000.png"
+        }
+      ]
+    },
+    "smile": {
+      "source_manifest": "Source/NaiWaChatPet/animations/smile/manifest.json",
+      "source_manifest_sha256": "ecab0da3349cd5e92cddb016104ba62c663eaca4cb647da92b2bfccb42e435e6",
+      "source_fps": 12,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "pose_hold_ms": 800,
+      "frames": [
+        {
+          "file": "frames/d727fd02d9141f738f667e245ad5b981057f5ab69ce51b245ec84287b85d8f91.png",
+          "sha256": "d727fd02d9141f738f667e245ad5b981057f5ab69ce51b245ec84287b85d8f91",
+          "duration_ns": 83333333,
+          "source_path": "Source/NaiWaChatPet/animations/smile/0000.png"
+        }
+      ]
+    },
+    "surprised_in": {
+      "source_manifest": "Source/NaiWaChatPet/animations/surprised_in/manifest.json",
+      "source_manifest_sha256": "78374037792cc4cea23072ced15fefdaca9f0a68f3ae8590216ddf89faa2440f",
+      "source_fps": 18,
+      "loop": false,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/1b5e271b7d5b975d924812185a8ed7d8fd977f937dc3c829e94926f82b2273c1.png",
+          "sha256": "1b5e271b7d5b975d924812185a8ed7d8fd977f937dc3c829e94926f82b2273c1",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0000.png"
+        },
+        {
+          "file": "frames/ab7168f167e587fdff7b409a1adfa0d45770ddfbf191b0fb39b7f8537ea80fb3.png",
+          "sha256": "ab7168f167e587fdff7b409a1adfa0d45770ddfbf191b0fb39b7f8537ea80fb3",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0001.png"
+        },
+        {
+          "file": "frames/1fb1860896b38d38fdacc963c745cfa5e0c12bd35aea1e5ebf7c5be9fedf84aa.png",
+          "sha256": "1fb1860896b38d38fdacc963c745cfa5e0c12bd35aea1e5ebf7c5be9fedf84aa",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0002.png"
+        },
+        {
+          "file": "frames/1c1fc52240c40d990b7d32d28eb6551eb18b7d2884415dc2c11d62fe77128daf.png",
+          "sha256": "1c1fc52240c40d990b7d32d28eb6551eb18b7d2884415dc2c11d62fe77128daf",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0003.png"
+        },
+        {
+          "file": "frames/a5d65c6066da752b70ae7aed7c704410ea1e8018a53fd6ad1cb02b267b42bd70.png",
+          "sha256": "a5d65c6066da752b70ae7aed7c704410ea1e8018a53fd6ad1cb02b267b42bd70",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0004.png"
+        },
+        {
+          "file": "frames/75ac0184fb0588f7a2e677c8ef788069bb106221b07684ae03def00ed4d5a902.png",
+          "sha256": "75ac0184fb0588f7a2e677c8ef788069bb106221b07684ae03def00ed4d5a902",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0005.png"
+        },
+        {
+          "file": "frames/d18d89807c05d29e1d79491a1a6f8adf70acfa09679bb8e021420e038b7017cf.png",
+          "sha256": "d18d89807c05d29e1d79491a1a6f8adf70acfa09679bb8e021420e038b7017cf",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0006.png"
+        },
+        {
+          "file": "frames/0c6720258c1de0128eedf27d504b7da4abde00ba2235cbda7045eda527ccd621.png",
+          "sha256": "0c6720258c1de0128eedf27d504b7da4abde00ba2235cbda7045eda527ccd621",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0007.png"
+        },
+        {
+          "file": "frames/4b5d4ce7f7b46279badd1df3ef9825f77b16ad467ffcd5b69e4b8190d79a0e47.png",
+          "sha256": "4b5d4ce7f7b46279badd1df3ef9825f77b16ad467ffcd5b69e4b8190d79a0e47",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0008.png"
+        },
+        {
+          "file": "frames/05a0fb2fc422dd53cd7d254590d382a9874c076cf81f0d49647290122beefb6c.png",
+          "sha256": "05a0fb2fc422dd53cd7d254590d382a9874c076cf81f0d49647290122beefb6c",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0009.png"
+        },
+        {
+          "file": "frames/61685ae9c912d76bbeba63f834d93a17a04457d7d9dc03cba2cd222f52ff62ab.png",
+          "sha256": "61685ae9c912d76bbeba63f834d93a17a04457d7d9dc03cba2cd222f52ff62ab",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0010.png"
+        },
+        {
+          "file": "frames/aec5941792f0436cbc409c3e3fd05eaedcb1ac12cc91758930de23fcd04f990d.png",
+          "sha256": "aec5941792f0436cbc409c3e3fd05eaedcb1ac12cc91758930de23fcd04f990d",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0011.png"
+        },
+        {
+          "file": "frames/36b997d5f290128d26588234eb902d4a9ff12e545c1b998c5f69a50f14a94a8c.png",
+          "sha256": "36b997d5f290128d26588234eb902d4a9ff12e545c1b998c5f69a50f14a94a8c",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0012.png"
+        },
+        {
+          "file": "frames/6938e2b9c78962fa925a12e8db5373645358dc03d4ace2e72b47a45023f12233.png",
+          "sha256": "6938e2b9c78962fa925a12e8db5373645358dc03d4ace2e72b47a45023f12233",
+          "duration_ns": 55555556,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_in/0013.png"
+        }
+      ]
+    },
+    "surprised": {
+      "source_manifest": "Source/NaiWaChatPet/animations/surprised/manifest.json",
+      "source_manifest_sha256": "5d15eb81bd6c6343d403e5d86d04143a8891c013be8b81c632249b0d6e8d17d2",
+      "source_fps": 30,
+      "loop": false,
+      "ground_y": 540,
+      "transition_in": "surprised_in",
+      "transition_out": "surprised_out",
+      "frames": [
+        {
+          "file": "frames/8a1032f8582d099bad7218a8012d1c38fe0685dbcaabe8257b4d951a99124c2b.png",
+          "sha256": "8a1032f8582d099bad7218a8012d1c38fe0685dbcaabe8257b4d951a99124c2b",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0000.png"
+        },
+        {
+          "file": "frames/83b3ddea01abe8cd3379ad36fc54d5f4cccac9f3c73ab4d6bd16c051424707b5.png",
+          "sha256": "83b3ddea01abe8cd3379ad36fc54d5f4cccac9f3c73ab4d6bd16c051424707b5",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0001.png"
+        },
+        {
+          "file": "frames/8ea65d18b12fef88ac7c0e4dd112ad327dd1abe43401b0bb44168331327a55af.png",
+          "sha256": "8ea65d18b12fef88ac7c0e4dd112ad327dd1abe43401b0bb44168331327a55af",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0002.png"
+        },
+        {
+          "file": "frames/608e222964ea4f337c3b8baf42a64bddab24905db212f399c56f7063c176355d.png",
+          "sha256": "608e222964ea4f337c3b8baf42a64bddab24905db212f399c56f7063c176355d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0003.png"
+        },
+        {
+          "file": "frames/cc686a13063225a789dc7b537da749ceb18a34d1e2b859126b58cf88e1f88df9.png",
+          "sha256": "cc686a13063225a789dc7b537da749ceb18a34d1e2b859126b58cf88e1f88df9",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0004.png"
+        },
+        {
+          "file": "frames/3c9670c8d08a952deb8c4f27cd4e737e38e5eb9a105d87fb0dc54e8ac4d05c5b.png",
+          "sha256": "3c9670c8d08a952deb8c4f27cd4e737e38e5eb9a105d87fb0dc54e8ac4d05c5b",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0005.png"
+        },
+        {
+          "file": "frames/fb19c699d584057c4fb252a44142eda1e75219c7b7060589fc11c16a4f083f27.png",
+          "sha256": "fb19c699d584057c4fb252a44142eda1e75219c7b7060589fc11c16a4f083f27",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0006.png"
+        },
+        {
+          "file": "frames/8aa65cc3c5e004a0807d2a51008cf5c28e683074f8dcdaff2853c2075b1b12b1.png",
+          "sha256": "8aa65cc3c5e004a0807d2a51008cf5c28e683074f8dcdaff2853c2075b1b12b1",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0007.png"
+        },
+        {
+          "file": "frames/1c877e0fb2775f8c24904bbad4dac75fbfc83009e7bc6f1c393110506c2b400e.png",
+          "sha256": "1c877e0fb2775f8c24904bbad4dac75fbfc83009e7bc6f1c393110506c2b400e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0008.png"
+        },
+        {
+          "file": "frames/eff2eecfcf80d20015f7c3a76a604ec95d32c5c9a4593a6f4b50f2918e5b0ad3.png",
+          "sha256": "eff2eecfcf80d20015f7c3a76a604ec95d32c5c9a4593a6f4b50f2918e5b0ad3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0009.png"
+        },
+        {
+          "file": "frames/03c0ae455bd380d55ece66d5a7a885942ea38ec28d08e50d31fa8f664d91441e.png",
+          "sha256": "03c0ae455bd380d55ece66d5a7a885942ea38ec28d08e50d31fa8f664d91441e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0010.png"
+        },
+        {
+          "file": "frames/344f880a02dc061574fa149200c348836101f7db2913203efbbb70c44abe2304.png",
+          "sha256": "344f880a02dc061574fa149200c348836101f7db2913203efbbb70c44abe2304",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0011.png"
+        },
+        {
+          "file": "frames/15e8a04de3af76c67da215fdcfaaf6f0786d287193d3e90021cbe830e7934de7.png",
+          "sha256": "15e8a04de3af76c67da215fdcfaaf6f0786d287193d3e90021cbe830e7934de7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0012.png"
+        },
+        {
+          "file": "frames/dca7fb64ebca27abecc9adaee94568fddce87e64cbd750575be5d9ced3346e76.png",
+          "sha256": "dca7fb64ebca27abecc9adaee94568fddce87e64cbd750575be5d9ced3346e76",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0013.png"
+        },
+        {
+          "file": "frames/f2d1a111637ee7a534c0a7af24e1441ae3136dfbc66dd7060f584a7e35b558f8.png",
+          "sha256": "f2d1a111637ee7a534c0a7af24e1441ae3136dfbc66dd7060f584a7e35b558f8",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0014.png"
+        },
+        {
+          "file": "frames/79fa7b0a6481c1c62e11e21338d8d3480103359ebd2ca4a4ed865f3f7bb38b27.png",
+          "sha256": "79fa7b0a6481c1c62e11e21338d8d3480103359ebd2ca4a4ed865f3f7bb38b27",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0015.png"
+        },
+        {
+          "file": "frames/806bf30381d5590156aaa6d55d27bef0182daa2effe192c87713ed9ff3d44347.png",
+          "sha256": "806bf30381d5590156aaa6d55d27bef0182daa2effe192c87713ed9ff3d44347",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0016.png"
+        },
+        {
+          "file": "frames/c0b6c89a3aea108bb577272f43ccd6a25daa89a87980dce2924a622caa2a7b78.png",
+          "sha256": "c0b6c89a3aea108bb577272f43ccd6a25daa89a87980dce2924a622caa2a7b78",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0017.png"
+        },
+        {
+          "file": "frames/0c7274ce2c386af499f9985fa1e290b5831ddf09144f211b75ebc026dbfda667.png",
+          "sha256": "0c7274ce2c386af499f9985fa1e290b5831ddf09144f211b75ebc026dbfda667",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0018.png"
+        },
+        {
+          "file": "frames/ed3fe8e0c24549735ff82e6d5ddd01dc880db8eafcf6b6e147d1eace307d5ff1.png",
+          "sha256": "ed3fe8e0c24549735ff82e6d5ddd01dc880db8eafcf6b6e147d1eace307d5ff1",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0019.png"
+        },
+        {
+          "file": "frames/d3ad096fea1b39055e5445bb490d3d7b0f60370658cf0951dc29027bf71718c8.png",
+          "sha256": "d3ad096fea1b39055e5445bb490d3d7b0f60370658cf0951dc29027bf71718c8",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0020.png"
+        },
+        {
+          "file": "frames/2bc28598be4d6b9ad756f89ecf2d2a9055f77fd9d16367241da58eefc6fe6061.png",
+          "sha256": "2bc28598be4d6b9ad756f89ecf2d2a9055f77fd9d16367241da58eefc6fe6061",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0021.png"
+        },
+        {
+          "file": "frames/474507813fe993a54e4e8b11f2e3017d15fae57137f44cd5209ffa21e02cecf4.png",
+          "sha256": "474507813fe993a54e4e8b11f2e3017d15fae57137f44cd5209ffa21e02cecf4",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0022.png"
+        },
+        {
+          "file": "frames/f6c30b33d0d51e573cde81b2c874d3439739a22b489c445e1aee6f1ef71e58f5.png",
+          "sha256": "f6c30b33d0d51e573cde81b2c874d3439739a22b489c445e1aee6f1ef71e58f5",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0023.png"
+        },
+        {
+          "file": "frames/5a25b3e22ffe3b1c74e52eb859051d58f11127198d5a93e22fc0b7bf93a9b389.png",
+          "sha256": "5a25b3e22ffe3b1c74e52eb859051d58f11127198d5a93e22fc0b7bf93a9b389",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0024.png"
+        },
+        {
+          "file": "frames/14af163638750657726dd7ce292b6182a0fcdc7eda1d17ff9656432ff60f5d3b.png",
+          "sha256": "14af163638750657726dd7ce292b6182a0fcdc7eda1d17ff9656432ff60f5d3b",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0025.png"
+        },
+        {
+          "file": "frames/e01affb4807632815b373e36d4faa2f83e26cbca44c426dbdc84bc8b9069cc65.png",
+          "sha256": "e01affb4807632815b373e36d4faa2f83e26cbca44c426dbdc84bc8b9069cc65",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0026.png"
+        },
+        {
+          "file": "frames/0b959498972ef758621b720f72ebec01e3f409de572b8898190cf9ac98607559.png",
+          "sha256": "0b959498972ef758621b720f72ebec01e3f409de572b8898190cf9ac98607559",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0027.png"
+        },
+        {
+          "file": "frames/5aec3de29e00409d546aa1e66accf9fa61db73389c11946265c9d5333b6a5ee3.png",
+          "sha256": "5aec3de29e00409d546aa1e66accf9fa61db73389c11946265c9d5333b6a5ee3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0028.png"
+        },
+        {
+          "file": "frames/dfa71381865c19dc756ce6ba786d73bc36496cfbd993ab793f656fc4074174ff.png",
+          "sha256": "dfa71381865c19dc756ce6ba786d73bc36496cfbd993ab793f656fc4074174ff",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0029.png"
+        },
+        {
+          "file": "frames/2e921b9c114a02c3b30f1ddc63f9e9b92e6128218531c4c85b13bd76190aef33.png",
+          "sha256": "2e921b9c114a02c3b30f1ddc63f9e9b92e6128218531c4c85b13bd76190aef33",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0030.png"
+        },
+        {
+          "file": "frames/92abef737ecd05c7cb521d3fb8b554613e45ead5b4243fdee4a977a0aee2a701.png",
+          "sha256": "92abef737ecd05c7cb521d3fb8b554613e45ead5b4243fdee4a977a0aee2a701",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0031.png"
+        },
+        {
+          "file": "frames/d905fee19725d4483a06dbe9c17c392d859b77a2f3f2f738ba27608c381e7369.png",
+          "sha256": "d905fee19725d4483a06dbe9c17c392d859b77a2f3f2f738ba27608c381e7369",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0032.png"
+        },
+        {
+          "file": "frames/6538f8a6fbc2f03df76abd53380bcbe1fc05bd49c60ea8cffed00d8a3c302f8e.png",
+          "sha256": "6538f8a6fbc2f03df76abd53380bcbe1fc05bd49c60ea8cffed00d8a3c302f8e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0033.png"
+        },
+        {
+          "file": "frames/77389b4b5964d0ee63d19d7c1bf745cb6b7243a66d54bcfaf3759718710ea28e.png",
+          "sha256": "77389b4b5964d0ee63d19d7c1bf745cb6b7243a66d54bcfaf3759718710ea28e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0034.png"
+        },
+        {
+          "file": "frames/e8e9425f732ae3969629f5fe526e665a2422cee4c0ac8aee31709d8500db1fb1.png",
+          "sha256": "e8e9425f732ae3969629f5fe526e665a2422cee4c0ac8aee31709d8500db1fb1",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0035.png"
+        },
+        {
+          "file": "frames/dd2b074b8e13386d98b3f2102b8190427f434dcc906ad58d6f4911245cea58cc.png",
+          "sha256": "dd2b074b8e13386d98b3f2102b8190427f434dcc906ad58d6f4911245cea58cc",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0036.png"
+        },
+        {
+          "file": "frames/3194f0cc5420da34fd5207242998b55621c98ef580d3d55f1eb35ec4cf178e09.png",
+          "sha256": "3194f0cc5420da34fd5207242998b55621c98ef580d3d55f1eb35ec4cf178e09",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0037.png"
+        },
+        {
+          "file": "frames/40fbd464ea5e39245ac7a9f89443c6cff2d488bbd37a0c8c0436731fe8e10801.png",
+          "sha256": "40fbd464ea5e39245ac7a9f89443c6cff2d488bbd37a0c8c0436731fe8e10801",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0038.png"
+        },
+        {
+          "file": "frames/d3bfb97a24748e343653f57d0da48d2f71f1ce0a752ee8e47275bc6800b534dd.png",
+          "sha256": "d3bfb97a24748e343653f57d0da48d2f71f1ce0a752ee8e47275bc6800b534dd",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0039.png"
+        },
+        {
+          "file": "frames/80f34f6c90debd1fa92bc56101e0fe9f3e6e3b0ce6103ead230e075d6a569a80.png",
+          "sha256": "80f34f6c90debd1fa92bc56101e0fe9f3e6e3b0ce6103ead230e075d6a569a80",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0040.png"
+        },
+        {
+          "file": "frames/cde8f2108696720af150d4bcf1589b529691fee935669b2220ed30f075496412.png",
+          "sha256": "cde8f2108696720af150d4bcf1589b529691fee935669b2220ed30f075496412",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0041.png"
+        },
+        {
+          "file": "frames/8a5a937e67bbd066475a7096b808dcfd02fc2605a07b2060e68cfe89fe291c94.png",
+          "sha256": "8a5a937e67bbd066475a7096b808dcfd02fc2605a07b2060e68cfe89fe291c94",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0042.png"
+        },
+        {
+          "file": "frames/8c06acdd8c65780fb2b626591262e355399acc32b3fd25aa8ed6918b0736e32a.png",
+          "sha256": "8c06acdd8c65780fb2b626591262e355399acc32b3fd25aa8ed6918b0736e32a",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0043.png"
+        },
+        {
+          "file": "frames/241154eccce08e257927267520c0f633b2e08c2e4434529801971e0741804c08.png",
+          "sha256": "241154eccce08e257927267520c0f633b2e08c2e4434529801971e0741804c08",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0044.png"
+        },
+        {
+          "file": "frames/1d66bcf6392122477e9a6924bde8ce7673197120127ba86424a4c33bda54a282.png",
+          "sha256": "1d66bcf6392122477e9a6924bde8ce7673197120127ba86424a4c33bda54a282",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0045.png"
+        },
+        {
+          "file": "frames/1c6e4d3f272e8d503800744517993797f30e774fe222ff960baa37ba5c8594a5.png",
+          "sha256": "1c6e4d3f272e8d503800744517993797f30e774fe222ff960baa37ba5c8594a5",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0046.png"
+        },
+        {
+          "file": "frames/6cf2b54aab826035e204868e0c341436d228ce5e9c412a84cfc9eff9bb9d3be3.png",
+          "sha256": "6cf2b54aab826035e204868e0c341436d228ce5e9c412a84cfc9eff9bb9d3be3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0047.png"
+        },
+        {
+          "file": "frames/e3490f229fab68ab8a037d3aed8a4db0a4bcc9edc483f2e0fa7b86c17c9a9685.png",
+          "sha256": "e3490f229fab68ab8a037d3aed8a4db0a4bcc9edc483f2e0fa7b86c17c9a9685",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0048.png"
+        },
+        {
+          "file": "frames/741b720c2c43ab0440d232173bb9f723d31c11f1209cdf11603d4b1fcdd396b3.png",
+          "sha256": "741b720c2c43ab0440d232173bb9f723d31c11f1209cdf11603d4b1fcdd396b3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0049.png"
+        },
+        {
+          "file": "frames/1f27a52d3b9ff570813467fc1770d96de688ab996688a8795978c81c43d845d4.png",
+          "sha256": "1f27a52d3b9ff570813467fc1770d96de688ab996688a8795978c81c43d845d4",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0050.png"
+        },
+        {
+          "file": "frames/3b0f8046fa5b441b1c43b5057258a68110f6eeda3238e4534312a036f267d553.png",
+          "sha256": "3b0f8046fa5b441b1c43b5057258a68110f6eeda3238e4534312a036f267d553",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0051.png"
+        },
+        {
+          "file": "frames/181fce5a630ca3dae748af9b6aa11e63f1ef14d052a1fe2d6f9e0c150805bb47.png",
+          "sha256": "181fce5a630ca3dae748af9b6aa11e63f1ef14d052a1fe2d6f9e0c150805bb47",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0052.png"
+        },
+        {
+          "file": "frames/e0a1d33c7b958949cbee9a77d0d19982351cdbf2f4e7309c501d80a93176c6c6.png",
+          "sha256": "e0a1d33c7b958949cbee9a77d0d19982351cdbf2f4e7309c501d80a93176c6c6",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0053.png"
+        },
+        {
+          "file": "frames/93da42529420f5e28e5c0f3d7d3d9d45b2d4a542663060d203ad4f69a32f49b3.png",
+          "sha256": "93da42529420f5e28e5c0f3d7d3d9d45b2d4a542663060d203ad4f69a32f49b3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0054.png"
+        },
+        {
+          "file": "frames/820677a88af9784d0e7fd83900898e7735182d6e78496fff080e4f2ccc5c7256.png",
+          "sha256": "820677a88af9784d0e7fd83900898e7735182d6e78496fff080e4f2ccc5c7256",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0055.png"
+        },
+        {
+          "file": "frames/a44cc9f8561a78a50b7f0f1df67968ae075599c5726febbf2391f797d375f9b3.png",
+          "sha256": "a44cc9f8561a78a50b7f0f1df67968ae075599c5726febbf2391f797d375f9b3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0056.png"
+        },
+        {
+          "file": "frames/57f48c2bf3233df31c7dd7fb4113b2e7993359c474d69f44075f312235795b8d.png",
+          "sha256": "57f48c2bf3233df31c7dd7fb4113b2e7993359c474d69f44075f312235795b8d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0057.png"
+        },
+        {
+          "file": "frames/bff74c6d59bab5fd6a24fe4a6bfef7f59069ddef695f5595e09c5cff39a768f9.png",
+          "sha256": "bff74c6d59bab5fd6a24fe4a6bfef7f59069ddef695f5595e09c5cff39a768f9",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0058.png"
+        },
+        {
+          "file": "frames/c6df64032ec9064b23e445a3f28cf32cd1a18c785eb7349721a8c4a2355e00a6.png",
+          "sha256": "c6df64032ec9064b23e445a3f28cf32cd1a18c785eb7349721a8c4a2355e00a6",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0059.png"
+        },
+        {
+          "file": "frames/300a14084b54153cc92572c93c8c08c19c8d3107abe2b4d9e87847245d107b53.png",
+          "sha256": "300a14084b54153cc92572c93c8c08c19c8d3107abe2b4d9e87847245d107b53",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0060.png"
+        },
+        {
+          "file": "frames/45c9edf088399330afc5cdbf78f861a96b5039c656b4beccd66c524edf9c0384.png",
+          "sha256": "45c9edf088399330afc5cdbf78f861a96b5039c656b4beccd66c524edf9c0384",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0061.png"
+        },
+        {
+          "file": "frames/3ed7f432b6ad016a2a1dd6170dd6d7e217b3371306e3cfa80dece09a7c7f6815.png",
+          "sha256": "3ed7f432b6ad016a2a1dd6170dd6d7e217b3371306e3cfa80dece09a7c7f6815",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0062.png"
+        },
+        {
+          "file": "frames/58b120ef73448cf355acace6b6b21cbdbdd58cc70a57e94471f4422d2db15a4b.png",
+          "sha256": "58b120ef73448cf355acace6b6b21cbdbdd58cc70a57e94471f4422d2db15a4b",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0063.png"
+        },
+        {
+          "file": "frames/6fc478c1391c188fa9dd69aab95f2719c66dc4e5fae150ec7bff84e727eac694.png",
+          "sha256": "6fc478c1391c188fa9dd69aab95f2719c66dc4e5fae150ec7bff84e727eac694",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0064.png"
+        },
+        {
+          "file": "frames/c03ad8e3a6cdc82cf686d671dec2e3b7df8dd14054478d01c131dd1ce9e6484b.png",
+          "sha256": "c03ad8e3a6cdc82cf686d671dec2e3b7df8dd14054478d01c131dd1ce9e6484b",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0065.png"
+        },
+        {
+          "file": "frames/192d27a28b9bd2cab3fca7711af243b0eda0700ebf8b514cd722684c3aa70ca7.png",
+          "sha256": "192d27a28b9bd2cab3fca7711af243b0eda0700ebf8b514cd722684c3aa70ca7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0066.png"
+        },
+        {
+          "file": "frames/2ba86d183c1e913edc8d6228635254ef3713f17bd711da4a899bbc8476bbb542.png",
+          "sha256": "2ba86d183c1e913edc8d6228635254ef3713f17bd711da4a899bbc8476bbb542",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0067.png"
+        },
+        {
+          "file": "frames/b5312060b80f611a5f23acfddb09c182d889f6c30fe31b1bb86e445465094c15.png",
+          "sha256": "b5312060b80f611a5f23acfddb09c182d889f6c30fe31b1bb86e445465094c15",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0068.png"
+        },
+        {
+          "file": "frames/6fb46079a52d996d8cc84bf1dcdcd4c7cb8c3dbf9c289e288cf47ddc383b5685.png",
+          "sha256": "6fb46079a52d996d8cc84bf1dcdcd4c7cb8c3dbf9c289e288cf47ddc383b5685",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0069.png"
+        },
+        {
+          "file": "frames/6c8dc1ad97288351f222e624c00c32858e1d59f0a545f6b05b88941efb2923c5.png",
+          "sha256": "6c8dc1ad97288351f222e624c00c32858e1d59f0a545f6b05b88941efb2923c5",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0070.png"
+        },
+        {
+          "file": "frames/47d92be35ea5d7645812de84939d6ad9c35b671d07c71556b8281afd175288e0.png",
+          "sha256": "47d92be35ea5d7645812de84939d6ad9c35b671d07c71556b8281afd175288e0",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0071.png"
+        },
+        {
+          "file": "frames/0eac423e352f5cd37bf15e068645b3c3fd82c8065ccbc6c833661624d7fbad51.png",
+          "sha256": "0eac423e352f5cd37bf15e068645b3c3fd82c8065ccbc6c833661624d7fbad51",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0072.png"
+        },
+        {
+          "file": "frames/cf3c99e3d53320426d7598575fe143264f8d818bf6c7d61ce0d34562fb3c950e.png",
+          "sha256": "cf3c99e3d53320426d7598575fe143264f8d818bf6c7d61ce0d34562fb3c950e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0073.png"
+        },
+        {
+          "file": "frames/879baa1867cd7f47c5d56ed587856a925b59d15b6dc872aadcac801d1d7866c7.png",
+          "sha256": "879baa1867cd7f47c5d56ed587856a925b59d15b6dc872aadcac801d1d7866c7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0074.png"
+        },
+        {
+          "file": "frames/ee5c2a7a0ef29bdff40a1a69b3045d3077fc171241f88f80735ecc55b41785f7.png",
+          "sha256": "ee5c2a7a0ef29bdff40a1a69b3045d3077fc171241f88f80735ecc55b41785f7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0075.png"
+        },
+        {
+          "file": "frames/ebc16189b92b21f5415c0776de058b7275f5c244467ce6d69a300f3c6c3cbda1.png",
+          "sha256": "ebc16189b92b21f5415c0776de058b7275f5c244467ce6d69a300f3c6c3cbda1",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0076.png"
+        },
+        {
+          "file": "frames/539bc22fd06e9ba7c181e593df33c2c751da9773f68afe525e0f123572025bad.png",
+          "sha256": "539bc22fd06e9ba7c181e593df33c2c751da9773f68afe525e0f123572025bad",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0077.png"
+        },
+        {
+          "file": "frames/fa00892d6d5cc6e4c5c32314620c71948e2b1b42a5e73c190ba75dfdfe62966d.png",
+          "sha256": "fa00892d6d5cc6e4c5c32314620c71948e2b1b42a5e73c190ba75dfdfe62966d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0078.png"
+        },
+        {
+          "file": "frames/7bed1d368a7f204984593b0fa737495a4d5497b019a04915c2b44be4662bcc21.png",
+          "sha256": "7bed1d368a7f204984593b0fa737495a4d5497b019a04915c2b44be4662bcc21",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0079.png"
+        },
+        {
+          "file": "frames/4155b3d9d0b036759eb9831cca7c3af4d8e1410bbb3053ca445f2dc662b90f1d.png",
+          "sha256": "4155b3d9d0b036759eb9831cca7c3af4d8e1410bbb3053ca445f2dc662b90f1d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0080.png"
+        },
+        {
+          "file": "frames/d08721d142276e05ff4fad7e62f47cb63807364453b33655ef8449a8e491c9e8.png",
+          "sha256": "d08721d142276e05ff4fad7e62f47cb63807364453b33655ef8449a8e491c9e8",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0081.png"
+        },
+        {
+          "file": "frames/79e179343c3553167aefecb58736ff65b84367c1d31edee1aac3471cdaebb296.png",
+          "sha256": "79e179343c3553167aefecb58736ff65b84367c1d31edee1aac3471cdaebb296",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0082.png"
+        },
+        {
+          "file": "frames/eb60043600df7498567d8c392b13192c35fd56f43551e68c06542addf18f068b.png",
+          "sha256": "eb60043600df7498567d8c392b13192c35fd56f43551e68c06542addf18f068b",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0083.png"
+        },
+        {
+          "file": "frames/d47bb298e239d48986f989fd70e34b521cfa1d9d9b1eeb3bc4f3036a6987257d.png",
+          "sha256": "d47bb298e239d48986f989fd70e34b521cfa1d9d9b1eeb3bc4f3036a6987257d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0084.png"
+        },
+        {
+          "file": "frames/414b2d8b1867efb755b0b71d1d3f67b903c2aebd2aea31dd88232350bec50aea.png",
+          "sha256": "414b2d8b1867efb755b0b71d1d3f67b903c2aebd2aea31dd88232350bec50aea",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0085.png"
+        },
+        {
+          "file": "frames/b87d5f7631f38cad4a6dca06864f642dd681b97af34236a16f1f04933a778f60.png",
+          "sha256": "b87d5f7631f38cad4a6dca06864f642dd681b97af34236a16f1f04933a778f60",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0086.png"
+        },
+        {
+          "file": "frames/d3caae42af205378f80895cee45fa1dcf58d206711cbae7a2c7d116a0a612ed4.png",
+          "sha256": "d3caae42af205378f80895cee45fa1dcf58d206711cbae7a2c7d116a0a612ed4",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0087.png"
+        },
+        {
+          "file": "frames/3a15755a9ee8727e495c29973f39d2c8624c2f09a8c4533e2ff68d213973c0ec.png",
+          "sha256": "3a15755a9ee8727e495c29973f39d2c8624c2f09a8c4533e2ff68d213973c0ec",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0088.png"
+        },
+        {
+          "file": "frames/24cf8683f37be6e59eab1da6332ba5c97918082c0e92c3808583873400d80628.png",
+          "sha256": "24cf8683f37be6e59eab1da6332ba5c97918082c0e92c3808583873400d80628",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0089.png"
+        },
+        {
+          "file": "frames/4f54d8e8fc7b5ecbf33ec121b5bd9881f98b10ae7106e6ab4e48986402532eaf.png",
+          "sha256": "4f54d8e8fc7b5ecbf33ec121b5bd9881f98b10ae7106e6ab4e48986402532eaf",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0090.png"
+        },
+        {
+          "file": "frames/7f708a63b83754efee6c600f1dad84e6e2c9c95868b3086001f0ce33e43de387.png",
+          "sha256": "7f708a63b83754efee6c600f1dad84e6e2c9c95868b3086001f0ce33e43de387",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0091.png"
+        },
+        {
+          "file": "frames/48b944f5eb385838b01e7d03116b9b49f06facee674c65aa5bcc2b61ba7f6e66.png",
+          "sha256": "48b944f5eb385838b01e7d03116b9b49f06facee674c65aa5bcc2b61ba7f6e66",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0092.png"
+        },
+        {
+          "file": "frames/53fc4c296316591a6d6e4257fdad5733de5a4cceb6667ea9de7dcf62a2413c39.png",
+          "sha256": "53fc4c296316591a6d6e4257fdad5733de5a4cceb6667ea9de7dcf62a2413c39",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0093.png"
+        },
+        {
+          "file": "frames/190c2ab5488db648de6cebddea1431811ba86d2cb3b7a76b194de747e3c3f4f4.png",
+          "sha256": "190c2ab5488db648de6cebddea1431811ba86d2cb3b7a76b194de747e3c3f4f4",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised/0094.png"
+        }
+      ]
+    },
+    "surprised_out": {
+      "source_manifest": "Source/NaiWaChatPet/animations/surprised_out/manifest.json",
+      "source_manifest_sha256": "286de1e913a7fb701541b108d5e114b837a29bd3b7329b343bd4a17e3bd4df86",
+      "source_fps": 30,
+      "loop": false,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "frames": [
+        {
+          "file": "frames/190c2ab5488db648de6cebddea1431811ba86d2cb3b7a76b194de747e3c3f4f4.png",
+          "sha256": "190c2ab5488db648de6cebddea1431811ba86d2cb3b7a76b194de747e3c3f4f4",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0000.png"
+        },
+        {
+          "file": "frames/48b944f5eb385838b01e7d03116b9b49f06facee674c65aa5bcc2b61ba7f6e66.png",
+          "sha256": "48b944f5eb385838b01e7d03116b9b49f06facee674c65aa5bcc2b61ba7f6e66",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0001.png"
+        },
+        {
+          "file": "frames/4f54d8e8fc7b5ecbf33ec121b5bd9881f98b10ae7106e6ab4e48986402532eaf.png",
+          "sha256": "4f54d8e8fc7b5ecbf33ec121b5bd9881f98b10ae7106e6ab4e48986402532eaf",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0002.png"
+        },
+        {
+          "file": "frames/3a15755a9ee8727e495c29973f39d2c8624c2f09a8c4533e2ff68d213973c0ec.png",
+          "sha256": "3a15755a9ee8727e495c29973f39d2c8624c2f09a8c4533e2ff68d213973c0ec",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0003.png"
+        },
+        {
+          "file": "frames/b87d5f7631f38cad4a6dca06864f642dd681b97af34236a16f1f04933a778f60.png",
+          "sha256": "b87d5f7631f38cad4a6dca06864f642dd681b97af34236a16f1f04933a778f60",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0004.png"
+        },
+        {
+          "file": "frames/d47bb298e239d48986f989fd70e34b521cfa1d9d9b1eeb3bc4f3036a6987257d.png",
+          "sha256": "d47bb298e239d48986f989fd70e34b521cfa1d9d9b1eeb3bc4f3036a6987257d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0005.png"
+        },
+        {
+          "file": "frames/79e179343c3553167aefecb58736ff65b84367c1d31edee1aac3471cdaebb296.png",
+          "sha256": "79e179343c3553167aefecb58736ff65b84367c1d31edee1aac3471cdaebb296",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0006.png"
+        },
+        {
+          "file": "frames/4155b3d9d0b036759eb9831cca7c3af4d8e1410bbb3053ca445f2dc662b90f1d.png",
+          "sha256": "4155b3d9d0b036759eb9831cca7c3af4d8e1410bbb3053ca445f2dc662b90f1d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0007.png"
+        },
+        {
+          "file": "frames/fa00892d6d5cc6e4c5c32314620c71948e2b1b42a5e73c190ba75dfdfe62966d.png",
+          "sha256": "fa00892d6d5cc6e4c5c32314620c71948e2b1b42a5e73c190ba75dfdfe62966d",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0008.png"
+        },
+        {
+          "file": "frames/ebc16189b92b21f5415c0776de058b7275f5c244467ce6d69a300f3c6c3cbda1.png",
+          "sha256": "ebc16189b92b21f5415c0776de058b7275f5c244467ce6d69a300f3c6c3cbda1",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0009.png"
+        },
+        {
+          "file": "frames/879baa1867cd7f47c5d56ed587856a925b59d15b6dc872aadcac801d1d7866c7.png",
+          "sha256": "879baa1867cd7f47c5d56ed587856a925b59d15b6dc872aadcac801d1d7866c7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0010.png"
+        },
+        {
+          "file": "frames/0eac423e352f5cd37bf15e068645b3c3fd82c8065ccbc6c833661624d7fbad51.png",
+          "sha256": "0eac423e352f5cd37bf15e068645b3c3fd82c8065ccbc6c833661624d7fbad51",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0011.png"
+        },
+        {
+          "file": "frames/6c8dc1ad97288351f222e624c00c32858e1d59f0a545f6b05b88941efb2923c5.png",
+          "sha256": "6c8dc1ad97288351f222e624c00c32858e1d59f0a545f6b05b88941efb2923c5",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0012.png"
+        },
+        {
+          "file": "frames/b5312060b80f611a5f23acfddb09c182d889f6c30fe31b1bb86e445465094c15.png",
+          "sha256": "b5312060b80f611a5f23acfddb09c182d889f6c30fe31b1bb86e445465094c15",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0013.png"
+        },
+        {
+          "file": "frames/192d27a28b9bd2cab3fca7711af243b0eda0700ebf8b514cd722684c3aa70ca7.png",
+          "sha256": "192d27a28b9bd2cab3fca7711af243b0eda0700ebf8b514cd722684c3aa70ca7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0014.png"
+        },
+        {
+          "file": "frames/6fc478c1391c188fa9dd69aab95f2719c66dc4e5fae150ec7bff84e727eac694.png",
+          "sha256": "6fc478c1391c188fa9dd69aab95f2719c66dc4e5fae150ec7bff84e727eac694",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0015.png"
+        },
+        {
+          "file": "frames/3ed7f432b6ad016a2a1dd6170dd6d7e217b3371306e3cfa80dece09a7c7f6815.png",
+          "sha256": "3ed7f432b6ad016a2a1dd6170dd6d7e217b3371306e3cfa80dece09a7c7f6815",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0016.png"
+        },
+        {
+          "file": "frames/300a14084b54153cc92572c93c8c08c19c8d3107abe2b4d9e87847245d107b53.png",
+          "sha256": "300a14084b54153cc92572c93c8c08c19c8d3107abe2b4d9e87847245d107b53",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0017.png"
+        },
+        {
+          "file": "frames/bff74c6d59bab5fd6a24fe4a6bfef7f59069ddef695f5595e09c5cff39a768f9.png",
+          "sha256": "bff74c6d59bab5fd6a24fe4a6bfef7f59069ddef695f5595e09c5cff39a768f9",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0018.png"
+        },
+        {
+          "file": "frames/a44cc9f8561a78a50b7f0f1df67968ae075599c5726febbf2391f797d375f9b3.png",
+          "sha256": "a44cc9f8561a78a50b7f0f1df67968ae075599c5726febbf2391f797d375f9b3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0019.png"
+        },
+        {
+          "file": "frames/93da42529420f5e28e5c0f3d7d3d9d45b2d4a542663060d203ad4f69a32f49b3.png",
+          "sha256": "93da42529420f5e28e5c0f3d7d3d9d45b2d4a542663060d203ad4f69a32f49b3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0020.png"
+        },
+        {
+          "file": "frames/181fce5a630ca3dae748af9b6aa11e63f1ef14d052a1fe2d6f9e0c150805bb47.png",
+          "sha256": "181fce5a630ca3dae748af9b6aa11e63f1ef14d052a1fe2d6f9e0c150805bb47",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0021.png"
+        },
+        {
+          "file": "frames/1f27a52d3b9ff570813467fc1770d96de688ab996688a8795978c81c43d845d4.png",
+          "sha256": "1f27a52d3b9ff570813467fc1770d96de688ab996688a8795978c81c43d845d4",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0022.png"
+        },
+        {
+          "file": "frames/e3490f229fab68ab8a037d3aed8a4db0a4bcc9edc483f2e0fa7b86c17c9a9685.png",
+          "sha256": "e3490f229fab68ab8a037d3aed8a4db0a4bcc9edc483f2e0fa7b86c17c9a9685",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0023.png"
+        },
+        {
+          "file": "frames/1c6e4d3f272e8d503800744517993797f30e774fe222ff960baa37ba5c8594a5.png",
+          "sha256": "1c6e4d3f272e8d503800744517993797f30e774fe222ff960baa37ba5c8594a5",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0024.png"
+        },
+        {
+          "file": "frames/241154eccce08e257927267520c0f633b2e08c2e4434529801971e0741804c08.png",
+          "sha256": "241154eccce08e257927267520c0f633b2e08c2e4434529801971e0741804c08",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0025.png"
+        },
+        {
+          "file": "frames/8a5a937e67bbd066475a7096b808dcfd02fc2605a07b2060e68cfe89fe291c94.png",
+          "sha256": "8a5a937e67bbd066475a7096b808dcfd02fc2605a07b2060e68cfe89fe291c94",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0026.png"
+        },
+        {
+          "file": "frames/80f34f6c90debd1fa92bc56101e0fe9f3e6e3b0ce6103ead230e075d6a569a80.png",
+          "sha256": "80f34f6c90debd1fa92bc56101e0fe9f3e6e3b0ce6103ead230e075d6a569a80",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0027.png"
+        },
+        {
+          "file": "frames/40fbd464ea5e39245ac7a9f89443c6cff2d488bbd37a0c8c0436731fe8e10801.png",
+          "sha256": "40fbd464ea5e39245ac7a9f89443c6cff2d488bbd37a0c8c0436731fe8e10801",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0028.png"
+        },
+        {
+          "file": "frames/dd2b074b8e13386d98b3f2102b8190427f434dcc906ad58d6f4911245cea58cc.png",
+          "sha256": "dd2b074b8e13386d98b3f2102b8190427f434dcc906ad58d6f4911245cea58cc",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0029.png"
+        },
+        {
+          "file": "frames/77389b4b5964d0ee63d19d7c1bf745cb6b7243a66d54bcfaf3759718710ea28e.png",
+          "sha256": "77389b4b5964d0ee63d19d7c1bf745cb6b7243a66d54bcfaf3759718710ea28e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0030.png"
+        },
+        {
+          "file": "frames/d905fee19725d4483a06dbe9c17c392d859b77a2f3f2f738ba27608c381e7369.png",
+          "sha256": "d905fee19725d4483a06dbe9c17c392d859b77a2f3f2f738ba27608c381e7369",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0031.png"
+        },
+        {
+          "file": "frames/2e921b9c114a02c3b30f1ddc63f9e9b92e6128218531c4c85b13bd76190aef33.png",
+          "sha256": "2e921b9c114a02c3b30f1ddc63f9e9b92e6128218531c4c85b13bd76190aef33",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0032.png"
+        },
+        {
+          "file": "frames/5aec3de29e00409d546aa1e66accf9fa61db73389c11946265c9d5333b6a5ee3.png",
+          "sha256": "5aec3de29e00409d546aa1e66accf9fa61db73389c11946265c9d5333b6a5ee3",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0033.png"
+        },
+        {
+          "file": "frames/e01affb4807632815b373e36d4faa2f83e26cbca44c426dbdc84bc8b9069cc65.png",
+          "sha256": "e01affb4807632815b373e36d4faa2f83e26cbca44c426dbdc84bc8b9069cc65",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0034.png"
+        },
+        {
+          "file": "frames/5a25b3e22ffe3b1c74e52eb859051d58f11127198d5a93e22fc0b7bf93a9b389.png",
+          "sha256": "5a25b3e22ffe3b1c74e52eb859051d58f11127198d5a93e22fc0b7bf93a9b389",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0035.png"
+        },
+        {
+          "file": "frames/474507813fe993a54e4e8b11f2e3017d15fae57137f44cd5209ffa21e02cecf4.png",
+          "sha256": "474507813fe993a54e4e8b11f2e3017d15fae57137f44cd5209ffa21e02cecf4",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0036.png"
+        },
+        {
+          "file": "frames/d3ad096fea1b39055e5445bb490d3d7b0f60370658cf0951dc29027bf71718c8.png",
+          "sha256": "d3ad096fea1b39055e5445bb490d3d7b0f60370658cf0951dc29027bf71718c8",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0037.png"
+        },
+        {
+          "file": "frames/0c7274ce2c386af499f9985fa1e290b5831ddf09144f211b75ebc026dbfda667.png",
+          "sha256": "0c7274ce2c386af499f9985fa1e290b5831ddf09144f211b75ebc026dbfda667",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0038.png"
+        },
+        {
+          "file": "frames/806bf30381d5590156aaa6d55d27bef0182daa2effe192c87713ed9ff3d44347.png",
+          "sha256": "806bf30381d5590156aaa6d55d27bef0182daa2effe192c87713ed9ff3d44347",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0039.png"
+        },
+        {
+          "file": "frames/f2d1a111637ee7a534c0a7af24e1441ae3136dfbc66dd7060f584a7e35b558f8.png",
+          "sha256": "f2d1a111637ee7a534c0a7af24e1441ae3136dfbc66dd7060f584a7e35b558f8",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0040.png"
+        },
+        {
+          "file": "frames/15e8a04de3af76c67da215fdcfaaf6f0786d287193d3e90021cbe830e7934de7.png",
+          "sha256": "15e8a04de3af76c67da215fdcfaaf6f0786d287193d3e90021cbe830e7934de7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0041.png"
+        },
+        {
+          "file": "frames/03c0ae455bd380d55ece66d5a7a885942ea38ec28d08e50d31fa8f664d91441e.png",
+          "sha256": "03c0ae455bd380d55ece66d5a7a885942ea38ec28d08e50d31fa8f664d91441e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0042.png"
+        },
+        {
+          "file": "frames/1c877e0fb2775f8c24904bbad4dac75fbfc83009e7bc6f1c393110506c2b400e.png",
+          "sha256": "1c877e0fb2775f8c24904bbad4dac75fbfc83009e7bc6f1c393110506c2b400e",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0043.png"
+        },
+        {
+          "file": "frames/fb19c699d584057c4fb252a44142eda1e75219c7b7060589fc11c16a4f083f27.png",
+          "sha256": "fb19c699d584057c4fb252a44142eda1e75219c7b7060589fc11c16a4f083f27",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0044.png"
+        },
+        {
+          "file": "frames/cc686a13063225a789dc7b537da749ceb18a34d1e2b859126b58cf88e1f88df9.png",
+          "sha256": "cc686a13063225a789dc7b537da749ceb18a34d1e2b859126b58cf88e1f88df9",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0045.png"
+        },
+        {
+          "file": "frames/8ea65d18b12fef88ac7c0e4dd112ad327dd1abe43401b0bb44168331327a55af.png",
+          "sha256": "8ea65d18b12fef88ac7c0e4dd112ad327dd1abe43401b0bb44168331327a55af",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0046.png"
+        },
+        {
+          "file": "frames/8a1032f8582d099bad7218a8012d1c38fe0685dbcaabe8257b4d951a99124c2b.png",
+          "sha256": "8a1032f8582d099bad7218a8012d1c38fe0685dbcaabe8257b4d951a99124c2b",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0047.png"
+        },
+        {
+          "file": "frames/7abfa7c399f6097b12ea5e6c739d80119cdaa6dad32afbaac882948ed3303051.png",
+          "sha256": "7abfa7c399f6097b12ea5e6c739d80119cdaa6dad32afbaac882948ed3303051",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0048.png"
+        },
+        {
+          "file": "frames/9db53190c0fbd73acd23f230f86e810a607a78790bfa3485014b190320797855.png",
+          "sha256": "9db53190c0fbd73acd23f230f86e810a607a78790bfa3485014b190320797855",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0049.png"
+        },
+        {
+          "file": "frames/65804dbbd746eaa3d3dd154c2517b3ee6a2f44998166f9bbd1c899c6c9b4bd3a.png",
+          "sha256": "65804dbbd746eaa3d3dd154c2517b3ee6a2f44998166f9bbd1c899c6c9b4bd3a",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0050.png"
+        },
+        {
+          "file": "frames/852b51a49cec0f4746f50082597ebccde17e612aa983c6b2e47d9754a9802794.png",
+          "sha256": "852b51a49cec0f4746f50082597ebccde17e612aa983c6b2e47d9754a9802794",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0051.png"
+        },
+        {
+          "file": "frames/bb1d4ccd9577edadf76303f14156414618470054bd9d8b2b7fa6428db1a802a1.png",
+          "sha256": "bb1d4ccd9577edadf76303f14156414618470054bd9d8b2b7fa6428db1a802a1",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0052.png"
+        },
+        {
+          "file": "frames/7db664854a2ecf756b50fcdda0f09b9dc4f6afdf46d4eb849a6c45961a58f406.png",
+          "sha256": "7db664854a2ecf756b50fcdda0f09b9dc4f6afdf46d4eb849a6c45961a58f406",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0053.png"
+        },
+        {
+          "file": "frames/806947646c56986c2f2a065d208696087daead395039b56c3f28704df70ffe23.png",
+          "sha256": "806947646c56986c2f2a065d208696087daead395039b56c3f28704df70ffe23",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0054.png"
+        },
+        {
+          "file": "frames/ff9a764793e2f832deea2f8287b9f9a7aeed1c1e6e9c2173ab8289563b0c31c2.png",
+          "sha256": "ff9a764793e2f832deea2f8287b9f9a7aeed1c1e6e9c2173ab8289563b0c31c2",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0055.png"
+        },
+        {
+          "file": "frames/7eb566307f6281909becab3ff86819b855ec7758f5a0db3e181c260046187ff9.png",
+          "sha256": "7eb566307f6281909becab3ff86819b855ec7758f5a0db3e181c260046187ff9",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0056.png"
+        },
+        {
+          "file": "frames/cddd62ab85da37b6c890469ddeb85374144dc2a2adbad5f9def98a74721c0b86.png",
+          "sha256": "cddd62ab85da37b6c890469ddeb85374144dc2a2adbad5f9def98a74721c0b86",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0057.png"
+        },
+        {
+          "file": "frames/7b5bc380b124ec3f8c07ee56e2b126894e0c91d120f30116853ace472d40388f.png",
+          "sha256": "7b5bc380b124ec3f8c07ee56e2b126894e0c91d120f30116853ace472d40388f",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0058.png"
+        },
+        {
+          "file": "frames/8eb3209f5815ae0e2b09f625e814d4f461493135cea8214fb4aca6a1b85c6355.png",
+          "sha256": "8eb3209f5815ae0e2b09f625e814d4f461493135cea8214fb4aca6a1b85c6355",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0059.png"
+        },
+        {
+          "file": "frames/73b9ad04e92d0e5bfeef387b0d94a9bcc564f2ca838075dff3b9846adf9e082f.png",
+          "sha256": "73b9ad04e92d0e5bfeef387b0d94a9bcc564f2ca838075dff3b9846adf9e082f",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0060.png"
+        },
+        {
+          "file": "frames/4186ba312f4331429918e0aa53141ebdba0704729f89fd0201f3d563098a3117.png",
+          "sha256": "4186ba312f4331429918e0aa53141ebdba0704729f89fd0201f3d563098a3117",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0061.png"
+        },
+        {
+          "file": "frames/c0523a8e2f8a5a9b5e2cca5549e5f44af0d6565de50c0ca93109bc5e399c5a4c.png",
+          "sha256": "c0523a8e2f8a5a9b5e2cca5549e5f44af0d6565de50c0ca93109bc5e399c5a4c",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0062.png"
+        },
+        {
+          "file": "frames/d3b01286c82b247c38e3276ad5a8154880fc87f425051621de71048833afc06f.png",
+          "sha256": "d3b01286c82b247c38e3276ad5a8154880fc87f425051621de71048833afc06f",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0063.png"
+        },
+        {
+          "file": "frames/23aa4f185199d68677ee81a38764909f1715d8644d3427e7939248aa6a0e2404.png",
+          "sha256": "23aa4f185199d68677ee81a38764909f1715d8644d3427e7939248aa6a0e2404",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0064.png"
+        },
+        {
+          "file": "frames/a917b827deb1aa5f97df33b6f4bdf3111bb06fe54b1db80d5a7fd0df43cbaaa6.png",
+          "sha256": "a917b827deb1aa5f97df33b6f4bdf3111bb06fe54b1db80d5a7fd0df43cbaaa6",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0065.png"
+        },
+        {
+          "file": "frames/0e4073c3983f7c27b311ae5adc138bfced254ddb9ffb6ca08a28a7dc5be34bd0.png",
+          "sha256": "0e4073c3983f7c27b311ae5adc138bfced254ddb9ffb6ca08a28a7dc5be34bd0",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0066.png"
+        },
+        {
+          "file": "frames/e9776ecb9aafa44ba327d4bd525c3f4817290e2a2feb22c0bff7eb716228b7ef.png",
+          "sha256": "e9776ecb9aafa44ba327d4bd525c3f4817290e2a2feb22c0bff7eb716228b7ef",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0067.png"
+        },
+        {
+          "file": "frames/5aefaa92034d9b1c09b5849ec7bbbdad7836fc6c86a835e2c77c0844bf5d0988.png",
+          "sha256": "5aefaa92034d9b1c09b5849ec7bbbdad7836fc6c86a835e2c77c0844bf5d0988",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0068.png"
+        },
+        {
+          "file": "frames/e5124f8168a5a476fc6ba1cabeb2e554b3fea2f6e57a65c08d32f5f85da0c6f7.png",
+          "sha256": "e5124f8168a5a476fc6ba1cabeb2e554b3fea2f6e57a65c08d32f5f85da0c6f7",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0069.png"
+        },
+        {
+          "file": "frames/00bc01b312a503685cda4626b869ff0855d8720020dfaf42ad6c714d83626112.png",
+          "sha256": "00bc01b312a503685cda4626b869ff0855d8720020dfaf42ad6c714d83626112",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0070.png"
+        },
+        {
+          "file": "frames/dcb0935231b263d08a65d47135403c5fced4b0553c65a8d6eb392f26a2d463a6.png",
+          "sha256": "dcb0935231b263d08a65d47135403c5fced4b0553c65a8d6eb392f26a2d463a6",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0071.png"
+        },
+        {
+          "file": "frames/44603795911af72fbae295b75377daf8d7c38b9d5e19366424f5e229f88df782.png",
+          "sha256": "44603795911af72fbae295b75377daf8d7c38b9d5e19366424f5e229f88df782",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0072.png"
+        },
+        {
+          "file": "frames/70224bae1bb1e62b30ef990210075d9bc8c1360883d02ceb19fa9785f04f0c99.png",
+          "sha256": "70224bae1bb1e62b30ef990210075d9bc8c1360883d02ceb19fa9785f04f0c99",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0073.png"
+        },
+        {
+          "file": "frames/92ed3d174a3054dda8d0db6fb90ddb1747583ef05c6789e0ed6f3d2115047034.png",
+          "sha256": "92ed3d174a3054dda8d0db6fb90ddb1747583ef05c6789e0ed6f3d2115047034",
+          "duration_ns": 33333333,
+          "source_path": "Source/NaiWaChatPet/animations/surprised_out/0074.png"
+        }
+      ]
+    }
+  },
+  "states": {
+    "starting": "greet",
+    "idle": "idle",
+    "thinking": "ponder",
+    "replying": "focused",
+    "approval": "curious",
+    "error": "worried",
+    "sleeping": "sleepy"
+  },
+  "actions": [
+    {
+      "id": "greet",
+      "title": "打招呼",
+      "clips": [
+        "greet"
+      ],
+      "hold_ms": 800
+    },
+    {
+      "id": "smile",
+      "title": "微笑",
+      "clips": [
+        "smile"
+      ],
+      "hold_ms": 800
+    },
+    {
+      "id": "surprised",
+      "title": "惊讶",
+      "clips": [
+        "surprised_in",
+        "surprised",
+        "surprised_out"
+      ]
+    }
+  ],
+  "icon": {
+    "file": "icon.png",
+    "sha256": "92d7730b4ff9966a5febec641ea18d0952350cddd52e0ab0856e979157c5bc6f",
+    "source_path": "Source/NaiWaChatPet/icons/icon-256.png"
+  },
+  "declarations": [
+    {
+      "file": "licenses/source-0.txt",
+      "source_path": "LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "file": "licenses/source-1.txt",
+      "source_path": "NOTICE.md",
+      "sha256": "26d2ef749cb89c855740829ab1a1036d9e4a91d6fe47a42a561423efd515c47a"
+    }
+  ]
+}

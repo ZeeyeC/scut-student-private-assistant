@@ -1,6 +1,7 @@
+import {workspace,inbox} from './workspace';
 import { test, expect } from '@playwright/test';
 
-test('fixed timetable is separate; smart schedule includes courses and never moves them', async ({page})=>{
+test('shared calendar filters fixed courses; smart schedule includes facts and never moves them', async ({page})=>{
   // This fixture's timetable and planner clock are fixed to the same teaching week.
   await page.clock.setFixedTime(new Date('2026-10-14T10:30:00Z'));
   await page.goto('/');
@@ -8,7 +9,7 @@ test('fixed timetable is separate; smart schedule includes courses and never mov
   await page.getByLabel('邮箱').fill(`split-${crypto.randomUUID()}@example.com`);
   await page.getByLabel('密码').fill('Student!Password2026');
   await page.getByRole('button',{name:'注册并登录'}).click();
-  await expect(page.getByRole('heading',{name:'今天，专注几件事。'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今日',exact:true})).toBeVisible();
   const before=await page.evaluate(async()=>{
     const csrf=(await (await fetch('/api/csrf')).json()).csrf_token;
     const write=async(path:string,body:unknown,method='POST')=>{
@@ -28,18 +29,18 @@ test('fixed timetable is separate; smart schedule includes courses and never mov
     await write(`/drafts/${steps.id}/confirm`,{revision:steps.revision});
     return (await (await fetch('/api/courses')).json());
   });
-  await page.getByRole('button',{name:'课表',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'课表',exact:true})).toBeVisible();
+  await workspace(page,'courses');
+  await expect(page.getByRole('heading',{name:'日程',exact:true})).toBeVisible();
   await expect(page.locator('.fc-event').filter({hasText:'固定高数课'})).toHaveCount(1);
   await expect(page.locator('.fc-event').filter({hasText:'单独固定事项'})).toHaveCount(0);
-  await expect(page.getByRole('button',{name:'智能安排未来 7 天'})).toHaveCount(0);
-  await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'智能安排未来 7 天'})).toBeHidden();
+  await page.getByRole('button',{name:'导入课表',exact:true}).click();await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toBeVisible();await page.keyboard.press('Escape');
   await page.screenshot({path:'/private/tmp/demo21-fixed-timetable.png',fullPage:true});
-  await page.getByRole('button',{name:'待办与日程',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'待办与日程',exact:true})).toBeVisible();
+  await workspace(page,'planning');
+  await expect(page.getByRole('dialog',{name:'安排学习',exact:true})).toBeVisible();
   await expect(page.locator('.fc-event').filter({hasText:'固定高数课'})).toHaveCount(1);
   await expect(page.locator('.fc-event').filter({hasText:'单独固定事项'})).toHaveCount(1);
-  await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'手工添加课程',exact:true})).toBeHidden();
   await page.getByRole('button',{name:'智能安排未来 7 天'}).click();
   await expect(page.getByRole('heading',{name:'未来 7 天计划'})).toBeVisible();
   const drafts=await (await page.request.get('/api/drafts')).json();
@@ -49,13 +50,12 @@ test('fixed timetable is separate; smart schedule includes courses and never mov
     expect(new Date(b.ends_at)<=new Date(fixed.starts_at) || new Date(b.starts_at)>=new Date(fixed.ends_at)).toBeTruthy();
   }
   expect(await (await page.request.get('/api/plan-blocks')).json()).toHaveLength(0);
-  await page.getByRole('region',{name:'智能安排'}).getByRole('button',{name:'校对完成，准备保存'}).click();
   await page.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect.poll(async()=> (await (await page.request.get('/api/plan-blocks')).json()).length).toBeGreaterThan(0);
   expect(await (await page.request.get('/api/courses')).json()).toEqual(before);
   await page.screenshot({path:'/private/tmp/demo21-todos-schedule.png',fullPage:true});
   await expect(page.locator('.fc-event').filter({hasText:'智能排程任务'})).toHaveCount(1);
-  await page.getByRole('button',{name:'课表',exact:true}).click();
+  await workspace(page,'courses');
   await expect(page.locator('.fc-event').filter({hasText:'智能排程任务'})).toHaveCount(0);
   await expect(page.locator('.fc-event').filter({hasText:'固定高数课'})).toHaveCount(1);
 });

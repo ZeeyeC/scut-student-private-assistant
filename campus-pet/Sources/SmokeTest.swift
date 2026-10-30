@@ -1,5 +1,6 @@
 import AppKit
 import WebKit
+import Darwin
 
 extension AppDelegate {
     func js(_ body: String) async throws -> Any? {
@@ -12,6 +13,17 @@ extension AppDelegate {
             try await Task.sleep(nanoseconds: 150_000_000)
         }
         throw ServiceError.message("原生窗口验收等待超时：\(expression)")
+    }
+
+    func clickSmokeButton(_ title: String) async throws {
+        let literal = String(data: try JSONSerialization.data(withJSONObject: [title]), encoding: .utf8)!
+        let selector = "[...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===\(literal)[0] || b.textContent.trim()===\(literal)[0]))"
+        try await waitFor(selector)
+        _ = try await js(selector + ".click(); return true;")
+    }
+    func closeSmokeDrawers() async throws {
+        _ = try await js("for(const panel of [...document.querySelectorAll('.detail-host:not([hidden])')].reverse())panel.querySelector('header button')?.click(); return true;")
+        try await waitFor("!document.querySelector('.workspace-shell')?.inert")
     }
 
     func waitForMood(_ mood: PetMood) async throws {
@@ -70,9 +82,12 @@ extension AppDelegate {
                 try await waitFor("document.body.textContent.includes('桌宠验收 · 阅读一篇论文')")
                 showAssistant(page: "设置")
                 try await waitFor("document.body.textContent.includes('模型连接')")
+                try await clickSmokeButton("学习偏好")
                 try await waitFor("document.querySelector('[aria-label=用户偏好与精力档案]')")
                 showAssistant(page: "目标与复盘")
-                try await waitFor("document.querySelector('[aria-label=长期目标]') && document.querySelector('[aria-label=每周复盘]')")
+                try await waitFor("document.querySelector('[aria-label=长期目标]')")
+                try await clickSmokeButton("复盘")
+                try await waitFor("document.querySelector('[aria-label=每周复盘]')")
                 showAssistant(page: "助手")
                 try await waitFor("document.querySelector('.composer textarea')")
                 let label = try await js("return document.body.dataset.petLayout;")
@@ -122,7 +137,7 @@ extension AppDelegate {
                 try await waitFor("document.querySelector('.chat [role=status]')?.textContent === ''")
                 try await verifyAfterClass(output: output)
                 try await verifyCourseCell(output: output)
-                try verifyVideoActions(output: output)
+                try await verifyPetActions(output: output)
                 toggleSleep()
                 guard pet.mood == .sleeping else { throw ServiceError.message("暂停动画失败") }
                 toggleSleep()
@@ -162,7 +177,16 @@ extension AppDelegate {
                 try await stopBackend()
                 guard !ready else { throw ServiceError.message("停止后台后仍标记为已连接") }
                 finishSmoke(error: nil)
-            } catch { finishSmoke(error: error.localizedDescription) }
+            } catch {
+                if let output = options.smokeDirectory {
+                    let diagnostic = try? await js("return {url:location.pathname,text:document.body.innerText,headings:[...document.querySelectorAll('h1,h2')].map(n=>n.textContent)};")
+                    if let diagnostic, let data = try? JSONSerialization.data(withJSONObject: diagnostic, options: [.prettyPrinted]) {
+                        try? data.write(to: output.appendingPathComponent("failure-dom.json"))
+                    }
+                    if let image = try? await webView.takeSnapshot(configuration: nil) { try? saveImage(image, to: output.appendingPathComponent("failure.png")) }
+                }
+                finishSmoke(error: error.localizedDescription)
+            }
         }
     }
 
@@ -238,7 +262,9 @@ extension AppDelegate {
         }
         taskDetails?.orderOut(nil)
         showAssistant(page: "作业")
-        try await waitFor("[...document.querySelectorAll('article.card h2')].some(e=>e.textContent==='高数习题')")
+        try await waitFor("[...document.querySelectorAll('.task-list-row')].some(e=>e.textContent.includes('高数习题'))")
+        _ = try await js("[...document.querySelectorAll('.task-list-row')].find(e=>e.textContent.includes('高数习题')).click(); return true;")
+        try await waitFor("document.querySelector('.detail-panel article.card')")
         closePanel(); clickPet()
         try await waitForNative("完成前读取") { !loadingTaskRing && taskBubbleWindows.count == 6 }
         let originalSlots = ringSlots
@@ -348,6 +374,7 @@ extension AppDelegate {
     func verifyCourseCell(output: URL) async throws {
         // The fixture writes settings directly, so wait for React Query to refresh.
         showAssistant(page: "设置")
+        try await clickSmokeButton("课程与学期")
         try await waitFor("document.querySelector('[name=week1_monday]')?.value === '2026-10-12'")
         showAssistant(page: "课表")
         try await waitFor("document.querySelector('.fc')")
@@ -399,70 +426,80 @@ extension AppDelegate {
         _ = try await js("[...document.querySelectorAll('.confirm button')].find(b=>b.textContent==='确认保存').click(); return true;")
         try await waitFor("[...document.querySelectorAll('.fc-event')].some(e=>e.textContent.includes('空白格验收课程'))")
         // Existing events must retain their details action instead of opening an add dialog.
+        try await closeSmokeDrawers()
         _ = try await js("[...document.querySelectorAll('.fc-event')].find(e=>e.textContent.includes('空白格验收课程')).click(); return true;")
         try await waitFor("document.querySelector('[aria-label=日程详情]')")
-        let preserved = try await js("return !document.querySelector('.course-slot-dialog') && [...document.querySelectorAll('button')].some(b=>b.textContent==='手工添加课程');")
+        let preserved = try await js("return !document.querySelector('.course-slot-dialog') && [...document.querySelectorAll('button')].some(b=>b.textContent==='导入课表');")
         guard preserved as? Bool == true else { throw ServiceError.message("原课程详情或手动入口未保留") }
-        _ = try await js("[...document.querySelectorAll('button')].find(b=>b.textContent==='手工添加课程').click(); return true;")
+        try await closeSmokeDrawers()
+        try await clickSmokeButton("导入课表")
+        try await clickSmokeButton("手工添加课程")
         try await waitFor("[...document.querySelectorAll('h2')].some(e=>e.textContent==='添加一门课程')")
         let saved = try await webView.takeSnapshot(configuration: nil)
         try saveImage(saved, to: output.appendingPathComponent("course-cell-saved.png"))
     }
 
-    func verifyVideoActions(output: URL) throws {
-        pet.mood = .idle
-        pet.reducedMotion = false
-        for action in PetAction.allCases {
-            guard pet.play(action), let clip = pet.animation, clip.images.count >= 60 else {
-                throw ServiceError.message("视频动作加载失败：\(action.title)")
+    func verifyPetActions(output: URL) async throws {
+        pet.mood = .idle; pet.reducedMotion = false; pet.animationsVisible = true
+        guard !pet.availableActions.isEmpty else { throw ServiceError.message("新角色动作未安装") }
+        for action in pet.availableActions {
+            guard pet.playAction(action.id), let clip = pet.assetClip else { throw ServiceError.message("清单动作加载失败") }
+            let firstDuration = Double(clip.frames[0].durationNanoseconds) / 1e9
+            if clip.frames.count > 1 {
+                pet.advanceAnimation(by: firstDuration + 0.000001)
+                guard pet.assetFrameIndex == 1 else { throw ServiceError.message("素材原始时序未保留") }
             }
-            pet.advanceAnimation(by: 1)
-            guard pet.actionFrameIndex == 20 else { throw ServiceError.message("逐帧动画未按 20 fps 前进") }
-            let frame = clip.pixels[pet.actionFrameIndex]
-            // Validate actual animated pixels, including raised arms, can receive
-            // clicks while transparent corners remain click-through.
+            guard let bitmap = pet.bitmapImageRepForCachingDisplay(in: pet.bounds), let geometry = pet.assetGeometry else { throw ServiceError.message("素材绘制失败") }
+            pet.cacheDisplay(in: pet.bounds, to: bitmap)
             var hits = 0
-            for y in stride(from: 0, to: 320, by: 8) {
-                for x in stride(from: 0, to: 320, by: 8) where (frame.colorAt(x: x, y: y)?.alphaComponent ?? 0) > 0.5 {
-                    let point = NSPoint(x: 10 + (Double(x) + 0.5) / 320 * 170, y: (320 - Double(y) - 0.5) / 320 * 170)
-                    if pet.isInteractive(point) { hits += 1 }
+            for y in stride(from: 0, to: 560, by: 8) {
+                for x in stride(from: 0, to: 420, by: 8) {
+                    let rect = geometry.viewRect(fromSource: NSRect(x:x,y:y,width:1,height:1))
+                    if pet.isInteractive(NSPoint(x:rect.midX,y:rect.midY)) { hits += 1 }
                 }
             }
-            guard hits > 40, !pet.isInteractive(NSPoint(x: 1, y: 1)) else {
-                throw ServiceError.message("动画透明命中检测失败：\(action.title)")
-            }
-            let index = pet.actionFrameIndex
-            pet.mood = .sleeping; pet.advanceAnimation(by: 0.5)
-            guard pet.actionFrameIndex == index else { throw ServiceError.message("暂停时动作仍在前进") }
-            pet.mood = .idle; pet.reducedMotion = true; pet.advanceAnimation(by: 0.5)
-            guard pet.actionFrameIndex == index else { throw ServiceError.message("减少动态效果未生效") }
-            pet.reducedMotion = false
-            if action == .bearShake {
-                let onePass = Double(clip.images.count) / clip.fps
-                pet.advanceAnimation(by: onePass)
-                guard pet.activeAction == action, pet.actionFrameIndex == index,
-                      abs(clip.duration - 6.6) < 0.001 else {
-                    throw ServiceError.message("狗熊哆嗦毛应原速重复两遍，总时长 6.6 秒")
-                }
-            }
-            if let bitmap = pet.bitmapImageRepForCachingDisplay(in: pet.bounds) {
-                pet.cacheDisplay(in: pet.bounds, to: bitmap)
-                try bitmap.representation(using: .png, properties: [:])!.write(to: output.appendingPathComponent(action.rawValue + ".png"))
-            }
-            pet.advanceAnimation(by: clip.duration)
-            guard pet.activeAction == nil else { throw ServiceError.message("动作结束未回到待机") }
+            guard hits > 40, !pet.isInteractive(NSPoint(x:1,y:1)), pet.assetCacheBytes <= 64 * 1024 * 1024 else { throw ServiceError.message("新素材命中或缓存上限失败") }
+            try bitmap.representation(using:.png,properties:[:])!.write(to:output.appendingPathComponent("action-"+action.id+".png"))
+            pet.advanceAnimation(by: 100)
+            guard !pet.hasActiveAction, pet.assetClipName == "idle" else { throw ServiceError.message("动作结束未回到当前状态") }
         }
-        automaticActions = true; nextPerformanceAt = 0; animate()
-        if !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
-            guard pet.activeAction != nil else { throw ServiceError.message("空闲随机表演未启动") }
-        }
-        let elapsed = pet.actionElapsed
+        pet.playAction(pet.availableActions[0].id); pet.mood = .approval
+        guard !pet.hasActiveAction else { throw ServiceError.message("审批未打断表演") }
+        pet.mood = .idle; automaticActions = true; nextPerformanceAt = 0; animate()
+        if !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion { guard pet.hasActiveAction else { throw ServiceError.message("空闲表演未启动") } }
+        let decoded = pet.decodedFrameCount
         hidePet(); animate()
-        guard pet.actionElapsed == elapsed else { throw ServiceError.message("隐藏后动画仍在运行") }
-        showPet(); pet.stopAction()
-        pet.mood = .thinking; nextPerformanceAt = 0; animate()
-        guard pet.activeAction == nil else { throw ServiceError.message("助手忙碌时不应随机表演") }
-        pet.mood = .idle; automaticActions = false
+        guard pet.decodedFrameCount == decoded else { throw ServiceError.message("隐藏后仍解码") }
+        showPet(); pet.stopAction(); pet.mood = .thinking; nextPerformanceAt = 0; animate()
+        guard !pet.hasActiveAction else { throw ServiceError.message("忙碌时随机表演") }
+        pet.mood = .sleeping; let index = pet.assetFrameIndex; pet.advanceAnimation(by:1)
+        guard pet.assetFrameIndex == index else { throw ServiceError.message("休息仍在播放") }
+        pet.mood = .idle; pet.reducedMotion = true; pet.advanceAnimation(by:1)
+        guard !pet.hasActiveAction else { throw ServiceError.message("减少动态效果仍有表演") }
+        pet.reducedMotion = false; automaticActions = false
+        for state in [PetMood.starting,.idle,.thinking,.replying,.approval,.error,.sleeping] {
+            pet.mood = state
+            if let bitmap = pet.bitmapImageRepForCachingDisplay(in:pet.bounds) {
+                pet.cacheDisplay(in:pet.bounds,to:bitmap)
+                try bitmap.representation(using:.png,properties:[:])!.write(to:output.appendingPathComponent("state-"+state.rawValue+".png"))
+            }
+        }
+        pet.mood = .idle
+        var peakCache = pet.assetCacheBytes
+        if pet.availableActions.contains(where:{$0.id == "surprised"}) {
+            guard pet.playAction("surprised") else { throw ServiceError.message("惊讶动作未启动") }
+            for _ in 0..<75 {
+                try await Task.sleep(nanoseconds:100_000_000)
+                pet.displayIfNeeded(); peakCache = max(peakCache,pet.assetCacheBytes)
+                guard peakCache <= 64*1024*1024 else { throw ServiceError.message("实时播放缓存越界") }
+            }
+            guard !pet.hasActiveAction else { throw ServiceError.message("实时播放未正常结束") }
+        }
+        let start = ProcessInfo.processInfo.systemUptime, cpu = clock()
+        try await Task.sleep(nanoseconds:3_000_000_000)
+        let wall = ProcessInfo.processInfo.systemUptime-start
+        let profile:[String:Any] = ["measurement":"3-second real-time native process idle playback; excludes separate WebKit process", "wall_seconds":wall, "native_cpu_seconds":Double(clock()-cpu)/Double(CLOCKS_PER_SEC), "cache_bytes":pet.assetCacheBytes, "peak_cache_bytes":peakCache, "cache_limit_bytes":64*1024*1024, "decoded_frames":pet.decodedFrameCount, "canvas":[420,560]]
+        try JSONSerialization.data(withJSONObject:profile,options:[.prettyPrinted,.sortedKeys]).write(to:output.appendingPathComponent("pet-playback-profile.json"))
     }
 
     func verifyScheduleReminder(output: URL) async throws {
@@ -506,7 +543,10 @@ extension AppDelegate {
             if let health = try? healthEncoder.encode(service.healthDiagnostics) {
                 try? health.write(to: output.appendingPathComponent("health-diagnostics.json"))
             }
-            let result: [String: Any] = ["passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["local session", "chat composer", "real draft confirmation", "task/settings navigation", "preference profile entry", "goals and weekly review entry", "compact layout", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "three video action assets", "20 fps playback and completion", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown", "silent purple schedule reminder", "belly-only shortcut hit target", "disabled reminder restores yellow", "pet click opens only today task orbit", "scheduled tasks only and task deduplication", "six round abbreviation bubbles and overflow", "repeat click collapses task orbit", "left click reads current task details and steps", "right click persists completion once", "completion synchronizes existing task UI", "stable slots refill hidden tasks", "revision conflict retains task and reloads", "complete remaining tasks and empty state", "future and due-only tasks remain unchanged", "drag and hide collapse task orbit", "outside click collapses task orbit"]]
+            let assetURL = Bundle.main.resourceURL?.appendingPathComponent("NaiWa/asset-pack.json")
+            let assetData = assetURL.flatMap { try? Data(contentsOf:$0) }
+            let assetInfo = assetData.flatMap { (try? JSONSerialization.jsonObject(with:$0)) as? [String:Any] }
+            let result: [String: Any] = ["qa_asset_fixture": assetInfo?["qa_fixture"] as? Bool ?? false, "passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["local session", "chat composer", "real draft confirmation", "task/settings navigation", "preference profile entry", "goals and weekly review entry", "compact layout", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "manifest actions and original frame timing", "bounded lazy frame cache", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown", "silent purple schedule reminder", "belly-only shortcut hit target", "disabled reminder restores original character", "pet click opens only today task orbit", "scheduled tasks only and task deduplication", "six round abbreviation bubbles and overflow", "repeat click collapses task orbit", "left click reads current task details and steps", "right click persists completion once", "completion synchronizes existing task UI", "stable slots refill hidden tasks", "revision conflict retains task and reloads", "complete remaining tasks and empty state", "future and due-only tasks remain unchanged", "drag and hide collapse task orbit", "outside click collapses task orbit"]]
             if let data = try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]) {
                 try? data.write(to: output.appendingPathComponent("result.json"))
             }

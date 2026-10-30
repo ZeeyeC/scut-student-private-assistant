@@ -15,6 +15,9 @@ export function ReviewInbox({onOpenTask}:{onOpenTask:(id:string)=>void}) {
   const duration=useQuery({queryKey:['duration-suggestions'],queryFn:()=>api<{suggestions:Resource[]}>('/duration-suggestions')});
   const pending=visibleDrafts(drafts.data).filter(d=>d.data.status==='pending');
   const count=pending.length+(proactive.data?.suggestions.filter(s=>s.data.state==='pending').length??0)+(duration.data?.suggestions.filter(s=>s.data.state==='pending').length??0);
+  useEffect(()=>{
+    if(open){void drafts.refetch();void proactive.refetch();void duration.refetch();}
+  },[open,tab]);
   useEffect(()=>{const show=()=>{setTab('drafts');setOpen(true);};window.addEventListener('campus-open-review',show);return()=>window.removeEventListener('campus-open-review',show);},[]);
   return <>
     <div className="workspace-tools"><button className="review-inbox-button" type="button" onClick={()=>setOpen(true)}>待确认{count>0?` · ${count}`:''}</button></div>

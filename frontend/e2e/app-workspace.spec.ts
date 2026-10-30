@@ -75,3 +75,14 @@ test('native navigation during review cannot leave the workspace permanently ine
   await page.getByRole('button',{name:'新建任务',exact:true}).click();
   await expect(page.getByRole('dialog',{name:'新建任务',exact:true})).toBeVisible();
 });
+
+test('bridge loaded before login keeps its initial native navigation until React is ready',async({page})=>{
+  const bridge=readFileSync(new URL('../../campus-pet/Resources/Bridge.js',import.meta.url),'utf8');
+  await page.addInitScript({content:`document.addEventListener('DOMContentLoaded',()=>{${bridge}\n});`});
+  await page.goto('/');
+  await page.getByRole('button',{name:'创建账号',exact:true}).click();
+  await page.getByLabel('邮箱').fill(`early-bridge-${crypto.randomUUID()}@example.com`);
+  await page.getByLabel('密码').fill('Student!Password2026');
+  await page.getByRole('button',{name:'注册并登录',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'助手',exact:true})).toBeVisible();
+});

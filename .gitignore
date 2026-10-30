@@ -9,6 +9,7 @@ __pycache__/
 .env
 data/
 test-results/
+test-results-local/
 playwright-report/
 
 build/

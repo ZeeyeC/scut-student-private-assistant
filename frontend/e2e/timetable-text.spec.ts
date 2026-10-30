@@ -1,3 +1,4 @@
+import {workspace,inbox} from './workspace';
 import { test, expect, type Page } from "@playwright/test";
 import { fileURLToPath } from "node:url";
 
@@ -8,7 +9,7 @@ async function enter(page: Page) {
   await page.getByLabel("邮箱").fill(`text-course-${crypto.randomUUID()}@example.com`);
   await page.getByLabel("密码").fill("Student!Password2026");
   await page.getByRole("button",{name:"注册并登录"}).click();
-  await expect(page.getByRole("heading",{name:"今天，专注几件事。"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"今日",exact:true})).toBeVisible();
   await page.evaluate(async () => {
     const s=await (await fetch("/api/settings")).json();
     const token=(await (await fetch("/api/csrf")).json()).csrf_token;
@@ -20,7 +21,7 @@ async function enter(page: Page) {
 }
 
 async function say(page: Page, text: string) {
-  await page.getByLabel("给助手的消息",{exact:true}).fill(text);
+  await page.getByRole("textbox",{name:"给助手的消息",exact:true}).fill(text);
   await page.getByRole("button",{name:"发送",exact:true}).click();
 }
 
@@ -47,7 +48,7 @@ test("chat asks for weeks, patches only one course, resumes and saves reviewed t
   await review.getByRole("button",{name:"检查导入差异",exact:true}).click();
   await expect(review).toContainText("将新增 2 条：高等数学、大学英语");
   await page.getByRole("complementary",{name:"草稿校对区"}).evaluate(e=>{e.scrollTop=0;});
-  await page.getByRole("complementary",{name:"草稿校对区"}).screenshot({path:fileURLToPath(new URL("../../docs/roadmap/evidence/timetable-text-review.png",import.meta.url))});
+  await page.getByRole("complementary",{name:"草稿校对区"}).screenshot({path:fileURLToPath(new URL("../../docs/validation/demo2.5/e2e/timetable-text-review.png",import.meta.url))});
   await review.getByRole("button",{name:"校对完成，准备保存",exact:true}).click();
   await expect(review).toContainText("课程将进入固定课表");
   await review.getByRole("button",{name:"确认保存",exact:true}).click();
@@ -58,7 +59,7 @@ test("chat asks for weeks, patches only one course, resumes and saves reviewed t
 
 test("timetable embedded chat shows one text review and keeps it when collapsed",async ({page}) => {
   await page.setViewportSize({width:390,height:844});
-  await enter(page);await page.getByRole("button",{name:"课表",exact:true}).click();
+  await enter(page);await workspace(page,'import');
   let invalidAssetRequests=0;
   page.on("request",r=>{if(r.url().includes("timetable-assets/undefined"))invalidAssetRequests++;});
   await page.getByRole("button",{name:"用文字添加课表",exact:true}).click();
