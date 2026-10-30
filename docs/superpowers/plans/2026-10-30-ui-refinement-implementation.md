@@ -66,12 +66,12 @@
 
 **Interfaces:** 复用`AppShell`及`NavigationTarget`，不新建路由器。新增Swift `WorkspaceWindowLayout.initialFrame(visibleFrame: NSRect, chromeInsets: NSEdgeInsets) -> NSRect`：以1280×782产品内容加实际系统chrome后居中，按可用屏幕内缩后裁限；`chromeInsets`从当前NSWindow外框与内容区差值取得，不写死标题栏高度。`WorkspaceAppearance`提供JSON中相同浅/深色和面板尺寸；前端tokens同名语义，不再零散写替代色。
 
-- [ ] 写行为失败用例`sidebar_stays_left_while_content_scrolls`：≥20任务或长回复产生内容滚动；滚前后导航及底部设置的y/height偏差≤0.5；`document.scrollingElement.scrollTop===0`；跨1280→768→560→1280后仍在左边，内容能看到最后一项。
-- [ ] 写原生失败用例`workspace_initial_frame_is_full_and_clamped`：可用屏1440×900且系统顶部chrome=28、其他=0时得到1280×810外框及1280×782产品区；chrome=38时得到1280×820。小屏/负原点不超`visibleFrame`；首次启动不因旧compact值回到560。使用新的`CampusPetWorkspaceV2`窗口恢复键保留旧设置，新键有合法用户尺寸则恢复并按可用屏裁限。
-- [ ] Run `npm --prefix frontend run test:e2e -- ui-refinement.spec.ts`及`backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，保留本任务断言失败证据。
-- [ ] 以网格固定侧栏，根满高不滚、main独立滚；清理冲突的旧shell/强制compact/底导航覆盖。按JSON落地字体、颜色和176/144/56侧栏；小宽度保留可访问名称与设置图标。
-- [ ] 原生默认完整窗口；移除内容顶部“主窗口”按钮行，让WK内容接原生内容布局。尺寸切换若保留则放菜单，不另占页面高度。Bridge不在启动硬设compact；初始化和resize以实际可用宽度通知布局，不改变左栏规则。
-- [ ] 同命令通过，补`npm --prefix frontend run typecheck`；截图对照导航和内容起点，更新D2/U3证据并提交本任务。
+- [x] 写行为失败用例`sidebar_stays_left_while_content_scrolls`：≥20任务或长回复产生内容滚动；滚前后导航及底部设置的y/height偏差≤0.5；`document.scrollingElement.scrollTop===0`；跨1280→768→560→1280后仍在左边，内容能看到最后一项。
+- [x] 写原生失败用例`workspace_initial_frame_is_full_and_clamped`：可用屏1440×900且系统顶部chrome=28、其他=0时得到1280×810外框及1280×782产品区；chrome=38时得到1280×820。小屏/负原点不超`visibleFrame`；首次启动不因旧compact值回到560。使用新的`CampusPetWorkspaceV2`窗口恢复键保留旧设置，新键有合法用户尺寸则恢复并按可用屏裁限。
+- [x] Run `npm --prefix frontend run test:e2e -- ui-refinement.spec.ts`及`backend/.venv/bin/python campus-pet/tests/run_native_tests.py`，保留本任务断言失败证据。
+- [x] 以网格固定侧栏，根满高不滚、main独立滚；清理冲突的旧shell/强制compact/底导航覆盖。按JSON落地字体、颜色和176/144/56侧栏；小宽度保留可访问名称与设置图标。
+- [x] 原生默认完整窗口；移除内容顶部“主窗口”按钮行，让WK内容接原生内容布局。尺寸切换若保留则放菜单，不另占页面高度。Bridge不在启动硬设compact；初始化和resize以实际可用宽度通知布局，不改变左栏规则。
+- [x] 同命令通过，补`npm --prefix frontend run typecheck`；截图对照导航和内容起点，更新D2/U3证据并提交本任务。
 
 ### Task 2：逐页还原与视觉平衡（U3b）
 

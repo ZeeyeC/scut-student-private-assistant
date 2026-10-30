@@ -42,7 +42,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var latestAssistantMood: PetMood = .starting
     var ready = false
     var starting = false
-    var compact = true
+    var compact = false
     var dragInProgress = false
     var requestedPage = "助手"
     var segments: NSSegmentedControl!
@@ -125,7 +125,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
 
     func makeAssistant() {
-        let content = NSView(frame: NSRect(x: 0, y: 0, width: 560, height: 720))
+        let content = NSView(frame: NSRect(x: 0, y: 0, width: 1280, height: 782))
         assistant = NSWindow(contentRect: content.bounds, styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
         assistant.title = "课间 · 桌宠助手"
         assistant.minSize = NSSize(width: 440, height: 500)
@@ -133,7 +133,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         assistant.delegate = self
         assistant.contentView = content
         assistant.center()
-        assistant.setFrameAutosaveName("CampusPetAssistant")
+        let visible = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
+        let chrome = assistant.frame.height - content.bounds.height
+        assistant.setFrame(WorkspaceWindowLayout.initialFrame(visibleFrame: visible, chromeInsets: NSEdgeInsets(top: chrome, left: 0, bottom: 0, right: 0)), display: false)
+        if options.smokeDirectory == nil {
+            _ = assistant.setFrameUsingName("CampusPetWorkspaceV2")
+            var frame = assistant.frame
+            frame.size.width = min(frame.width, visible.width); frame.size.height = min(frame.height, visible.height)
+            frame.origin.x = min(max(frame.minX, visible.minX), visible.maxX - frame.width)
+            frame.origin.y = min(max(frame.minY, visible.minY), visible.maxY - frame.height)
+            assistant.setFrame(frame, display: false)
+        }
+        assistant.setFrameAutosaveName("CampusPetWorkspaceV2")
         let config = WKWebViewConfiguration()
         config.websiteDataStore = options.smokeDirectory == nil ? .default() : .nonPersistent()
         let scripts = config.userContentController
@@ -146,21 +157,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         webView.navigationDelegate = self; webView.uiDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
         content.addSubview(webView)
-        let bar = NSStackView()
-        bar.orientation = .horizontal; bar.spacing = 8
-        bar.translatesAutoresizingMaskIntoConstraints = false
         segments = NSSegmentedControl(labels: Self.pages, trackingMode: .selectOne, target: self, action: #selector(changePage))
         segments.selectedSegment = 3
         segments.isHidden = true // The App content provides the shared main/compact navigation.
-        bar.addArrangedSubview(segments)
-        let expand = NSButton(title: "主窗口", target: self, action: #selector(toggleLayout))
-        expand.toolTip = "切换主窗口与快捷面板"
-        bar.addArrangedSubview(expand)
-        content.addSubview(bar)
         NSLayoutConstraint.activate([
-            bar.topAnchor.constraint(equalTo: content.topAnchor, constant: 10),
-            bar.centerXAnchor.constraint(equalTo: content.centerXAnchor),
-            webView.topAnchor.constraint(equalTo: bar.bottomAnchor, constant: 8),
+            webView.topAnchor.constraint(equalTo: content.topAnchor),
             webView.leadingAnchor.constraint(equalTo: content.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: content.trailingAnchor),
             webView.bottomAnchor.constraint(equalTo: content.bottomAnchor),
@@ -173,6 +174,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         let menu = NSMenu()
         menu.addItem(item("打开助手", #selector(openChat), "1"))
         menu.addItem(item("显示桌宠", #selector(showPet), "0"))
+        menu.addItem(item("切换窗口大小", #selector(toggleLayout(_:)), ""))
         menu.addItem(.separator())
         menu.addItem(item("关闭助手面板", #selector(closePanel), "w"))
         menu.addItem(item("仅退出桌宠（后台继续运行）", #selector(quit), "q"))
@@ -411,19 +413,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         requestedPage = Self.pages[segments.selectedSegment]
         navigate()
     }
-    @objc func toggleLayout(_ sender: NSButton) {
+    @objc func toggleLayout(_ sender: Any?) {
         compact.toggle()
-        sender.title = compact ? "主窗口" : "快捷面板"
         webView.evaluateJavaScript("window.__campusPet?.layout(\(compact));")
         var frame = assistant.frame
-        frame.size.width = compact ? 560 : 1120
-        frame.size.height = compact ? 720 : 820
+        frame.size = assistant.frameRect(forContentRect: NSRect(origin: .zero, size: compact ? NSSize(width: 560, height: 720) : NSSize(width: 1280, height: 782))).size
         let visible = assistant.screen?.visibleFrame ?? NSScreen.main!.visibleFrame
         frame.size.width = min(frame.width, visible.width)
         frame.size.height = min(frame.height, visible.height)
         frame.origin.x = min(max(visible.minX, frame.minX), visible.maxX - frame.width)
         frame.origin.y = min(max(visible.minY, frame.minY), visible.maxY - frame.height)
         assistant.setFrame(frame, display: true, animate: true)
+    }
+    func windowDidResize(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, window === assistant else { return }
+        compact = (assistant.contentView?.bounds.width ?? 1280) < 640
+        webView?.evaluateJavaScript("window.__campusPet?.layout(\(compact));")
     }
     @objc func openBrowser() {
         hidePetBubbles()

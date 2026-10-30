@@ -26,7 +26,8 @@ export function Button({
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
-      className={twMerge(clsx(variants({ variant }), className))}
+      className={twMerge(clsx(variants({ variant }), 'workspace-button', className))}
+      data-variant={variant??'default'}
       {...props}
     />
   );

@@ -1,0 +1,20 @@
+:root {
+  color-scheme: light dark;
+  --workspace-ink: light-dark(#252a35,#e5e8ef);
+  --workspace-muted: light-dark(#71798b,#a3adbf);
+  --workspace-line: light-dark(#e8ebf1,#323a48);
+  --workspace-paper: light-dark(#fefefe,#202630);
+  --workspace-sidebar: light-dark(#f5f6fa,#242b36);
+  --workspace-soft: light-dark(#f7f8fc,#282f3c);
+  --workspace-accent: light-dark(#596bc6,#a1afea);
+  --workspace-on-accent: light-dark(#ffffff,#1e263e);
+  --workspace-selected: light-dark(#eaeefa,#303b59);
+  --workspace-focus: light-dark(#f7f8fd,#272f40);
+  --workspace-button-border: light-dark(#dfe3ec,#414b5d);
+  --workspace-sidebar-width: 176px;
+  --workspace-padding-x: 38px;
+  --workspace-padding-top: 31px;
+}
+@media(max-width:959px){:root{--workspace-sidebar-width:144px;--workspace-padding-x:28px;--workspace-padding-top:28px;}}
+@media(max-width:639px){:root{--workspace-sidebar-width:56px;--workspace-padding-x:18px;--workspace-padding-top:22px;}}
+@media(max-width:359px){:root{--workspace-padding-x:14px;--workspace-padding-top:20px;}}

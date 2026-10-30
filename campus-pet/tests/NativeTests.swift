@@ -6,6 +6,7 @@ struct NativeTests {
         MainActor.assumeIsolated {
             _ = NSApplication.shared
             runBrowserLaunchPolicyTests()
+            runWorkspaceWindowTests()
             runPetAssetTests()
             for screen in [NSRect(x: 0, y: 0, width: 1200, height: 800), NSRect(x: -1200, y: 200, width: 1200, height: 800)] {
                 for x in [screen.minX, screen.midX - 95, screen.maxX - 190] {

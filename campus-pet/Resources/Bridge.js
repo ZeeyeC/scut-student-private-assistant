@@ -37,7 +37,7 @@
     body[data-pet-layout="compact"] .auth { padding:24px; min-height:100dvh; }
   `;
   document.head.append(style);
-  document.body.dataset.petLayout = 'compact';
+  document.body.dataset.petLayout = window.innerWidth < 640 ? 'compact' : 'full';
   const navigate = (page) => {
     if (!pages.includes(page)) return false;
     desiredPage = page;
