@@ -51,7 +51,7 @@ test("two-page PDF evidence, correction, difference preview and explicit course 
   await review.getByRole("button",{name:"检查导入差异",exact:true}).click();
   await expect(review).toContainText("将新增 1 条：高等数学");
   await expect(page.getByText("已识别，请校对下方课表草稿",{exact:true})).toBeVisible();
-  await review.screenshot({path:fileURLToPath(new URL("../../docs/validation/demo2.5/e2e/timetable-recognition-review.png", import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL("../../docs/validation/demo2.5.1/e2e/timetable-recognition-review.png", import.meta.url))});
   await review.getByRole("button",{name:"校对完成，准备保存",exact:true}).click();
   await review.getByRole("button",{name:"确认保存",exact:true}).click();
   await expect(review).toHaveCount(0);

@@ -12,6 +12,8 @@ import {DetailPanel} from "./layout/DetailPanel";
 import {SettingsAbout} from "./SettingsAbout";
 import {ImportBrowserSettings} from "./SchoolImportPanel";
 import {ProactiveSettings} from "./ProactiveSuggestions";
+import {PageHeader} from './layout/PageHeader';
+import {CalendarDays,Clock,Bell,MessageSquare,Folder,ChevronRight} from 'lucide-react';
 type Form = {
   timezone: string;
   semester_name: string;
@@ -25,16 +27,18 @@ type Form = {
   study_windows: { start: string; end: string }[];
 };
 const settingGroups = [
-  {id:'semester',title:'课程与学期',summary:'学期、节次与学校导入'},
-  {id:'preferences',title:'学习偏好',summary:'学习窗口、容量与已确认偏好'},
-  {id:'reminders',title:'提醒与桌宠',summary:'课后询问、主动建议与安静时段'},
-  {id:'models',title:'模型连接',summary:'模型、服务地址与本机密钥'},
-  {id:'data',title:'资料与备份',summary:'导出资料与删除确认'},
+  {id:'semester',title:'课程与学期',summary:'学期、节次、课程规则'},
+  {id:'preferences',title:'学习偏好',summary:'学习时段、专注与休息'},
+  {id:'reminders',title:'提醒与桌宠',summary:'提醒、显示与动作'},
+  {id:'models',title:'模型连接',summary:'服务与连接配置'},
+  {id:'data',title:'资料与备份',summary:'本机资料、导入与导出'},
 ] as const;
 type SettingsGroup = typeof settingGroups[number]['id'];
 export function Settings({local=false}:{local?:boolean}) {
   const [group,setGroup]=useState<SettingsGroup>('semester'),[open,setOpen]=useState(false);
-  return <><h1>设置</h1><div className="settings-list">{settingGroups.map(item=><button type="button" key={item.id} aria-label={item.title} onClick={()=>{setGroup(item.id);setOpen(true);}}><span><strong>{item.title}</strong><small>{item.summary}</small></span><span aria-hidden="true">›</span></button>)}</div>
+  const settings=useQuery({queryKey:['settings'],queryFn:()=>api<Resource>('/settings')});
+  const icons={semester:CalendarDays,preferences:Clock,reminders:Bell,models:MessageSquare,data:Folder};
+  return <><PageHeader title="设置"/><div className="settings-list">{settingGroups.map(item=>{const Icon=icons[item.id];return <button type="button" key={item.id} aria-label={item.title} onClick={()=>{setGroup(item.id);setOpen(true);}}><Icon size={16}/><span><strong>{item.title}</strong><small>{item.summary}</small></span><span className="settings-summary-value">{item.id==='semester'?settings.data?.data.semester_name:item.id==='data'&&local?'本机保存':''}</span><ChevronRight size={16}/></button>;})}</div>
     <DetailPanel open={open} title={settingGroups.find(item=>item.id===group)!.title} onClose={()=>setOpen(false)}><SettingsContent key={group} local={local} group={group}/></DetailPanel>
   </>;
 }

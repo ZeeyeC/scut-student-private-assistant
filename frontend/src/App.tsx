@@ -57,6 +57,7 @@ function Workspace({ local = false }: { local?: boolean }) {
   });
   const [error, setError] = useState("");
   const [register, setRegister] = useState(false);
+  const [createTaskRequested,setCreateTaskRequested]=useState(false);
   const [navigation, setNavigation] = useState<NavigationState>({page:'today',request:0});
   const {page,focusDate:calendarDate,threadId:reviewThread,request:reviewRequest}=navigation;
   const go = (target:NavigationTarget) => setNavigation(previous=>nextNavigation(previous,target));
@@ -74,11 +75,14 @@ function Workspace({ local = false }: { local?: boolean }) {
     window.addEventListener("campus-navigate", listener);
     window.addEventListener("campus-calendar-saved", listener);
     window.addEventListener("campus-pet-review", listener);
+    const createTask=()=>{setCreateTaskRequested(true);setNavigation(previous=>nextNavigation(previous,{page:'tasks'}));};
+    window.addEventListener('campus-new-task',createTask);
     return () => {
       window.removeEventListener("campus-timetable-focus", listener);
       window.removeEventListener("campus-navigate", listener);
       window.removeEventListener("campus-calendar-saved", listener);
       window.removeEventListener("campus-pet-review", listener);
+      window.removeEventListener('campus-new-task',createTask);
     };
   }, []);
   const form = useForm<{ email: string; password: string }>();
@@ -166,7 +170,7 @@ function Workspace({ local = false }: { local?: boolean }) {
           </>}>
         <AfterClassCheckin />
         <TimerHeartbeat />
-        <ReviewInbox onOpenTask={id=>go({page:'tasks',taskId:id})}/>
+        <ReviewInbox onOpenTask={id=>go({page:'tasks',taskId:id})}>
         <SchoolImportPanel/>
         <ReminderLinkPanel/>
         <Suspense fallback={<p role="status">正在加载页面…</p>}>
@@ -175,13 +179,14 @@ function Workspace({ local = false }: { local?: boolean }) {
           ) : page === "calendar" ? (
             <CalendarPage key="calendar" focusDate={calendarDate} filter={navigation.calendarFilter} focusRequest={navigation.request}/>
           ) : page === "tasks" ? (
-            <TasksPage tab={navigation.taskTab} onTab={taskTab=>go({page:'tasks',taskTab})} taskId={navigation.taskId} focusRequest={navigation.request}/>
+            <TasksPage tab={navigation.taskTab} onTab={taskTab=>go({page:'tasks',taskTab})} taskId={navigation.taskId} focusRequest={navigation.request} createRequested={createTaskRequested} onCreateHandled={()=>setCreateTaskRequested(false)}/>
           ) : page === "assistant" ? (
             <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
           ) : (
             <Settings local={local} />
           )}
         </Suspense>
+        </ReviewInbox>
     </AppShell>
   );
 }

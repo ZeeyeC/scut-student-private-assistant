@@ -17,6 +17,10 @@ import { DraftReview } from "./DraftReview";
 import { AgentApproval } from "./AgentApproval";
 import { ConstraintIntents } from "./ConstraintIntents";
 import { visibleDrafts } from "./drafts";
+import {PageHeader} from './layout/PageHeader';
+import {DetailPanel} from './layout/DetailPanel';
+import {Paperclip,ArrowUp} from 'lucide-react';
+import {scrollWithinWorkspace} from './layout/scrollWithin';
 const labels: Record<string, string> = {
   get_current_time: "核对当前日期",
   get_student_context: "读取学习设置",
@@ -62,6 +66,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
     [approvalId, setApprovalId] = useState(""),
     [epoch, setEpoch] = useState(0),
     [showConstraints,setShowConstraints] = useState(false);
+  const [historyOpen,setHistoryOpen]=useState(false);
   const cursors = useRef<Record<string, number>>({});
   const threads = useQuery({
     queryKey: ["threads"],
@@ -79,7 +84,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
     setThreadId(focusThreadId); setEpoch(value => value + 1);
   }, [focusThreadId, focusRequest]);
   useEffect(() => {
-    if (focusThreadId) document.querySelector(".review-panel")?.scrollIntoView({ block: "start" });
+    if (focusThreadId) scrollWithinWorkspace(document.querySelector(".review-panel"));
   }, [focusThreadId, focusRequest, approvalId, drafts.data]);
   const apply = (event: PublicEvent) => {
     if (event.seq <= (cursors.current[event.run_id] ?? 0)) return;
@@ -211,9 +216,10 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
   const hasReview = !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
   return (
     <div className={embedded ? "assistant-page embedded" : "assistant-page"}>
+      {!embedded&&<PageHeader title="助手"/>}
       <header className="chat-toolbar">
         <div>
-          <h1>{embedded ? courseEntry ? "用文字添加课表" : "用 AI 安排事项" : "助手"}</h1>
+          {embedded?<h1>{courseEntry?'用文字添加课表':'用 AI 安排事项'}</h1>:<span>{threads.data?.find(t=>t.id===threadId)?.data.title??'新会话'}</span>}
 
         </div>
         <Button
@@ -237,6 +243,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
           新会话
         </Button>
         <Button variant="outline" onClick={()=>setShowConstraints(v=>!v)}>{showConstraints?"收起约束入口":"安排持续约束"}</Button>
+        {!embedded&&<button type="button" className="workspace-text-button" onClick={()=>setHistoryOpen(true)}>会话记录</button>}
       </header>
       <div className={hasReview ? "assistant-layout has-review" : "assistant-layout"}>
         <div className="chat-area">
@@ -263,12 +270,10 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
           <p role="status">{status}</p>
           <ComposerPrimitive.Root className="composer">
             <ComposerPrimitive.Input
-              placeholder="输入你的问题…"
+              placeholder="说说你想安排什么"
               aria-label="给助手的消息"
             />
-            <ComposerPrimitive.Send disabled={!!approvalId}>
-              发送
-            </ComposerPrimitive.Send>
+            <div className="composer-bottom"><button type="button" className="workspace-text-button" onClick={()=>window.dispatchEvent(new Event('campus-start-import'))}><Paperclip size={16}/>附件</button><ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId}><ArrowUp size={16}/>发送</ComposerPrimitive.Send></div>
           </ComposerPrimitive.Root>
         </ThreadPrimitive.Root>
       </AssistantRuntimeProvider>
@@ -306,6 +311,7 @@ export function ChatPage({ embedded = false, courseEntry = false, focusThreadId,
       ))}
       </div>}
       </div>
+      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
     </div>
   );
 }

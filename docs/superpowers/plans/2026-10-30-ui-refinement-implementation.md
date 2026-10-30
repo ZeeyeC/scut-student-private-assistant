@@ -79,13 +79,13 @@
 
 **Interfaces:** 保留原组件props/API、`DetailPanel({open,title,onClose,children,footer})`。`verify-ui-reference.py --reference <design-dir> --actual <validation-dir>`读取明确区域的参考/实现截图与尺寸JSON，输出各图像素比例、几何差异；不更新任何参考文件。
 
-- [ ] 固定合成数据，先写视觉失败用例`workspace_matches_accepted_reference`覆盖今日、日程、任务、任务详情、助手、设置，记录真实差异。参考截图裁取`(0,38,1280,782)`，实际取同尺寸WK产品区，不缩放或让系统标题栏造成底部误差。数据名称、时间、数量、字体、逻辑尺寸和系统外观与原型一致；固定日期为2026-10-30，仅测试环境生效。
-- [ ] Run `npm --prefix frontend run test:e2e -- ui-refinement.visual.spec.ts`，确认当前正式UI与基准差异为RED；不把现有UI截图另存成预期图。
-- [ ] 按参考实现接下来/其他待办/右侧安排；≥1200右栏280/间距43，960–1199为236/32，<960移到下方。表格/列表、周日历、对话、五组设置分别保留原稿的留白和层次，功能在原详情中可达。
-- [ ] F09失败用例`agenda_marker_never_overlaps_text`：每条安排的竖线右边与标题/地点/时段/时长文字左边净距≥12点；标题和次行同列对齐。覆盖1280/1024/960/768/560/390/320宽、80字标题及125%/200%文字放大；允许换行，不能以缩小文字或隐藏竖线/正文通过检查。实现使用独立布局列，并防止通用按钮reset覆盖条目间距。
-- [ ] 详情宽448并限定在内容区内，头尾固定、正文独滚；保留现有多层面板inert/Esc/输入保留，不引入导航区域被覆盖或根被`scrollIntoView`拖动的问题。
-- [ ] 加入`long_titles_and_nested_panels_keep_balance`：80字中英任务名、20行要求、长助手回复、宽窄切换、多个详情交错打开关闭；无遮挡、无横溢出、输入不丢，键盘可到关闭和确认。
-- [ ] 同命令GREEN；运行`python3 scripts/verify-ui-reference.py --reference docs/design/ui-redesign-v2 --actual docs/validation/demo2.5.1/visual`，几何≤2点、同数据超阈像素≤1%，颜色一致；逐页人工看左右重心，记录证据并提交。
+- [x] 固定合成数据，先写视觉失败用例`workspace_matches_accepted_reference`覆盖今日、日程、任务、任务详情、助手、设置，记录真实差异。参考截图裁取`(0,38,1280,782)`，实际取同尺寸WK产品区，不缩放或让系统标题栏造成底部误差。数据名称、时间、数量、字体、逻辑尺寸和系统外观与原型一致；固定日期为2026-10-30，仅测试环境生效。
+- [x] Run `npm --prefix frontend run test:e2e -- ui-refinement.visual.spec.ts`，确认当前正式UI与基准差异为RED；不把现有UI截图另存成预期图。
+- [x] 按参考实现接下来/其他待办/右侧安排；≥1200右栏280/间距43，960–1199为236/32，<960移到下方。表格/列表、周日历、对话、五组设置分别保留原稿的留白和层次，功能在原详情中可达。
+- [x] F09失败用例`agenda_marker_never_overlaps_text`：每条安排的竖线右边与标题/地点/时段/时长文字左边净距≥12点；标题和次行同列对齐。覆盖1280/1024/960/768/560/390/320宽、80字标题及125%/200%文字放大；允许换行，不能以缩小文字或隐藏竖线/正文通过检查。实现使用独立布局列，并防止通用按钮reset覆盖条目间距。
+- [x] 详情宽448并限定在内容区内，头尾固定、正文独滚；保留现有多层面板inert/Esc/输入保留，不引入导航区域被覆盖或根被`scrollIntoView`拖动的问题。
+- [x] 加入`long_titles_and_nested_panels_keep_balance`：80字中英任务名、20行要求、长助手回复、宽窄切换、多个详情交错打开关闭；无遮挡、无横溢出、输入不丢，键盘可到关闭和确认。
+- [x] 同命令GREEN；运行`python3 scripts/verify-ui-reference.py --reference docs/design/ui-redesign-v2 --actual docs/validation/demo2.5.1/visual`，几何≤2点、同数据超阈像素≤1%，颜色一致；逐页人工看左右重心，记录证据并提交。
 
 ### Task 3：浏览器优先的单一导入面板（U3c）
 

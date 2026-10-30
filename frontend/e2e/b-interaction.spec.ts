@@ -2,7 +2,7 @@ import {workspace,inbox,negotiation} from './workspace';
 import {test,expect,type Page} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
 
-const evidence=(name:string)=>fileURLToPath(new URL(`../../docs/validation/demo2.5/e2e/b-interaction/${name}.png`,import.meta.url));
+const evidence=(name:string)=>fileURLToPath(new URL(`../../docs/validation/demo2.5.1/e2e/b-interaction/${name}.png`,import.meta.url));
 async function enter(page:Page){
   await page.clock.setFixedTime(new Date('2026-10-14T10:30:00Z'));
   await page.goto('/');await page.getByRole('button',{name:'创建账号',exact:true}).click();

@@ -1,0 +1,68 @@
+{
+  ".chat-toolbar": {
+    "rect": {
+      "x": 348,
+      "y": 103,
+      "width": 760,
+      "height": 41.59375
+    },
+    "font": "12px / 18.6px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px 0px 22px",
+    "margin": "0px 134px"
+  },
+  ".assistant-layout": {
+    "rect": {
+      "x": 348,
+      "y": 144.59375,
+      "width": 760,
+      "height": 568.390625
+    },
+    "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "0px 134px"
+  },
+  ".chat.card": {
+    "rect": {
+      "x": 348,
+      "y": 144.59375,
+      "width": 760,
+      "height": 568.390625
+    },
+    "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "0px"
+  },
+  ".composer": {
+    "rect": {
+      "x": 348,
+      "y": 590.109375,
+      "width": 760,
+      "height": 122.875
+    },
+    "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "13px 14px 10px",
+    "margin": "0px"
+  },
+  ".composer textarea": {
+    "rect": {
+      "x": 363,
+      "y": 604.109375,
+      "width": 730,
+      "height": 56
+    },
+    "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "0px"
+  },
+  ".composer-bottom": {
+    "rect": {
+      "x": 363,
+      "y": 665.796875,
+      "width": 730,
+      "height": 36.1875
+    },
+    "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "5.6875px 0px 0px"
+  }
+}

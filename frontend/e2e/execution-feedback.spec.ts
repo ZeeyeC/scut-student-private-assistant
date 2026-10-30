@@ -63,7 +63,7 @@ test("60 planned, 25 actual and unfinished survive refresh; correction retains h
   await expect(region).toContainText("手工补记 25 分钟 · 已被更正");
   const history = await (await page.request.get(`/api/tasks/${tid}/executions`)).json();
   expect(history.map((r: any) => r.data.actual_minutes).sort()).toEqual([20, 25]);
-  await region.screenshot({ path: fileURLToPath(new URL("../../docs/validation/demo2.5/e2e/execution/corrected20.png", import.meta.url)) });
+  await region.screenshot({ path: fileURLToPath(new URL("../../docs/validation/demo2.5.1/e2e/execution/corrected20.png", import.meta.url)) });
   await workspace(page,'tasks');await page.getByRole('button',{name:/执行反馈合成练习/}).click();
   await expect(page.getByRole("region", { name: "步骤执行反馈", exact: true })).toContainText("已记录实际：20 分钟");
   await page.setViewportSize({ width: 390, height: 844 });

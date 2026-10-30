@@ -1,0 +1,32 @@
+{
+  "today": {
+    "x": 214,
+    "y": 31,
+    "width": 1028,
+    "height": 43
+  },
+  "calendar": {
+    "x": 214,
+    "y": 31,
+    "width": 1028,
+    "height": 43
+  },
+  "tasks": {
+    "x": 214,
+    "y": 31,
+    "width": 1028,
+    "height": 43
+  },
+  "assistant": {
+    "x": 214,
+    "y": 31,
+    "width": 1028,
+    "height": 43
+  },
+  "settings": {
+    "x": 214,
+    "y": 31,
+    "width": 1028,
+    "height": 43
+  }
+}

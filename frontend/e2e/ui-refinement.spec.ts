@@ -38,3 +38,26 @@ test('sidebar stays left while long real task content scrolls and widths change'
     await content.evaluate(el=>{el.scrollTop=0;});
   }
 });
+
+test('today add-task opens the retained review form',async({page})=>{
+  await enterWorkspace(page);
+  await page.getByRole('button',{name:'添加任务',exact:true}).click();
+  const panel=page.getByRole('dialog',{name:'新建任务',exact:true});
+  await expect(panel).toBeVisible();
+  await panel.getByLabel('作业标题').fill('从今日创建的合成任务');
+  expect(await(await page.request.get('/api/tasks')).json()).toEqual([]);
+});
+
+test('completion is single flight and does not fabricate execution records',async({page})=>{
+  await enterWorkspace(page);
+  const draft=await writeResource(page,'/drafts/assignment',{items:[{title:'整项完成合成任务'}]});
+  const saved=await writeResource(page,`/drafts/${draft.id}/confirm`,{revision:draft.revision});
+  await page.getByRole('button',{name:'任务',exact:true}).click();
+  const checkbox=page.getByRole('checkbox',{name:'完成整项完成合成任务',exact:true});
+  let writes=0;
+  page.on('request',request=>{if(request.method()==='PATCH'&&request.url().endsWith('/tasks/'+saved.saved_ids[0]))writes++;});
+  await checkbox.evaluate(el=>{(el as HTMLElement).click();(el as HTMLElement).click();});
+  await expect.poll(async()=>(await(await page.request.get('/api/tasks/'+saved.saved_ids[0])).json()).data.status).toBe('completed');
+  expect(writes).toBe(1);
+  expect(await(await page.request.get('/api/tasks/'+saved.saved_ids[0]+'/executions')).json()).toEqual([]);
+});

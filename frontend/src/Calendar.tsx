@@ -25,6 +25,9 @@ import type {CalendarFilter} from "./layout/navigation";
 import {FixedEvents} from "./Settings";
 import {StudyTypes} from "./StudyTypes";
 import { SemesterCalendar } from "./SemesterCalendar";
+import {PageHeader} from './layout/PageHeader';
+import {ChevronLeft,ChevronRight,Upload} from 'lucide-react';
+import {scrollWithinWorkspace} from './layout/scrollWithin';
 
 export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: {focusDate?: string; filter?:CalendarFilter; focusRequest?:number}) {
   const [filter,setFilter]=useState<CalendarFilter>(requestedFilter??'all');
@@ -34,9 +37,10 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
   useEffect(()=>{if(requestedFilter)setFilter(requestedFilter);},[requestedFilter,focusRequest]);
   const included=(event:ScheduleEvent)=>filter==='all'||(filter==='courses'?event.kind==='course':event.kind==='plan_block');
   const calendar = useRef<FullCalendar>(null);
-  const [narrowCalendar,setNarrowCalendar]=useState(()=>window.innerWidth<768);
+  const [narrowCalendar,setNarrowCalendar]=useState(()=>window.innerWidth<960);
+  const [calendarTitle,setCalendarTitle]=useState('');
   useEffect(()=>{
-    const query=window.matchMedia('(max-width: 767px)');
+    const query=window.matchMedia('(max-width: 959px)');
     const resize=()=>setNarrowCalendar(query.matches);
     query.addEventListener('change',resize);resize();
     return()=>query.removeEventListener('change',resize);
@@ -68,11 +72,16 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
   const [selected, setSelected] = useState<ScheduleEvent | null>(null);
   const [slot, setSlot] = useState<CourseSlot | null>(null);
   const [newDraft, setNewDraft] = useState("");
+  const zone=settings.data?.data.timezone??'Asia/Shanghai';
+  const hour=(value:string)=>Number(new Date(value).toLocaleTimeString('en-GB',{timeZone:zone,hour:'2-digit',hour12:false}));
+  const crossesDay=(events.data?.events??[]).some(e=>new Date(e.starts_at).toLocaleDateString('en-CA',{timeZone:zone})!==new Date(e.ends_at).toLocaleDateString('en-CA',{timeZone:zone}));
+  const firstHour=crossesDay?0:Math.min(9,...(events.data?.events??[]).map(e=>hour(e.starts_at)));
+  const lastHour=crossesDay?24:Math.max(19,...(events.data?.events??[]).map(e=>Math.min(24,hour(e.ends_at)+1)));
   useEffect(() => {
     if (!newDraft) return;
     const element = document.getElementById(`timetable-draft-${newDraft}`);
     if (element) {
-      element.scrollIntoView({ block: "center" });
+      scrollWithinWorkspace(element);
       element.focus({ preventScroll: true });
       setNewDraft("");
     }
@@ -90,12 +99,13 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
   }
   return (
     <>
-      <div className="page-head"><h1>日程</h1><Button onClick={()=>setPanel('import')}>导入课表</Button></div>
-      <div className="calendar-toolbar"><div className="workspace-tabs" aria-label="日程筛选">{([['all','全部'],['courses','课程'],['study','学习']] as const).map(([id,label])=><button type="button" key={id} aria-pressed={filter===id} onClick={()=>setFilter(id)}>{label}</button>)}</div>
-        <div className="resource-actions"><Button variant="outline" onClick={()=>setPanel('plan')}>安排学习</Button><Button variant="outline" onClick={()=>setPanel('rules')}>课程规则</Button><Button variant="outline" onClick={()=>setPanel('fixed')}>固定事项</Button></div>
+      <PageHeader title="日程"><Button variant="outline" onClick={()=>setPanel('import')}><Upload size={16}/>导入课表</Button><Button aria-label="安排学习" onClick={()=>setPanel('plan')}>安排</Button></PageHeader>
+      <div className="workspace-tabs calendar-filters" aria-label="日程筛选">{([['all','全部'],['courses','课程'],['study','学习']] as const).map(([id,label])=><button type="button" key={id} aria-pressed={filter===id} onClick={()=>setFilter(id)}>{label}</button>)}</div>
+      <div className="calendar-toolbar"><div className="calendar-date-controls"><strong className="fc-toolbar-title">{calendarTitle}</strong><button type="button" className="calendar-date-icon" aria-label="上一周" onClick={()=>calendar.current?.getApi().prev()}><ChevronLeft size={16}/></button><button type="button" className="calendar-date-icon" aria-label="下一周" onClick={()=>calendar.current?.getApi().next()}><ChevronRight size={16}/></button><button type="button" className="workspace-text-button" onClick={()=>calendar.current?.getApi().today()}>本周</button></div>
+        <div className="calendar-secondary-actions"><button type="button" className="workspace-text-button" onClick={()=>setPanel('rules')}>课程规则</button><button type="button" className="workspace-text-button" onClick={()=>setPanel('fixed')}>固定事项</button></div>
       </div>
       {events.data?.conflict_report && events.data.conflict_report.issues.length>0 && <div className="card"><p>当前显示日期内的课程与固定事项检查</p><ConflictReview report={events.data.conflict_report} timezone={settings.data?.data.timezone} /></div>}
-      <div className="card">
+      <div className="workspace-calendar">
         {events.error && <p role="alert">{String(events.error)}</p>}
         {events.isPending && <p role="status">正在读取日程…</p>}
         {events.data?.warnings.map((w,i)=><p role="alert" key={i}>{w}</p>)}
@@ -106,19 +116,19 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
           plugins={[timeGridPlugin, listPlugin, luxonPlugin, interactionPlugin]}
           timeZone={settings.data?.data.timezone ?? "Asia/Shanghai"}
           initialView={narrowCalendar ? "listWeek" : "timeGridWeek"}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "timeGridWeek,listWeek",
-          }}
+          headerToolbar={false}
           buttonText={{ today: "今天", week: "周", list: "列表" }}
           locale="zh-cn"
           allDaySlot={false}
-          height={narrowCalendar ? "auto" : 680}
+          height={narrowCalendar ? "auto" : 542}
           scrollTime={focusDate ? new Date(focusDate).toLocaleTimeString("en-GB", {timeZone: settings.data?.data.timezone ?? "Asia/Shanghai", hour12: false}) : "07:00:00"}
-          slotMinTime="00:00:00"
-          slotMaxTime="24:00:00"
+          slotMinTime={`${String(firstHour).padStart(2,'0')}:00:00`}
+          slotMaxTime={`${String(lastHour).padStart(2,'0')}:00:00`}
           slotDuration="00:30:00"
+          slotLabelInterval="01:00:00"
+          slotLabelFormat={{hour:'2-digit',minute:'2-digit',hour12:false}}
+          dayHeaderContent={info=><div className="calendar-day-heading"><span>{info.date.toLocaleDateString('zh-CN',{weekday:'short',timeZone:zone})}</span><b>{info.date.toLocaleDateString('zh-CN',{day:'numeric',timeZone:zone}).replace('日','')}</b></div>}
+          eventContent={info=><><strong>{info.event.extendedProps.record.title}</strong>{info.event.extendedProps.record.location&&<small>{info.event.extendedProps.record.location}</small>}</>}
           dateClick={info => {
             if (!timetable || info.allDay || info.view.type !== "timeGridWeek") return;
             setSlot(courseSlot(info.dateStr, settings.data?.data as SettingsData | undefined));
@@ -126,20 +136,24 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
           }}
           events={(events.data?.events ?? []).filter(included).map((e) => ({
             ...e,
-            title: e.title + (e.location ? " · " + e.location : ""),
+            title: e.title,
             start: e.starts_at,
             end: e.ends_at,
-            backgroundColor: e.kind === "course" ? "#2563eb" : e.kind === "fixed_event" ? "#7c3aed" : e.kind === "scheduling_constraint" ? "#64748b" : "#007c74",
+            backgroundColor: e.kind === "plan_block" ? "var(--workspace-selected)" : "var(--workspace-soft)",
             borderColor: "transparent",
+            classNames:[e.kind==='plan_block'?'workspace-study-event':'workspace-course-event',...(Date.parse(e.ends_at)-Date.parse(e.starts_at)<1800000?['workspace-short-event']:[])],
             extendedProps: {record: e},
           }))}
           eventClick={info => {setSelected(info.event.extendedProps.record);setAdjustCourse(false);setDetailOpen(true);}}
-          datesSet={(info) =>
+          datesSet={(info) => {
             setRange({
               start: info.startStr.slice(0, 10),
               end: info.endStr.slice(0, 10),
-            })
-          }
+            });
+            const end=new Date(info.end.getTime()-1);
+            const fmt=(d:Date)=>d.toLocaleDateString('zh-CN',{month:'long',day:'numeric',timeZone:zone});
+            setCalendarTitle(`${fmt(info.start)}–${fmt(end)}`);
+          }}
         />
         {events.data && events.data.events.filter(included).length === 0 && (
           <p>{timetable ? "当前筛选下暂无安排。" : "本周暂无安排。先添加待办、补齐耗时或步骤，再点击智能安排。"}</p>

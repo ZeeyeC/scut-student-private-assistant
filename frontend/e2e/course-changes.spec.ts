@@ -63,7 +63,7 @@ test('one occurrence moves after review, warns about overlaps, preserves the nex
   expect(await(await page.request.get('/api/occurrences?start=2026-10-12&end=2026-10-25')).json()).toEqual(original);
   await page.reload();await inbox(page);
   await expect(review).toContainText('教师通知');
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/course-change-review.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/course-change-review.png',import.meta.url))});
   await save(page);
   const changed=await(await page.request.get('/api/occurrences?start=2026-10-12&end=2026-10-25')).json();
   expect(changed.find((e:any)=>e.title==='待调整高数'&&e.original_date==='2026-10-14').starts_at).toContain('2026-10-15T10:00');

@@ -48,7 +48,7 @@ test("chat asks for weeks, patches only one course, resumes and saves reviewed t
   await review.getByRole("button",{name:"检查导入差异",exact:true}).click();
   await expect(review).toContainText("将新增 2 条：高等数学、大学英语");
   await page.getByRole("complementary",{name:"草稿校对区"}).evaluate(e=>{e.scrollTop=0;});
-  await page.getByRole("complementary",{name:"草稿校对区"}).screenshot({path:fileURLToPath(new URL("../../docs/validation/demo2.5/e2e/timetable-text-review.png",import.meta.url))});
+  await page.getByRole("complementary",{name:"草稿校对区"}).screenshot({path:fileURLToPath(new URL("../../docs/validation/demo2.5.1/e2e/timetable-text-review.png",import.meta.url))});
   await review.getByRole("button",{name:"校对完成，准备保存",exact:true}).click();
   await expect(review).toContainText("课程将进入固定课表");
   await review.getByRole("button",{name:"确认保存",exact:true}).click();

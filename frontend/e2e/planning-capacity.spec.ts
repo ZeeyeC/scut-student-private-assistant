@@ -58,7 +58,7 @@ test('capacity is read-only, distinguishes shortage and unknown work, matches th
   await panel.getByText('查看可用空档', {exact:true}).click();
   await expect(panel).toContainText('20:30–22:00');
   expect((await (await page.request.get('/api/data-export')).json()).resources).toEqual(before);
-  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/planning-capacity.png',import.meta.url))});
+  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/planning-capacity.png',import.meta.url))});
   await panel.getByRole('button', {name:'未来7天容量',exact:true}).click();
   await expect(panel).toContainText('本范围可排 180 分钟 · 仍未排 0 分钟');
   await expect(panel.getByRole('article')).toHaveCount(7);

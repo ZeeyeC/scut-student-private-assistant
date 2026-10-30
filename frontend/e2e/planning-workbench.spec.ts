@@ -52,5 +52,5 @@ test('mobile explicit routine preview supports durable rejection and reviewed sa
   await review.getByRole('button',{name:'校对完成，准备保存'}).click();await review.getByRole('button',{name:'确认保存',exact:true}).click();await expect(page.getByRole('heading',{name:'核对日程事项',exact:true})).toHaveCount(0);
   expect(await (await page.request.get('/api/fixed-events')).json()).toHaveLength(1);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
-  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5/e2e/planning-workbench.png',import.meta.url))});
+  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/planning-workbench.png',import.meta.url))});
 });
