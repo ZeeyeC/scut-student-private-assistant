@@ -20,3 +20,7 @@
 浏览器检查结果见 [preview-verification.json](preview-verification.json)：五个主页面、主要原型交互、390px/320px内容宽度检查通过；截图在 [screens/](screens/)。这仅为设计原型验证。
 
 图标使用项目已有的lucide-react，许可证见 [LICENSE-lucide.txt](LICENSE-lucide.txt)。无外部字体或CDN依赖。
+
+## 后续实现计划
+
+用户已要求将NaiWaChatPet形象替换纳入同轮实施。见[App新界面与桌宠总计划](../../superpowers/plans/2026-10-30-app-ui-implementation.md)、[桌宠形象替换详细计划](../../superpowers/plans/2026-10-30-naiwa-pet-assets-implementation.md)及[素材调研快照](naiwa-asset-research.json)。当前原型与正式桌宠资源尚未替换。

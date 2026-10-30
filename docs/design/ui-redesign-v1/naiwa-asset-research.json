@@ -1,0 +1,133 @@
+{
+  "checked_on": "2026-10-30",
+  "repository": "https://github.com/SbongeBobybl/NaiWaChatPet",
+  "ref": "008eb12636f517aedecee6f1a1fc773c2f0df6c4",
+  "scope": "Planning research only; no upstream executables run and no character binary assets copied into product.",
+  "repository_license": "GPL-3.0",
+  "asset_rights_status": "NOTICE says character and other independent resource rights are not transferred by that notice; verify asset-specific permission before packaging.",
+  "notice_url": "https://github.com/SbongeBobybl/NaiWaChatPet/blob/008eb12636f517aedecee6f1a1fc773c2f0df6c4/NOTICE.md",
+  "animation_groups": 45,
+  "animation_files": 1045,
+  "animation_total_bytes": 107673403,
+  "groups": [
+    "agree",
+    "angry",
+    "angry_in",
+    "angry_out",
+    "annoyed",
+    "bored",
+    "celebrate",
+    "cheer",
+    "confused",
+    "confused_in",
+    "confused_out",
+    "crying",
+    "curious",
+    "disappointed",
+    "dizzy",
+    "embarrassed",
+    "excited",
+    "focused",
+    "grateful",
+    "greet",
+    "hug",
+    "love",
+    "organize",
+    "organize_in",
+    "organize_out",
+    "ponder",
+    "proud",
+    "refuse",
+    "relieved",
+    "sad",
+    "sad_in",
+    "sad_out",
+    "scared",
+    "shocked",
+    "shy",
+    "shy_in",
+    "shy_out",
+    "sleepy",
+    "smile",
+    "smug",
+    "surprised",
+    "surprised_in",
+    "surprised_out",
+    "worried",
+    "wronged"
+  ],
+  "sampled_emotions": {
+    "smile": {
+      "path": "Source/NaiWaChatPet/animations/smile/manifest.json",
+      "canvas": {
+        "width": 420,
+        "height": 560
+      },
+      "fps": 12,
+      "frame_count": 1,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "first_frame_sha256": "d727fd02d9141f738f667e245ad5b981057f5ab69ce51b245ec84287b85d8f91"
+    },
+    "ponder": {
+      "path": "Source/NaiWaChatPet/animations/ponder/manifest.json",
+      "canvas": {
+        "width": 420,
+        "height": 560
+      },
+      "fps": 12,
+      "frame_count": 1,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "first_frame_sha256": "02ea8d80fe422bfa53e56d797dd287912083ab5449e9d9e5ff61168ded5d3f1d"
+    },
+    "sleepy": {
+      "path": "Source/NaiWaChatPet/animations/sleepy/manifest.json",
+      "canvas": {
+        "width": 420,
+        "height": 560
+      },
+      "fps": 12,
+      "frame_count": 1,
+      "loop": true,
+      "ground_y": 540,
+      "transition_in": "",
+      "transition_out": "",
+      "first_frame_sha256": "67bf332aba771b36f7b2d8b8bf9a5df7f1d0974fae69238bac2a76ddbfb3904a"
+    },
+    "angry": {
+      "path": "Source/NaiWaChatPet/animations/angry/manifest.json",
+      "canvas": {
+        "width": 420,
+        "height": 560
+      },
+      "fps": 24,
+      "frame_count": 42,
+      "loop": false,
+      "ground_y": 540,
+      "transition_in": "angry_in",
+      "transition_out": "angry_out",
+      "first_frame_sha256": "1d0b804dc9f5f58fdec1b9e1da5dae3e3c20472f0320b5fd6339f024c5e2a909"
+    }
+  },
+  "base_idle": {
+    "runtime_path": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/runtime.json",
+    "source_prefix": "Source/NaiWaChatPet/source/cmd/codexpet/embedded_assets/body/idle_",
+    "frames": 28,
+    "per_frame_duration_ns": 85000000,
+    "canvas": {
+      "width": 420,
+      "height": 560
+    },
+    "distinct_declared_sha256": 16
+  },
+  "upstream_runtime_gate": {
+    "passed": true,
+    "reason": "Asset integrity and frame manifests validated; native desktop interaction remains pending in reports/release_status.json.",
+    "locally_validated": false
+  }
+}
