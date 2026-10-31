@@ -31,9 +31,9 @@ Files：SchoolImportBridge.tsx、extension/entrypoints/app.content.ts、desktop_
 
 ### Task 3：独立发布模式及新用户模拟
 Files：campus-pet/build.py、scripts/release-macos.py、发布测试、新独立用户验证脚本。
-- [ ] 发布包含开发标记/无源码无法释放扩展的检查RED。
-- [ ] 正式构建显式release模式去开发标记；验证临时资料根、扩展manifest/哈希和新App隔离启动。
-- [ ] 真实浏览器尝试仅在独立测试profile安装；不能操作用户日常profile。受工具/浏览器限制则如实记录，模拟结果分列。
+- [x] 发布包含开发标记/无源码无法释放扩展的检查RED。
+- [x] 正式构建显式release模式去开发标记；验证临时资料根、扩展manifest/哈希和新App隔离启动。
+- [x] 真实浏览器尝试仅在独立测试profile安装；不能操作用户日常profile。受工具/浏览器限制则如实记录，模拟结果分列。
 
 ### Task 4：全量验证、独立审查与2.5.1打包
 - [x] 补齐前轮聊天修复后的完整原生/界面回归、扩展与后端/脚本测试及10张视觉基准。
