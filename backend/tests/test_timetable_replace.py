@@ -95,3 +95,30 @@ def test_expired_school_capture_is_not_kept_as_an_actionable_draft(tmp_path):
             db.execute('update resources set data=? where id=?',(json.dumps(data),b['id']))
         assert c.get('/api/browser-imports').json()[-1]['data']['status']=='expired'
         assert c.get('/api/drafts').json()==[]
+
+
+def test_replacement_retires_old_adjustments_and_preserves_task_course_context(tmp_path):
+    from tests.test_course_changes import change
+    from tests.test_semester_calendar import rule
+    with make_client(tmp_path) as c:
+        h=register_login(c); s=c.get('/api/settings').json()
+        s['data'].update(week1_monday='2026-10-12',periods={'2':{'start':'09:00','end':'10:00'}})
+        assert write(c,h,'/settings',s,'PUT').status_code==200
+        old=timetable(c,h,source_key='retired',name='历史课程',weeks=[1,2]); cid=confirm(c,h,old).json()['saved_ids'][0]
+        task=write(c,h,'/drafts/assignment',{'items':[{'title':'保留学习任务','course_id':cid,'due_at':'2026-10-14T18:00:00+08:00'}]}).json()
+        tid=confirm(c,h,task).json()['saved_ids'][0]
+        cancelled=change(c,h,cid,'cancel').json(); assert confirm(c,h,cancelled).status_code==200
+        batch=write(c,h,'/drafts/semester-calendar',rule(course_ids=[cid],start_date='2026-10-21',end_date='2026-10-21')).json()
+        assert confirm(c,h,batch).status_code==200
+        pending=change(c,h,cid,'restore').json()
+        d=edited(c,h,timetable(c,h),'replace'); assert checked_confirm(c,h,d).status_code==200
+        assert all(row['data']['active'] is False and row['data']['retired_by_timetable']==d['id'] for row in c.get('/api/course-changes').json())
+        assert c.get(f"/api/drafts/{pending['id']}").json()['data']['status']=='superseded'
+        saved_task=c.get(f'/api/tasks/{tid}').json()
+        assert saved_task['data']['title']=='保留学习任务' and saved_task['data']['status']=='open'
+        assert saved_task['data']['course_id'] is None
+        assert saved_task['data']['course_snapshot']=={'id':cid,'name':'历史课程'}
+        batches=c.get('/api/semester-calendars').json()
+        assert batches[0]['data']['retired_by_timetable']==d['id']
+        r=write(c,h,'/drafts/semester-calendar',{'operation':'undo','batch_id':batches[0]['id'],'reason':'尝试撤销旧批次'})
+        assert r.status_code==422 and '覆盖' in r.json()['detail']

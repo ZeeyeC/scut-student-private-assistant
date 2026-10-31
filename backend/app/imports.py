@@ -252,6 +252,7 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
                 )
                 db.add(r)
             ids.append(r.id)
+        removed_courses = []
         # Explicit reviewed replacement is separate from claiming full capture.
         if payload["save_mode"] == "replace" or (payload["completeness"] == "full" and d.data.get("source", {}).get(
             "verified_full"
@@ -259,7 +260,12 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
             for k, r in old.items():
                 if k not in {c["source_key"] for c in payload["courses"]}:
                     removed_course_ids.append(r.id)
+                    removed_courses.append(r)
                     await db.delete(r)
+        if removed_courses:
+            from app.timetable_replacement import retire_course_links
+
+            await retire_course_links(db, owner, removed_courses, d.id)
     await store.bump(db, owner)
     summary = {"draft_id": d.id, "saved_ids": ids}
     if d.data["draft_kind"] == "timetable":

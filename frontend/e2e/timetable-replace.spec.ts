@@ -1,4 +1,5 @@
 import {test,expect,type Page} from '@playwright/test';
+import {fileURLToPath} from 'node:url';
 async function enter(page:Page){
  await page.addInitScript(()=>{(window as any).__importCalls=[];(window as any).__campusNative={request:async(command:string,payload:any)=>{(window as any).__importCalls.push({command,payload});return {browser:'chrome',installed:true};}};});
  await page.goto('/');await page.getByRole('button',{name:'创建账号',exact:true}).click();
@@ -27,6 +28,7 @@ test('replacement previews deletions and recovers a concurrent settings change w
  await panel.getByLabel('课程',{exact:true}).fill('已校对的新课程');
  const replace=panel.getByRole('checkbox',{name:'替换当前课表'});await expect(replace).not.toBeChecked();await replace.check();
  await panel.getByRole('button',{name:'校对完成，准备保存',exact:true}).click();await expect(panel).toContainText('将移除 1 条旧课程');
+ await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.3/覆盖保存确认.png',import.meta.url))});
  await replace.uncheck();await expect(panel.getByRole('button',{name:'确认保存',exact:true})).toHaveCount(0);await replace.check();
  await panel.getByRole('button',{name:'校对完成，准备保存',exact:true}).click();
  await page.evaluate(async()=>{const csrf=(await(await fetch('/api/csrf')).json()).csrf_token;const s=await(await fetch('/api/settings')).json();s.data.week_count=27;await fetch('/api/settings',{method:'PUT',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify(s)});});
@@ -51,4 +53,14 @@ test('failed browser launch retries the new import instead of creating another r
  await panel.getByRole('button',{name:/^(重新导入|打开浏览器导入)$/}).click();
  await expect.poll(()=>page.evaluate(()=>(window as any).__importCalls.filter((c:any)=>c.command==='open-school-import').length)).toBe(1);
  expect(await(await page.request.get('/api/browser-imports')).json()).toHaveLength(2);
+});
+test('an expired pending launch is replaced on retry instead of reopening its terminal id',async({page})=>{
+ await enter(page);await seed(page,true);const panel=await open(page);
+ await page.evaluate(()=>{let first=true;const native=(window as any).__campusNative;const request=native.request;native.request=async(command:string,payload:any)=>{if(command==='open-school-import'&&first){first=false;throw new Error('模拟浏览器启动失败');}return request(command,payload);};});
+ await panel.getByRole('button',{name:'重新导入',exact:true}).click();await expect(panel).toContainText('模拟浏览器启动失败');
+ const sessions=await(await page.request.get('/api/browser-imports')).json();const failed=sessions.at(-1);
+ await page.route(`**/api/browser-imports/${failed.id}`,async route=>{if(route.request().method()==='GET')await route.fulfill({json:{...failed,data:{...failed.data,status:'expired'}}});else await route.continue();});
+ await panel.getByRole('button',{name:/^(重新导入|打开浏览器导入)$/}).click();
+ await expect.poll(()=>page.evaluate(()=>(window as any).__importCalls.filter((c:any)=>c.command==='open-school-import').length)).toBe(1);
+ expect(await page.evaluate(()=>(window as any).__importCalls.find((c:any)=>c.command==='open-school-import').payload.importId)).not.toBe(failed.id);
 });

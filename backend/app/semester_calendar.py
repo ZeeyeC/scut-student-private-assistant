@@ -120,6 +120,8 @@ def _expand(settings, courses, exceptions):
 
 async def _undo_batch(db, owner, payload, rows):
     batch = await store.owned(db, owner, payload["batch_id"], "semester_calendar_batch")
+    if batch.data.get("retired_by_timetable"):
+        raise HTTPException(422, "本批次涉及的课程已被课表覆盖，不能恢复旧课；请根据新课表重新调整")
     if batch.data["operation"] != "apply":
         raise HTTPException(422, "请选择原校历批次撤销，撤销记录本身不能再次撤销")
     if any(b.data.get("undo_of") == batch.id for b in rows["semester_calendar_batch"]):

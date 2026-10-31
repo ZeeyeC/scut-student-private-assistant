@@ -79,7 +79,7 @@ export function CourseChangeHistory({timezone}:{timezone:string}) {
     {rows.error && <p role="alert">{String(rows.error)}</p>}
     {rows.data?.map(row=><div className="step" key={row.id}>
       <h3>{courses.data?.find(c=>c.id===row.data.course_id)?.data.name ?? row.data.source?.original?.title ?? '课程'} · 原课日期 {row.data.date}</h3>
-      <p>{row.data.active===false?'已恢复原课':row.data.cancelled?'本次已停课':row.data.starts_at ? `已调至 ${when(row.data,timezone)}` : '沿用原时间'}</p>
+      <p>{row.data.retired_by_timetable?'已随旧课表停用，历史记录保留':row.data.active===false?'已恢复原课':row.data.cancelled?'本次已停课':row.data.starts_at ? `已调至 ${when(row.data,timezone)}` : '沿用原时间'}</p>
       <p>依据：{row.data.source?.reason ?? '旧版接口记录，未填写来源'}</p>
       {row.data.active!==false && <Button variant="outline" disabled={!!busy} onClick={async()=>{
         setBusy(row.id);setError('');

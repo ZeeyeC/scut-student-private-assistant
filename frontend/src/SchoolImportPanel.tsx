@@ -49,13 +49,19 @@ export function SchoolImportContent({onRequireOpen}:{onRequireOpen:()=>void}){
     try {
       const settings=await nativeImport<BrowserSettings>('get-browser');
       if(!settings.installed)throw new Error('未安装所选浏览器，请安装或切换。');
+      let requireFresh=restart;
+      if(pending.current){
+        const current=await api<Resource>(`/browser-imports/${pending.current.id}`);
+        if(['queued','waiting_login','waiting_timetable','extracting'].includes(current.data.status))pending.current=current;
+        else {pending.current=null;requireFresh=true;}
+      }
       if(restart&&latest&&!pending.current){
         const current=await api<Resource>(`/browser-imports/${latest.id}`);
         if(activeImportStatuses.includes(current.data.status))await api(`/browser-imports/${current.id}/cancel`,{method:'POST',body:JSON.stringify({revision:current.revision})});
         pending.current=null;
         await q.invalidateQueries({queryKey:['drafts']});
       }
-      const session=pending.current??(!restart?[...(sessions.data??[])].reverse().find(s=>activeImportStatuses.includes(s.data.status)&&s.data.status!=='preview_ready'):null)??await api<Resource>('/browser-imports',{method:'POST',body:JSON.stringify({school_id:'scut'})});
+      const session=pending.current??(!requireFresh?[...(sessions.data??[])].reverse().find(s=>activeImportStatuses.includes(s.data.status)&&s.data.status!=='preview_ready'):null)??await api<Resource>('/browser-imports',{method:'POST',body:JSON.stringify({school_id:'scut'})});
       pending.current=session;
       await nativeImport('open-school-import',{importId:session.id});pending.current=null;
       await q.invalidateQueries({queryKey:['browser-imports']});

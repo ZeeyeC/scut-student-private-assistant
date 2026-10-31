@@ -61,8 +61,8 @@ export function SemesterCalendar({timezone='Asia/Shanghai'}:{timezone?:string}){
   </form>
   {created&&<div className="card" role="status">校历草稿已生成，请核对下方草稿中的 {created.data.source.preview.changes.length} 次课程后正式保存。</div>}
   <section className="card" aria-label="校历批次历史"><h2>已确认校历批次</h2>{batches.error&&<p role="alert">{String(batches.error)}</p>}{batches.data?.length===0&&<p>没有确认过学校校历规则。现有课表按已确认周次展开。</p>}
-    {batches.data?.filter(row=>row.data.operation==='apply').map(row=><div className="step" key={row.id}><h3>{row.data.payload.title} · {kindNames[row.data.payload.rule_kind]}</h3><p>{row.data.payload.source_scope} · {row.data.targets.length} 次课程</p><p>依据：{row.data.payload.reason}</p><p>{new Date(row.data.confirmed_at).toLocaleString('zh-CN',{timeZone:timezone})} · {row.data.undone_by?'已撤销，原调整记录保留':'已生效'}</p>
-      {!row.data.undone_by&&<Button type="button" variant="outline" disabled={busy} onClick={async()=>{
+    {batches.data?.filter(row=>row.data.operation==='apply').map(row=><div className="step" key={row.id}><h3>{row.data.payload.title} · {kindNames[row.data.payload.rule_kind]}</h3><p>{row.data.payload.source_scope} · {row.data.targets.length} 次课程</p><p>依据：{row.data.payload.reason}</p><p>{new Date(row.data.confirmed_at).toLocaleString('zh-CN',{timeZone:timezone})} · {row.data.retired_by_timetable?'旧课程已被课表覆盖，本批次只保留历史':row.data.undone_by?'已撤销，原调整记录保留':'已生效'}</p>
+      {!row.data.undone_by&&!row.data.retired_by_timetable&&<Button type="button" variant="outline" disabled={busy} onClick={async()=>{
         const op=undoOperations[row.id]??semesterOperation({operation:'undo',batch_id:row.id,reason:'用户请求撤销本校历批次，恢复批次前的课程例外'});setUndoOperations(ops=>({...ops,[row.id]:op}));setBusy(true);setError('');
         try{const d=await api<Resource>('/drafts/semester-calendar',{method:'POST',headers:{'Idempotency-Key':op.key},body:JSON.stringify(op.body)});setCreated(d);await q.invalidateQueries({queryKey:['drafts']});setUndoOperations(ops=>{const copy={...ops};delete copy[row.id];return copy;});}
         catch(e){setError(String(e));}finally{setBusy(false);}

@@ -23,7 +23,7 @@ export function useTaskCompletion(task:Resource){
   }
   return {busy,error,toggle};
 }
-export function taskCourse(task:Resource,courses:Resource[]){return courses.find(c=>c.id===task.data.course_id)?.data.name??'未分类';}
+export function taskCourse(task:Resource,courses:Resource[]){return courses.find(c=>c.id===task.data.course_id)?.data.name??task.data.course_snapshot?.name??'未分类';}
 export function dueLabel(value:unknown,timezone:string,now=new Date()){
   if(typeof value!=='string'||!Number.isFinite(Date.parse(value)))return '截止待确认';
   const date=new Date(value),day=(d:Date)=>d.toLocaleDateString('en-CA',{timeZone:timezone});
