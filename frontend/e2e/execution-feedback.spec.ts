@@ -88,8 +88,16 @@ test("lost save response retries the same operation without accumulating twice",
   const region = feedback(page);
   await region.getByLabel("实际分钟", { exact: true }).fill("25");
   await region.getByRole("button", { name: "保存执行反馈", exact: true }).click();
-  await expect(region.getByRole("button", { name: "重试保存执行反馈", exact: true })).toBeVisible();
-  await region.getByRole("button", { name: "重试保存执行反馈", exact: true }).click();
+  const retryButton = region.getByRole("button", { name: "重试保存执行反馈", exact: true });
+  await expect(retryButton).toBeVisible();
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event("visibilitychange"));
+    window.dispatchEvent(new Event("focus"));
+  });
+  await expect(region).toContainText("已记录实际：25 分钟");
+  await expect(retryButton).toBeVisible();
+  await retryButton.click();
+  await expect(region).toContainText("执行反馈已保存；计划时长和任务完成分别保留。");
   await expect(region).toContainText("已记录实际：25 分钟");
   expect(keys).toHaveLength(2);
   expect(keys[0]).toBe(keys[1]);

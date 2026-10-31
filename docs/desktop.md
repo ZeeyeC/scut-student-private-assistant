@@ -20,7 +20,7 @@
 2. 按 Mac 当前运行架构选择 Apple Silicon（arm64）或 Intel（x64）工具。优先复用 Node.js 22（至少 22.12）和 uv（至少 0.11.19）；缺少时从官方地址下载固定版本 Node.js 22.23.3、uv 0.11.19，并验证 SHA256 后解压到 `.tools/macos/`。
 3. uv 在 `.tools/macos/python/` 准备 Python 3.12，在项目 `backend/.venv/` 安装锁定依赖；缓存位于 `.tools/macos/uv-cache/`。只改变初始化子进程的环境，不修改系统 PATH 或 shell 配置。
 4. 调用已有 `scripts/build-desktop.py` 构建正式前端、华工扩展、当前架构的 `.app` 和 ZIP；以不含 Node/Python 的 PATH 执行程序 `--help` 及内置时间工具的空输入检查，确认打包程序能运行后才报告初始化成功。仅在 `.env` 缺失时从模板创建，不覆盖已有配置、个人数据或备份。
-5. 成功后启动助手，扩展由启动器准备到 `desktop-extension/`。浏览器中首次“加载已解压的扩展程序”仍需本人操作。
+5. 成功后启动助手，macOS 扩展由启动器准备到 `~/Documents/课间/浏览器扩展`（访达“文稿”）；其他平台仍为 `desktop-extension/`。浏览器中首次“加载已解压的扩展程序”仍需本人操作。
 
 完整日志在 `.tools/macos-initialize.log`。下载失败自动重试三次；构建中断会留下未完成标记，下次重新执行命令继续初始化。系统文件锁防止并行构建，进程退出后自动释放，可直接重试。初始化不登录学校账号或调用模型。
 
@@ -66,7 +66,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\initialize-windo
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\initialize-windows.ps1 -NoLaunch
 ```
 
-浏览器扩展首次仍需本人在 Chrome/Edge 中“加载已解压的扩展程序”；助手的导入向导会打开 `desktop-extension` 稳定目录。初始化不会安装浏览器扩展、登录学校账号或调用付费模型。当前锁定依赖（包括 tiktoken）没有 Windows ARM64 预构建包，脚本会在下载工具前明确拒绝 ARM64 和 32 位系统，不承诺这些架构的一键初始化。
+浏览器扩展首次仍需本人在 Chrome/Edge 中“加载已解压的扩展程序”；助手的导入向导会打开固定扩展目录（macOS 为“文稿/课间/浏览器扩展”，其他平台为资料根下 `desktop-extension`）。初始化不会安装浏览器扩展、登录学校账号或调用付费模型。当前锁定依赖（包括 tiktoken）没有 Windows ARM64 预构建包，脚本会在下载工具前明确拒绝 ARM64 和 32 位系统，不承诺这些架构的一键初始化。
 
 工具来源：[Node.js 官方发布目录](https://nodejs.org/dist/v22.23.3/)、[uv 官方发布](https://github.com/astral-sh/uv/releases/tag/0.11.19)、[uv 管理 Python 的说明](https://docs.astral.sh/uv/guides/install-python/)。
 
@@ -81,9 +81,9 @@ Windows：在Windows原生构建后分发整个 `CampusCompanion` 文件夹，�
 - macOS：`~/Library/Application Support/CampusCompanion`
 - Windows：`%LOCALAPPDATA%\CampusCompanion`
 
-该目录存放 `data/campus.db`、`data/agent.db`、`data/uploads`、`model.env`、`desktop-extension` 和日志。扩展复制到稳定目录；升级程序不删除个人数据库。不要把扩展安装到临时解压目录或 `.app` 内部。
+该目录存放 `data/campus.db`、`data/agent.db`、`data/uploads`、`model.env`和日志（其他平台还包含 `desktop-extension`）。扩展复制到稳定目录；升级程序不删除个人数据库。不要把扩展安装到临时解压目录或 `.app` 内部。
 
-原源码初始化脚本使用项目根目录，扩展稳定副本为 `desktop-extension`，原 `extension/` 源码完整保留。独立网页助手包与源码初始化脚本使用不同资料位置，不自动同步；当前桌宠构建的资料选择规则见 [桌宠说明](../campus-pet/README.md#资料与运行方式)。切换时先从 GUI 停止正在运行的另一实例。
+原源码初始化脚本使用项目根目录，macOS 扩展稳定副本为 `~/Documents/课间/浏览器扩展`，其他平台仍为 `desktop-extension`，原 `extension/` 源码完整保留。独立网页助手包与源码初始化脚本使用不同资料位置，不自动同步；当前桌宠构建的资料选择规则见 [桌宠说明](../campus-pet/README.md#资料与运行方式)。切换时先从 GUI 停止正在运行的另一实例。
 
 ## 模型配置
 
@@ -105,7 +105,7 @@ MODEL_API_KEY=填写本人的OpenRouter密钥
 
 1. 在独立App进入“日程 → 导入课表”，默认选择学校导入。点击继续后，只在选定的Chrome或Edge中打开导入页；不会调用Safari。
 2. 缺少扩展时，App展开安装指引。点击打开扩展管理页，启用开发者模式，再选择“加载已解压的扩展程序”。
-3. 在App打开扩展文件夹或复制路径，加载整个 `desktop-extension` 文件夹。此目录在个人资料根下，不要移动、删除或选择App内部资源；分发应用时无需另发扩展ZIP。
+3. 在App打开扩展文件夹或复制路径，加载整个扩展文件夹。macOS 位于 `~/Documents/课间/浏览器扩展`，其他平台位于个人资料根下 `desktop-extension`，不要移动、删除或选择App内部资源；分发应用时无需另发扩展ZIP。
 4. 安装后刷新浏览器导入页，页面会自动重新检测并继续。升级App更新扩展文件后，如提示版本不兼容，需在浏览器管理页重新加载扩展，再刷新有效导入页。会话过期则回App重新开始。
 5. 本人在浏览器登录学校、完成验证码，选择学年学期并查询。扩展等待表格稳定，只提取课程字段；回传后App恢复校对。
 6. 在App核对课程、周次、节次、地点及变更，经过明确确认保存后入库。关闭面板不取消，明确“取消导入”才取消；图片/PDF与文字导入在默认学校选项下方展开。
@@ -152,3 +152,5 @@ backend/.venv/bin/python scripts/verify-desktop.py 'dist/desktop/课间助手.ap
 ```
 
 自检要求5173空闲，使用临时资料和无Python/Node的PATH，验证静态GUI、扩展权限、无嵌入密钥、会话/设置持久化、重复启动、跨源拒绝、重启与正常停止；不访问学校或调用模型。Windows自检用 `backend\.venv\Scripts\python.exe` 和原生 `.exe` 路径；本机尚未执行Windows命令。
+
+macOS 升级到 2.5.6 后，旧扩展目录保留。若浏览器此前加载旧路径，请移除旧扩展，再从新目录加载一次；后续升级使用同一目录。不要将新目录随意移动或删除，否则浏览器无法继续加载。App 安装包已内置扩展，无需单独下载。

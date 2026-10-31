@@ -112,7 +112,7 @@ export function ExecutionFeedback({ task, step, block }: { task: Resource; step?
     {(summary.error || history.error || taskLive.error || steps.error || blocks.error || settings.error) && <p role="alert">执行资料读取失败，请刷新后重试。</p>}
     {editing && <p>正在更正 {editing.data.actual_minutes} 分钟；原记录会保留。</p>}
     {!editing && !hasBlockFeedback && <ExecutionTimer task={task} step={currentStep} block={currentBlock} ready={ready} legacyResolution={resolution||null}/>}
-    {(!hasBlockFeedback || editing) && !activeTimer && <>
+    {(!hasBlockFeedback || editing || pending) && !activeTimer && <>
       {!block && !editing && availableBlocks.length > 0 && <label>对应的学习安排<select value={selectedBlockId} disabled={locked} onChange={e => { setSelectedBlockId(e.target.value); setResolution(""); }}>
         <option value="">不指定单次安排（需核对覆盖关系）</option>
         {availableBlocks.map(b => <option key={b.id} value={b.id}>{new Date(b.data.starts_at).toLocaleString("zh-CN", {timeZone: timezone || "Asia/Shanghai"})} · {Math.round((Date.parse(b.data.ends_at) - Date.parse(b.data.starts_at))/60000)}分钟</option>)}

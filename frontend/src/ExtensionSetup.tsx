@@ -17,7 +17,7 @@ export function ExtensionSetup({visible}:{visible:boolean}){
   <div className="extension-setup">
    {state==='ready'?<p role="status">扩展已连接，可以继续导入。</p>:<p>只需设置一次。请在上方所选的浏览器完成安装。</p>}
    <ol><li><strong>打开扩展管理页</strong><p>开启右上角的“开发者模式”。</p><Button variant="outline" disabled={busy} onClick={()=>void action(()=>nativeImport('open-extension-manager'),'已请求打开所选浏览器的扩展管理页。若未打开，请手动输入 chrome://extensions 或 edge://extensions。')}>打开扩展管理页</Button></li>
-   <li><strong>加载课表扩展</strong><p>点击“加载已解压的扩展”，选择下方固定目录。</p><Button variant="outline" disabled={busy} onClick={()=>void action(()=>api('/local/open-extension-folder',{method:'POST',body:'{}'}),'扩展目录已打开。')}>打开扩展目录</Button><Button variant="outline" disabled={busy} onClick={()=>void action(()=>nativeImport('copy-extension-path'),'已复制扩展路径，可在文件选择窗口按 ⌘⇧G 后粘贴。')}>复制扩展路径</Button>
+   <li><strong>加载课表扩展</strong><p>点击“加载已解压的扩展”，选择下方固定目录（Mac 位于“文稿/课间/浏览器扩展”）。</p><Button variant="outline" disabled={busy} onClick={()=>void action(()=>api('/local/open-extension-folder',{method:'POST',body:'{}'}),'扩展目录已打开。')}>打开扩展目录</Button><Button variant="outline" disabled={busy} onClick={()=>void action(()=>nativeImport('copy-extension-path'),'已复制扩展路径，可在文件选择窗口按 ⌘⇧G 后粘贴。')}>复制扩展路径</Button>
    {installation.data?.directory&&<p className="directory">{installation.data.directory}</p>}{installation.data?.available===false&&<p role="alert">扩展文件未准备好，请重新安装完整App。</p>}</li>
    <li><strong>回到导入浏览器页</strong><p>安装后刷新该页，软件会自动检测并继续。扩展更新时在扩展管理页点击“重新加载”，再刷新导入页。</p></li></ol>
    {state==='extension_outdated'&&<p role="alert">扩展版本过旧，请加载App提供的新版目录并重新加载。</p>}

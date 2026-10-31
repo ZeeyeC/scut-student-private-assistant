@@ -1,0 +1,16 @@
+[WebServer] INFO:     Started server process [4900]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 5 tests using 1 worker
+
+(node:4915) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 frontend/e2e/execution-feedback.spec.ts:44:1 › 60 planned, 25 actual and unfinished survive refresh; correction retains history in both entrances (1.7s)
+  ✓  2 frontend/e2e/execution-feedback.spec.ts:73:1 › lost save response retries the same operation without accumulating twice (1.0s)
+  ✓  3 frontend/e2e/execution-feedback.spec.ts:110:1 › explicit zero remains distinct from no feedback (1.0s)
+  ✓  4 frontend/e2e/execution-feedback.spec.ts:124:1 › each block shows its own observation when one step has several blocks (1.0s)
+  ✓  5 frontend/e2e/execution-feedback.spec.ts:138:1 › step detail can bind manual feedback to an existing estimated block (1.0s)
+
+  5 passed (8.3s)

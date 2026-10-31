@@ -5,12 +5,23 @@ from pathlib import Path
 import pytest
 
 from app.launcher import (
+    EXTENSION_OWNED_MARKER,
+    ISOLATED_ACCEPTANCE_MARKER,
     desktop_config,
+    extension_destination,
     launch_arguments,
     same_service,
     service_identity,
     stage_extension,
 )
+
+
+@pytest.fixture(autouse=True)
+def isolated_home(tmp_path, monkeypatch):
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setattr(Path, "home", classmethod(lambda cls: home))
+    return home
 
 
 def test_packaged_defaults_are_separate_from_checkout_and_ignore_ambient_env(
@@ -48,16 +59,140 @@ def test_source_configuration_preserves_existing_key_and_database(tmp_path):
 def test_extension_stage_is_stable_and_does_not_copy_private_config(tmp_path):
     source = tmp_path / "resources" / "extension" / ".output" / "chrome-mv3"
     source.mkdir(parents=True)
-    (source / "manifest.json").write_text('{"version":"1.0.0"}')
+    (source / "manifest.json").write_text('{"name":"Campus Companion","version":"1.0.0"}')
     (source / "background.js").write_text("/* test-only */")
     (tmp_path / "resources" / ".env").write_text("SECRET=do-not-copy")
-    dest = stage_extension(tmp_path / "resources", tmp_path / "personal")
-    assert dest == tmp_path / "personal" / "desktop-extension"
+    personal = tmp_path / "personal"
+    dest = stage_extension(tmp_path / "resources", personal)
+    assert dest == extension_destination(personal)
     assert (dest / "background.js").is_file()
+    assert (dest / EXTENSION_OWNED_MARKER).is_file()
     assert not (dest / ".env").exists()
     (source / "background.js").write_text("/* updated */")
-    assert stage_extension(tmp_path / "resources", tmp_path / "personal") == dest
+    assert stage_extension(tmp_path / "resources", personal) == dest
     assert (dest / "background.js").read_text() == "/* updated */"
+
+
+def test_extension_destination_macos_nonmacos_isolated_and_config_alignment(
+    tmp_path, isolated_home, monkeypatch
+):
+    import app.launcher as launcher
+
+    resources = tmp_path / "resources"
+    source = resources / "extension" / ".output" / "chrome-mv3"
+    source.mkdir(parents=True)
+    (source / "manifest.json").write_text('{"name":"Campus Companion","version":"1.0.0"}')
+    root = tmp_path / "user-data"
+    root.mkdir()
+
+    monkeypatch.setattr(launcher.sys, "platform", "darwin")
+    expected_mac = isolated_home / "Documents" / "课间" / "浏览器扩展"
+    assert extension_destination(root) == expected_mac
+    mac_cfg = desktop_config(root, resources, project=False)
+    staged_mac = stage_extension(resources, root)
+    assert Path(mac_cfg.extension_dir) == expected_mac == staged_mac
+
+    monkeypatch.setattr(launcher.sys, "platform", "linux")
+    expected_nonmac = root / "desktop-extension"
+    assert extension_destination(root) == expected_nonmac
+    nonmac_cfg = desktop_config(root, resources, project=False)
+    staged_nonmac = stage_extension(resources, root)
+    assert Path(nonmac_cfg.extension_dir) == expected_nonmac == staged_nonmac
+
+    # Directory with the marker name does not activate isolated mode; only a file does.
+    (root / ISOLATED_ACCEPTANCE_MARKER).mkdir()
+    monkeypatch.setattr(launcher.sys, "platform", "darwin")
+    assert extension_destination(root) == expected_mac
+    (root / ISOLATED_ACCEPTANCE_MARKER).rmdir()
+
+    (root / ISOLATED_ACCEPTANCE_MARKER).write_text("isolated\n")
+    expected_isolated = root / "Documents" / "课间" / "浏览器扩展"
+    assert extension_destination(root) == expected_isolated
+    iso_cfg = desktop_config(root, resources, project=False)
+    staged_iso = stage_extension(resources, root)
+    assert Path(iso_cfg.extension_dir) == expected_isolated == staged_iso
+
+
+def test_stage_extension_preserves_legacy_and_unowned_siblings_and_upgrades_matching_manifest(
+    tmp_path, isolated_home, monkeypatch
+):
+    import app.launcher as launcher
+
+    monkeypatch.setattr(launcher.sys, "platform", "darwin")
+    resources = tmp_path / "resources"
+    source = resources / "extension" / ".output" / "chrome-mv3"
+    source.mkdir(parents=True)
+    (source / "manifest.json").write_text('{"name":"课间课表助手","version":"2.0.0"}')
+    (source / "background.js").write_text("v2")
+
+    root = tmp_path / "data"
+    legacy = root / "desktop-extension"
+    legacy.mkdir(parents=True)
+    (legacy / "legacy.txt").write_text("keep-me")
+
+    dest = extension_destination(root)
+    dest.mkdir(parents=True)
+    # Pre-existing legitimate version without owned marker but matching manifest name
+    (dest / "manifest.json").write_text('{"name":"课间课表助手","version":"1.0.0"}')
+    (dest / "old.js").write_text("v1")
+    unowned_temp = dest.parent / ".extension-previous"
+    unowned_temp.mkdir()
+    (unowned_temp / "important.txt").write_text("do-not-delete")
+
+    staged = stage_extension(resources, root)
+    assert staged == dest
+    assert (dest / "background.js").read_text() == "v2"
+    assert not (dest / "old.js").exists()
+    assert (dest / EXTENSION_OWNED_MARKER).is_file()
+    assert (legacy / "legacy.txt").read_text() == "keep-me"
+    assert (unowned_temp / "important.txt").read_text() == "do-not-delete"
+    assert [
+        p.name
+        for p in dest.parent.iterdir()
+        if p.name.startswith(f".{dest.name}-")
+    ] == []
+
+
+def test_stage_extension_rejects_symlinks_and_unrelated_preexisting_folders(
+    tmp_path, isolated_home, monkeypatch
+):
+    import app.launcher as launcher
+
+    monkeypatch.setattr(launcher.sys, "platform", "darwin")
+    resources = tmp_path / "resources"
+    source = resources / "extension" / ".output" / "chrome-mv3"
+    source.mkdir(parents=True)
+    (source / "manifest.json").write_text('{"name":"课间课表助手","version":"1.0.0"}')
+
+    root = tmp_path / "data"
+    root.mkdir()
+    dest = extension_destination(root)
+    dest.mkdir(parents=True)
+    (dest / "notes.txt").write_text("user notes")
+
+    with pytest.raises(RuntimeError, match="不属于本应用"):
+        stage_extension(resources, root)
+    assert (dest / "notes.txt").read_text() == "user notes"
+
+    # Also reject a preexisting folder with a different manifest name
+    (dest / "manifest.json").write_text('{"name":"Other Extension","version":"1.0.0"}')
+    with pytest.raises(RuntimeError, match="不属于本应用"):
+        stage_extension(resources, root)
+    assert (dest / "notes.txt").read_text() == "user notes"
+
+    # Also reject symlink destination without modifying target
+    for child in list(dest.iterdir()):
+        child.unlink()
+    dest.rmdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    (elsewhere / "keep.txt").write_text("safe")
+    dest.symlink_to(elsewhere, target_is_directory=True)
+
+    with pytest.raises(RuntimeError, match="符号链接"):
+        stage_extension(resources, root)
+    assert dest.is_symlink()
+    assert (elsewhere / "keep.txt").read_text() == "safe"
 
 
 def test_child_arguments_fixed_and_invalid_sqlite_path_rejected(tmp_path):
@@ -107,3 +242,30 @@ def test_command_line_start_never_opens_a_daily_browser(tmp_path, monkeypatch):
     monkeypatch.setattr(launcher.sys, 'argv', ['CampusCompanion', '--data-dir', str(tmp_path)])
     assert launcher.main() == 0
     assert calls[0]['browser'] is False
+
+
+@pytest.mark.parametrize("rollback_fails", [False, True])
+def test_failed_extension_install_preserves_previous_copy(tmp_path, monkeypatch, rollback_fails):
+    resources = tmp_path / "resources"
+    source = resources / "extension/.output/chrome-mv3"
+    source.mkdir(parents=True)
+    (source / "manifest.json").write_text('{"name":"Campus Companion","version":"1"}')
+    (source / "background.js").write_text("old")
+    root = tmp_path / "data"
+    destination = stage_extension(resources, root)
+    (source / "background.js").write_text("new")
+    original_rename = Path.rename
+
+    def fail_install(path, target):
+        if "-stage-" in path.name or (rollback_fails and "-backup-" in path.parent.name):
+            raise OSError("simulated rename failure")
+        return original_rename(path, target)
+
+    monkeypatch.setattr(Path, "rename", fail_install)
+    with pytest.raises(OSError, match="simulated"):
+        stage_extension(resources, root)
+    if rollback_fails:
+        copies = list(destination.parent.glob(f".{destination.name}-backup-*/{destination.name}/background.js"))
+        assert len(copies) == 1 and copies[0].read_text() == "old"
+    else:
+        assert (destination / "background.js").read_text() == "old"

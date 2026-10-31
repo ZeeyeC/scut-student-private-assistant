@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "scope": "Copied actual App + bundled frozen backend; empty isolated data; no developer source linkage; no paid model calls",
+  "extension_version": "0.1.3",
+  "extension_files_verified": 4,
+  "checks": [
+    "portable bundle has no source-project marker",
+    "App starts from copied location",
+    "fresh local SQLite identity",
+    "no tasks or courses from developer",
+    "extension extracted to fixed user directory",
+    "all extracted extension hashes equal bundled files"
+  ],
+  "limits": [
+    "Same macOS account with an empty explicit data directory, not a new OS account",
+    "No real school credentials or genuine school timetable acceptance"
+  ]
+}

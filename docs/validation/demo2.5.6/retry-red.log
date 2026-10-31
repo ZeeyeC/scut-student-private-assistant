@@ -1,0 +1,47 @@
+[WebServer] INFO:     Started server process [4760]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 1 test using 1 worker
+
+(node:4791) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 frontend/e2e/execution-feedback.spec.ts:73:1 › lost save response retries the same operation without accumulating twice (6.0s)
+
+
+  1) frontend/e2e/execution-feedback.spec.ts:73:1 › lost save response retries the same operation without accumulating twice
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: '本次安排执行反馈', exact: true }).getByRole('button', { name: '重试保存执行反馈', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: '本次安排执行反馈', exact: true }).getByRole('button', { name: '重试保存执行反馈', exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: '本次安排执行反馈', exact: true }).getByRole('button', { name: '重试保存执行反馈', exact: true })
+
+
+       96 |   });
+       97 |   await expect(region).toContainText("已记录实际：25 分钟");
+    >  98 |   await expect(retryButton).toBeVisible();
+          |                             ^
+       99 |   await retryButton.click();
+      100 |   await expect(region).toContainText("执行反馈已保存；计划时长和任务完成分别保留。");
+      101 |   await expect(region).toContainText("已记录实际：25 分钟");
+        at /Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/execution-feedback.spec.ts:98:29
+
+    Error Context: frontend/test-results/execution-feedback-lost-sa-8edde--without-accumulating-twice/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    frontend/test-results/execution-feedback-lost-sa-8edde--without-accumulating-twice/trace.zip
+    Usage:
+
+        npx playwright show-trace frontend/test-results/execution-feedback-lost-sa-8edde--without-accumulating-twice/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    frontend/e2e/execution-feedback.spec.ts:73:1 › lost save response retries the same operation without accumulating twice

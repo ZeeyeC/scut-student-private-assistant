@@ -21,6 +21,42 @@ from app.paths import resource_root, user_data_dir
 from app.processes import process_alive
 
 ORIGIN = "http://127.0.0.1:5173"
+ISOLATED_ACCEPTANCE_MARKER = ".campus-isolated-acceptance"
+EXTENSION_OWNED_MARKER = ".campus-companion-extension"
+
+
+def extension_destination(
+    root: Path, home: Path | None = None, platform: str | None = None
+) -> Path:
+    root = Path(root)
+    if (root / ISOLATED_ACCEPTANCE_MARKER).is_file():
+        return root / "Documents" / "课间" / "浏览器扩展"
+    if (platform or sys.platform) == "darwin":
+        base_home = Path(home).expanduser() if home is not None else Path.home()
+        return base_home / "Documents" / "课间" / "浏览器扩展"
+    return root / "desktop-extension"
+
+
+def _is_owned_extension_dir(destination: Path, source_manifest: Path) -> bool:
+    marker = destination / EXTENSION_OWNED_MARKER
+    if marker.is_file() and not marker.is_symlink():
+        return True
+    dest_manifest = destination / "manifest.json"
+    if not dest_manifest.is_file() or dest_manifest.is_symlink():
+        return False
+    try:
+        source_data = json.loads(source_manifest.read_text(encoding="utf-8"))
+        dest_data = json.loads(dest_manifest.read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        return False
+    if not isinstance(source_data, dict) or not isinstance(dest_data, dict):
+        return False
+    source_name = source_data.get("name")
+    return bool(
+        isinstance(source_name, str)
+        and source_name
+        and dest_data.get("name") == source_name
+    )
 
 
 def desktop_config(root: Path, resources: Path, *, project: bool):
@@ -58,7 +94,7 @@ def desktop_config(root: Path, resources: Path, *, project: bool):
     values["scut_adapter_path"] = str(
         (adapter if adapter.is_absolute() else resources / adapter).resolve()
     )
-    values["extension_dir"] = str(root / "desktop-extension")
+    values["extension_dir"] = str(extension_destination(root))
     return Config(_env_file=None, **values)
 
 
@@ -72,28 +108,57 @@ def service_identity(config):
     }
 
 
-def stage_extension(resources: Path, root: Path):
+def stage_extension(
+    resources: Path,
+    root: Path,
+    *,
+    home: Path | None = None,
+    platform: str | None = None,
+):
     source = resources / "extension" / ".output" / "chrome-mv3"
-    destination = root / "desktop-extension"
-    if not (source / "manifest.json").is_file():
+    source_manifest = source / "manifest.json"
+    if not source_manifest.is_file():
         raise RuntimeError("桌面包缺少课表扩展，请重新构建")
-    root.mkdir(parents=True, exist_ok=True)
-    temporary = Path(tempfile.mkdtemp(prefix=".extension-", dir=root))
-    old = root / ".extension-previous"
+    destination = extension_destination(root, home=home, platform=platform)
+    parent = destination.parent
+    if destination.is_symlink() or parent.is_symlink():
+        raise RuntimeError("拒绝使用符号链接作为浏览器扩展目录")
+    if destination.exists():
+        if not destination.is_dir() or not _is_owned_extension_dir(
+            destination, source_manifest
+        ):
+            raise RuntimeError("目标扩展目录已存在且不属于本应用，拒绝覆盖")
+    parent.mkdir(parents=True, exist_ok=True)
+    temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}-stage-", dir=parent))
+    backup_holder: Path | None = None
+    installed = False
     try:
         shutil.copytree(source, temporary, dirs_exist_ok=True)
-        shutil.rmtree(old, ignore_errors=True)
+        (temporary / EXTENSION_OWNED_MARKER).write_text(
+            "campus-companion\n", encoding="utf-8"
+        )
         if destination.exists():
-            destination.rename(old)
-        try:
+            backup_holder = Path(
+                tempfile.mkdtemp(prefix=f".{destination.name}-backup-", dir=parent)
+            )
+            backup = backup_holder / destination.name
+            destination.rename(backup)
+            try:
+                temporary.rename(destination)
+            except OSError:
+                if backup.exists() and not destination.exists():
+                    backup.rename(destination)
+                raise
+        else:
             temporary.rename(destination)
-        except OSError:
-            if old.exists() and not destination.exists():
-                old.rename(destination)
-            raise
-        shutil.rmtree(old, ignore_errors=True)
+        installed = True
     finally:
         shutil.rmtree(temporary, ignore_errors=True)
+        # Keep the old copy if both installation and rollback failed.
+        if backup_holder is not None and (
+            installed or not (backup_holder / destination.name).exists()
+        ):
+            shutil.rmtree(backup_holder, ignore_errors=True)
     return destination
 
 

@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "sha256_entries_verified": 35,
+  "both_zip_crc": "passed",
+  "private_values_scan": "passed",
+  "configuration_roots_scanned": 3,
+  "finder_visible_directory_confirmed": true
+}

@@ -80,6 +80,7 @@ if not stopped():
     )
 with tempfile.TemporaryDirectory(prefix="campus-bundle-verification-") as temporary:
     root = Path(temporary)
+    (root / ".campus-isolated-acceptance").touch()
     runtime_env = {
         key: value
         for key, value in os.environ.items()
@@ -236,7 +237,7 @@ with tempfile.TemporaryDirectory(prefix="campus-bundle-verification-") as tempor
         assert request("/api/tasks") == [] and request("/api/drafts") == []
         assert request("/api/local/extension-installation")["available"]
         manifest = json.loads(
-            (root / "desktop-extension/manifest.json").read_text(encoding="utf-8")
+            (Path(request("/api/local/extension-installation")["directory"]) / "manifest.json").read_text(encoding="utf-8")
         )
         assert manifest["permissions"] == ["storage", "alarms"]
         assert set(manifest["host_permissions"]) == {

@@ -1,6 +1,6 @@
 # 课间 · 华工学生助手
 
-最新更新 **2.5.5 正常退出与资料路径记忆**：[说明](docs/releases/Demo2.5.5.md) · [验收](docs/validation/demo2.5.5/README.md)。旧包集中在 `/Users/czy/ProjectManagement/课间归档/历史版本`，不再散放项目根目录。已通过17项发布门禁及真实CommandQ/无参数重开验收。[打开新版](/Users/czy/ProjectManagement/Demo2.5.5/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.5.5/Demo2.5.5-Mac-AppleSilicon.zip)。
+最新更新 **2.5.6 可见的浏览器扩展目录**：[说明](docs/releases/Demo2.5.6.md) · [验收](docs/validation/demo2.5.6/README.md)。macOS 扩展放在 `~/Documents/课间/浏览器扩展`，App 内置分发，旧目录保留。17项发布门禁通过。[打开新版](/Users/czy/ProjectManagement/Demo2.5.6/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.5.6/Demo2.5.6-Mac-AppleSilicon.zip)。旧包在 `/Users/czy/ProjectManagement/课间归档/历史版本`。
 
 当前更新 **2.5.4 校区节次快捷选择**：[说明](docs/releases/Demo2.5.4.md) · [验证](docs/validation/demo2.5.4/README.md)。课表预览内选择五山/国际/大学城；设置中仍可自定义。17项正式门禁通过，新版已沿原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.4/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.4/Demo2.5.4-Mac-AppleSilicon.zip)。
 

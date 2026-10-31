@@ -2,7 +2,7 @@
 import argparse,hashlib,json,os,shutil,subprocess,tempfile,time
 from pathlib import Path
 import httpx
-from app.launcher import desktop_config,service_identity
+from app.launcher import desktop_config,extension_destination,service_identity
 
 parser=argparse.ArgumentParser();parser.add_argument('--app',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
 origin='http://127.0.0.1:5173'
@@ -14,6 +14,7 @@ with httpx.Client(base_url=origin,trust_env=False,timeout=10) as client:
         root=Path(directory).resolve();app=root/'Applications/课间桌宠.app';shutil.copytree(args.app,app,symlinks=True)
         resources=app/'Contents/Resources';assert not (resources/'source-project.txt').exists()
         data=root/'empty-user-data';data.mkdir();assert not list(data.iterdir())
+        (data/'.campus-isolated-acceptance').write_text('isolated\n',encoding='utf-8')
         service=resources/'service';embedded=service/'_internal';expected=service_identity(desktop_config(data,embedded,project=False))
         process=subprocess.Popen([str(app/'Contents/MacOS/CampusPet'),'--data-dir',str(data)],cwd=data,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         owned=False
@@ -29,7 +30,7 @@ with httpx.Client(base_url=origin,trust_env=False,timeout=10) as client:
             csrf=client.get('/api/csrf').json()['csrf_token'];headers={'Origin':origin,'X-CSRF-Token':csrf}
             response=client.post('/api/local/session',json={},headers=headers);response.raise_for_status()
             installation=client.get('/api/local/extension-installation');installation.raise_for_status();info=installation.json()
-            destination=data/'desktop-extension';assert info['available'] and Path(info['directory'])==destination
+            destination=data/'Documents/课间/浏览器扩展';assert extension_destination(data)==destination and info['available'] and Path(info['directory'])==destination
             source=embedded/'extension/.output/chrome-mv3';count=0
             for path in source.rglob('*'):
                 if path.is_file():
