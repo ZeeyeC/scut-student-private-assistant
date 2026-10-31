@@ -8,7 +8,7 @@
 **Spec:** docs/superpowers/specs/2026-10-31-dock-presence-design.md
 
 ## Task 1
-- [ ] 编写系统级Dock资格检查，在运行的2.5.1上确认RED；补充实际原生窗口生命周期断言。
-- [ ] 修改AppDelegate.swift及build.py；更新VERSION、README、2.5.2说明与进度。
+- [x] 编写系统级Dock资格检查，在运行的2.5.1上确认RED；补充实际原生窗口生命周期断言。
+- [x] 修改AppDelegate.swift及build.py；更新VERSION、README、2.5.2说明与进度。
 - [ ] 独立审查改动，运行正式发布全量门禁（沿用2.5.1视觉基准以证明GUI未变）；不改个人数据库。
 - [ ] 校验归档、退出原实例并用原资料打开2.5.2，系统级Dock检查GREEN；提交同步并记录结果。
