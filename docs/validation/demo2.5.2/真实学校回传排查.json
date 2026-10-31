@@ -1,0 +1,15 @@
+{
+  "scope": "real currently logged-in school page; no credentials collected, no personal page content archived",
+  "trigger": "Explicit trusted Query click after opening personal timetable; initial automatic page rendering does not arm capture",
+  "before": "waiting_timetable, extension ready, no draft",
+  "after": "preview_ready; browser says returned; actual App shows review, not saved",
+  "observed_enrolled_meetings": 23,
+  "app_draft_meetings": 23,
+  "validation_blocker": "A meeting contains week22 beyond configured semester length; App requests semester settings review",
+  "courses_saved_by_agent": false,
+  "app_code_modified": false,
+  "limits": [
+    "One real return-path observation only, not a labeled accuracy benchmark",
+    "No final save acceptance until user reviews semester settings and draft"
+  ]
+}
