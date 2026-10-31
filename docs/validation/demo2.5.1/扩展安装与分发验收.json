@@ -1,0 +1,16 @@
+{
+  "status": "candidate-ready-formal-release-pending",
+  "backend_tests": 687,
+  "backend_subtests": 20,
+  "frontend_unit_tests": 105,
+  "extension_unit_tests": 7,
+  "ui_tests": 82,
+  "native_app": "passed",
+  "visual_captures": 10,
+  "visual_passed": true,
+  "first_user_app_start": "blocked-before-start: existing5173 service preserved; user permission pending",
+  "real_extension": "Chrome for Testing temporary profile, real bundled0.1.3 extension, synthetic SCUT DOM; no saved course before review",
+  "formal_release_archive": "not created",
+  "candidate_zip_crc": "passed",
+  "candidate_sha256": "eaaf67dbd77950465e4a76f65fcd15e277a850c39aa5b47cdf009cf4ef09bbc7"
+}

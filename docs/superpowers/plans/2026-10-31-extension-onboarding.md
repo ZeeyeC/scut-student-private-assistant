@@ -36,7 +36,7 @@ Files：campus-pet/build.py、scripts/release-macos.py、发布测试、新独�
 - [ ] 真实浏览器尝试仅在独立测试profile安装；不能操作用户日常profile。受工具/浏览器限制则如实记录，模拟结果分列。
 
 ### Task 4：全量验证、独立审查与2.5.1打包
-- [ ] 补齐前轮聊天修复后的完整原生/界面回归、扩展与后端/脚本测试及10张视觉基准。
-- [ ] 一次全分支独立审查，重要问题复现后修复。
+- [x] 补齐前轮聊天修复后的完整原生/界面回归、扩展与后端/脚本测试及10张视觉基准。
+- [x] 一次全分支独立审查，2项Important均RED→GREEN；1项Minor暂缓。
 - [ ] 更新VERSION/README/说明，运行release-macos.py --version 2.5.1，验证App/ZIP/源码ZIP/manifest/SHA，无私密资料。
 - [ ] 更新追踪表和实际用户体验记录；保留真实学校/OCR/多物理显示器缺口。

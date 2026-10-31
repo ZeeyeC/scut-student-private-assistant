@@ -130,13 +130,15 @@ def cleanup_generated(project, workspace):
             targets.append(preview)
     # Preflight all targets before removing anything. Do not follow symlinks.
     for target in targets:
+        record_path = os.path.relpath(target, workspace)
         if target.is_symlink() or target.resolve() != target.absolute():
             raise RuntimeError("Linked cleanup target; cleanup refused.")
     removed = []
     for target in targets:
+        record_path = os.path.relpath(target, workspace)
         if target.is_dir():
             shutil.rmtree(target)
-            removed.append(str(target.relative_to(workspace)))
+            removed.append(record_path)
     return removed
 
 

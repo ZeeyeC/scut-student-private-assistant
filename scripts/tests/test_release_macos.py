@@ -35,6 +35,15 @@ class ReleaseSafetyTests(unittest.TestCase):
             native=next(c for c in calls if "campus-pet/verify.py" in c)
             self.assertGreater(calls.index(visual[0]),calls.index(native))
 
+    def test_cleanup_preserves_data_when_checkout_is_outside_archive_workspace(self):
+        with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
+            base=Path(temp);project=base/"checkouts/agentbuild";workspace=base/"archives";workspace.mkdir()
+            generated=project/"campus-pet/build";generated.mkdir(parents=True)
+            personal=project/"data/preserve.txt";personal.parent.mkdir();personal.write_text("preserve")
+            removed=release.cleanup_generated(project,workspace)
+            self.assertIn("../checkouts/agentbuild/campus-pet/build",removed)
+            self.assertFalse(generated.exists());self.assertEqual(personal.read_text(),"preserve")
+
     def test_extension_release_uses_observed_school_adapter_and_local_origin(self):
         with tempfile.TemporaryDirectory(dir="/private/tmp") as temp:
             project = Path(temp)

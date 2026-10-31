@@ -5,9 +5,9 @@
     420,
     560
   ],
-  "decoded_frames" : 185,
+  "decoded_frames" : 187,
   "measurement" : "3-second real-time native process idle playback; excludes separate WebKit process",
-  "native_cpu_seconds" : 0.22642200000000001,
+  "native_cpu_seconds" : 0.22986100000000001,
   "peak_cache_bytes" : 66796800,
-  "wall_seconds" : 3.0060074166685808
+  "wall_seconds" : 3.0107444999885047
 }

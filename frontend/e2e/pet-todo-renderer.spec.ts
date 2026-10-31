@@ -17,3 +17,15 @@ test('local pet renderer keeps task content as text and fixed controls reachable
  await page.evaluate(tasks=>(window as any).renderTodo({status:'list',tasks:tasks.map(t=>({...t,pending:true})),selected:'safe-1',error:'网络中断'}),tasks);
  await expect(page.getByRole('button',{name:'保存中…'})).toBeDisabled();await page.getByRole('button',{name:'刷新重试'}).click();expect(await page.evaluate(()=>(window as any).__actions.at(-1))).toEqual({action:'retry'});
 });
+
+
+test('native panel retains opaque light and dark colors when light-dark is unsupported',async({page})=>{
+ // Legacy WebKit discards unsupported light-dark declarations; simulate that parser outcome.
+ const legacy=html.replace(/--[a-z-]+:\s*light-dark\([^;{}]+\);?/g,'');
+ await page.emulateMedia({colorScheme:'light'});await page.setContent(legacy);
+ await expect(page.locator('#panel')).toHaveCSS('background-color','rgb(254, 254, 254)');
+ await expect(page.locator('#panel')).toHaveCSS('color','rgb(37, 42, 53)');
+ await page.emulateMedia({colorScheme:'dark'});
+ await expect(page.locator('#panel')).toHaveCSS('background-color','rgb(32, 38, 48)');
+ await expect(page.locator('#panel')).toHaveCSS('color','rgb(229, 232, 239)');
+});

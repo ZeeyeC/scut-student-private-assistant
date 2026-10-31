@@ -11,7 +11,7 @@ with httpx.Client(base_url=origin,trust_env=False,timeout=10) as client:
     except httpx.ConnectError:pass
     else:raise SystemExit('5173 occupied; existing service preserved, first-run simulation not started')
     with tempfile.TemporaryDirectory(prefix='campus-new-user-') as directory:
-        root=Path(directory);app=root/'Applications/课间桌宠.app';shutil.copytree(args.app,app,symlinks=True)
+        root=Path(directory).resolve();app=root/'Applications/课间桌宠.app';shutil.copytree(args.app,app,symlinks=True)
         resources=app/'Contents/Resources';assert not (resources/'source-project.txt').exists()
         data=root/'empty-user-data';data.mkdir();assert not list(data.iterdir())
         service=resources/'service';embedded=service/'_internal';expected=service_identity(desktop_config(data,embedded,project=False))
