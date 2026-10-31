@@ -73,7 +73,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             existing.activate(options: [.activateAllWindows])
             NSApp.terminate(nil); return
         }
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.setActivationPolicy(.regular)
         if options.smokeDirectory == nil {
             automaticActions = UserDefaults.standard.object(forKey: "automaticActions") as? Bool ?? true
         } else { automaticActions = false }

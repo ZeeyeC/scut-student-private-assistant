@@ -1,0 +1,7 @@
+# Dock应用入口
+
+用户已批准普通应用模式：Dock显示现有课间图标，主窗口关闭及桌宠隐藏后仍保持运行；点击Dock恢复主窗口和桌宠，菜单栏保留。退出仍沿用现有明确操作，本轮不改后台退出策略或系统Dock设置。
+
+采用AppKit regular模式，同时关闭Info.plist的LSUIElement；仅改一处会造成系统注册与运行时不一致。保留现有applicationShouldHandleReopen回调及关闭不退出的行为。对比方案是继续辅助模式只用菜单栏，用户选择普通应用模式。
+
+验收：运行中的NSRunningApplication由系统报告regular、图标可用、包非LSUIElement；真实原生隔离测试关闭主窗和隐藏桌宠后仍regular且后台健康，调用系统重开回调恢复两窗。2.5.2独立发布，不覆盖2.5.1；不承诺修改用户关闭的系统运行指示灯设置。

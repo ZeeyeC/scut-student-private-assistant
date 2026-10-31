@@ -100,7 +100,7 @@ with (contents / "Info.plist").open("wb") as handle:
         "CFBundleExecutable": "CampusPet", "CFBundleIdentifier": "cn.campuscompanion.pet",
         "CFBundleName": "课间桌宠", "CFBundleDisplayName": "课间桌宠",
         "CFBundlePackageType": "APPL", "CFBundleShortVersionString": version,
-        "CFBundleVersion": version, "LSMinimumSystemVersion": "13.0", "LSUIElement": True,
+        "CFBundleVersion": version, "LSMinimumSystemVersion": "13.0", "LSUIElement": False,
         "CFBundleIconFile": "AppIcon",
         "NSHighResolutionCapable": True,
         "NSAppTransportSecurity": {"NSAllowsArbitraryLoads": True},
