@@ -1,5 +1,7 @@
 # 课间 · 华工学生助手
 
+当前开发 **2.6.0 可确认的个人记忆**，分支 `codex/personal-agent-memory`。[本版说明](docs/releases/Demo2.6.md) · [实施计划](docs/superpowers/plans/2026-11-01-personal-memory-implementation.md) · [验证记录](docs/validation/demo2.6/README.md)。33项相关后端和3项记忆界面检查通过，正式独立构建中。
+
 最新发布 **2.5.7 聊天作业截图闭环**：[说明](docs/releases/Demo2.5.7.md) · [验收](docs/validation/demo2.5.7/README.md)。17项发布检查通过，支持附件菜单、单图选择/拖入/粘贴、校对修改与确认保存。[打开App](/Users/czy/ProjectManagement/Demo2.5.7/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.5.7/Demo2.5.7-Mac-AppleSilicon.zip)。
 
 当前更新 **2.5.4 校区节次快捷选择**：[说明](docs/releases/Demo2.5.4.md) · [验证](docs/validation/demo2.5.4/README.md)。课表预览内选择五山/国际/大学城；设置中仍可自定义。17项正式门禁通过，新版已沿原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.4/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.4/Demo2.5.4-Mac-AppleSilicon.zip)。
@@ -8,7 +10,7 @@
 
 当前更新 **2.5.2 Dock入口修复**：普通App模式，关闭窗口/隐藏桌宠后Dock保留，点击恢复主窗口和桌宠，菜单栏同时保留。[本版说明](docs/releases/Demo2.5.2.md) · [本版验证](docs/validation/demo2.5.2/README.md)。17项正式门禁通过，35项哈希复核通过，新版已用原资料启动。[打开新版](/Users/czy/ProjectManagement/Demo2.5.2/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.2/Demo2.5.2-Mac-AppleSilicon.zip)。以下2.5.1记录作为已有版本保留。
 
-当前开发分支为 **`codex/demo2.5.1-ui-refinement`**，按已批准的[完整窗口与桌宠参考](docs/design/ui-redesign-v2/README.md)实施。[修改计划](docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md) · [开发进度](docs/roadmap/Demo2.5-开发进度追踪表.md) · [本版说明](docs/releases/Demo2.5.1.md) · [当前验证](docs/validation/demo2.5.1/README.md)。2.5.1加入内置扩展安装引导与独立分发模式，已完成17项正式发布门禁并归档，35项SHA256复核通过，新版已用原资料重新打开；已有2.5.0归档保留。
+2.5.1历史开发分支为 **`codex/demo2.5.1-ui-refinement`**，按已批准的[完整窗口与桌宠参考](docs/design/ui-redesign-v2/README.md)实施。[修改计划](docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md) · [开发进度](docs/roadmap/Demo2.5-开发进度追踪表.md) · [本版说明](docs/releases/Demo2.5.1.md) · [当前验证](docs/validation/demo2.5.1/README.md)。2.5.1加入内置扩展安装引导与独立分发模式，已完成17项正式发布门禁并归档，35项SHA256复核通过，新版已用原资料重新打开；已有2.5.0归档保留。
 
 日常操作仅在独立App：默认完整窗口，左侧导航固定，内容独立滚动；窄窗口保持左侧图标栏。今日、日程、任务、助手共用柔和蓝灰外观，设置位于底部。课表导入默认指定Chrome或已保存的Edge，图片/PDF和文字在下方展开；只有明确点击学校导入按钮才会打开外部浏览器。
 

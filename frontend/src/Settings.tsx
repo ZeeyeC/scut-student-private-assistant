@@ -11,6 +11,7 @@ import {
   type CampusPresetId,
 } from "./CampusPresetSelector";
 import { AfterClassPreferences } from "./AfterClass";
+import {MemoryManager} from "./MemoryManager";
 import {PersonalProfile} from "./PersonalProfile";
 import {StudyTypes} from "./StudyTypes";
 import {DetailPanel} from "./layout/DetailPanel";
@@ -85,7 +86,7 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
   return (
     <>
       {group==='semester'&&<ImportBrowserSettings/>}
-      {group==='preferences'&&<PersonalProfile/>}
+      {group==='preferences'&&<><PersonalProfile/><MemoryManager/></>}
       {group==='reminders'&&<><AfterClassPreferences/><ProactiveSettings/></>}
       {(group==='semester'||group==='preferences')&&<form
         onSubmit={handleSubmit(async (v) => {

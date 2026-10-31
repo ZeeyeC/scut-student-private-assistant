@@ -19,13 +19,13 @@ from app.agent import agent_router, pending_approval
 from app.assignments import assignment_router
 from app.auth import UserCreate, UserRead, build_auth
 from app.browser_imports import browser_router
-from app.desktop_import_bridge import desktop_import_router
 from app.config import Config
 from app.constraints import constraint_router
 from app.contracts import SettingsUpdate
 from app.course_changes import course_change_router
 from app.data_routes import data_router
 from app.db_sessions import sqlite_transaction
+from app.desktop_import_bridge import desktop_import_router
 from app.execution_routes import execution_router
 from app.goal_routes import goal_router
 from app.model_gateway import ModelGateway
@@ -99,7 +99,7 @@ def create_app(config=None):
                         if r.data["status"] in ("queued", "running", "resume_queued"):
                             if r.kind == "agent_run":
                                 recoverable.append(
-                                    (r.owner_id, r.id, r.data["thread_id"])
+                                    (r.owner_id, r.id, r.data.get("checkpoint_id", r.data["thread_id"]))
                                 )
                             r.data = {
                                 **r.data,
@@ -304,6 +304,8 @@ def create_app(config=None):
     app.include_router(task_router(get_db, current_user))
     app.include_router(execution_router(get_db, current_user))
     app.include_router(timer_router(get_db, current_user, str(uuid4())))
+    from app.memory_routes import memory_router
+    app.include_router(memory_router(config, get_db, current_user))
     app.include_router(profile_router(get_db, current_user))
     app.include_router(goal_router(get_db, current_user))
     app.include_router(review_router(get_db, current_user))

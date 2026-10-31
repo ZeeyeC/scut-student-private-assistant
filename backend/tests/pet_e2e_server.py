@@ -1,12 +1,27 @@
 """Isolated pet UI regression server; no personal configuration or paid models."""
 
-import tempfile
+import asyncio
+import io
 import json
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from app import after_class, planner, conversation_constraints, goal_capacity, weekly_review, proactive, negotiation
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+from langchain_core.outputs import ChatGeneration, ChatResult
+from PIL import Image
+
+from app import (
+    after_class,
+    conversation_constraints,
+    goal_capacity,
+    negotiation,
+    planner,
+    proactive,
+    weekly_review,
+)
 from app.main import create_app
+from tests.test_chat_images import ImageVision
 from tests.test_timetable_recognition import FakeTimetableVision, candidate
 from tests.test_timetable_text import TextTimetableModel
 
@@ -45,12 +60,9 @@ app.state.gateway = FakeTimetableVision([candidate(weeks_text=None)])
 
 
 # Deterministic chat-image fixtures; never a real vision/model provider.
-from tests.test_chat_images import ImageVision
-from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
-from langchain_core.outputs import ChatGeneration, ChatResult
-import asyncio
-import io
-from PIL import Image
+
+
+
 
 class ChatImageVision:
     def __init__(self):
@@ -70,6 +82,15 @@ class ChatImageModel(TextTimetableModel):
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         text = next(str(m.content) for m in reversed(messages) if isinstance(m, HumanMessage))
         last = messages[-1]
+        if text == "记住以后回答简短些":
+            if isinstance(last, ToolMessage):
+                return ChatResult(generations=[ChatGeneration(message=AIMessage(content="已提出记忆候选，请确认后生效。"))])
+            call = {"name": "propose_memory", "args": {"key": "reply_style", "content": "以后回答简短些", "category": "interaction_preference"}, "id": __import__("uuid").uuid4().hex, "type": "tool_call"}
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="", tool_calls=[call]))])
+        if text == "我有什么偏好":
+            # Check all real graph messages, catching accidental old checkpoint reuse.
+            remembered = any("以后回答简短些" in str(m.content) for m in messages)
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="你希望回答简短些。" if remembered else "没有可召回的偏好。"))])
         if text.startswith("识别这张作业截图"):
             return ChatResult(generations=[ChatGeneration(message=AIMessage(content="已识别两项作业，请校对草稿后保存。"))])
         if text == "修改第二项为英语听力":

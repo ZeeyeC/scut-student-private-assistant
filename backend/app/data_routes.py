@@ -77,9 +77,11 @@ def data_router(get_db, current_user):
             for r in resources
         ):
             raise HTTPException(409, "图片正在识别，请等待结束后删除")
+        checkpoint_ids = {r.id for r in resources if r.kind == "agent_thread"}
+        checkpoint_ids.update(r.data.get("checkpoint_id", r.data["thread_id"]) for r in resources if r.kind == "agent_run")
+        for checkpoint_id in checkpoint_ids:
+            await request.app.state.checkpointer.adelete_thread(checkpoint_id)
         for r in resources:
-            if r.kind == "agent_thread":
-                await request.app.state.checkpointer.adelete_thread(r.id)
             if r.kind == "asset":
                 for name in [
                     r.data["filename"],

@@ -14,6 +14,7 @@ import { applyMessage, type ChatMessage as Message } from "./chat-messages";
 import { replayEvents, type PublicEvent } from "./sse";
 import type { Resource } from "./types";
 import { Button } from "./components/ui/button";
+import {PendingMemories,useMemoryView} from "./MemoryManager";
 import { DraftReview } from "./DraftReview";
 import { AgentApproval } from "./AgentApproval";
 import { ConstraintIntents } from "./ConstraintIntents";
@@ -115,7 +116,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
     }
     if (event.type === "cancelled" && ownsRun) {activeRun.current="";setRunning(false);setStatus("已取消识别");}
     if (event.type === "tool_started" && ownsRun) setStatus(labels[p.name] ?? "处理请求");
-    if (event.type === "tool_finished") { void q.invalidateQueries({queryKey:["constraint-intents"]}); void q.invalidateQueries({queryKey:["planning-intents"]}); }
+    if (event.type === "tool_finished") { void q.invalidateQueries({queryKey:["memories"]}); void q.invalidateQueries({queryKey:["constraint-intents"]}); void q.invalidateQueries({queryKey:["planning-intents"]}); }
     if (event.type === "draft_ready")
       q.invalidateQueries({ queryKey: ["drafts"] });
     if (event.type === "browser_action_required")
@@ -272,9 +273,11 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
     },
   });
   const pendingDrafts = visibleDrafts(drafts.data).filter(d=>!d.data.source?.thread_id || d.data.source.thread_id===threadId).filter(d=>!reviewOutside&&!d.data.source?.constraint_intent_id).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
+  const memories = useMemoryView();
+  const pendingMemoryCount=memories.data?.candidates.filter(c=>c.data.source?.thread_id===threadId).length??0;
   const hasIntents = constraintIntents.data?.some(r=>["clarifying","ready_for_review"].includes(r.data.status));
   useEffect(()=>{if(hasIntents)setShowConstraints(true);},[hasIntents]);
-  const hasReview = !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
+  const hasReview = pendingMemoryCount>0 || !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
   return (
     <div className={embedded ? "assistant-page embedded" : "assistant-page"}>
       {!embedded&&<PageHeader title="助手"/>}
@@ -362,7 +365,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       )}
         </div>
       {hasReview && <div className="review-panel" role="complementary" aria-label="草稿校对区">
-      <h2 className="review-panel-title">待校对 · {pendingDrafts.length + (approvalId ? 1 : 0)}</h2>
+      <h2 className="review-panel-title">待校对 · {pendingDrafts.length + pendingMemoryCount + (approvalId ? 1 : 0)}</h2>
       {approvalId && (
         <AgentApproval
           id={approvalId}
@@ -374,6 +377,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
           }}
         />
       )}
+      {!!pendingMemoryCount&&<PendingMemories threadId={threadId} disabled={running}/>}
       {(showConstraints||hasIntents)&&<ConstraintIntents threadId={threadId}/>}
       {pendingDrafts.map((d) => (
         <DraftReview draft={d} key={d.id} />
