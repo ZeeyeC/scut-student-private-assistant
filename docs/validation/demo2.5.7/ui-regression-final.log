@@ -1,28 +1,29 @@
-[WebServer] INFO:     Started server process [11229]
+[WebServer] INFO:     Started server process [13995]
 [WebServer] INFO:     Waiting for application startup.
 [WebServer] INFO:     Application startup complete.
 [WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
 
-Running 17 tests using 1 worker
+Running 18 tests using 1 worker
 
-(node:11254) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:14019) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   1 frontend/e2e/app-workspace.spec.ts:12:1 › shared navigation keeps legacy goals, reminders and compact controls reachable (823ms)
-  ✓   2 frontend/e2e/app-workspace.spec.ts:31:1 › task creation keeps its unsaved input and requires review before storing a task (666ms)
-  ✓   3 frontend/e2e/app-workspace.spec.ts:50:1 › settings exposes five summaries and opens the original preference controls on demand (481ms)
-  ✓   4 frontend/e2e/app-workspace.spec.ts:62:1 › native navigation during review cannot leave the workspace permanently inert (1.4s)
-  ✓   5 frontend/e2e/app-workspace.spec.ts:79:1 › bridge loaded before login keeps its initial native navigation until React is ready (496ms)
-  ✓   6 frontend/e2e/app-workspace.spec.ts:90:1 › mounted calendar switches views across main-window and compact widths without losing its date (599ms)
-  ✓   7 frontend/e2e/chat-images.spec.ts:21:1 › image-only chat identifies two items, corrects original, explicitly saves and replays image history (3.8s)
-  ✓   8 frontend/e2e/chat-images.spec.ts:36:1 › drop and paste share preview validation, reject multiple files and preserve text paste (624ms)
-  ✓   9 frontend/e2e/chat-images.spec.ts:52:1 › failed vision retries same run, cancelling vision leaves no actionable draft (1.7s)
-  ✓  10 frontend/e2e/chat-run-race.spec.ts:3:1 › an older run status arriving during a new reply never clears busy state (963ms)
-  ✓  11 frontend/e2e/timetable-import-layout.spec.ts:12:1 › browser is the primary default and opening the panel has no launch or write side effect (695ms)
-  ✓  12 frontend/e2e/timetable-import-layout.spec.ts:23:1 › secondary methods retain their input and never launch or recognize by expanding (1.5s)
-  ✓  13 frontend/e2e/timetable-text.spec.ts:28:1 › chat asks for weeks, patches only one course, resumes and saves reviewed timetable (3.7s)
-  ✓  14 frontend/e2e/timetable-text.spec.ts:60:1 › timetable embedded chat shows one text review and keeps it when collapsed (3.1s)
-  ✓  15 frontend/e2e/ui-refinement.visual.spec.ts:7:1 › workspace matches the accepted reference geometry on every page (2.8s)
-  ✓  16 frontend/e2e/ui-refinement.visual.spec.ts:31:1 › agenda marker never overlaps titles or secondary text when text grows (510ms)
-  ✓  17 frontend/e2e/ui-refinement.visual.spec.ts:47:1 › long task details keep their footer and left navigation inside narrow windows (451ms)
+  ✓   1 frontend/e2e/app-workspace.spec.ts:12:1 › shared navigation keeps legacy goals, reminders and compact controls reachable (757ms)
+  ✓   2 frontend/e2e/app-workspace.spec.ts:31:1 › task creation keeps its unsaved input and requires review before storing a task (650ms)
+  ✓   3 frontend/e2e/app-workspace.spec.ts:50:1 › settings exposes five summaries and opens the original preference controls on demand (445ms)
+  ✓   4 frontend/e2e/app-workspace.spec.ts:62:1 › native navigation during review cannot leave the workspace permanently inert (655ms)
+  ✓   5 frontend/e2e/app-workspace.spec.ts:79:1 › bridge loaded before login keeps its initial native navigation until React is ready (452ms)
+  ✓   6 frontend/e2e/app-workspace.spec.ts:90:1 › mounted calendar switches views across main-window and compact widths without losing its date (711ms)
+  ✓   7 frontend/e2e/chat-images.spec.ts:21:1 › image-only chat identifies two items, corrects original, explicitly saves and replays image history (3.7s)
+  ✓   8 frontend/e2e/chat-images.spec.ts:36:1 › drop and paste share preview validation, reject multiple files and preserve text paste (545ms)
+  ✓   9 frontend/e2e/chat-images.spec.ts:52:1 › failed vision retries same run, cancelling vision leaves no actionable draft (1.9s)
+  ✓  10 frontend/e2e/chat-images.spec.ts:63:1 › a delayed image retry response cannot take ownership of a new conversation (834ms)
+  ✓  11 frontend/e2e/chat-run-race.spec.ts:3:1 › an older run status arriving during a new reply never clears busy state (1.0s)
+  ✓  12 frontend/e2e/timetable-import-layout.spec.ts:12:1 › browser is the primary default and opening the panel has no launch or write side effect (704ms)
+  ✓  13 frontend/e2e/timetable-import-layout.spec.ts:23:1 › secondary methods retain their input and never launch or recognize by expanding (1.5s)
+  ✓  14 frontend/e2e/timetable-text.spec.ts:28:1 › chat asks for weeks, patches only one course, resumes and saves reviewed timetable (4.1s)
+  ✓  15 frontend/e2e/timetable-text.spec.ts:60:1 › timetable embedded chat shows one text review and keeps it when collapsed (3.0s)
+  ✓  16 frontend/e2e/ui-refinement.visual.spec.ts:7:1 › workspace matches the accepted reference geometry on every page (2.8s)
+  ✓  17 frontend/e2e/ui-refinement.visual.spec.ts:31:1 › agenda marker never overlaps titles or secondary text when text grows (488ms)
+  ✓  18 frontend/e2e/ui-refinement.visual.spec.ts:47:1 › long task details keep their footer and left navigation inside narrow windows (447ms)
 
-  17 passed (27.0s)
+  18 passed (27.4s)

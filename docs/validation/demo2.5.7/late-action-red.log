@@ -1,0 +1,48 @@
+[WebServer] INFO:     Started server process [13419]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 1 test using 1 worker
+
+(node:13452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 frontend/e2e/chat-images.spec.ts:63:1 › a delayed image retry response cannot take ownership of a new conversation (6.9s)
+
+
+  1) frontend/e2e/chat-images.spec.ts:63:1 › a delayed image retry response cannot take ownership of a new conversation
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  getByRole('button', { name: '新会话', exact: true })
+    Expected: enabled
+    Received: disabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeEnabled" getByRole('button', { name: '新会话', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: '新会话', exact: true })
+        14 × locator resolved to <button disabled data-variant="outline" class="inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 min-h-10 border bg-white hover:bg-slate-50 workspace-button">新会话</button>
+           - unexpected value "disabled"
+
+
+      70 |  await expect(page.getByRole('heading',{name:'核对原图和识别结果'})).toHaveCount(0);
+      71 |  await expect(page.getByRole('button',{name:'重试图片识别'})).toHaveCount(0);
+    > 72 |  await expect(page.getByRole('button',{name:'新会话',exact:true})).toBeEnabled();
+         |                                                                 ^
+      73 | });
+      74 |
+        at /Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/chat-images.spec.ts:72:65
+
+    Error Context: frontend/test-results/chat-images-a-delayed-imag-fd5a2-rship-of-a-new-conversation/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    frontend/test-results/chat-images-a-delayed-imag-fd5a2-rship-of-a-new-conversation/trace.zip
+    Usage:
+
+        npx playwright show-trace frontend/test-results/chat-images-a-delayed-imag-fd5a2-rship-of-a-new-conversation/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    frontend/e2e/chat-images.spec.ts:63:1 › a delayed image retry response cannot take ownership of a new conversation

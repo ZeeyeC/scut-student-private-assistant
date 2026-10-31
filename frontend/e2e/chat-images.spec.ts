@@ -58,3 +58,16 @@ test('failed vision retries same run, cancelling vision leaves no actionable dra
  await choose(page,'cancel');await send(page);await expect(page.getByRole('button',{name:'取消图片识别'})).toBeVisible();await page.getByRole('button',{name:'取消图片识别'}).click();
  await expect(page.getByText('已取消识别',{exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'核对原图和识别结果'})).toHaveCount(0);
 });
+
+
+test('a delayed image retry response cannot take ownership of a new conversation',async({page})=>{
+ await enter(page);await choose(page,'retry-late');await send(page);
+ await expect(page.getByRole('button',{name:'重试图片识别'})).toBeVisible();
+ let held=false,release!:()=>void;const released=new Promise<void>(resolve=>release=resolve);
+ await page.route('**/api/agent/runs/*/image/retry',async route=>{const response=await route.fetch();held=true;await released;await route.fulfill({response})});
+ await page.getByRole('button',{name:'重试图片识别'}).click();await expect.poll(()=>held).toBe(true);
+ await page.getByRole('button',{name:'新会话',exact:true}).click();release();
+ await expect(page.getByRole('heading',{name:'核对原图和识别结果'})).toHaveCount(0);
+ await expect(page.getByRole('button',{name:'重试图片识别'})).toHaveCount(0);
+ await expect(page.getByRole('button',{name:'新会话',exact:true})).toBeEnabled();
+});

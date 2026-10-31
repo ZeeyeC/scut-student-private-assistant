@@ -71,6 +71,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const image = useChatImage();
   const composerInput = useRef<HTMLTextAreaElement>(null);
   const [imageRun,setImageRun]=useState<Resource|null>(null);
+  const viewEpoch=useRef(0);
   const currentThread=useRef(threadId);currentThread.current=threadId;
   const cursors = useRef<Record<string, number>>({});
   const threads = useQuery({
@@ -85,7 +86,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const activeRun=useRef("");
   useEffect(() => {
     if (!focusThreadId) return;
-    image.clear();setImageRun(null);activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
+    viewEpoch.current++;image.clear();setImageRun(null);activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
     cursors.current = {};
     setThreadId(focusThreadId); setEpoch(value => value + 1);
   }, [focusThreadId, focusRequest]);
@@ -246,13 +247,16 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   }
   async function actOnImage(action:'retry'|'cancel'){
     if(!imageRun)return;
+    const target=imageRun.id, thread=currentThread.current, view=viewEpoch.current;
     try{
-      const latest=await api<Resource>('/agent/runs/'+imageRun.id);
-      const r=await api<Resource>('/agent/runs/'+imageRun.id+'/image/'+action,{method:'POST',body:JSON.stringify({revision:latest.revision})});
+      const latest=await api<Resource>('/agent/runs/'+target);
+      if(currentThread.current!==thread||viewEpoch.current!==view)return;
+      const r=await api<Resource>('/agent/runs/'+target+'/image/'+action,{method:'POST',body:JSON.stringify({revision:latest.revision})});
+      if(currentThread.current!==thread||viewEpoch.current!==view)return;
       setImageRun(r);setError('');
       if(action==='retry'){activeRun.current=r.id;setRunId(r.id);setRunning(true);setEpoch(v=>v+1)}
       else{activeRun.current='';setRunning(false);setStatus('已取消识别');void q.invalidateQueries({queryKey:['drafts']});}
-    }catch(e){setError(String(e))}
+    }catch(e){if(currentThread.current===thread&&viewEpoch.current===view)setError(String(e))}
   }
   const runtime = useExternalStoreRuntime<Message>({
     messages,
@@ -282,6 +286,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
           variant="outline"
           disabled={running}
           onClick={async () => {
+            viewEpoch.current++;
             const t = await api<Resource>("/agent/threads", {
               method: "POST",
               body: "{}",
@@ -374,7 +379,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       ))}
       </div>}
       </div>
-      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{image.clear();setImageRun(null);activeRun.current="";setRunning(false);setStatus("");setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
+      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{viewEpoch.current++;image.clear();setImageRun(null);activeRun.current="";setRunning(false);setStatus("");setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
     </div>
   );
 }

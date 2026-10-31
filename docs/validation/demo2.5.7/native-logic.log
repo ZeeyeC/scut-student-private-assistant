@@ -1,0 +1,2 @@
+PASS pet_todo_geometry_is_visible_without_covering_character / pet_has_no_top_strip_and_old_area_clicks_through
+Native regression checks passed
