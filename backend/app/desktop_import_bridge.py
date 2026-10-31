@@ -20,7 +20,7 @@ class GrantRequest(StrictModel):
 
 
 class BridgeState(StrictModel):
-    state: Literal["connecting", "extension_missing", "ready"]
+    state: Literal["connecting", "extension_missing", "extension_outdated", "ready"]
 
 
 def token_hash(value):

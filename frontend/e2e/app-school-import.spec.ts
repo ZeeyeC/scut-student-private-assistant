@@ -69,12 +69,35 @@ test('missing extension stays in the import flow and App cancellation revokes re
   await page.locator('.import-progress').click();
   const panel=page.getByRole('dialog',{name:'导入课表',exact:true});
   await expect(panel).toContainText('未检测到扩展',{timeout:10000});
+  await expect(panel.getByRole('button',{name:'打开扩展管理页',exact:true})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'复制扩展路径',exact:true})).toBeVisible();
   await panel.getByRole('button',{name:'取消导入',exact:true}).click();
   await expect.poll(async()=>(await(await page.request.get(`/api/browser-imports/${issued.session.id}`)).json()).data.status).toBe('cancelled');
   await external.getByRole('button',{name:'重新检测',exact:true}).click();
   await expect(external.getByRole('alert')).toContainText('取消');
   expect(await(await page.request.get('/api/courses')).json()).toEqual([]);
   await context.close();
+});
+
+test('extension installed after first failure is detected automatically without a second start',async({page,browser})=>{
+ const issued=await issueInApp(page);const context=await browser.newContext({baseURL:'http://127.0.0.1:5290'});const external=await context.newPage();
+ try{await external.goto(issued.grant.bridge_path+'#grant='+issued.grant.grant_id+'.'+issued.secret);
+ await expect(external.getByRole('status')).toContainText('未检测到课表扩展',{timeout:10000});
+ await external.evaluate(()=>{(window as any).__starts=0;window.addEventListener('message',e=>{if(e.source!==window||e.data?.channel!=='campus-assistant-v1')return;const {action,nonce,requestId}=e.data;if(action==='start')(window as any).__starts++;window.postMessage({channel:'campus-assistant-reply-v1',nonce,requestId,result:action==='detect'?{installed:true,capabilities:['scoped-bindings-v1']}:action==='restore'?{events:[]}:{}},location.origin);});});
+ await expect(external.getByRole('status')).toContainText('请本人登录学校',{timeout:12000});
+ expect(await external.evaluate(()=>(window as any).__starts)).toBe(1);
+ await page.evaluate(async id=>{const t=(await(await fetch('/api/csrf')).json()).csrf_token,s=await(await fetch('/api/browser-imports/'+id)).json();await fetch('/api/browser-imports/'+id+'/cancel',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':t},body:JSON.stringify({revision:s.revision})});},issued.session.id);
+ }finally{await context.close()}
+});
+
+test('install then refresh resumes the same short-lived grant without an App login cookie',async({page,browser})=>{
+ const issued=await issueInApp(page),context=await browser.newContext({baseURL:'http://127.0.0.1:5290'}),external=await context.newPage();
+ await external.addInitScript(()=>{if(sessionStorage.getItem('fixture-extension-ready')!=='yes')return;window.addEventListener('message',e=>{if(e.source!==window||e.data?.channel!=='campus-assistant-v1')return;const {action,nonce,requestId}=e.data;window.postMessage({channel:'campus-assistant-reply-v1',nonce,requestId,result:action==='detect'?{installed:true,capabilities:['scoped-bindings-v1']}:action==='restore'?{events:[]}:{}},location.origin);});});
+ try{await external.goto(issued.grant.bridge_path+'#grant='+issued.grant.grant_id+'.'+issued.secret);await expect(external.getByRole('status')).toContainText('未检测到课表扩展',{timeout:10000});
+ await external.evaluate(()=>sessionStorage.setItem('fixture-extension-ready','yes'));await external.reload();
+ await expect(external.getByRole('status')).toContainText('请本人登录学校');expect(await external.evaluate(()=>location.hash)).toBe('');expect((await external.request.get('/api/tasks')).status()).toBe(401);
+ const other=await browser.newContext({baseURL:'http://127.0.0.1:5290'});try{const tab=await other.newPage();await tab.goto(issued.grant.bridge_path);await expect(tab.getByRole('alert')).toContainText('授权不可用');}finally{await other.close()}
+ }finally{await context.close()}
 });
 
 test('App browser selection uses the native bridge and a double click starts only one import',async({page})=>{

@@ -255,3 +255,5 @@ input[type=checkbox]{accent-color:var(--workspace-accent);width:16px;height:16px
 
 .import-school-heading h3,.import-other-heading,.timetable-import-method strong{line-height:1.55556;}
 .import-browser-setting.compact select{color:var(--workspace-ink);}
+
+.extension-setup{padding-top:12px;color:var(--workspace-ink)}.extension-setup ol{display:grid;gap:18px}.extension-setup li p{margin:6px 0;font-size:12px}.extension-setup .workspace-button{margin:5px 8px 0 0;font-size:12px}.extension-setup .directory{color:var(--workspace-muted);overflow-wrap:anywhere}

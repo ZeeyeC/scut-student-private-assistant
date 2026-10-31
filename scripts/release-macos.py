@@ -19,7 +19,7 @@ from pathlib import Path
 PROJECT = Path(__file__).resolve().parents[1]
 WORKSPACE = PROJECT.parent
 EXCLUDED_PARTS = {
-    ".git", ".tools", ".venv", "node_modules", "__pycache__", ".pytest_cache",
+    ".git", ".superpowers", ".tools", ".venv", "node_modules", "__pycache__", ".pytest_cache",
     ".ruff_cache", "build", "dist", ".output", ".output-e2e", ".wxt", "data",
     "backups", "test-results", "test-results-local", "playwright-report", "desktop-extension",
 }
@@ -95,6 +95,8 @@ def source_archive(project, destination, secrets):
 
 
 def verify_bundle(app, version, secrets):
+    if (app / "Contents/Resources/source-project.txt").exists():
+        raise RuntimeError("Release App must not contain developer source linkage")
     import plistlib
 
     with (app / "Contents/Info.plist").open("rb") as stream:
@@ -149,7 +151,7 @@ def run_checks(project, stage, version):
         ("extension_build", ["npm", "--prefix", "extension", "run", "build"]),
         # Build the current frontend and binary before tests consume static assets.
         ("build", [python, "campus-pet/build.py", "--output-dir", str(stage),
-                   "--version", version]),
+                   "--version", version, "--release"]),
         ("backend", [python, "-m", "pytest", "backend/tests", "scripts/tests", "-q"]),
         ("frontend", ["npm", "--prefix", "frontend", "test"]),
         ("browser", [str(project / "frontend/node_modules/.bin/playwright"), "test",
@@ -162,6 +164,7 @@ def run_checks(project, stage, version):
         ("native_integration", [python, "campus-pet/verify.py", "--app", str(stage / "课间桌宠.app")]),
         ("visual_reference", [python, "scripts/verify-ui-reference.py", "--reference", "docs/design/ui-redesign-v2",
                               "--actual", "docs/validation/demo2.5.1/visual", "--native", "campus-pet/build/verification"]),
+        ("new_user_experience", [python,"scripts/verify-new-user.py","--app",str(stage/"课间桌宠.app"),"--output",str(stage/"新用户体验检查.json")]),
         ("frozen_pdf", [python, "scripts/verify-frozen-timetable.py", "--service",
                         str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"),
                         "--output", str(stage / "打包PDF检查.json")]),
@@ -219,14 +222,16 @@ def run_checks(project, stage, version):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--workspace",type=Path,help="Archive destination workspace; source checkout stays in place")
     parser.add_argument("--version", required=True, help="e.g. 2.3.0")
     parser.add_argument("--keep-generated", action="store_true", help="Retain caches and previews")
     args = parser.parse_args()
+    workspace=(args.workspace or WORKSPACE).resolve()
     if not re.fullmatch(r"\d+\.\d+\.\d+", args.version):
         parser.error("Use a three-part numeric version, e.g. 2.4.7")
     label = "Demo" + re.sub(r"\.0$", "", args.version)
-    final = WORKSPACE / label
-    stage = WORKSPACE / (".Demo" + args.version + "-staging")
+    final = workspace / label
+    stage = workspace / (".Demo" + args.version + "-staging")
     if final.exists() or stage.exists():
         parser.error("Release or staging directory already exists; no files overwritten.")
     release_notes = PROJECT / "docs/releases" / (label + ".md")
@@ -283,7 +288,7 @@ def main():
             with path.open("rb") as stream:
                 check_stream(stream, secrets)
     stage.rename(final)
-    removed = [] if args.keep_generated else cleanup_generated(PROJECT, WORKSPACE)
+    removed = [] if args.keep_generated else cleanup_generated(PROJECT, workspace)
     (final / "整理记录.json").write_text(json.dumps({
         "removed_generated_paths": removed, "preserved": [
             "existing archives", label, "active source project", ".env / model.env", "data / backups",
@@ -294,17 +299,18 @@ def main():
         sha256(path) + "  " + path.name + "\n"
         for path in sorted(final.iterdir()) if path.is_file() and path.name != "SHA256SUMS.txt"
     ))
-    (WORKSPACE / "README.md").write_text(
+    source_link=os.path.relpath(PROJECT,workspace)
+    (workspace / "README.md").write_text(
         "# 课间奶蛙\n\n"
         + "当前版本 **" + label + "**（" + args.version + "），已从当前源码独立构建并验证。\n\n"
         + "- [打开最新桌宠](" + label + "/课间桌宠.app)\n"
         + "- [下载最新应用包](" + label + "/" + label + "-Mac-AppleSilicon.zip)\n"
         + "- [当前源码快照](" + label + "/" + label + "-源码.zip)\n"
         + "- [使用说明与已知限制](" + label + "/使用说明.md)\n"
-        + "- [开发任务书](" + PROJECT.name + "/docs/roadmap/demo2.2-development-taskbook.md)\n\n"
-        + "活跃源码与个人资料在 `" + PROJECT.name + "/`；目录名保留以兼容既有路径。"
+        + "- [开发计划与进度](" + source_link + "/docs/roadmap/Demo2.5-开发进度追踪表.md)\n\n"
+        + "开发工作树在 `" + source_link + "/`；原主目录、个人资料和已有归档均保留。"
         + "Key 在私有配置中，资料在 data/、backups/ 中，不进入发布包。\n\n"
-        + "每版开发后按 [发布流程](" + PROJECT.name + "/docs/releases/发布流程.md)"
+        + "每版开发后按 [发布流程](" + source_link + "/docs/releases/发布流程.md)"
         + "重新验证、打包并清理旧预览及构建缓存。历史验证材料见“资料归档”。\n"
     )
     print("Release complete:", final, flush=True)

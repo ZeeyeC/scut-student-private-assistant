@@ -36,6 +36,12 @@ final class BrowserLaunchPolicy {
         defaults.set(browser.rawValue, forKey: "schoolImportBrowser")
     }
 
+    func openExtensionManager(completion:@escaping(Error?)->Void={_ in}) throws {
+        guard let application=resolve(selectedBrowser.bundleIdentifier) else {throw ServiceError.message("未安装所选浏览器，请先安装或切换。")}
+        let address=selectedBrowser == .chrome ? "chrome://extensions/" : "edge://extensions/"
+        open(URL(string:address)!,application,completion)
+    }
+
     func launch(_ context: SchoolImportContext, origin: URL, now: Date = Date(), completion: @escaping (Error?) -> Void = {_ in}) throws {
         let url = context.bridgeURL
         guard UUID(uuidString: context.id) != nil,

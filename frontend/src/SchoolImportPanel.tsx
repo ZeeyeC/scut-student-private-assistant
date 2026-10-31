@@ -27,10 +27,15 @@ export const activeImportStatuses=['queued','waiting_login','waiting_timetable',
 export const importStatusLabels:Record<string,string>={queued:'等待浏览器和扩展连接',waiting_login:'请本人登录学校，进入个人课表并查询学期',waiting_timetable:'等待个人课表加载',extracting:'正在提取课表',preview_ready:'课表已回传，请在App校对',completed:'课表已保存',cancelled:'本次导入已取消',expired:'本次导入已过期',failed:'本次导入失败'};
 export function SchoolImportContent({onRequireOpen}:{onRequireOpen:()=>void}){
   const q=useQueryClient(),[error,setError]=useState(''),[busy,setBusy]=useState(false);
-  const pending=useRef<Resource|null>(null),gate=useRef(false);
+  const pending=useRef<Resource|null>(null),gate=useRef(false),observed=useRef('');
   const openRef=useRef(onRequireOpen);openRef.current=onRequireOpen;
   const sessions=useQuery({queryKey:['browser-imports'],queryFn:()=>api<Resource[]>('/browser-imports'),refetchInterval:2000});
   const latest=sessions.data?.at(-1);
+  useEffect(()=>{
+    if(!latest)return;
+    if(activeImportStatuses.includes(latest.data.status)&&latest.data.status!=='preview_ready')observed.current=latest.id;
+    if(latest.data.status==='preview_ready'&&observed.current===latest.id){observed.current='';if(window.__campusNative)void nativeImport('show-import-review',{importId:latest.id}).catch(error=>setError(String(error)));}
+  },[latest?.id,latest?.data.status]);
   useEffect(()=>{if(latest?.data.draft_id)void q.invalidateQueries({queryKey:['drafts']});},[q,latest?.data.draft_id,latest?.data.status]);
   useEffect(()=>{
     const show=()=>{setError('');openRef.current();};
@@ -53,15 +58,10 @@ export function SchoolImportContent({onRequireOpen}:{onRequireOpen:()=>void}){
       <div className="import-school-heading"><Globe size={22}/><div><h3>从学校导入</h3><small>浏览器登录 · 回到 App 校对</small></div></div>
       <p>打开学校课表，登录后由扩展读取课程。</p>
       <div className="import-browser-controls"><ImportBrowserSettings compact/>{latest?.data.status!=='preview_ready'&&<Button disabled={busy} onClick={()=>void start()}>{busy?'正在打开…':'打开浏览器导入'}</Button>}</div>
-      {latest&&<p className="import-status" role="status">{latest.data.desktop_bridge_status==='extension_missing'?'未检测到扩展，请安装或启用后重试。':importStatusLabels[latest.data.status]}</p>}
+      {latest&&<p className="import-status" role="status">{['extension_missing','extension_outdated'].includes(latest.data.desktop_bridge_status)?'未检测到扩展，请安装或启用后重试。':importStatusLabels[latest.data.status]}</p>}
       {latest&&activeImportStatuses.includes(latest.data.status)&&<Button variant="outline" disabled={busy} onClick={async()=>{try{await api(`/browser-imports/${latest.id}/cancel`,{method:'POST',body:JSON.stringify({revision:latest.revision})});pending.current=null;await q.invalidateQueries();}catch(error){setError(String(error));}}}>取消导入</Button>}
       {error&&<p role="alert">{error}</p>}
   </section>;
 }
 
-export function SchoolExtensionGuide({visible}:{visible:boolean}){
- const [error,setError]=useState('');
- const mode=useQuery({queryKey:['app-mode'],queryFn:()=>api<{mode:string}>('/app-mode')});
- const installation=useQuery({queryKey:['extension-installation'],queryFn:()=>api<{directory?:string;available?:boolean}>('/local/extension-installation'),enabled:visible&&mode.data?.mode==='local'});
- return <details className="import-extension-guide"><summary>首次使用：安装课表扩展</summary><ol><li>在所选浏览器启用扩展开发者模式。</li><li>加载下方扩展目录。</li><li>回到此处开始导入。</li></ol>{installation.data?.directory&&<p className="directory">{installation.data.directory}</p>}<Button variant="outline" onClick={async()=>{try{await api('/local/open-extension-folder',{method:'POST',body:'{}'});}catch(e){setError(String(e));}}}>打开扩展目录</Button>{error&&<p role="alert">{error}</p>}</details>;
-}
+export {ExtensionSetup as SchoolExtensionGuide} from './ExtensionSetup';

@@ -33,4 +33,9 @@ func runBrowserLaunchPolicyTests() {
     }
     precondition(rejects { try policy.launch(SchoolImportContext(id: id, bridgeURL: url, expiresAt: .distantPast, status: "queued"), origin: origin) })
     precondition(opened.count == 2, "Invalid contexts must have no external side effects")
+    try! policy.openExtensionManager()
+    precondition(opened.last?.absoluteString == "edge://extensions/", "Management uses selected Edge")
+    precondition(resolved.last == "com.microsoft.edgemac")
+    precondition(rejects {try missing.openExtensionManager()})
+
 }

@@ -30,6 +30,26 @@ extension AppDelegate {
                 guard let raw = payload["browser"] as? String else { throw ServiceError.message("请选择Chrome或Edge。") }
                 try browserLaunchPolicy.select(raw); importReply(requestId, result: settings()); return
             }
+            if command == "open-extension-manager" {
+                try browserLaunchPolicy.openExtensionManager { [weak self] error in Task{@MainActor in self?.importReply(requestId,error:error)} };return
+            }
+            if command == "copy-extension-path" {
+                Task {
+                    do {
+                        guard let result=try await js("const r=await fetch('/api/local/extension-installation');if(!r.ok)throw new Error('扩展目录暂不可用');return r.json()") as? [String:Any],result["available"] as? Bool == true,let path=result["directory"] as? String else {throw ServiceError.message("扩展文件未准备好，请重新安装完整App。")}
+                        NSPasteboard.general.clearContents();NSPasteboard.general.setString(path,forType:.string)
+                        importReply(requestId,result:["copied":true])
+                    } catch {importReply(requestId,error:error)}
+                };return
+            }
+            if command == "show-import-review",let id=payload["importId"] as? String,UUID(uuidString:id) != nil {
+                Task {do {
+                    let literal=String(data:try JSONSerialization.data(withJSONObject:[id]),encoding:.utf8)!
+                    guard let result=try await js("const r=await fetch('/api/browser-imports/'+encodeURIComponent(\(literal)[0]));if(!r.ok)throw new Error('导入不可用');return r.json()") as? [String:Any],let data=result["data"] as? [String:Any],data["status"] as? String == "preview_ready" else {throw ServiceError.message("课表尚未回传")}
+                    showAssistant(page:"日程");_ = try await webView.evaluateJavaScript("window.dispatchEvent(new Event('campus-start-import'))")
+                    importReply(requestId,result:["opened":true])
+                } catch {importReply(requestId,error:error)}};return
+            }
             guard command == "open-school-import", let id = payload["importId"] as? String, UUID(uuidString: id) != nil else {
                 throw ServiceError.message("学校导入请求无效。")
             }

@@ -12,6 +12,7 @@ from pathlib import Path
 root = Path(__file__).resolve().parent
 version = (root / "VERSION").read_text(encoding="utf8").strip()
 parser = argparse.ArgumentParser()
+parser.add_argument("--release",action="store_true",help="Portable distribution without developer source linkage")
 parser.add_argument("--reuse-service", action="store_true", help="Reuse this project's previously built service")
 parser.add_argument("--output-dir", type=Path, help="Build a preview alongside the stable App")
 parser.add_argument("--version", default=version, help="Override the preview bundle version")
@@ -93,7 +94,7 @@ for tag, size, retina in entries:
 body = b"".join(chunks)
 (resources / "AppIcon.icns").write_bytes(struct.pack(">4sI", b"icns", len(body) + 8) + body)
 # Location only, never the original .env, API keys, databases or screenshots.
-(resources / "source-project.txt").write_text(str(project), encoding="utf8")
+runpy.run_path(str(project / "scripts/app_build_mode.py"))["configure_source_marker"](resources,project,args.release)
 with (contents / "Info.plist").open("wb") as handle:
     plistlib.dump({
         "CFBundleExecutable": "CampusPet", "CFBundleIdentifier": "cn.campuscompanion.pet",
