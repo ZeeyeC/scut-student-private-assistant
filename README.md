@@ -1,5 +1,7 @@
 # 课间 · 华工学生助手
 
+最新更新 **2.5.5 正常退出与资料路径记忆**：[说明](docs/releases/Demo2.5.5.md) · [验收](docs/validation/demo2.5.5/README.md)。旧包集中在 `/Users/czy/ProjectManagement/课间归档/历史版本`，不再散放项目根目录。已通过17项发布门禁及真实CommandQ/无参数重开验收。[打开新版](/Users/czy/ProjectManagement/Demo2.5.5/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.5.5/Demo2.5.5-Mac-AppleSilicon.zip)。
+
 当前更新 **2.5.4 校区节次快捷选择**：[说明](docs/releases/Demo2.5.4.md) · [验证](docs/validation/demo2.5.4/README.md)。课表预览内选择五山/国际/大学城；设置中仍可自定义。17项正式门禁通过，新版已沿原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.4/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.4/Demo2.5.4-Mac-AppleSilicon.zip)。
 
 当前更新 **2.5.3 重新导入与覆盖课表**：课表校对中可明确选择替换全部旧课程，准备保存展示移除数量，确认后生效；修复空课表的过期设置版本冲突。[本版说明](docs/releases/Demo2.5.3.md) · [验证](docs/validation/demo2.5.3/README.md)。已通过17项正式门禁，35项哈希复核通过，新版已沿用原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.3/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.3/Demo2.5.3-Mac-AppleSilicon.zip)。以下为旧版记录。

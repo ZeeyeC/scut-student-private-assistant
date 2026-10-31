@@ -8,6 +8,7 @@ extension AppDelegate {
     }
 
     func waitFor(_ expression: String) async throws {
+        print("SMOKE wait: " + expression); fflush(stdout)
         for _ in 0..<160 {
             if (try? await js("return Boolean(\(expression));")) as? Bool == true { return }
             try await Task.sleep(nanoseconds: 150_000_000)
@@ -48,10 +49,10 @@ extension AppDelegate {
             const input = document.querySelector('.composer textarea');
             Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, \(literal)[0]);
             input.dispatchEvent(new Event('input', {bubbles:true}));
-            await new Promise(requestAnimationFrame);
-            document.querySelector('.composer .workspace-button').click();
             return true;
             """)
+        try await waitFor("document.querySelector('.composer .workspace-button')?.disabled === false")
+        _ = try await js("document.querySelector('.composer .workspace-button').click(); return true;")
     }
 
     func runSmoke() {
@@ -394,11 +395,13 @@ extension AppDelegate {
             const selects = document.querySelectorAll('[data-after-class-form] select');
             selects[0].value = 'homework'; selects[0].dispatchEvent(new Event('change', {bubbles:true}));
             selects[1].value = 'none'; selects[1].dispatchEvent(new Event('change', {bubbles:true}));
-            await new Promise(requestAnimationFrame);
+            // Flush React input state even when macOS occludes the test window.
+            await new Promise(resolve => setTimeout(resolve, 0));
             const input = document.querySelector('[data-after-class-form] textarea');
             Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, '完成第三章习题 1～5');
             input.dispatchEvent(new Event('input', {bubbles:true}));
-            await new Promise(requestAnimationFrame);
+            // Flush React input state even when macOS occludes the test window.
+            await new Promise(resolve => setTimeout(resolve, 0));
             const button = [...document.querySelectorAll('[data-after-class-form] button')].find(b => b.textContent === '保存作业并加入日程');
             button.click(); return true;
             """)
@@ -634,6 +637,7 @@ extension AppDelegate {
                 try? data.write(to: output.appendingPathComponent("result.json"))
             }
         }
+        bypassServiceShutdownOnTerminate = true
         NSApp.terminate(nil)
     }
 }

@@ -12,13 +12,16 @@ let assistantOrigin: URL = {
 }()
 
 struct LaunchOptions {
+    static let rememberedDataDirectoryKey = "rememberedDataDirectory"
+    static let rememberedProjectModeKey = "rememberedProjectMode"
+
     var dataDirectory: URL
     var projectMode: Bool
     var externalService: Bool
     var smokeDirectory: URL?
+    var rememberDataDirectory = false
 
-    static func parse() -> LaunchOptions {
-        let args = CommandLine.arguments
+    static func parse(args: [String] = CommandLine.arguments, defaults: UserDefaults = .standard) -> LaunchOptions {
         func argument(_ name: String) -> String? {
             guard let index = args.firstIndex(of: name), index + 1 < args.count else { return nil }
             return args[index + 1]
@@ -27,13 +30,36 @@ struct LaunchOptions {
         let source = marker.flatMap { try? String(contentsOf: $0, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines) }
         let explicit = argument("--data-dir")
         let sourceExists = source.map { FileManager.default.fileExists(atPath: $0 + "/backend/app/main.py") } ?? false
-        let base = explicit ?? (sourceExists ? source! : NSHomeDirectory() + "/Library/Application Support/CampusCompanion")
+        let rememberedPath = defaults.string(forKey: rememberedDataDirectoryKey).flatMap { path in
+            FileManager.default.fileExists(atPath: path) ? path : nil
+        }
+        let externalService = args.contains("--external-service")
+        let smokeDirectory = argument("--smoke-test").map { URL(fileURLWithPath: $0) }
+        let base: String
+        let projectMode: Bool
+        if let explicit {
+            base = explicit
+            projectMode = args.contains("--project")
+        } else if let rememberedPath {
+            base = rememberedPath
+            projectMode = defaults.bool(forKey: rememberedProjectModeKey)
+        } else {
+            base = sourceExists ? source! : NSHomeDirectory() + "/Library/Application Support/CampusCompanion"
+            projectMode = sourceExists
+        }
         return LaunchOptions(
             dataDirectory: URL(fileURLWithPath: base).standardizedFileURL,
-            projectMode: explicit == nil && sourceExists,
-            externalService: args.contains("--external-service"),
-            smokeDirectory: argument("--smoke-test").map { URL(fileURLWithPath: $0) }
+            projectMode: projectMode,
+            externalService: externalService,
+            smokeDirectory: smokeDirectory,
+            rememberDataDirectory: explicit != nil && args.contains("--remember-data-dir") && !externalService && smokeDirectory == nil
         )
+    }
+
+    func persistSelectionIfNeeded(defaults: UserDefaults = .standard) {
+        guard rememberDataDirectory, !externalService, smokeDirectory == nil else { return }
+        defaults.set(dataDirectory.path, forKey: Self.rememberedDataDirectoryKey)
+        defaults.set(projectMode, forKey: Self.rememberedProjectModeKey)
     }
 }
 
@@ -49,6 +75,10 @@ final class ServiceController {
     private let healthTransport = LocalHealthTransport(origin: assistantOrigin)
     private(set) var healthDiagnostics: [HealthDiagnostic] = []
     init(options: LaunchOptions) { self.options = options }
+
+    func persistSelectionIfNeeded(defaults: UserDefaults = .standard) {
+        options.persistSelectionIfNeeded(defaults: defaults)
+    }
 
     private func probeHealth(timeout: TimeInterval) async -> HealthProbe {
         let result = await healthTransport.fetch(timeout: timeout)

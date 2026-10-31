@@ -1,5 +1,8 @@
 """Isolated real API; deliberately no model configuration or personal data."""
 import os
+import asyncio
+from langchain_core.messages import AIMessageChunk
+from langchain_core.outputs import ChatGenerationChunk
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -15,6 +18,16 @@ from tests.test_agent_streaming import ChatFlowModel
 
 class PetTestModel(ChatFlowModel):
     """Explicit test fixture. No credentials or external model requests."""
+    async def _astream(self, messages, stop=None, run_manager=None, **kwargs):
+        if str(messages[-1].content) == "流式测试":
+            app.state.smoke_stream_release.clear()
+            yield ChatGenerationChunk(message=AIMessageChunk(content="第一段"))
+            await asyncio.wait_for(app.state.smoke_stream_release.wait(), timeout=60)
+            yield ChatGenerationChunk(message=AIMessageChunk(content="第二段"))
+        else:
+            async for chunk in super()._astream(messages, stop, run_manager, **kwargs):
+                yield chunk
+
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         if str(messages[-1].content).startswith("commit:"):
             return ToolModel._generate(self, messages, stop, run_manager, **kwargs)
@@ -30,6 +43,15 @@ app = create_app({
     "public_origin": "http://127.0.0.1:5189", "scut_adapter_path": "",
 })
 app.state.agent_model_factory = lambda: PetTestModel()
+app.state.smoke_stream_release = asyncio.Event()
+
+@app.middleware("http")
+async def release_after_busy_shutdown(request, call_next):
+    response = await call_next(request)
+    if request.url.path == "/api/local/shutdown" and response.status_code == 409:
+        app.state.smoke_stream_release.set()
+    return response
+
 # Fixed academic clock only in this explicitly isolated verification server.
 # Production uses the real server clock and exposes no override endpoint.
 after_class.now = lambda: datetime.fromisoformat("2026-10-14T18:30:00+08:00")

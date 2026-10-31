@@ -54,6 +54,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var smokeStarted = false
     var automaticActions = true
     var stoppingService = false
+    var bypassServiceShutdownOnTerminate = false
+    var lastStopError: String?
+    var stopBackendOperation: (() async throws -> Void)?
+    var terminationReplyHandler: ((Bool) -> Void)?
     var exitConfirmation: NSAlert?
     var nextPerformanceAt = ProcessInfo.processInfo.systemUptime + 20
 
@@ -71,6 +75,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
            let existing = NSRunningApplication.runningApplications(withBundleIdentifier: identifier)
             .first(where: { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }) {
             existing.activate(options: [.activateAllWindows])
+            bypassServiceShutdownOnTerminate = true
             NSApp.terminate(nil); return
         }
         NSApp.setActivationPolicy(.regular)
@@ -182,7 +187,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         menu.addItem(item("切换窗口大小", #selector(toggleLayout(_:)), ""))
         menu.addItem(.separator())
         menu.addItem(item("关闭助手面板", #selector(closePanel), "w"))
-        menu.addItem(item("仅退出桌宠（后台继续运行）", #selector(quit), "q"))
+        menu.addItem(item("仅退出桌宠（后台继续运行）", #selector(quit)))
+        menu.addItem(item("退出课间", #selector(normalQuit), "q"))
         appItem.submenu = menu
         let editItem = NSMenuItem(title: "编辑", action: nil, keyEquivalent: "")
         let edit = NSMenu(title: "编辑")
@@ -243,6 +249,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         Task {
             do {
                 try await service.start()
+                service.persistSelectionIfNeeded()
                 ready = true; starting = false; receiveAssistantMood(.idle)
                 webView.load(URLRequest(url: assistantOrigin))
             } catch {
@@ -329,7 +336,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     @objc func showPet() { pet.animationsVisible = true; lastAnimationTime = ProcessInfo.processInfo.systemUptime; panel.orderFrontRegardless(); constrainAndSave(); scheduleNextPerformance() }
     @objc func hidePet() { hidePetBubbles(); pet.animationsVisible = false; panel.orderOut(nil) }
     @objc func closePanel() { assistant.orderOut(nil) }
-    @objc func quit() { NSApp.terminate(nil) }
+    @objc func normalQuit() { NSApp.terminate(nil) }
+    @objc func quit() {
+        bypassServiceShutdownOnTerminate = true
+        NSApp.terminate(nil)
+    }
     @objc func stopServiceAndQuit() {
         guard !stoppingService, exitConfirmation == nil else { return }
         guard ready, trusted(webView?.url) else {
@@ -351,12 +362,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             self.exitConfirmation = nil
             guard response == .alertFirstButtonReturn else { return }
             Task {
-                do { try await self.stopBackend(); self.quit() }
+                do {
+                    try await self.stopBackend()
+                    self.bypassServiceShutdownOnTerminate = true
+                    self.normalQuit()
+                }
                 catch { self.showStopError(error.localizedDescription) }
             }
         }
     }
     func stopBackend() async throws {
+        if let stopBackendOperation {
+            try await stopBackendOperation()
+            ready = false
+            return
+        }
         guard !stoppingService else { throw ServiceError.message("正在停止后台，请稍候。") }
         guard ready, trusted(webView?.url) else { throw ServiceError.message("尚未连接本机助手，请先重新连接。") }
         stoppingService = true
@@ -374,6 +394,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         ready = false
     }
     func showStopError(_ message: String) {
+        lastStopError = message
+        guard let assistant else { return }
         let alert = NSAlert()
         alert.messageText = "未能停止后台"
         alert.informativeText = message
@@ -443,6 +465,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         showPet(); showAssistant(); return true
     }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        if bypassServiceShutdownOnTerminate {
+            bypassServiceShutdownOnTerminate = false
+            return .terminateNow
+        }
+        Task { @MainActor in
+            do {
+                try await self.stopBackend()
+                if let handler = self.terminationReplyHandler {
+                    handler(true)
+                } else {
+                    sender.reply(toApplicationShouldTerminate: true)
+                }
+            } catch {
+                self.showStopError(error.localizedDescription)
+                if let handler = self.terminationReplyHandler {
+                    handler(false)
+                } else {
+                    sender.reply(toApplicationShouldTerminate: false)
+                }
+            }
+        }
+        return .terminateLater
+    }
     func applicationWillTerminate(_ notification: Notification) {
         timer?.invalidate()
         reminderTimer?.invalidate()

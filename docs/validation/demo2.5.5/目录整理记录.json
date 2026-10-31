@@ -1,0 +1,46 @@
+{
+  "moved_not_deleted": [
+    {
+      "from": "/Users/czy/ProjectManagement/Demo2.4.7",
+      "to": "/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.4.7"
+    },
+    {
+      "from": "/Users/czy/ProjectManagement/Demo2.4.9",
+      "to": "/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.4.9"
+    },
+    {
+      "from": "/Users/czy/ProjectManagement/Demo2.5",
+      "to": "/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.5"
+    },
+    {
+      "from": "/Users/czy/ProjectManagement/Demo2.5.1",
+      "to": "/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.5.1"
+    },
+    {
+      "from": "/Users/czy/ProjectManagement/Demo2.5.2",
+      "to": "/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.5.2"
+    },
+    {
+      "from": "/Users/czy/ProjectManagement/Demo2.5.3",
+      "to": "/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.5.3"
+    },
+    {
+      "from": "/Users/czy/ProjectManagement/Demo2.5.4",
+      "to": "/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.5.4"
+    }
+  ],
+  "preserved": [
+    "Demo2.5.5",
+    "agentbuild",
+    "data",
+    "backups",
+    "private configuration",
+    "installed dependencies"
+  ],
+  "public_upload": false,
+  "removed_replaced_failed_build_binaries_after_success": [
+    "/Users/czy/ProjectManagement/课间归档/诊断记录/Demo2.5.5-首次发布暂存/课间桌宠.app",
+    "/Users/czy/ProjectManagement/课间归档/诊断记录/Demo2.5.5-端口占用暂存/课间桌宠.app",
+    "/Users/czy/ProjectManagement/课间归档/诊断记录/Demo2.5.5-忙碌时序暂存/课间桌宠.app"
+  ]
+}

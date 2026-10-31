@@ -1,0 +1,40 @@
+[
+  {
+    "elapsedMilliseconds" : 16,
+    "port" : 5189,
+    "probeID" : "F0F0F110-7301-477F-BF40-A0F4A4CF199A",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 3,
+    "port" : 5189,
+    "probeID" : "3FCAB52D-4F65-4067-AF9F-ABBBCE152CBB",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  }
+]

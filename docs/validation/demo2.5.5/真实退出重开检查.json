@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "real_cmd_q_app_exited": true,
+  "real_cmd_q_port5173_closed": true,
+  "reopened_without_arguments": true,
+  "same_original_database": true,
+  "remembered_original_data_directory": true,
+  "real_course_confirmation_performed": false
+}

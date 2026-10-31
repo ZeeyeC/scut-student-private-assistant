@@ -49,6 +49,58 @@ struct NativeTests {
             guard let exits = menu.item(withTitle: "关闭与退出")?.submenu else { preconditionFailure("Pet must expose an exit submenu") }
             precondition(exits.item(withTitle: "仅退出桌宠（后台继续运行）")?.action == #selector(AppDelegate.quit), "Pet-only exit must keep existing quit behavior")
             precondition(exits.item(withTitle: "停止后台并退出…") != nil, "Service shutdown must be separately selectable")
+            app.installMenus()
+            let appSubmenu = NSApp.mainMenu?.items.first?.submenu
+            let cmdQItem = appSubmenu?.items.first(where: { $0.keyEquivalent == "q" })
+            precondition(cmdQItem?.action == #selector(AppDelegate.normalQuit), "Cmd+Q must invoke normalQuit so applicationShouldTerminate stops the backend")
+            let suiteName = "CampusPetLifecycleTests.\(UUID().uuidString)"
+            let testDefaults = UserDefaults(suiteName: suiteName)!
+            defer { testDefaults.removePersistentDomain(forName: suiteName) }
+            let tempRoot = FileManager.default.temporaryDirectory.appendingPathComponent("campus-pet-profile-\(UUID().uuidString)", isDirectory: true)
+            let rememberedDir = tempRoot.appendingPathComponent("remembered", isDirectory: true)
+            let explicitDir = tempRoot.appendingPathComponent("explicit", isDirectory: true)
+            try! FileManager.default.createDirectory(at: rememberedDir, withIntermediateDirectories: true)
+            try! FileManager.default.createDirectory(at: explicitDir, withIntermediateDirectories: true)
+            defer { try? FileManager.default.removeItem(at: tempRoot) }
+            let withoutRemember = LaunchOptions.parse(args: ["CampusPet", "--data-dir", explicitDir.path], defaults: testDefaults)
+            withoutRemember.persistSelectionIfNeeded(defaults: testDefaults)
+            precondition(testDefaults.string(forKey: LaunchOptions.rememberedDataDirectoryKey) == nil, "Explicit data-dir without --remember-data-dir must not persist")
+            let smokeRemember = LaunchOptions.parse(args: ["CampusPet", "--data-dir", explicitDir.path, "--remember-data-dir", "--smoke-test", tempRoot.path], defaults: testDefaults)
+            smokeRemember.persistSelectionIfNeeded(defaults: testDefaults)
+            precondition(testDefaults.string(forKey: LaunchOptions.rememberedDataDirectoryKey) == nil, "Smoke launch must never persist data-dir")
+            let externalRemember = LaunchOptions.parse(args: ["CampusPet", "--data-dir", explicitDir.path, "--remember-data-dir", "--external-service"], defaults: testDefaults)
+            externalRemember.persistSelectionIfNeeded(defaults: testDefaults)
+            precondition(testDefaults.string(forKey: LaunchOptions.rememberedDataDirectoryKey) == nil, "External service launch must never persist data-dir")
+            let rememberedOption = LaunchOptions.parse(args: ["CampusPet", "--data-dir", rememberedDir.path, "--project", "--remember-data-dir"], defaults: testDefaults)
+            ServiceController(options: rememberedOption).persistSelectionIfNeeded(defaults: testDefaults)
+            let restored = LaunchOptions.parse(args: ["CampusPet"], defaults: testDefaults)
+            precondition(restored.dataDirectory == rememberedDir.standardizedFileURL && restored.projectMode, "Remembered existing path and project flag must be restored before default")
+            let overrideExplicit = LaunchOptions.parse(args: ["CampusPet", "--data-dir", explicitDir.path], defaults: testDefaults)
+            precondition(overrideExplicit.dataDirectory == explicitDir.standardizedFileURL && !overrideExplicit.projectMode, "Explicit --data-dir must take priority over remembered profile")
+            try! FileManager.default.removeItem(at: rememberedDir)
+            let fallbackAfterMissing = LaunchOptions.parse(args: ["CampusPet"], defaults: testDefaults)
+            precondition(fallbackAfterMissing.dataDirectory != rememberedDir.standardizedFileURL, "Missing remembered path must fall back to default")
+            var stopCalls = 0
+            var replies: [Bool] = []
+            app.terminationReplyHandler = { replies.append($0) }
+            app.bypassServiceShutdownOnTerminate = true
+            precondition(app.applicationShouldTerminate(NSApp) == .terminateNow, "Bypass flag must allow immediate termination")
+            precondition(!app.bypassServiceShutdownOnTerminate && stopCalls == 0, "Bypass termination must reset flag and skip stopBackend")
+            app.ready = true
+            app.stopBackendOperation = { stopCalls += 1 }
+            precondition(app.applicationShouldTerminate(NSApp) == .terminateLater, "Normal termination must wait for stopBackend")
+            while replies.count < 1 { RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.01)) }
+            precondition(stopCalls == 1 && replies == [true] && !app.ready, "Successful stopBackend must reply true and clear ready")
+            app.lastStopError = nil
+            app.stopBackendOperation = {
+                stopCalls += 1
+                throw ServiceError.message("后台忙碌")
+            }
+            precondition(app.applicationShouldTerminate(NSApp) == .terminateLater, "Failed stopBackend must also use terminateLater")
+            while replies.count < 2 { RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.01)) }
+            precondition(stopCalls == 2 && replies == [true, false] && app.lastStopError == "后台忙碌", "Failed stopBackend must reply false and report error")
+            app.stopBackendOperation = nil
+            app.terminationReplyHandler = nil
             let identity: [String: Any] = ["application": "campus-companion", "mode": "local", "desktop_protocol": 1]
             precondition(AppDelegate.pages == ["今日", "日程", "任务", "助手", "设置"], "Native navigation follows the App workspace")
             precondition(AppDelegate.displayPage("目标与复盘") == "任务", "Legacy goals entry still reaches the task subview")
