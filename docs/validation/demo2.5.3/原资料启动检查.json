@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "formal_app_and_backend_running": true,
+  "same_previous_database": true,
+  "running_frozen_backend_exposes_merge_and_replace": true,
+  "real_timetable_auto_confirmed": false
+}

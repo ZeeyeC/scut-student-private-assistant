@@ -1,6 +1,6 @@
 # 课间 · 华工学生助手
 
-当前更新 **2.5.3 重新导入与覆盖课表**：课表校对中可明确选择替换全部旧课程，准备保存展示移除数量，确认后生效；修复空课表的过期设置版本冲突。[本版说明](docs/releases/Demo2.5.3.md) · [验证](docs/validation/demo2.5.3/README.md)。正式归档预期位置 `/Users/czy/ProjectManagement/Demo2.5.3`，发布结果以manifest为准。以下为旧版记录。
+当前更新 **2.5.3 重新导入与覆盖课表**：课表校对中可明确选择替换全部旧课程，准备保存展示移除数量，确认后生效；修复空课表的过期设置版本冲突。[本版说明](docs/releases/Demo2.5.3.md) · [验证](docs/validation/demo2.5.3/README.md)。已通过17项正式门禁，35项哈希复核通过，新版已沿用原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.3/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.3/Demo2.5.3-Mac-AppleSilicon.zip)。以下为旧版记录。
 
 当前更新 **2.5.2 Dock入口修复**：普通App模式，关闭窗口/隐藏桌宠后Dock保留，点击恢复主窗口和桌宠，菜单栏同时保留。[本版说明](docs/releases/Demo2.5.2.md) · [本版验证](docs/validation/demo2.5.2/README.md)。17项正式门禁通过，35项哈希复核通过，新版已用原资料启动。[打开新版](/Users/czy/ProjectManagement/Demo2.5.2/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.2/Demo2.5.2-Mac-AppleSilicon.zip)。以下2.5.1记录作为已有版本保留。
 
@@ -32,7 +32,7 @@
 
 ## 双击打开
 
-- 正式包入口：[Demo2.5.2](/Users/czy/ProjectManagement/Demo2.5.2/)；已有Demo2.5.1、Demo2.5与历史归档保留。
+- 正式包入口：[Demo2.5.3](/Users/czy/ProjectManagement/Demo2.5.3/)；已有Demo2.5.2、Demo2.5.1及历史归档保留。
 - `campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台，日常界面在App内完成。
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。

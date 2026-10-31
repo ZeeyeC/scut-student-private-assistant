@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "version": "2.5.3",
+  "checks": {
+    "extension_tests": "passed",
+    "extension_types": "passed",
+    "extension_build": "passed",
+    "build": "passed",
+    "backend": "passed",
+    "frontend": "passed",
+    "browser": "passed",
+    "browser_local": "passed",
+    "native_logic": "passed",
+    "pet_asset_freeze": "passed",
+    "native_health_transport": "passed",
+    "native_integration": "passed",
+    "visual_reference": "passed",
+    "new_user_experience": "passed",
+    "frozen_pdf": "passed",
+    "frozen_ab": "passed",
+    "frozen_b_interaction": "passed"
+  },
+  "application_signature": "verified",
+  "application_zip_crc": "passed",
+  "source_zip_crc": "passed",
+  "private_values_scan": "passed",
+  "scope": "current working tree; isolated automated data; no paid model calls",
+  "real_samples_acceptance": "pending; see release notes"
+}
