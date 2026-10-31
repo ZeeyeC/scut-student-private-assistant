@@ -226,6 +226,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/campus-presets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Campus Presets */
+        get: operations["get_campus_presets_api_campus_presets_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/settings": {
         parameters: {
             query?: never;
@@ -2308,6 +2325,33 @@ export interface components {
             /** Campus */
             campus?: string | null;
         };
+        /** CampusPreset */
+        CampusPreset: {
+            /**
+             * Id
+             * @enum {string}
+             */
+            id: "wushan" | "guoji" | "daxuecheng";
+            /** Label */
+            label: string;
+            /** Periods */
+            periods: {
+                [key: string]: components["schemas"]["CampusPresetWindow"];
+            };
+            /** Classroom Open */
+            classroom_open: string;
+            /** Morning Exercise */
+            morning_exercise: string;
+            /** Note */
+            note: string;
+        };
+        /** CampusPresetWindow */
+        CampusPresetWindow: {
+            /** Start */
+            start: string;
+            /** End */
+            end: string;
+        };
         /** CampusTransfer */
         CampusTransfer: {
             /** From Campus */
@@ -4281,6 +4325,8 @@ export interface components {
              * @default 20
              */
             week_count: number;
+            /** Campus Preset */
+            campus_preset?: ("wushan" | "guoji" | "daxuecheng") | null;
             /** Periods */
             periods?: {
                 [key: string]: components["schemas"]["Window"];
@@ -4404,6 +4450,8 @@ export interface components {
              * @enum {string}
              */
             save_mode: "merge" | "replace";
+            /** Campus Preset */
+            campus_preset?: ("wushan" | "guoji" | "daxuecheng") | null;
             /** Courses */
             courses: components["schemas"]["Course"][];
             /**
@@ -4995,6 +5043,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserRead"];
+                };
+            };
+        };
+    };
+    get_campus_presets_api_campus_presets_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CampusPreset"][];
                 };
             };
         };

@@ -13,6 +13,7 @@ from pydantic import Field
 
 from app import imports, store
 from app.calendar import parse_week_expression
+from app.campus_presets import effective_settings
 from app.contracts import StrictModel
 from app.timetable_contracts import TimetableCandidate
 
@@ -81,7 +82,10 @@ async def view(db, owner, draft):
     result = store.view(draft)
     result["data"] = {
         **result["data"],
-        "clarifications": questions(draft.data["payload"], settings.data),
+        "clarifications": questions(
+            draft.data["payload"],
+            effective_settings(settings.data, draft.data["payload"]),
+        ),
     }
     return result
 

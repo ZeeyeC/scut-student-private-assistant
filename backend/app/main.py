@@ -261,7 +261,16 @@ def create_app(config=None):
     async def me(user=Depends(current_user)):
         return user
 
+    from app.campus_presets import (
+        CAMPUS_PRESETS,
+        CampusPreset,
+        reconcile_settings_preset,
+    )
     from app.contracts import ResourceView
+
+    @app.get("/api/campus-presets", response_model=list[CampusPreset])
+    def get_campus_presets(user=Depends(current_user)):
+        return CAMPUS_PRESETS
 
     @app.get("/api/settings", response_model=ResourceView)
     async def get_settings(user=Depends(current_user), db=Depends(get_db)):
@@ -277,7 +286,9 @@ def create_app(config=None):
         async def update():
             s = await store.settings(db, str(user.id))
             store.revision(s, body.revision)
-            s.data = body.data.model_dump(mode="json")
+            s.data = reconcile_settings_preset(
+                s.data, body.data.model_dump(mode="json")
+            )
             s.revision += 1
             return store.view(s)
 

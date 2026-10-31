@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./api";
 import { Button } from "./components/ui/button";
 import { DraftActions } from "./Assignments";
+import { CampusPresetSelector, type CampusPresetId } from "./CampusPresetSelector";
 import type { Resource } from "./types";
 
 const fields = {name: "课程名称", teacher: "教师", campus: "校区", location: "教室", weekday: "星期", weeks_text: "周次", periods: "节次"};
@@ -13,7 +14,7 @@ type Candidate = {
   location: string | null; weekday: number | null; weeks_text: string | null; periods: number[];
   reviewed: boolean; excluded: boolean; uncertain_fields: Field[]; evidence: Evidence[];
 };
-type Payload = {semester_label: string; semester_confirmed: boolean; candidates: Candidate[]; warnings: string[]};
+type Payload = {semester_label: string; semester_confirmed: boolean; campus_preset?: CampusPresetId | null; candidates: Candidate[]; warnings: string[]};
 
 export function TimetableRecognitionInput() {
   const q = useQueryClient();
@@ -59,7 +60,9 @@ export function TimetableRecognitionInput() {
 
 export function TimetableRecognitionReview({draft}: {draft: Resource}) {
   const textInput = draft.data.draft_kind === "timetable_text";
+  const [currentDraft, setCurrentDraft] = useState<Resource>(draft);
   const [payload, setPayload] = useState<Payload>(draft.data.payload);
+  const [presetTouched, setPresetTouched] = useState(false);
   const [error, setError] = useState("");
   const [previewBusy, setPreviewBusy] = useState(false);
   const [preview, setPreview] = useState<{fingerprint: string; data: {added: string[]; reused: string[]; existing_kept: number}} | null>(null);
@@ -68,22 +71,40 @@ export function TimetableRecognitionReview({draft}: {draft: Resource}) {
   const asset = useQuery({queryKey: ["timetable-asset", assetId], enabled: !textInput, queryFn: () => api<Resource>("/timetable-assets/" + assetId)});
   const courses = useQuery({queryKey: ["courses"], queryFn: () => api<Resource[]>("/courses")});
   const settings = useQuery({queryKey: ["settings"], queryFn: () => api<Resource>("/settings")});
-  const patch = (index: number, values: Partial<Candidate>) => setPayload(p => ({...p, candidates: p.candidates.map((c, i) => i === index ? {...c, ...values} : c)}));
+  const defaultPreset =
+    (draft.data.payload.campus_preset as CampusPresetId | null | undefined) ??
+    (settings.data?.data.campus_preset as CampusPresetId | null | undefined) ??
+    null;
+  const effectivePayload: Payload = {
+    ...payload,
+    campus_preset: presetTouched
+      ? (payload.campus_preset ?? null)
+      : defaultPreset,
+  };
+  const patch = (index: number, values: Partial<Candidate>) => setPayload(p => ({...p, campus_preset: effectivePayload.campus_preset, candidates: p.candidates.map((c, i) => i === index ? {...c, ...values} : c)}));
   const change = (index: number, field: Field, value: unknown) => patch(index, {[field]: value, reviewed: false,
-    uncertain_fields: payload.candidates[index].uncertain_fields.filter(f => f !== field)});
+    uncertain_fields: effectivePayload.candidates[index].uncertain_fields.filter(f => f !== field)});
   const missing = (c: Candidate) => (["name", "weekday", "weeks_text", "periods"] as Field[]).filter(k => k === "periods" ? !c.periods.length : !String(c[k] ?? "").trim());
-  const included = payload.candidates.filter(c => !c.excluded);
-  const canSave = payload.semester_confirmed && !!payload.semester_label.trim() && included.length > 0 && included.every(c => c.reviewed && !c.uncertain_fields.length && !missing(c).length);
-  const fingerprint = JSON.stringify([payload, settings.data?.revision, courses.data?.map(c => [c.id,c.revision])]);
+  const included = effectivePayload.candidates.filter(c => !c.excluded);
+  const canSave = effectivePayload.semester_confirmed && !!effectivePayload.semester_label.trim() && included.length > 0 && included.every(c => c.reviewed && !c.uncertain_fields.length && !missing(c).length);
+  const fingerprint = JSON.stringify([effectivePayload, settings.data?.revision, courses.data?.map(c => [c.id,c.revision])]);
   const checked = preview?.fingerprint === fingerprint;
+  const activeDraft = draft.revision > currentDraft.revision ? draft : currentDraft;
   return <section className="card timetable-recognition-review" aria-label={textInput ? "文字课表校对" : "课表识别校对"}>
     <p className="eyebrow">{textInput ? "文字课表草稿" : "华工课表识别草稿"} · 尚未保存</p><h2>{textInput ? "核对文字内容，逐门确认课程" : "对照原件，逐门确认课程"}</h2>
-    <p>共 {payload.candidates.length} 个候选，保留 {included.length} 个。当前已保存 {courses.data?.length ?? "…"} 条课程；保存时仅新增，完全相同的课程复用，不删除已有课程。</p>
+    <p>共 {effectivePayload.candidates.length} 个候选，保留 {included.length} 个。当前已保存 {courses.data?.length ?? "…"} 条课程；保存时仅新增，完全相同的课程复用，不删除已有课程。</p>
     <p>请核对设置中的开学周一、学期周数与节次时间。非连续节次会分段占用，中间未上课的节次保持空闲；连续节次间的休息单独记录并保留。</p>
-    <label>{textInput ? "文字课表的学期名称" : "识别课表的学期名称"}<input value={payload.semester_label} onChange={e => setPayload({...payload, semester_label: e.target.value, semester_confirmed: false})} /></label>
+    <label>{textInput ? "文字课表的学期名称" : "识别课表的学期名称"}<input value={effectivePayload.semester_label} onChange={e => setPayload({...effectivePayload, semester_label: e.target.value, semester_confirmed: false})} /></label>
     {settings.data && <p>当前设置学期：{settings.data.data.semester_name || "未填写"}；首周周一：{settings.data.data.week1_monday || "未填写，请前往设置补齐"}；共 {settings.data.data.week_count} 周。</p>}
-    <label className="check"><input type="checkbox" checked={payload.semester_confirmed} onChange={e => setPayload({...payload, semester_confirmed: e.target.checked})} />{textInput ? "确认这些课程属于上述学期，且与当前设置一致" : "确认这些页面属于上述学期，且与当前设置一致"}</label>
-    {payload.warnings.map((w, i) => <p role="alert" key={i}>{w}</p>)}
+    <label className="check"><input type="checkbox" checked={effectivePayload.semester_confirmed} onChange={e => setPayload({...effectivePayload, semester_confirmed: e.target.checked})} />{textInput ? "确认这些课程属于上述学期，且与当前设置一致" : "确认这些页面属于上述学期，且与当前设置一致"}</label>
+    <CampusPresetSelector
+      value={effectivePayload.campus_preset ?? null}
+      onChange={(next) => {
+        setPresetTouched(true);
+        setPayload({ ...effectivePayload, campus_preset: next });
+      }}
+    />
+    {effectivePayload.warnings.map((w, i) => <p role="alert" key={i}>{w}</p>)}
     <div className="timetable-review-layout">
       <aside className="timetable-source">
         {textInput ? <><h3>对话原文</h3>{draft.data.source.messages.map((m: {run_id: string; text: string}) => <pre className="pdf-source-text" key={m.run_id}>{m.text}</pre>)}
@@ -121,11 +142,11 @@ export function TimetableRecognitionReview({draft}: {draft: Resource}) {
     {error && <p role="alert">{error}</p>}
     <Button variant="outline" disabled={!canSave || previewBusy} onClick={async () => {
       setPreviewBusy(true); setError("");
-      try {const data = await api<{added: string[]; reused: string[]; existing_kept: number}>(`/drafts/${draft.id}/timetable-preview`, {method:"POST", body:JSON.stringify({revision:draft.revision,payload})}); setPreview({fingerprint,data});}
+      try {const data = await api<{added: string[]; reused: string[]; existing_kept: number}>(`/drafts/${draft.id}/timetable-preview`, {method:"POST", body:JSON.stringify({revision:activeDraft.revision,payload:effectivePayload})}); setPreview({fingerprint,data});}
       catch(e){setError(String(e));} finally {setPreviewBusy(false);}
     }}>{previewBusy ? "正在检查…" : "检查导入差异"}</Button>
     {checked && preview && <div role="status" className="recognition-diff"><p>将新增 {preview.data.added.length} 条：{preview.data.added.join("、") || "无"}</p><p>复用相同课程 {preview.data.reused.length} 条：{preview.data.reused.join("、") || "无"}；保留已有 {preview.data.existing_kept} 条，删除 0 条。</p></div>}
-    <DraftActions draft={draft} payload={payload} onError={setError} canSave={canSave && checked} blockedMessage={canSave ? "请先检查导入差异，再确认保存。" : "请补齐学期与每门课程的名称、星期、周次、节次，逐门确认；不需要的课程可勾选不导入。"} />
+    <DraftActions draft={activeDraft} payload={effectivePayload} onError={setError} onSaved={setCurrentDraft} canSave={canSave && checked} blockedMessage={canSave ? "请先检查导入差异，再确认保存。" : "请补齐学期与每门课程的名称、星期、周次、节次，逐门确认；不需要的课程可勾选不导入。"} />
   </section>;
 }
 

@@ -5,6 +5,11 @@ import { api } from "./api";
 import { Button } from "./components/ui/button";
 import { LocalSettings } from "./LocalMode";
 import type { Resource } from "./types";
+import {
+  CAMPUS_PRESETS,
+  CampusPresetSelector,
+  type CampusPresetId,
+} from "./CampusPresetSelector";
 import { AfterClassPreferences } from "./AfterClass";
 import {PersonalProfile} from "./PersonalProfile";
 import {StudyTypes} from "./StudyTypes";
@@ -23,6 +28,7 @@ type Form = {
   max_block_minutes: number;
   min_block_minutes: number;
   buffer_minutes: number;
+  campus_preset: CampusPresetId | null;
   periodRows: { number: number; start: string; end: string }[];
   study_windows: { start: string; end: string }[];
 };
@@ -55,14 +61,17 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
     queryKey: ["health"],
     queryFn: () => api<Record<string, boolean>>("/healthz"),
   });
-  const { register, control, reset, handleSubmit, formState } = useForm<Form>();
+  const { register, control, reset, handleSubmit, formState, watch, setValue } =
+    useForm<Form>();
   const periods = useFieldArray({ control, name: "periodRows" }),
     windows = useFieldArray({ control, name: "study_windows" });
+  const campusPreset = watch("campus_preset");
   useEffect(() => {
     if (s.data) {
       const d = s.data.data;
       reset({
         ...d,
+        campus_preset: (d.campus_preset ?? null) as CampusPresetId | null,
         week1_monday: d.week1_monday ?? "",
         periodRows: Object.entries(d.periods).map(([number, p]) => ({
           number: Number(number),
@@ -94,6 +103,7 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
                 revision: s.data!.revision,
                 data: {
                   ...data,
+                  campus_preset: data.campus_preset ?? null,
                   week1_monday: data.week1_monday || null,
                   periods: Object.fromEntries(
                     periodRows.map((p) => [
@@ -140,6 +150,25 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
         <section className="card">
           <h2>实际节次时间</h2>
           <p>没有节次映射时，课程无法参与排程。此处不会默认填入学校作息。</p>
+          <CampusPresetSelector
+            mode="settings"
+            value={campusPreset ?? null}
+            onChange={(next) => {
+              setValue("campus_preset", next, { shouldDirty: true });
+              if (next) {
+                const found = CAMPUS_PRESETS.find((p) => p.id === next);
+                if (found) {
+                  periods.replace(
+                    Object.entries(found.periods).map(([number, p]) => ({
+                      number: Number(number),
+                      start: p.start,
+                      end: p.end,
+                    })),
+                  );
+                }
+              }
+            }}
+          />
           {periods.fields.map((p, i) => (
             <div className="period-row" key={p.id}>
               <label>
@@ -150,6 +179,8 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
                   max={30}
                   {...register(`periodRows.${i}.number`, {
                     valueAsNumber: true,
+                    onChange: () =>
+                      setValue("campus_preset", null, { shouldDirty: true }),
                   })}
                 />
               </label>
@@ -158,7 +189,10 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
                 <input
                   type="time"
                   required
-                  {...register(`periodRows.${i}.start`)}
+                  {...register(`periodRows.${i}.start`, {
+                    onChange: () =>
+                      setValue("campus_preset", null, { shouldDirty: true }),
+                  })}
                 />
               </label>
               <label>
@@ -166,13 +200,19 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
                 <input
                   type="time"
                   required
-                  {...register(`periodRows.${i}.end`)}
+                  {...register(`periodRows.${i}.end`, {
+                    onChange: () =>
+                      setValue("campus_preset", null, { shouldDirty: true }),
+                  })}
                 />
               </label>
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => periods.remove(i)}
+                onClick={() => {
+                  setValue("campus_preset", null, { shouldDirty: true });
+                  periods.remove(i);
+                }}
               >
                 移除
               </Button>
@@ -181,13 +221,14 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
           <Button
             type="button"
             variant="outline"
-            onClick={() =>
+            onClick={() => {
+              setValue("campus_preset", null, { shouldDirty: true });
               periods.append({
                 number: periods.fields.length + 1,
                 start: "",
                 end: "",
-              })
-            }
+              });
+            }}
           >
             添加节次
           </Button>

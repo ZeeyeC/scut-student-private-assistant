@@ -12,12 +12,14 @@ export function DraftActions({
   draft,
   payload,
   onError,
+  onSaved,
   canSave = true,
   blockedMessage = "没有可保存的安排，补齐信息后重新生成。",
 }: {
   draft: Resource;
   payload: unknown;
   onError: (e: string) => void;
+  onSaved?: (resource: Resource) => void;
   canSave?: boolean;
   blockedMessage?: string;
 }) {
@@ -25,12 +27,15 @@ export function DraftActions({
     [ask, setAsk] = useState(false),
     [busy, setBusy] = useState(false),
     [saved, setSaved] = useState<Resource>(draft),
-    [key] = useState(crypto.randomUUID());
+    [key, setKey] = useState(() => crypto.randomUUID());
+  useEffect(() => {
+    if (draft.revision > saved.revision) setSaved(draft);
+  }, [draft, saved.revision]);
   const needsCheck = ["timetable", "timetable_recognition", "timetable_text", "calendar_event", "course_change", "semester_calendar"].includes(draft.data.draft_kind);
   const fingerprint = JSON.stringify(payload);
   const [review,setReview] = useState<{fingerprint:string;report:ConflictReport}|null>(null);
   const [acknowledged,setAcknowledged] = useState(false);
-  useEffect(()=>{setAsk(false);setReview(null);setAcknowledged(false);},[fingerprint]);
+  useEffect(()=>{setAsk(false);setReview(null);setAcknowledged(false);setKey(crypto.randomUUID());},[fingerprint]);
   const ready = !needsCheck || (ask && review?.fingerprint===fingerprint);
   return <div className="draft-actions">
     {!canSave ? <p role="status">{blockedMessage}</p> : !ready ? (
@@ -60,6 +65,7 @@ export function DraftActions({
                     body: JSON.stringify({ revision: saved.revision, payload }),
                   });
             setSaved(edited);
+            onSaved?.(edited);
             await api(`/drafts/${draft.id}/confirm`, {
               method: "POST",
               body: JSON.stringify({ revision: edited.revision, ...(needsCheck ? {conflict_token:review?.report.conflict_token} : {}) }),
@@ -71,7 +77,8 @@ export function DraftActions({
               window.dispatchEvent(new CustomEvent("campus-calendar-saved", {detail: edited.data.payload.starts_at}));
             }
           } catch (e) {
-            if(draft.data.draft_kind==='timetable'&&e instanceof ApiError&&e.status===409){
+            setKey(crypto.randomUUID());
+            if(["timetable", "timetable_recognition", "timetable_text"].includes(draft.data.draft_kind)&&e instanceof ApiError&&e.status===409){
               setAsk(false);setReview(null);setAcknowledged(false);
               onError('保存前数据发生变化，已保留校对内容，请重新检查后保存。');
             }else onError(String(e));

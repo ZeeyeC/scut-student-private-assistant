@@ -2,7 +2,13 @@ from datetime import date, datetime, time
 from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from app.campus_presets import (
+    CampusPresetId,
+    normalize_campus_preset,
+    preset_periods,
+)
 
 
 class StrictModel(BaseModel):
@@ -43,6 +49,7 @@ class StudentSettings(StrictModel):
     semester_name: str = ""
     week1_monday: date | None = None
     week_count: int = Field(default=20, ge=1, le=30)
+    campus_preset: CampusPresetId | None = None
     periods: dict[int, Window] = Field(default_factory=dict)
     study_windows: list[Window] = Field(
         default_factory=lambda: [
@@ -57,8 +64,17 @@ class StudentSettings(StrictModel):
     buffer_minutes: int = Field(default=10, ge=0, le=120)
     campus_transfers: list[CampusTransfer] = Field(default_factory=list, max_length=100)
 
+    @field_validator("campus_preset", mode="before")
+    @classmethod
+    def normalize_preset(cls, value):
+        return normalize_campus_preset(value)
+
     @model_validator(mode="after")
     def valid(self):
+        if self.campus_preset and not self.periods:
+            self.periods = {
+                int(k): Window(**v) for k, v in preset_periods(self.campus_preset).items()
+            }
         pairs = [(r.from_campus, r.to_campus) for r in self.campus_transfers]
         if len(set(pairs)) != len(pairs):
             raise ValueError("同一方向的校区转移时间不能重复")
@@ -113,10 +129,16 @@ class Course(StrictModel):
 
 class Timetable(StrictModel):
     save_mode: Literal["merge", "replace"] = "merge"
+    campus_preset: CampusPresetId | None = None
     courses: list[Course] = Field(max_length=500)
     completeness: Literal["partial", "unknown", "full"] = "partial"
     semester_label: str = Field(max_length=200)
     warnings: list[str] = Field(default_factory=list)
+
+    @field_validator("campus_preset", mode="before")
+    @classmethod
+    def normalize_preset(cls, value):
+        return normalize_campus_preset(value)
 
     @model_validator(mode="after")
     def unique(self):

@@ -21,6 +21,7 @@ from starlette.concurrency import run_in_threadpool
 
 from app import imports, store
 from app.calendar import course_intervals, parse_week_expression
+from app.campus_presets import effective_settings
 from app.contracts import Course, DraftEdit, ResourceView
 from app.db import Resource
 from app.timetable_contracts import (
@@ -329,7 +330,7 @@ def timetable_recognition_router(config, get_db, current_user):
         validate_review_edit(draft.data["payload"], payload)
         settings = await store.settings(db, owner)
         return await preview_recognized_courses(
-            db, owner, draft, payload, settings.data
+            db, owner, draft, payload, effective_settings(settings.data, payload)
         )
 
     @router.get("/timetable-jobs", response_model=list[ResourceView])

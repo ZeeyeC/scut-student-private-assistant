@@ -11,6 +11,7 @@ from fastapi import HTTPException
 
 from app import store
 from app.calendar import expand_calendar, occupied_course_events
+from app.campus_presets import effective_settings
 
 REVIEW_KINDS = {
     "timetable",
@@ -184,6 +185,11 @@ async def draft_conflicts(db, owner, draft, payload):
             "message": "仅检查本批实际课程。校区和转移时间以确认信息为准，已有计划不会自动移动。",
         }
     s = await store.settings(db, owner)
+    effective = (
+        effective_settings(s.data, payload)
+        if kind in {"timetable", "timetable_recognition", "timetable_text"}
+        else s.data
+    )
     courses = [store.view(r) for r in await store.rows(db, owner, "course")]
     exceptions = await store.rows(db, owner, "exception")
     fixed = await store.rows(db, owner, "fixed_event")
@@ -219,7 +225,7 @@ async def draft_conflicts(db, owner, draft, payload):
         validate_review_edit(draft.data["payload"], payload)
         candidates = reviewed_courses(
             payload,
-            s.data,
+            effective,
             draft.id if kind == "timetable_text" else draft.data["source"]["asset_id"],
             "text" if kind == "timetable_text" else "ocr",
         )
@@ -256,12 +262,12 @@ async def draft_conflicts(db, owner, draft, payload):
 
     # Include explicit moved occurrences outside the teaching semester as well.
     anchor = (
-        date.fromisoformat(s.data["week1_monday"])
-        if s.data.get("week1_monday")
+        date.fromisoformat(effective["week1_monday"])
+        if effective.get("week1_monday")
         else date.today()
     )
-    days = [anchor, anchor + timedelta(weeks=s.data["week_count"], days=-1)]
-    tz = ZoneInfo(s.data["timezone"])
+    days = [anchor, anchor + timedelta(weeks=effective["week_count"], days=-1)]
+    tz = ZoneInfo(effective["timezone"])
     for e in (
         [r.data for r in exceptions]
         + ([payload] if kind == "calendar_event" else [])
@@ -273,7 +279,7 @@ async def draft_conflicts(db, owner, draft, payload):
     configuration_warnings = []
     try:
         events = expand_calendar(
-            s.data, courses, [r.data for r in exceptions], min(days), max(days)
+            effective, courses, [r.data for r in exceptions], min(days), max(days)
         )
     except ValueError as exc:
         events = []
@@ -286,14 +292,14 @@ async def draft_conflicts(db, owner, draft, payload):
     events.extend({"id": r.id, "kind": "fixed_event", **r.data} for r in fixed)
     if kind == "calendar_event":
         events.append({"id": "candidate:fixed", "kind": "fixed_event", **payload})
-    report = detect_conflicts(events, s.data, touched)
+    report = detect_conflicts(events, effective, touched)
     return {
         **report,
         "replacement": timetable_replacement,
         "complete": not configuration_warnings,
         "configuration_warnings": configuration_warnings,
         "pending_count": report["pending_count"] + len(configuration_warnings),
-        "timezone": s.data["timezone"],
+        "timezone": effective["timezone"],
         "conflict_token": store.digest(
             [owner, draft.id, CONFLICT_VERSION, payload, versions]
         ),

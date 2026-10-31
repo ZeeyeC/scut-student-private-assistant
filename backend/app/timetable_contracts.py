@@ -2,8 +2,9 @@
 
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 
+from app.campus_presets import CampusPresetId, normalize_campus_preset
 from app.contracts import StrictModel
 
 TimetableField = Literal[
@@ -76,8 +77,14 @@ class TimetableReviewCandidate(TimetableCandidate):
 class TimetableRecognition(StrictModel):
     semester_label: str = Field(default="", max_length=200)
     semester_confirmed: bool = False
+    campus_preset: CampusPresetId | None = None
     candidates: list[TimetableReviewCandidate] = Field(max_length=500)
     warnings: list[str] = Field(default_factory=list, max_length=100)
+
+    @field_validator("campus_preset", mode="before")
+    @classmethod
+    def normalize_preset(cls, value):
+        return normalize_campus_preset(value)
 
     @model_validator(mode="after")
     def unique(self):

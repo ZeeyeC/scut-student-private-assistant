@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from pydantic import ValidationError
 
 from app import store
+from app.campus_presets import effective_settings, preset_periods
 from app.contracts import (
     AssignmentExtraction,
     ConstraintDraft,
@@ -63,6 +64,12 @@ def validate_payload(kind, payload):
 async def create_draft(db, owner, kind, payload, source=None):
     payload = validate_payload(kind, payload)
     s = await store.settings(db, owner)
+    if (
+        kind in {"timetable", "timetable_recognition", "timetable_text"}
+        and payload.get("campus_preset") is None
+        and s.data.get("campus_preset")
+    ):
+        payload = {**payload, "campus_preset": s.data["campus_preset"]}
     source = dict(source or {})
     if kind == "assignment":
         if not payload.get("asset_id"):
@@ -173,6 +180,12 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     ):
         store.revision(s, d.data["source_revision"])
     payload = validate_payload(d.data["draft_kind"], d.data["payload"])
+    effective = (
+        effective_settings(s.data, payload)
+        if d.data["draft_kind"]
+        in {"timetable", "timetable_recognition", "timetable_text"}
+        else s.data
+    )
     if d.data["draft_kind"] == "timetable" and payload["save_mode"] == "replace" and conflict_token is None:
         raise HTTPException(422, "覆盖课表前请重新检查冲突并确认替换范围")
     from app.conflicts import REVIEW_KINDS, draft_conflicts
@@ -200,7 +213,7 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     if d.data["draft_kind"] in {"timetable_recognition", "timetable_text"}:
         from app.timetable_recognition import save_recognized_courses
 
-        ids = await save_recognized_courses(db, owner, d, payload, s.data)
+        ids = await save_recognized_courses(db, owner, d, payload, effective)
     if d.data["draft_kind"] == "scheduling_constraint":
         from app.constraints import save_constraint
 
@@ -238,9 +251,16 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
             db.add(r)
             ids.append(r.id)
     if d.data["draft_kind"] == "timetable":
+        if payload.get("campus_preset"):
+            for course in payload["courses"]:
+                if any(
+                    p not in effective["periods"] and str(p) not in effective["periods"]
+                    for p in course["periods"]
+                ):
+                    raise HTTPException(422, "课程节次超出所选校区模板范围，请在设置中自定义节次")
         old = {r.data["source_key"]: r for r in await store.rows(db, owner, "course")}
         for course in payload["courses"]:
-            if max(course["weeks"]) > s.data["week_count"]:
+            if max(course["weeks"]) > effective["week_count"]:
                 raise HTTPException(422, "周次超过学期范围")
             r = old.get(course["source_key"])
             if r:
@@ -266,6 +286,15 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
             from app.timetable_replacement import retire_course_links
 
             await retire_course_links(db, owner, removed_courses, d.id)
+    if (
+        d.data["draft_kind"] in {"timetable", "timetable_recognition", "timetable_text"}
+        and payload.get("campus_preset")
+    ):
+        s.data = {
+            **s.data,
+            "campus_preset": payload["campus_preset"],
+            "periods": preset_periods(payload["campus_preset"]),
+        }
     await store.bump(db, owner)
     summary = {"draft_id": d.id, "saved_ids": ids}
     if d.data["draft_kind"] == "timetable":
