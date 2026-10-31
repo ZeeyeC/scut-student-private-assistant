@@ -64,7 +64,7 @@ export async function replayEvents(
             onEvent(event);
             cursor = event.seq;
             retries = 0;
-            if (["done", "error"].includes(event.type))
+            if (["done", "error", "cancelled"].includes(event.type))
               return;
           }
         }
@@ -79,7 +79,7 @@ export async function replayEvents(
         throw new SessionError("聊天会话不可用，请刷新助手");
       if(status.ok){
         const latest=(await status.json()).data;
-        if(["done","failed","waiting_approval"].includes(latest.status) &&
+        if(["done","failed","waiting_approval","cancelled"].includes(latest.status) &&
            !(Number.isSafeInteger(latest.event_counter) && latest.event_counter>cursor))return;
       }
     } catch (error) {

@@ -42,3 +42,46 @@ app.state.agent_model_factory = lambda: TextTimetableModel()
 
 # Explicit fake gateway only in this isolated UI test server.
 app.state.gateway = FakeTimetableVision([candidate(weeks_text=None)])
+
+
+# Deterministic chat-image fixtures; never a real vision/model provider.
+from tests.test_chat_images import ImageVision
+from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
+from langchain_core.outputs import ChatGeneration, ChatResult
+import asyncio
+import io
+from PIL import Image
+
+class ChatImageVision:
+    def __init__(self):
+        self.attempts = {}
+    async def extract_assignments(self, raw, *args):
+        color = Image.open(io.BytesIO(raw)).convert("RGB").getpixel((0, 0))
+        if color == (0, 0, 255):
+            await asyncio.Event().wait()
+        if color == (255, 0, 0):
+            key = __import__("hashlib").sha256(raw).hexdigest()
+            self.attempts[key] = self.attempts.get(key, 0) + 1
+            if self.attempts[key] == 1:
+                raise TimeoutError("synthetic failure")
+        return await ImageVision().extract_assignments(raw, *args)
+
+class ChatImageModel(TextTimetableModel):
+    def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+        text = next(str(m.content) for m in reversed(messages) if isinstance(m, HumanMessage))
+        last = messages[-1]
+        if text.startswith("识别这张作业截图"):
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="已识别两项作业，请校对草稿后保存。"))])
+        if text == "修改第二项为英语听力":
+            if isinstance(last, ToolMessage) and last.name == "list_assignment_drafts":
+                draft = json.loads(last.content)[0]
+                call = {"name": "update_assignment_draft", "args": {"draft_id": draft["id"], "revision": draft["revision"], "item_index": 1, "changes": {"title": "英语听力"}}}
+            elif isinstance(last, ToolMessage):
+                return ChatResult(generations=[ChatGeneration(message=AIMessage(content="已修改第二项，请校对后保存。"))])
+            else:
+                call = {"name": "list_assignment_drafts", "args": {}}
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="", tool_calls=[{**call, "id": __import__("uuid").uuid4().hex, "type": "tool_call"}]))])
+        return super()._generate(messages, stop, run_manager, **kwargs)
+
+app.state.agent_model_factory = lambda: ChatImageModel()
+app.state.gateway.extract_assignments = ChatImageVision().extract_assignments

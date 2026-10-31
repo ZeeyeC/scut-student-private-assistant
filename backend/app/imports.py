@@ -146,6 +146,18 @@ async def edit_draft(db, owner, rid, expected, payload):
             for k in ("constraint_id", "constraint_revision")
         ):
             raise HTTPException(422, "请从禁排列表重新发起修改，不可更换草稿目标或版本")
+    if r.data["draft_kind"] == "assignment":
+        original_asset = r.data["payload"].get("asset_id")
+        if original_asset:
+            if validated.get("asset_id") is None:
+                validated["asset_id"] = original_asset
+            elif validated.get("asset_id") != original_asset:
+                raise HTTPException(422, "不可更换作业草稿关联的原图")
+        if validated.get("asset_id"):
+            await store.owned(db, owner, validated["asset_id"], "asset")
+        for item in validated["items"]:
+            if item.get("course_id"):
+                await store.owned(db, owner, item["course_id"], "course")
     r.data = {**r.data, "payload": validated}
     r.revision += 1
     return store.view(r)

@@ -19,7 +19,8 @@ import { ConstraintIntents } from "./ConstraintIntents";
 import { visibleDrafts } from "./drafts";
 import {PageHeader} from './layout/PageHeader';
 import {DetailPanel} from './layout/DetailPanel';
-import {Paperclip,ArrowUp} from 'lucide-react';
+import {ArrowUp} from 'lucide-react';
+import {useChatImage,ImageDropArea,ChatImageControls} from './chat-images';
 import {scrollWithinWorkspace} from './layout/scrollWithin';
 const labels: Record<string, string> = {
   get_current_time: "核对当前日期",
@@ -67,6 +68,10 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
     [epoch, setEpoch] = useState(0),
     [showConstraints,setShowConstraints] = useState(false);
   const [historyOpen,setHistoryOpen]=useState(false);
+  const image = useChatImage();
+  const composerInput = useRef<HTMLTextAreaElement>(null);
+  const [imageRun,setImageRun]=useState<Resource|null>(null);
+  const currentThread=useRef(threadId);currentThread.current=threadId;
   const cursors = useRef<Record<string, number>>({});
   const threads = useQuery({
     queryKey: ["threads"],
@@ -80,7 +85,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const activeRun=useRef("");
   useEffect(() => {
     if (!focusThreadId) return;
-    activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
+    image.clear();setImageRun(null);activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
     cursors.current = {};
     setThreadId(focusThreadId); setEpoch(value => value + 1);
   }, [focusThreadId, focusRequest]);
@@ -90,10 +95,11 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   // History and the live stream may finish in different orders. Only the
   // currently owned run may change the composer's busy/approval state.
   const syncRun=(run:Resource)=>{
+    if(run.data.attachment && run.data.thread_id===currentThread.current)setImageRun(run);
     if(activeRun.current!==run.id)return;
     setRunning(["queued","running","resume_queued"].includes(run.data.status));
     setApprovalId(run.data.status==='waiting_approval'?run.data.approval_id??'':'');
-    if(['done','failed'].includes(run.data.status)){activeRun.current='';setStatus('');}
+    if(['done','failed','cancelled'].includes(run.data.status)){activeRun.current='';setStatus('');}
     if(run.data.status==='failed')setError(run.data.error);
   };
   const apply = (event: PublicEvent) => {
@@ -105,6 +111,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       setMessages((messages) => applyMessage(messages, event));
       if (event.type === "message_delta" && ownsRun) setStatus("正在回复…");
     }
+    if (event.type === "cancelled" && ownsRun) {activeRun.current="";setRunning(false);setStatus("已取消识别");}
     if (event.type === "tool_started" && ownsRun) setStatus(labels[p.name] ?? "处理请求");
     if (event.type === "tool_finished") { void q.invalidateQueries({queryKey:["constraint-intents"]}); void q.invalidateQueries({queryKey:["planning-intents"]}); }
     if (event.type === "draft_ready")
@@ -144,6 +151,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       const runs = await api<Resource[]>(`/agent/threads/${threadId}/runs`, { signal: abort.signal });
       if (abort.signal.aborted) return;
       for (const r of runs) {
+        if(r.data.attachment&&r.data.thread_id===currentThread.current)setImageRun(r);
         if (abort.signal.aborted) return;
         const active = ["queued", "running", "resume_queued", "waiting_approval"].includes(r.data.status);
         if (active && !activeRun.current) {
@@ -186,48 +194,79 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
     );
     return () => abort.abort();
   }, [runId, epoch]);
+  async function sendMessage(text:string){
+      if ((!text.trim() && !image.image) || activeRun.current) return;
+      const attached=image.image;
+      if(attached&&!image.consent){image.setError("请先确认图片识别授权。");return;}
+      const reference=image.reference ? new Date(image.reference).toISOString() : undefined;
+      text=text.trim() || "识别这张作业截图";
+      image.freeze();
+      const owner='request:'+crypto.randomUUID();activeRun.current=owner;
+      setError("");
+      setRunning(true);
+      let tid = threadId;
+      try {
+        if (!tid) {
+          const t = await api<Resource>("/agent/threads", {
+            method: "POST",
+            body: "{}",
+            headers: attached ? {"Idempotency-Key":attached.threadKey} : {},
+          });
+          if(activeRun.current!==owner)return;
+          tid = t.id;
+          setThreadId(tid);
+        }
+        if(attached&&!attached.assetId){
+          const form=new FormData();form.set("file",attached.file);
+          const asset=await api<Resource>("/assets",{method:"POST",body:form,headers:{"Idempotency-Key":attached.uploadKey}});
+          attached.assetId=asset.id;
+        }
+        if(activeRun.current!==owner)return;
+        const r = await api<Resource>("/agent/runs", {
+          method: "POST",
+          body: JSON.stringify({ thread_id: tid, message: text, ...(attached?{attachment:{kind:"assignment_image",asset_id:attached.assetId,consent:true,reference_time:reference}}:{}) }),
+          headers:attached?{"Idempotency-Key":attached.runKey}:{},
+        });
+        if(activeRun.current!==owner)return;
+        activeRun.current=r.id;setRunId(r.id);
+        if(attached){setImageRun(r);image.clear();runtime.thread.composer.setText("");}
+      } catch (e) {
+        if(activeRun.current!==owner)return;
+        if(attached?.assetId&&tid){
+          try{
+            const runs=await api<Resource[]>('/agent/threads/'+tid+'/runs');
+            const recovered=runs.find(r=>r.data.attachment?.asset_id===attached.assetId);
+            if(activeRun.current!==owner)return;
+            if(recovered){setImageRun(recovered);setRunId(recovered.id);activeRun.current=recovered.id;syncRun(recovered);image.clear();return;}
+          }catch{/* Keep selection and stable operation keys for explicit retry. */}
+        }
+        activeRun.current='';setError(String(e));
+        setRunning(false);
+      }
+  }
+  async function actOnImage(action:'retry'|'cancel'){
+    if(!imageRun)return;
+    try{
+      const latest=await api<Resource>('/agent/runs/'+imageRun.id);
+      const r=await api<Resource>('/agent/runs/'+imageRun.id+'/image/'+action,{method:'POST',body:JSON.stringify({revision:latest.revision})});
+      setImageRun(r);setError('');
+      if(action==='retry'){activeRun.current=r.id;setRunId(r.id);setRunning(true);setEpoch(v=>v+1)}
+      else{activeRun.current='';setRunning(false);setStatus('已取消识别');void q.invalidateQueries({queryKey:['drafts']});}
+    }catch(e){setError(String(e))}
+  }
   const runtime = useExternalStoreRuntime<Message>({
     messages,
     isRunning: running,
     convertMessage: (m) => ({
       id: m.id,
       role: m.role,
-      content: [{ type: "text", text: m.content }],
+      content: [{ type: "text", text: m.content }, ...(m.asset_id?[{type:"image" as const,image:"/api/assets/"+m.asset_id}]:[])],
     }),
     onNew: async (message: AppendMessage) => {
-      const text = message.content
-        .filter((c) => c.type === "text")
-        .map((c) => c.text)
-        .join("\n");
-      if (!text.trim() || activeRun.current) return;
-      const owner='request:'+crypto.randomUUID();activeRun.current=owner;
-      setError("");
-      setRunning(true);
-      try {
-        let tid = threadId;
-        if (!tid) {
-          const t = await api<Resource>("/agent/threads", {
-            method: "POST",
-            body: "{}",
-          });
-          if(activeRun.current!==owner)return;
-          tid = t.id;
-          setThreadId(tid);
-        }
-        const r = await api<Resource>("/agent/runs", {
-          method: "POST",
-          body: JSON.stringify({ thread_id: tid, message: text }),
-        });
-        if(activeRun.current!==owner)return;
-        activeRun.current=r.id;setRunId(r.id);
-      } catch (e) {
-        if(activeRun.current!==owner)return;
-        activeRun.current='';setError(String(e));
-        setRunning(false);
-      }
+      await sendMessage(message.content.filter(c=>c.type==='text').map(c=>c.text).join('\n'));
     },
   });
-  const pendingDrafts = visibleDrafts(drafts.data).filter(d=>!reviewOutside&&!d.data.source?.constraint_intent_id).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
+  const pendingDrafts = visibleDrafts(drafts.data).filter(d=>!d.data.source?.thread_id || d.data.source.thread_id===threadId).filter(d=>!reviewOutside&&!d.data.source?.constraint_intent_id).filter(d => !embedded || (courseEntry ? ["timetable_text"] : ["calendar_event", "assignment"]).includes(d.data.draft_kind));
   const hasIntents = constraintIntents.data?.some(r=>["clarifying","ready_for_review"].includes(r.data.status));
   useEffect(()=>{if(hasIntents)setShowConstraints(true);},[hasIntents]);
   const hasReview = !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
@@ -247,7 +286,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
               method: "POST",
               body: "{}",
             });
-            activeRun.current='';setThreadId(t.id);
+            image.clear();setImageRun(null);activeRun.current='';setThreadId(t.id);
             setRunId("");
             setApprovalId("");
             setError("");
@@ -265,7 +304,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       <div className={hasReview ? "assistant-layout has-review" : "assistant-layout"}>
         <div className="chat-area">
       <AssistantRuntimeProvider runtime={runtime}>
-        <ThreadPrimitive.Root className="chat card">
+        <ImageDropArea disabled={running||!!approvalId} onFiles={files=>void image.add(files)}><ThreadPrimitive.Root className="chat card">
           <ThreadPrimitive.Viewport className="chat-viewport">
             <ThreadPrimitive.Empty>
               <p>想安排什么？</p>
@@ -285,14 +324,21 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
             </ThreadPrimitive.ViewportFooter>
           </ThreadPrimitive.Viewport>
           <p role="status">{status}</p>
+          {imageRun&&<div className="image-run-actions" role="status">
+            {imageRun.data.status==='failed'&&<button type="button" onClick={()=>void actOnImage('retry')}>重试图片识别</button>}
+            {running&&<button type="button" onClick={()=>void actOnImage('cancel')}>取消图片识别</button>}
+          </div>}
           <ComposerPrimitive.Root className="composer">
+            <ChatImageControls state={image} disabled={running||!!approvalId}/>
+
             <ComposerPrimitive.Input
+              ref={composerInput}
               placeholder="说说你想安排什么"
               aria-label="给助手的消息"
             />
-            <div className="composer-bottom"><button type="button" className="workspace-text-button" onClick={()=>window.dispatchEvent(new CustomEvent('campus-start-import',{detail:{method:'image'}}))}><Paperclip size={16}/>附件</button><ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId}><ArrowUp size={16}/>发送</ComposerPrimitive.Send></div>
+            <div className="composer-bottom"><span/>{image.image?<button type="button" className="workspace-button" aria-label="发送作业截图" disabled={running||!!approvalId||!image.consent} onClick={()=>void sendMessage(composerInput.current?.value??'')}><ArrowUp size={16}/>发送</button>:<ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId}><ArrowUp size={16}/>发送</ComposerPrimitive.Send>}</div>
           </ComposerPrimitive.Root>
-        </ThreadPrimitive.Root>
+        </ThreadPrimitive.Root></ImageDropArea>
       </AssistantRuntimeProvider>
       {error && (
         <div role="alert">
@@ -328,7 +374,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       ))}
       </div>}
       </div>
-      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{activeRun.current="";setRunning(false);setStatus("");setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
+      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{image.clear();setImageRun(null);activeRun.current="";setRunning(false);setStatus("");setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
     </div>
   );
 }

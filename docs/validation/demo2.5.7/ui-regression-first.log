@@ -1,0 +1,125 @@
+[WebServer] INFO:     Started server process [10929]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 17 tests using 1 worker
+
+(node:10952) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 frontend/e2e/app-workspace.spec.ts:12:1 › shared navigation keeps legacy goals, reminders and compact controls reachable (795ms)
+  ✓   2 frontend/e2e/app-workspace.spec.ts:31:1 › task creation keeps its unsaved input and requires review before storing a task (608ms)
+  ✓   3 frontend/e2e/app-workspace.spec.ts:50:1 › settings exposes five summaries and opens the original preference controls on demand (472ms)
+  ✓   4 frontend/e2e/app-workspace.spec.ts:62:1 › native navigation during review cannot leave the workspace permanently inert (676ms)
+  ✓   5 frontend/e2e/app-workspace.spec.ts:79:1 › bridge loaded before login keeps its initial native navigation until React is ready (468ms)
+  ✓   6 frontend/e2e/app-workspace.spec.ts:90:1 › mounted calendar switches views across main-window and compact widths without losing its date (934ms)
+  ✓   7 frontend/e2e/chat-images.spec.ts:21:1 › image-only chat identifies two items, corrects original, explicitly saves and replays image history (3.6s)
+  ✓   8 frontend/e2e/chat-images.spec.ts:36:1 › drop and paste share preview validation, reject multiple files and preserve text paste (536ms)
+  ✓   9 frontend/e2e/chat-images.spec.ts:52:1 › failed vision retries same run, cancelling vision leaves no actionable draft (2.6s)
+  ✘  10 frontend/e2e/chat-run-race.spec.ts:3:1 › an older run status arriving during a new reply never clears busy state (30.1s)
+(node:11061) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 frontend/e2e/timetable-import-layout.spec.ts:12:1 › browser is the primary default and opening the panel has no launch or write side effect (816ms)
+  ✓  12 frontend/e2e/timetable-import-layout.spec.ts:23:1 › secondary methods retain their input and never launch or recognize by expanding (1.6s)
+  ✘  13 frontend/e2e/timetable-text.spec.ts:28:1 › chat asks for weeks, patches only one course, resumes and saves reviewed timetable (30.1s)
+(node:11100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  14 frontend/e2e/timetable-text.spec.ts:60:1 › timetable embedded chat shows one text review and keeps it when collapsed (30.1s)
+(node:11163) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 frontend/e2e/ui-refinement.visual.spec.ts:7:1 › workspace matches the accepted reference geometry on every page (2.9s)
+  ✓  16 frontend/e2e/ui-refinement.visual.spec.ts:31:1 › agenda marker never overlaps titles or secondary text when text grows (518ms)
+  ✓  17 frontend/e2e/ui-refinement.visual.spec.ts:47:1 › long task details keep their footer and left navigation inside narrow windows (456ms)
+
+
+  1) frontend/e2e/chat-run-race.spec.ts:3:1 › an older run status arriving during a new reply never clears busy state
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: '发送', exact: true })
+
+
+      25 |  await page.getByLabel('邮箱').fill(`chat-race-${crypto.randomUUID()}@example.com`);await page.getByLabel('密码').fill('Student!Password2026');await page.getByRole('button',{name:'注册并登录'}).click();
+      26 |  await page.getByRole('button',{name:'助手',exact:true}).click();const composer=page.getByLabel('给助手的消息');
+    > 27 |  await composer.fill('first');await page.getByRole('button',{name:'发送',exact:true}).click();
+         |                                                                                     ^
+      28 |  await expect(page.locator('.message.assistant').first()).toContainText('第一段第二段');await expect.poll(()=>held).toBe(true);
+      29 |  await expect(page.getByRole('button',{name:'新会话',exact:true})).toBeEnabled();
+      30 |  await composer.fill('second');await page.getByRole('button',{name:'发送',exact:true}).click();
+        at /Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/chat-run-race.spec.ts:27:85
+
+    Error Context: frontend/test-results/chat-run-race-an-older-run-374d3-ply-never-clears-busy-state/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    frontend/test-results/chat-run-race-an-older-run-374d3-ply-never-clears-busy-state/trace.zip
+    Usage:
+
+        npx playwright show-trace frontend/test-results/chat-run-race-an-older-run-374d3-ply-never-clears-busy-state/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) frontend/e2e/timetable-text.spec.ts:28:1 › chat asks for weeks, patches only one course, resumes and saves reviewed timetable
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: '发送', exact: true })
+
+
+      23 | async function say(page: Page, text: string) {
+      24 |   await page.getByRole("textbox",{name:"给助手的消息",exact:true}).fill(text);
+    > 25 |   await page.getByRole("button",{name:"发送",exact:true}).click();
+         |                                                         ^
+      26 | }
+      27 |
+      28 | test("chat asks for weeks, patches only one course, resumes and saves reviewed timetable",async ({page}) => {
+        at say (/Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/timetable-text.spec.ts:25:57)
+        at /Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/timetable-text.spec.ts:31:3
+
+    Error Context: frontend/test-results/timetable-text-chat-asks-f-67945-nd-saves-reviewed-timetable/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    frontend/test-results/timetable-text-chat-asks-f-67945-nd-saves-reviewed-timetable/trace.zip
+    Usage:
+
+        npx playwright show-trace frontend/test-results/timetable-text-chat-asks-f-67945-nd-saves-reviewed-timetable/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) frontend/e2e/timetable-text.spec.ts:60:1 › timetable embedded chat shows one text review and keeps it when collapsed
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: '发送', exact: true })
+
+
+      23 | async function say(page: Page, text: string) {
+      24 |   await page.getByRole("textbox",{name:"给助手的消息",exact:true}).fill(text);
+    > 25 |   await page.getByRole("button",{name:"发送",exact:true}).click();
+         |                                                         ^
+      26 | }
+      27 |
+      28 | test("chat asks for weeks, patches only one course, resumes and saves reviewed timetable",async ({page}) => {
+        at say (/Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/timetable-text.spec.ts:25:57)
+        at /Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/timetable-text.spec.ts:66:3
+
+    Error Context: frontend/test-results/timetable-text-timetable-e-b7eed-and-keeps-it-when-collapsed/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    frontend/test-results/timetable-text-timetable-e-b7eed-and-keeps-it-when-collapsed/trace.zip
+    Usage:
+
+        npx playwright show-trace frontend/test-results/timetable-text-timetable-e-b7eed-and-keeps-it-when-collapsed/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    frontend/e2e/chat-run-race.spec.ts:3:1 › an older run status arriving during a new reply never clears busy state
+    frontend/e2e/timetable-text.spec.ts:28:1 › chat asks for weeks, patches only one course, resumes and saves reviewed timetable
+    frontend/e2e/timetable-text.spec.ts:60:1 › timetable embedded chat shows one text review and keeps it when collapsed
+  14 passed (1.9m)

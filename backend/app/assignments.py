@@ -40,26 +40,49 @@ def decode_image(raw):
         raise HTTPException(422, "图片无效")
 
 
+def recognition_error_message(exc):
+    # Keep provider response bodies and secrets out of public errors.
+    return (
+        "模型未配置，请手工录入或联系部署者"
+        if isinstance(exc, ValueError) and "external_input_required" in str(exc)
+        else "模型识别失败或超时，请重试或手工录入"
+    )
+
+
+async def extract_assignment_payload(app, filename, asset_id, courses, reference):
+    raw = Path(app.state.config.upload_dir, filename).read_bytes()
+    async with asyncio.timeout(120):
+        payload = await app.state.gateway.extract_assignments(
+            raw, "image/png", courses, reference
+        )
+    payload = normalize_extraction(payload, courses, reference)
+    payload["asset_id"] = asset_id
+    return payload
+
+
 async def run_assignment_job(app, owner, jid):
     sessions = app.state.sessions
     async with sessions() as db:
         job = await store.owned(db, owner, jid, "job")
+        if job.data["status"] == "cancelled":
+            return
         asset = await store.owned(db, owner, job.data["asset_id"], "asset")
         courses = [store.view(c) for c in await store.rows(db, owner, "course")]
-        raw = Path(app.state.config.upload_dir, asset.data["filename"]).read_bytes()
+        filename = asset.data["filename"]
         reference = job.data.get("reference_time")
         job.data = {**job.data, "status": "running"}
         job.revision += 1
         await db.commit()
     try:
-        async with asyncio.timeout(120):
-            payload = await app.state.gateway.extract_assignments(
-                raw, "image/png", courses, reference
-            )
-        payload = normalize_extraction(payload, courses, reference)
-        payload["asset_id"] = asset.id
+        payload = await extract_assignment_payload(
+            app, filename, asset.id, courses, reference
+        )
         async with sessions() as db:
             await db.execute(text("BEGIN IMMEDIATE"))
+            job = await store.owned(db, owner, jid, "job")
+            if job.data["status"] == "cancelled":
+                await db.commit()
+                return
             d = await imports.create_draft(
                 db,
                 owner,
@@ -67,19 +90,15 @@ async def run_assignment_job(app, owner, jid):
                 payload,
                 {"asset_id": asset.id, "reference_time": reference},
             )
-            job = await store.owned(db, owner, jid, "job")
             job.data = {**job.data, "status": "done", "draft_id": d["id"]}
             job.revision += 1
             await db.commit()
     except Exception as exc:
         async with sessions() as db:
             job = await store.owned(db, owner, jid, "job")
-            # Keep provider response bodies and secrets out of public errors.
-            msg = (
-                "模型未配置，请手工录入或联系部署者"
-                if isinstance(exc, ValueError) and "external_input_required" in str(exc)
-                else "模型识别失败或超时，请重试或手工录入"
-            )
+            if job.data["status"] == "cancelled":
+                return
+            msg = recognition_error_message(exc)
             job.data = {**job.data, "status": "failed", "error": msg}
             job.revision += 1
             await db.commit()

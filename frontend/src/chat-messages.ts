@@ -1,5 +1,5 @@
 import type { PublicEvent } from "./sse";
-export type ChatMessage = {id: string; role: "user" | "assistant"; content: string; seq: number};
+export type ChatMessage = {id: string; role: "user" | "assistant"; content: string; seq: number; asset_id?:string};
 
 export function applyMessage(messages: ChatMessage[], event: PublicEvent): ChatMessage[] {
   if (event.type !== "message" && event.type !== "message_delta") return messages;
@@ -11,6 +11,7 @@ export function applyMessage(messages: ChatMessage[], event: PublicEvent): ChatM
     role: event.type === "message_delta" ? "assistant" : p.role,
     content: event.type === "message_delta" ? (previous?.content ?? "") + p.delta : p.content,
     seq: event.seq,
+    ...(p.asset_id?{asset_id:p.asset_id}:previous?.asset_id?{asset_id:previous.asset_id}:{}),
   };
   return index < 0 ? [...messages, message] : messages.map((m, i) => i === index ? message : m);
 }

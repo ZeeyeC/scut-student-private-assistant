@@ -14,13 +14,17 @@ from langchain.agents.middleware import AgentMiddleware, dynamic_prompt
 from langchain_core.messages import AIMessage, AIMessageChunk, ToolMessage
 from langchain_core.tools import tool
 from langgraph.types import Command
-from pydantic import Field
+from pydantic import Field, model_validator
 
-from app import imports, store, time_mcp, timetable_text
+from app import assignments, imports, store, time_mcp, timetable_text
+from app import chat_images
 from app.browser_imports import get_import, start_import
 from app.calendar import expand_calendar
 from app.contracts import (
     AssignmentExtraction,
+    AssignmentImageAttachment,
+    AssignmentItemChanges,
+    Confirm,
     FixedEvent,
     ResourceView,
     StrictModel,
@@ -45,6 +49,7 @@ TOOLS = {
     "list_tasks",
     "create_assignment_draft",
     "list_assignment_drafts",
+    "update_assignment_draft",
     "set_assignment_draft_deadline",
     "resolve_academic_deadline",
     "create_calendar_event_draft",
@@ -81,6 +86,7 @@ SYSTEM_PROMPT += "\n用户说‘这周三下午别排事’、‘下周开始每
 SYSTEM_PROMPT += "\n涉及课表、固定事项、调课等时间事实的commit_import必须逐项请求用户批准，不与任何其他写操作并行或合并批准；当前不支持合并冲突预览与批量原子保存。被拒绝的批次应先解释并按用户下一次要求逐项提出。"
 SYSTEM_PROMPT += "\n用户希望少排一点、保留某项、比较休息与复习时，调用get_planning_context读取真实容量、风险、方案和source_revision，list_planning_intents找已有意图。用propose_planning_intent或update_planning_intent记录明确日期范围、取舍、临时保护/偏好时段及实际保留ID，再preview_planning_intent；缺钟点/范围先追问。不能突破已有硬约束，不能编造不同方案；只有一种不同方案或无解要说明。模型只生成候选，选择与保存由界面本人完成；刷新继续同一意图，取消不撤销既有正式事实。"
 SYSTEM_PROMPT += "\n课程或固定事项保存前可调用preview_draft_conflicts解释真实冲突；commit_import只是发起批准，最终批准界面必须显示并核对当前冲突预览与token。事实变化时重新预览，不能用口头同意冒充最新核对。"
+SYSTEM_PROMPT += "\n作业图片附件与草稿编辑规则：当用户在对话消息中附上作业图片时，服务端在模型运行前已完成识别并创建唯一真实作业草稿（带原图asset_id与原文evidence）。已识别的作业图片绝不能再次调用create_assignment_draft重复创建草稿。用户在同对话后续追问中补充或修改草稿条目（标题、关联课程、具体要求、截止时间、提交方式等）时，先通过list_assignment_drafts查询当前会话草稿的draft_id、revision和item_index（从0起），再调用update_assignment_draft或set_assignment_draft_deadline原地修改原草稿对应条目，保留其余条目、原图关联和原文证据。只有用户在界面明确保存或批准commit_import且事务成功后才能称已保存为正式任务。"
 
 
 class NoFilesystem(AgentMiddleware):
@@ -355,6 +361,13 @@ def student_agent(app, owner):
     @dynamic_prompt
     async def current_date_prompt(request):
         clock = await get_current_time.ainvoke({})
+        ctx = conversation.get()
+        attachment_note = (
+            "\n本轮已识别作业图片并生成真实待校对草稿（禁止重复调用create_assignment_draft新建草稿，追问修改请调用update_assignment_draft更新原草稿）："
+            + json.dumps(ctx["attachment_draft"], ensure_ascii=False)
+            if ctx and ctx.get("attachment_draft")
+            else ""
+        )
         return (
             SYSTEM_PROMPT
             + "\n本次模型调用的实时日期（由本机官方时间 MCP 查询，优先于旧聊天记录）："
@@ -363,6 +376,7 @@ def student_agent(app, owner):
             + "涉及今天、明天等相对日期时，先调用 get_current_time 核对，再调用业务查询工具。"
             + "查询课程必须调用 list_course_occurrences，起止日期使用 ISO 日期；回答注明实际查询日期与时区。"
             + "如无法取得实时日期，说明查询失败，不能猜测今天的日期。"
+            + attachment_note
         )
 
     @tool
@@ -547,6 +561,11 @@ def student_agent(app, owner):
         submission_method: str | None = None,
     ) -> dict:
         """Create a reviewable task/assignment from natural language. Preserve wording in due_text. Exact boundaries such as 第14周之前 or 11月1日之前 are automatically resolved from semester/message date, so pass original due_text and leave due_at null. Other deadlines need explicit time/timezone. Never saves before review."""
+        ctx = conversation.get()
+        if ctx and ctx.get("attachment_draft"):
+            raise ValueError(
+                "当前图片消息已自动生成唯一作业草稿，请使用 update_assignment_draft 修改原草稿，切勿重复创建"
+            )
         payload = AssignmentExtraction(
             items=[
                 {
@@ -560,20 +579,37 @@ def student_agent(app, owner):
                 }
             ]
         ).model_dump(mode="json")
+        source = (
+            {"thread_id": ctx["thread_id"], "run_id": ctx["run_id"]}
+            if ctx and ctx.get("thread_id")
+            else None
+        )
         async with transaction(app) as db:
+            if ctx and ctx.get("run_id"):
+                run_row = await store.owned(db, owner, ctx["run_id"], "agent_run")
+                if run_row.data.get("status") == "cancelled":
+                    raise HTTPException(409, "运行已取消")
             if course_id:
                 await store.owned(db, owner, course_id, "course")
-            return await imports.create_draft(db, owner, "assignment", payload)
+            return await imports.create_draft(
+                db, owner, "assignment", payload, source=source
+            )
 
     @tool
     async def list_assignment_drafts() -> list:
         """List current student's pending assignment drafts with real ids, revisions and items. Use before correcting an existing unsaved task; item_index is zero based. Confirmed tasks are in list_tasks."""
+        ctx = conversation.get()
+        thread_id = ctx.get("thread_id") if ctx else None
         async with transaction(app) as db:
             return [
                 await imports.review_view(db, owner, r)
                 for r in await store.rows(db, owner, "draft")
                 if r.data["draft_kind"] == "assignment"
                 and r.data["status"] == "pending"
+                and (
+                    not thread_id
+                    or r.data.get("source", {}).get("thread_id") in (None, thread_id)
+                )
             ]
 
     @tool("resolve_academic_deadline")
@@ -584,6 +620,135 @@ def student_agent(app, owner):
             return resolve_deadline(s.data, due_text, now())
 
     @tool
+    async def update_assignment_draft(
+        draft_id: str,
+        revision: int,
+        item_index: int,
+        changes: AssignmentItemChanges | None = None,
+        title: str | None = None,
+        course_id: str | None = None,
+        requirements: list[str] | None = None,
+        due_at: str | None = None,
+        due_text: str | None = None,
+        submission_method: str | None = None,
+    ) -> dict:
+        """Update ONE item in an existing pending assignment draft in the current conversation, preserving other items, source image and evidence. Query list_assignment_drafts first; item_index is zero based. Allowed fields: title, course_id, requirements, due_at, due_text, submission_method. Still requires human review before saving."""
+        patch = (
+            changes.model_dump(mode="json", exclude_unset=True)
+            if changes is not None
+            else {}
+        )
+        direct = {
+            k: v
+            for k, v in {
+                "title": title,
+                "course_id": course_id,
+                "requirements": requirements,
+                "due_at": due_at,
+                "due_text": due_text,
+                "submission_method": submission_method,
+            }.items()
+            if v is not None
+        }
+        if direct:
+            validated_direct = AssignmentItemChanges.model_validate(direct).model_dump(
+                mode="json", exclude_unset=True
+            )
+            patch = {**patch, **validated_direct}
+        if not patch:
+            raise ValueError("请提供需要修改的作业字段")
+        ctx = conversation.get()
+        args = {
+            "draft_id": draft_id,
+            "revision": revision,
+            "item_index": item_index,
+            "changes": patch,
+        }
+        async with transaction(app) as db:
+
+            async def op():
+                if ctx and ctx.get("run_id"):
+                    run_row = await store.owned(db, owner, ctx["run_id"], "agent_run")
+                    if run_row.data.get("status") == "cancelled":
+                        raise HTTPException(409, "运行已取消")
+                d = await store.owned(db, owner, draft_id, "draft")
+                store.revision(d, revision)
+                if (
+                    d.data["draft_kind"] != "assignment"
+                    or d.data["status"] != "pending"
+                ):
+                    raise HTTPException(409, "只能修改待校对的作业草稿")
+                draft_thread = d.data.get("source", {}).get("thread_id")
+                if d.data["payload"].get("asset_id") or draft_thread:
+                    if not ctx or draft_thread != ctx.get("thread_id"):
+                        raise HTTPException(409, "只能修改当前对话关联的作业草稿")
+                payload = deepcopy(d.data["payload"])
+                if not 0 <= item_index < len(payload["items"]):
+                    raise ValueError("作业序号超出草稿范围")
+                item = deepcopy(payload["items"][item_index])
+                if "title" in patch:
+                    if not patch["title"] or not str(patch["title"]).strip():
+                        raise ValueError("作业标题不能为空")
+                    item["title"] = str(patch["title"]).strip()
+                    item["uncertain_fields"] = [
+                        f for f in item.get("uncertain_fields", []) if f != "title"
+                    ]
+                if "course_id" in patch:
+                    if patch["course_id"]:
+                        await store.owned(db, owner, patch["course_id"], "course")
+                    item["course_id"] = patch["course_id"]
+                    item["uncertain_fields"] = [
+                        f for f in item.get("uncertain_fields", []) if f != "course_id"
+                    ]
+                if "requirements" in patch:
+                    if patch["requirements"] is None:
+                        raise ValueError("作业要求列表不能为空值")
+                    item["requirements"] = patch["requirements"]
+                    item["uncertain_fields"] = [
+                        f
+                        for f in item.get("uncertain_fields", [])
+                        if f != "requirements"
+                    ]
+                if "submission_method" in patch:
+                    item["submission_method"] = patch["submission_method"]
+                    item["uncertain_fields"] = [
+                        f
+                        for f in item.get("uncertain_fields", [])
+                        if f != "submission_method"
+                    ]
+                if "due_at" in patch or "due_text" in patch:
+                    if "due_text" in patch:
+                        item["due_text"] = patch["due_text"]
+                    if "due_at" in patch:
+                        item["due_at"] = patch["due_at"]
+                    else:
+                        item["due_at"] = None
+                    item["deadline_basis"] = None
+                    item["uncertain_fields"] = [
+                        f for f in item.get("uncertain_fields", []) if f != "due_at"
+                    ]
+                    if not item.get("due_at"):
+                        item["uncertain_fields"].append("due_at")
+                    s = await store.settings(db, owner)
+                    # A new correction is relative to this message, not the old screenshot.
+                    ref_at = message_time()
+                    item = suggest_assignment_deadlines(
+                        {"items": [item]}, s.data, ref_at
+                    )["items"][0]
+                payload["items"][item_index] = item
+                return await imports.edit_draft(db, owner, draft_id, revision, payload)
+
+            key_prefix = f"{ctx['run_id']}:" if ctx and ctx.get("run_id") else ""
+            return await store.mutate(
+                db,
+                owner,
+                "agent-draft-update:" + draft_id,
+                key_prefix + store.digest(args),
+                args,
+                op,
+            )
+
+    @tool
     async def set_assignment_draft_deadline(
         draft_id: str,
         revision: int,
@@ -592,6 +757,7 @@ def student_agent(app, owner):
         due_at: str | None = None,
     ) -> dict:
         """Correct ONE item's deadline in an existing pending draft, preserving other fields/items. Query list_assignment_drafts first. Pass original due_text; exact week/calendar boundaries (第14周之前, 11月1日之前) are calculated automatically with due_at=null. For 明晚8点 query current time and pass timezone-aware due_at. Still requires human review before saving as a task."""
+        ctx = conversation.get()
         args = {
             "draft_id": draft_id,
             "revision": revision,
@@ -602,6 +768,10 @@ def student_agent(app, owner):
         async with transaction(app) as db:
 
             async def op():
+                if ctx and ctx.get("run_id"):
+                    run_row = await store.owned(db, owner, ctx["run_id"], "agent_run")
+                    if run_row.data.get("status") == "cancelled":
+                        raise HTTPException(409, "运行已取消")
                 d = await store.owned(db, owner, draft_id, "draft")
                 store.revision(d, revision)
                 if (
@@ -609,6 +779,9 @@ def student_agent(app, owner):
                     or d.data["status"] != "pending"
                 ):
                     raise HTTPException(409, "只能修改待校对的作业草稿")
+                draft_thread = d.data.get("source", {}).get("thread_id")
+                if draft_thread and (not ctx or draft_thread != ctx.get("thread_id")):
+                    raise HTTPException(409, "只能修改当前对话关联的作业草稿")
                 payload = deepcopy(d.data["payload"])
                 if not 0 <= item_index < len(payload["items"]):
                     raise ValueError("作业序号超出草稿范围")
@@ -757,6 +930,7 @@ def student_agent(app, owner):
         list_tasks,
         create_assignment_draft,
         list_assignment_drafts,
+        update_assignment_draft,
         set_assignment_draft_deadline,
         academic_deadline,
         create_calendar_event_draft,
@@ -877,13 +1051,17 @@ async def execute_run(app, owner, rid, resume=False):
         async with transaction(app) as db:
             r = await store.owned(db, owner, rid, "agent_run")
             data = dict(r.data)
+            if data["status"] == "cancelled":
+                return
             r.data = {**data, "status": "running", "pet_phase": "thinking"}
+        image_draft = await chat_images.prepare_image(app, owner, rid) if data.get("attachment") and not resume else None
         message_token = conversation.set(
             {
                 "run_id": rid,
                 "thread_id": data["thread_id"],
                 "message": data["message"],
                 "message_at": r.created_at.isoformat(),
+                "attachment_draft": image_draft,
             }
         )
         graph = student_agent(app, owner)
@@ -899,7 +1077,7 @@ async def execute_run(app, owner, rid, resume=False):
                 }
             )
         else:
-            value = {"messages": [{"role": "user", "content": data["message"]}]}
+            value = {"messages": [{"role": "user", "content": data["message"] + ("\n[服务端已完成图片识别，真实待校对草稿：" + json.dumps(image_draft, ensure_ascii=False) + "]" if image_draft else "")}]}
         interrupted = False
         active_message_id = None
         pending_text = ""
@@ -1015,16 +1193,20 @@ async def execute_run(app, owner, rid, resume=False):
         if not interrupted:
             async with transaction(app) as db:
                 r = await store.owned(db, owner, rid, "agent_run")
+                if r.data["status"] == "cancelled":
+                    return
                 r.data = {**r.data, "status": "done"}
                 await emit(db, owner, rid, "done", {})
     except Exception as exc:
         async with transaction(app) as db:
             r = await store.owned(db, owner, rid, "agent_run")
+            if r.data["status"] == "cancelled":
+                return
             r.data = {
                 **r.data,
                 "status": "failed",
                 "error": str(exc)
-                if isinstance(exc, time_mcp.TimeUnavailable)
+                if isinstance(exc, (time_mcp.TimeUnavailable, chat_images.RecognitionFailed))
                 else "助手运行失败或超时，历史已保留。请检查模型配置或重试。",
             }
             await emit(db, owner, rid, "error", {"message": r.data["error"]})
@@ -1038,12 +1220,32 @@ async def execute_run(app, owner, rid, resume=False):
 def dispatch(app, owner, rid, resume=False):
     task = asyncio.create_task(execute_run(app, owner, rid, resume))
     app.state.running_tasks.add(task)
-    task.add_done_callback(app.state.running_tasks.discard)
+    if not hasattr(app.state, "agent_run_tasks"):
+        app.state.agent_run_tasks = {}
+    app.state.agent_run_tasks[rid] = task
+    def finished(completed):
+        app.state.running_tasks.discard(completed)
+        if app.state.agent_run_tasks.get(rid) is completed:
+            app.state.agent_run_tasks.pop(rid, None)
+    task.add_done_callback(finished)
 
 
 class RunRequest(StrictModel):
     thread_id: str
-    message: str = __import__("pydantic").Field(min_length=1, max_length=10000)
+    message: str = Field(default="", max_length=10000)
+    attachment: AssignmentImageAttachment | None = None
+
+    @model_validator(mode="after")
+    def valid_message(self):
+        if not self.message.strip():
+            if self.attachment is None:
+                raise ValueError("请输入消息或添加作业图片")
+            self.message = "识别这张作业截图"
+        return self
+
+
+class ImageRunAction(StrictModel):
+    revision: int = Field(ge=1)
 
 
 class Decision(StrictModel):
@@ -1114,6 +1316,7 @@ def agent_router(get_db, current_user):
                     "queued",
                     "running",
                     "waiting_approval",
+                    "resume_queued",
                 ):
                     raise HTTPException(409, "当前会话已有运行或待确认操作")
             r = Resource(
@@ -1121,7 +1324,7 @@ def agent_router(get_db, current_user):
                 owner_id=str(user.id),
                 kind="agent_run",
                 data={
-                    **body.model_dump(),
+                    **body.model_dump(mode="json", exclude_none=True),
                     "status": "queued",
                     "approval_id": None,
                     "event_counter": 0,
@@ -1129,17 +1332,19 @@ def agent_router(get_db, current_user):
             )
             db.add(r)
             await db.flush()
+            if body.attachment:
+                await chat_images.bind_image(db, str(user.id), r, body.attachment)
             await emit(
                 db,
                 str(user.id),
                 r.id,
                 "message",
-                {"role": "user", "content": body.message, "message_id": r.id + ":user"},
+                {"role": "user", "content": body.message, "message_id": r.id + ":user", **({"asset_id": body.attachment.asset_id} if body.attachment else {})},
             )
             return store.view(r)
 
         result = await store.mutate(
-            db, str(user.id), "agent-run", key, body.model_dump(), op
+            db, str(user.id), "agent-run", key, body.model_dump(mode="json", exclude_none=True), op
         )
         r = await store.owned(db, str(user.id), result["id"], "agent_run")
         queued = r.data["status"] == "queued"
@@ -1153,6 +1358,61 @@ def agent_router(get_db, current_user):
     @router.get("/runs/{rid}", response_model=ResourceView)
     async def status(rid: str, user=Depends(current_user), db=Depends(get_db)):
         return store.view(await store.owned(db, str(user.id), rid, "agent_run"))
+
+    @router.post("/runs/{rid}/image/{action}", response_model=ResourceView)
+    async def image_action(rid: str, action: Literal["retry", "cancel"], body: ImageRunAction,
+                           request: Request, key: str = Header(alias="Idempotency-Key"),
+                           user=Depends(current_user), db=Depends(get_db)):
+        owner = str(user.id)
+        async def op():
+            run = await store.owned(db, owner, rid, "agent_run")
+            # Streaming events increment revisions; they must not defeat an explicit stop.
+            if action == "retry":
+                store.revision(run, body.revision)
+            elif body.revision > run.revision:
+                raise HTTPException(409, "运行版本无效")
+            if not run.data.get("attachment") or run.data.get("approval_id"):
+                raise HTTPException(409, "仅支持作业图片识别运行，请通过原确认界面处理审批")
+            if action == "retry":
+                if run.data["status"] != "failed":
+                    raise HTTPException(409, "仅失败的识别可以重试")
+                if any(r.id != rid and r.data["thread_id"] == run.data["thread_id"] and
+                       r.data["status"] in ("queued", "running", "resume_queued", "waiting_approval")
+                       for r in await store.rows(db, owner, "agent_run")):
+                    raise HTTPException(409, "当前对话已有运行")
+                job = await store.owned(db, owner, run.data["job_id"], "job")
+                job.data = {**job.data, "status": "done" if run.data.get("draft_id") else "queued", "error": None}
+                job.revision += 1
+                run.data = {**run.data, "status": "queued", "error": None}
+            else:
+                if run.data["status"] not in ("queued", "running", "failed"):
+                    raise HTTPException(409, "运行已结束，请在草稿区处理")
+                run.data = {**run.data, "status": "cancelled"}
+                job = await store.owned(db, owner, run.data["job_id"], "job")
+                job.data = {**job.data, "status": "cancelled"}
+                job.revision += 1
+                if run.data.get("draft_id"):
+                    draft = await store.owned(db, owner, run.data["draft_id"], "draft")
+                    if draft.data["status"] == "pending":
+                        draft.data = {**draft.data, "status": "discarded"}
+                        draft.revision += 1
+                await emit(db, owner, rid, "cancelled", {})
+            run.revision += 1
+            return store.view(run)
+        result = await store.mutate(db, owner, "agent-image-" + action + ":" + rid, key,
+                                    body.model_dump(), op)
+        run = await store.owned(db, owner, rid, "agent_run")
+        queued = action == "retry" and run.data["status"] == "queued"
+        if queued:
+            run.data = {**run.data, "status": "running"}
+        await db.commit()
+        if queued:
+            dispatch(request.app, owner, rid)
+        if action == "cancel":
+            task = getattr(request.app.state, "agent_run_tasks", {}).get(rid)
+            if task:
+                task.cancel()
+        return result
 
     @router.get("/approvals/{rid}", response_model=ResourceView)
     async def approval(rid: str, user=Depends(current_user), db=Depends(get_db)):
@@ -1280,7 +1540,7 @@ def agent_router(get_db, current_user):
                 for event in sorted(events, key=lambda x: x["seq"]):
                     cursor = event["seq"]
                     yield f"id: {cursor}\nevent: {event['type']}\ndata: {json.dumps(event, ensure_ascii=False)}\n\n"
-                if r.data["status"] in ("done", "failed", "waiting_approval"):
+                if r.data["status"] in ("done", "failed", "waiting_approval", "cancelled"):
                     break
                 await asyncio.sleep(0.25)
 

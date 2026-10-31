@@ -309,6 +309,34 @@ class AssignmentJobRequest(StrictModel):
         return self
 
 
+class AssignmentImageAttachment(StrictModel):
+    kind: Literal["assignment_image"] = "assignment_image"
+    asset_id: str = Field(min_length=1, max_length=200)
+    consent: Literal[True]
+    reference_time: datetime | None = None
+
+    @model_validator(mode="after")
+    def aware_reference(self):
+        if self.reference_time and not self.reference_time.tzinfo:
+            raise ValueError("消息日期必须带时区")
+        return self
+
+
+class AssignmentItemChanges(StrictModel):
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    course_id: str | None = None
+    requirements: list[str] | None = Field(default=None, max_length=50)
+    due_at: datetime | None = None
+    due_text: str | None = None
+    submission_method: str | None = None
+
+    @model_validator(mode="after")
+    def aware_due(self):
+        if self.due_at and not self.due_at.tzinfo:
+            raise ValueError("截止时间必须带时区")
+        return self
+
+
 class StepCandidate(StrictModel):
     key: str = Field(min_length=1, max_length=100)
     title: str = Field(min_length=1, max_length=200)

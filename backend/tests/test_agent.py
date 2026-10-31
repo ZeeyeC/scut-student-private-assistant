@@ -100,6 +100,7 @@ def test_actual_tools_restricted_and_real_service_query(tmp_path):
                 "list_tasks",
                 "create_assignment_draft",
                 "list_assignment_drafts",
+                "update_assignment_draft",
                 "set_assignment_draft_deadline",
                 "resolve_academic_deadline",
                 "create_calendar_event_draft",
