@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "version": "2.5.7",
+  "original_data_identity_preserved": true,
+  "opened_without_explicit_data_argument": true,
+  "real_user_data_mutated_by_acceptance": false,
+  "model_configured": true,
+  "vision_configured": true
+}

@@ -1,6 +1,6 @@
 # 课间 · 华工学生助手
 
-最新开发 **2.5.7 聊天作业截图闭环**：[说明](docs/releases/Demo2.5.7.md) · [实施计划](docs/superpowers/plans/2026-11-01-personal-agent.md)。当前正式构建验收待完成；已发布2.5.6仍保留，验收通过后更新最新入口。
+最新发布 **2.5.7 聊天作业截图闭环**：[说明](docs/releases/Demo2.5.7.md) · [验收](docs/validation/demo2.5.7/README.md)。17项发布检查通过，支持附件菜单、单图选择/拖入/粘贴、校对修改与确认保存。[打开App](/Users/czy/ProjectManagement/Demo2.5.7/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.5.7/Demo2.5.7-Mac-AppleSilicon.zip)。
 
 当前更新 **2.5.4 校区节次快捷选择**：[说明](docs/releases/Demo2.5.4.md) · [验证](docs/validation/demo2.5.4/README.md)。课表预览内选择五山/国际/大学城；设置中仍可自定义。17项正式门禁通过，新版已沿原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.4/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.4/Demo2.5.4-Mac-AppleSilicon.zip)。
 

@@ -1,0 +1,16 @@
+{
+  "moved_previous_release": "课间归档/历史版本/Demo2.5.6",
+  "removed_superseded_candidates": [
+    "Demo2.5.7-原生选图检查中断/课间桌宠.app",
+    "Demo2.5.7-图片重试归属修复前/课间桌宠.app",
+    "Demo2.5.7-WebKit流式显示失败/课间桌宠.app"
+  ],
+  "preserved": [
+    "all formal releases",
+    "source",
+    "personal data/configuration/backups",
+    "old extension path",
+    "installed dependencies",
+    "failed logs and native screenshots"
+  ]
+}
