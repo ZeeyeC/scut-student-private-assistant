@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "formal_app_and_backend_running": true,
+  "same_previous_database": true,
+  "scope": "read-only health identity and process path checks; original data preserved"
+}
