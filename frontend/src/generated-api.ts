@@ -2269,7 +2269,7 @@ export interface components {
              * State
              * @enum {string}
              */
-            state: "connecting" | "extension_missing" | "ready";
+            state: "connecting" | "extension_missing" | "extension_outdated" | "ready";
         };
         /** CalendarDeadlineBasis */
         CalendarDeadlineBasis: {
@@ -4398,6 +4398,12 @@ export interface components {
         };
         /** Timetable */
         Timetable: {
+            /**
+             * Save Mode
+             * @default merge
+             * @enum {string}
+             */
+            save_mode: "merge" | "replace";
             /** Courses */
             courses: components["schemas"]["Course"][];
             /**

@@ -1,8 +1,8 @@
 // Shared save-control integration for the planning-side conflict service.
 // Execution, task state and profile storage remain owned by developer B.
-import {useState} from "react";
+import {useEffect,useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
-import {api} from "./api";
+import {api,ApiError} from "./api";
 import type {Resource} from "./types";
 import {Button} from "./components/ui/button";
 import {DeleteButton} from "./DeleteButton";
@@ -30,6 +30,7 @@ export function DraftActions({
   const fingerprint = JSON.stringify(payload);
   const [review,setReview] = useState<{fingerprint:string;report:ConflictReport}|null>(null);
   const [acknowledged,setAcknowledged] = useState(false);
+  useEffect(()=>{setAsk(false);setReview(null);setAcknowledged(false);},[fingerprint]);
   const ready = !needsCheck || (ask && review?.fingerprint===fingerprint);
   return <div className="draft-actions">
     {!canSave ? <p role="status">{blockedMessage}</p> : !ready ? (
@@ -43,7 +44,8 @@ export function DraftActions({
   ) : (
     <div className="confirm">
       {needsCheck && review && <><ConflictReview report={review.report} />{(review.report.conflict_count>0 || review.report.pending_count>0 || review.report.complete===false) && <label className="check"><input type="checkbox" checked={acknowledged} onChange={e=>setAcknowledged(e.target.checked)} />我已核对上述提示，仍按已确认的课程或事项保存</label>}</>}
-      <p>{draft.data.draft_kind === "semester_calendar" ? "确认保存本批课程调整？已有学习安排保留，受影响计划需重新规划后确认。" : draft.data.draft_kind === "course_change" ? "确认仅调整本次课程？其他周课程和已有学习安排保留。" : draft.data.draft_kind === "scheduling_constraint" ? "确认保存禁排？后续新计划将遵守它；已有安排需重新规划并确认后才调整。" : ["timetable", "timetable_recognition", "timetable_text"].includes(draft.data.draft_kind) ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
+      {review?.report.replacement&&<p role="status">将移除 {review.report.replacement.removed_count} 条旧课程，保存本次 {review.report.replacement.incoming_count} 条课程安排；待办和固定事项保留。</p>}
+      <p>{review?.report.replacement ? "确认以本次校对结果替换当前全部课表？" : draft.data.draft_kind === "semester_calendar" ? "确认保存本批课程调整？已有学习安排保留，受影响计划需重新规划后确认。" : draft.data.draft_kind === "course_change" ? "确认仅调整本次课程？其他周课程和已有学习安排保留。" : draft.data.draft_kind === "scheduling_constraint" ? "确认保存禁排？后续新计划将遵守它；已有安排需重新规划并确认后才调整。" : ["timetable", "timetable_recognition", "timetable_text"].includes(draft.data.draft_kind) ? "确认保存课程？课程将进入固定课表，智能安排会避让这些时间。" : "确认保存以上内容？保存后显示在待办与日程中。"}</p>
       <Button
         type="button"
         disabled={busy || (needsCheck && (!!review?.report.conflict_count || !!review?.report.pending_count || review?.report.complete===false) && !acknowledged)}
@@ -69,7 +71,10 @@ export function DraftActions({
               window.dispatchEvent(new CustomEvent("campus-calendar-saved", {detail: edited.data.payload.starts_at}));
             }
           } catch (e) {
-            onError(String(e));
+            if(draft.data.draft_kind==='timetable'&&e instanceof ApiError&&e.status===409){
+              setAsk(false);setReview(null);setAcknowledged(false);
+              onError('保存前数据发生变化，已保留校对内容，请重新检查后保存。');
+            }else onError(String(e));
           } finally {
             setBusy(false);
           }

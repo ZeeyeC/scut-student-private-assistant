@@ -31,6 +31,7 @@ export function SchoolImportContent({onRequireOpen}:{onRequireOpen:()=>void}){
   const openRef=useRef(onRequireOpen);openRef.current=onRequireOpen;
   const sessions=useQuery({queryKey:['browser-imports'],queryFn:()=>api<Resource[]>('/browser-imports'),refetchInterval:2000});
   const latest=sessions.data?.at(-1);
+  const canRestart=!!latest&&['preview_ready','completed','expired','failed','cancelled'].includes(latest.data.status);
   useEffect(()=>{
     if(!latest)return;
     if(activeImportStatuses.includes(latest.data.status)&&latest.data.status!=='preview_ready')observed.current=latest.id;
@@ -43,12 +44,18 @@ export function SchoolImportContent({onRequireOpen}:{onRequireOpen:()=>void}){
     window.addEventListener('campus-agent-import',agent);
     return()=>{window.removeEventListener('campus-agent-import',agent);};
   },[q]);
-  async function start(){
+  async function start(restart=false){
     if(gate.current)return;gate.current=true;setBusy(true);setError('');
     try {
       const settings=await nativeImport<BrowserSettings>('get-browser');
       if(!settings.installed)throw new Error('未安装所选浏览器，请安装或切换。');
-      const session=pending.current??[...(sessions.data??[])].reverse().find(s=>activeImportStatuses.includes(s.data.status)&&s.data.status!=='preview_ready')??await api<Resource>('/browser-imports',{method:'POST',body:JSON.stringify({school_id:'scut'})});
+      if(restart&&latest&&!pending.current){
+        const current=await api<Resource>(`/browser-imports/${latest.id}`);
+        if(activeImportStatuses.includes(current.data.status))await api(`/browser-imports/${current.id}/cancel`,{method:'POST',body:JSON.stringify({revision:current.revision})});
+        pending.current=null;
+        await q.invalidateQueries({queryKey:['drafts']});
+      }
+      const session=pending.current??(!restart?[...(sessions.data??[])].reverse().find(s=>activeImportStatuses.includes(s.data.status)&&s.data.status!=='preview_ready'):null)??await api<Resource>('/browser-imports',{method:'POST',body:JSON.stringify({school_id:'scut'})});
       pending.current=session;
       await nativeImport('open-school-import',{importId:session.id});pending.current=null;
       await q.invalidateQueries({queryKey:['browser-imports']});
@@ -57,7 +64,8 @@ export function SchoolImportContent({onRequireOpen}:{onRequireOpen:()=>void}){
   return <section className="import-school-primary">
       <div className="import-school-heading"><Globe size={22}/><div><h3>从学校导入</h3><small>浏览器登录 · 回到 App 校对</small></div></div>
       <p>打开学校课表，登录后由扩展读取课程。</p>
-      <div className="import-browser-controls"><ImportBrowserSettings compact/>{latest?.data.status!=='preview_ready'&&<Button disabled={busy} onClick={()=>void start()}>{busy?'正在打开…':'打开浏览器导入'}</Button>}</div>
+      <div className="import-browser-controls"><ImportBrowserSettings compact/><Button disabled={busy} onClick={()=>void start(canRestart)}>{busy?'正在打开…':canRestart?'重新导入':'打开浏览器导入'}</Button></div>
+      {latest&&activeImportStatuses.includes(latest.data.status)&&latest.data.status!=='preview_ready'&&<p>进入个人课表后，选好学期并点击“查询”，再回App校对。</p>}
       {latest&&<p className="import-status" role="status">{['extension_missing','extension_outdated'].includes(latest.data.desktop_bridge_status)?'未检测到扩展，请安装或启用后重试。':importStatusLabels[latest.data.status]}</p>}
       {latest&&activeImportStatuses.includes(latest.data.status)&&<Button variant="outline" disabled={busy} onClick={async()=>{try{await api(`/browser-imports/${latest.id}/cancel`,{method:'POST',body:JSON.stringify({revision:latest.revision})});pending.current=null;await q.invalidateQueries();}catch(error){setError(String(error));}}}>取消导入</Button>}
       {error&&<p role="alert">{error}</p>}

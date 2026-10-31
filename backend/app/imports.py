@@ -43,7 +43,10 @@ def validate_payload(kind, payload):
     if kind == "calendar_event":
         return FixedEvent.model_validate(payload).model_dump(mode="json")
     if kind == "timetable":
-        return Timetable.model_validate(payload).model_dump(mode="json")
+        try:
+            return Timetable.model_validate(payload).model_dump(mode="json")
+        except ValidationError as exc:
+            raise HTTPException(422, "课表无效：覆盖时至少保留一条课程，并核对周次和节次") from exc
     if kind == "assignment":
         return AssignmentExtraction.model_validate(payload).model_dump(mode="json")
     if kind == "decomposition":
@@ -157,16 +160,21 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
     store.revision(d, expected)
     s = await store.settings(db, owner)
     # New independent facts do not depend on every unrelated database change.
-    # Plans/timetable replacements retain their full source version guard;
+    # A fresh timetable conflict token guards the current complete source set.
+    # Legacy clients without it retain the original settings revision guard;
     # decompositions validate the actual task version in save_steps below.
-    if d.data["draft_kind"] in {
+    if (d.data["draft_kind"] in {
         "plan",
         "timetable",
         "course_change",
         "semester_calendar",
-    } or d.data.get("source", {}).get("routine_candidate_id"):
+    } or d.data.get("source", {}).get("routine_candidate_id")) and not (
+        d.data["draft_kind"] == "timetable" and conflict_token is not None
+    ):
         store.revision(s, d.data["source_revision"])
     payload = validate_payload(d.data["draft_kind"], d.data["payload"])
+    if d.data["draft_kind"] == "timetable" and payload["save_mode"] == "replace" and conflict_token is None:
+        raise HTTPException(422, "覆盖课表前请重新检查冲突并确认替换范围")
     from app.conflicts import REVIEW_KINDS, draft_conflicts
 
     conflict_report = None
@@ -180,6 +188,7 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
                 409, "课程、固定事项或转移设置已变化，请重新检查冲突后保存"
             )
     ids = []
+    removed_course_ids = []
     if d.data["draft_kind"] == "semester_calendar":
         from app.semester_calendar import save_semester
 
@@ -243,15 +252,18 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
                 )
                 db.add(r)
             ids.append(r.id)
-        # Full deletion is permitted only for a verified capture source.
-        if payload["completeness"] == "full" and d.data.get("source", {}).get(
+        # Explicit reviewed replacement is separate from claiming full capture.
+        if payload["save_mode"] == "replace" or (payload["completeness"] == "full" and d.data.get("source", {}).get(
             "verified_full"
-        ):
+        )):
             for k, r in old.items():
                 if k not in {c["source_key"] for c in payload["courses"]}:
+                    removed_course_ids.append(r.id)
                     await db.delete(r)
     await store.bump(db, owner)
     summary = {"draft_id": d.id, "saved_ids": ids}
+    if d.data["draft_kind"] == "timetable":
+        summary["removed_course_ids"] = removed_course_ids
     if conflict_report is not None:
         summary.update(
             conflict_report=conflict_report,

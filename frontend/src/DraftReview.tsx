@@ -49,11 +49,13 @@ function TimetableReview({ draft }: { draft: Resource }) {
           (draft.data.changes as { added: unknown[] })?.added?.length ?? 0,
         )}{" "}
         · 更新 {draft.data.changes?.changed?.length ?? 0} · 未出现{" "}
-        {draft.data.changes?.possibly_removed?.length ?? 0}（保留）
+        {draft.data.changes?.possibly_removed?.length ?? 0}（{payload.save_mode==='replace'?'确认覆盖后移除':'保留'}）
       </p>
+      <label className="check"><input type="checkbox" checked={payload.save_mode==='replace'} onChange={e=>setPayload({...payload,save_mode:e.target.checked?'replace':'merge'})}/>替换当前课表</label>
+      {payload.save_mode==='replace'&&<p role="status">本次校对结果将替换全部已保存课程；未出现在本次结果中的旧课程会被移除。待办和固定事项保留，确认保存前不改动课表。</p>}
       {payload.warnings?.map((w, i) => (
         <p role="alert" key={i}>
-          {w}
+          {payload.save_mode==='replace'&&w.includes('不删除已有课程')?'本次采集尚无完整性证明；请确认所需课程全部在下方，再覆盖旧课表。':w}
         </p>
       ))}
       {payload.courses.map((c, i) => (

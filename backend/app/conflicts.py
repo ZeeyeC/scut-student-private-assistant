@@ -195,6 +195,7 @@ async def draft_conflicts(db, owner, draft, payload):
     }
     touched = set()
     replacement = None
+    timetable_replacement = None
     if kind == "timetable":
         existing = {r["data"]["source_key"]: r for r in courses}
         for c in payload["courses"]:
@@ -203,9 +204,13 @@ async def draft_conflicts(db, owner, draft, payload):
             courses = [r for r in courses if r["id"] != rid]
             courses.append({"id": rid, "data": c})
             touched.add(rid)
-        if payload["completeness"] == "full" and draft.data.get("source", {}).get(
+        if payload["save_mode"] == "replace":
+            new_keys = {c["source_key"] for c in payload["courses"]}
+            timetable_replacement = {"existing_count": len(existing), "incoming_count": len(new_keys),
+                "removed_count": sum(k not in new_keys for k in existing)}
+        if payload["save_mode"] == "replace" or (payload["completeness"] == "full" and draft.data.get("source", {}).get(
             "verified_full"
-        ):
+        )):
             keys = {c["source_key"] for c in payload["courses"]}
             courses = [r for r in courses if r["data"]["source_key"] in keys]
     elif kind in {"timetable_recognition", "timetable_text"}:
@@ -284,6 +289,7 @@ async def draft_conflicts(db, owner, draft, payload):
     report = detect_conflicts(events, s.data, touched)
     return {
         **report,
+        "replacement": timetable_replacement,
         "complete": not configuration_warnings,
         "configuration_warnings": configuration_warnings,
         "pending_count": report["pending_count"] + len(configuration_warnings),

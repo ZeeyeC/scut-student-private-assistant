@@ -39,7 +39,7 @@ async function runBridge(){
     await api(path+'/bridge-state',{method:'POST',headers:headers(),body:JSON.stringify({state:'ready'})});
     binding={sessionId:importId,owner:value.owner_id,expiresAt:value.session.data.expires_at,bindingGeneration:crypto.randomUUID()};
     await extension('start',binding);
-    publish({phase:'waiting',text:'请本人登录学校，进入个人课表并查询学期。'});
+    publish({phase:'waiting',text:'请本人登录学校，进入个人课表；选好学期后点击“查询”，再回App校对。'});
     const captureKey=crypto.randomUUID();
     while(Date.now()<Date.parse(value.session.data.expires_at)) {
       value=await api(path,{headers:headers()});

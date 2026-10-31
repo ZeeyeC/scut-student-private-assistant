@@ -7,6 +7,7 @@ import {Button} from './components/ui/button';
 export type ConflictReport = {
   issues: {id:string; severity:'conflict'|'pending'; message:string; first:{title:string;starts_at:string;ends_at:string}; second:{title:string;starts_at:string;ends_at:string}}[];
   conflict_count:number; pending_count:number; timezone?:string; conflict_token?:string;
+  replacement?:{existing_count:number;incoming_count:number;removed_count:number}|null;
   complete?:boolean; configuration_warnings?:string[];
 };
 export function ConflictReview({report, timezone='Asia/Shanghai'}:{report:ConflictReport;timezone?:string}) {

@@ -112,6 +112,7 @@ class Course(StrictModel):
 
 
 class Timetable(StrictModel):
+    save_mode: Literal["merge", "replace"] = "merge"
     courses: list[Course] = Field(max_length=500)
     completeness: Literal["partial", "unknown", "full"] = "partial"
     semester_label: str = Field(max_length=200)
@@ -119,6 +120,8 @@ class Timetable(StrictModel):
 
     @model_validator(mode="after")
     def unique(self):
+        if self.save_mode == "replace" and not self.courses:
+            raise ValueError("覆盖课表至少需要一条已校对课程")
         if len({c.source_key for c in self.courses}) != len(self.courses):
             raise ValueError("课程来源标识重复")
         return self

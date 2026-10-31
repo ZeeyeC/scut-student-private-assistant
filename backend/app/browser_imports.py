@@ -177,6 +177,11 @@ async def get_import(db, owner, rid):
         ) > timedelta(seconds=30):
             r.data = {**r.data, "status": "failed", "error": "提取超时"}
             r.revision += 1
+    if r.data["status"] in {"expired", "failed", "cancelled"} and r.data.get("draft_id"):
+        draft = await store.owned(db, owner, r.data["draft_id"], "draft")
+        if draft.data["status"] == "pending" and draft.data.get("source", {}).get("browser_session") == r.id:
+            draft.data = {**draft.data, "status": r.data["status"]}
+            draft.revision += 1
     return r
 
 

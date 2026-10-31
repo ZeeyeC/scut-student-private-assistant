@@ -1,5 +1,7 @@
 # 课间 · 华工学生助手
 
+当前更新 **2.5.3 重新导入与覆盖课表**：课表校对中可明确选择替换全部旧课程，准备保存展示移除数量，确认后生效；修复空课表的过期设置版本冲突。[本版说明](docs/releases/Demo2.5.3.md) · [验证](docs/validation/demo2.5.3/README.md)。正式归档预期位置 `/Users/czy/ProjectManagement/Demo2.5.3`，发布结果以manifest为准。以下为旧版记录。
+
 当前更新 **2.5.2 Dock入口修复**：普通App模式，关闭窗口/隐藏桌宠后Dock保留，点击恢复主窗口和桌宠，菜单栏同时保留。[本版说明](docs/releases/Demo2.5.2.md) · [本版验证](docs/validation/demo2.5.2/README.md)。17项正式门禁通过，35项哈希复核通过，新版已用原资料启动。[打开新版](/Users/czy/ProjectManagement/Demo2.5.2/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.2/Demo2.5.2-Mac-AppleSilicon.zip)。以下2.5.1记录作为已有版本保留。
 
 当前开发分支为 **`codex/demo2.5.1-ui-refinement`**，按已批准的[完整窗口与桌宠参考](docs/design/ui-redesign-v2/README.md)实施。[修改计划](docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md) · [开发进度](docs/roadmap/Demo2.5-开发进度追踪表.md) · [本版说明](docs/releases/Demo2.5.1.md) · [当前验证](docs/validation/demo2.5.1/README.md)。2.5.1加入内置扩展安装引导与独立分发模式，已完成17项正式发布门禁并归档，35项SHA256复核通过，新版已用原资料重新打开；已有2.5.0归档保留。
