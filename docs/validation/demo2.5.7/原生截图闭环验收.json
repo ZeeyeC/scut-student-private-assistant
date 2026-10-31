@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "scope": "current-source candidate AppKit/WKWebView + isolated local API and SQLite + explicit synthetic vision/chat model; no paid provider calls",
+  "native_file_chooser": "verified through actual NSOpenPanel using CUA",
+  "recognition_two_items": "verified through actual App and synthetic vision",
+  "conversation_edit_second_item": "verified; first item and source image preserved",
+  "explicit_save": "verified in isolated data",
+  "finder_drop_preview": "user explicitly confirmed successful preview",
+  "native_screenshot_paste_preview": "user explicitly confirmed successful preview",
+  "os_input_evidence_source": "2026-11-01 user acceptance reply; not claimed as automated mouse/clipboard verification",
+  "real_screenshot_accuracy": "not measured; synthetic model does not prove extraction accuracy"
+}

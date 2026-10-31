@@ -1,0 +1,11 @@
+SMOKE wait: document.querySelector('.composer textarea')
+SMOKE wait: document.body.textContent.includes('桌宠验收 · 阅读一篇论文')
+SMOKE wait: document.body.textContent.includes('模型连接')
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["学习偏好"][0] || b.textContent.trim()===["学习偏好"][0]))
+SMOKE wait: document.querySelector('[aria-label=用户偏好与精力档案]')
+SMOKE wait: document.querySelector('[aria-label=长期目标]')
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["复盘"][0] || b.textContent.trim()===["复盘"][0]))
+SMOKE wait: document.querySelector('[aria-label=每周复盘]')
+SMOKE wait: document.querySelector('.composer textarea')
+SMOKE wait: document.querySelector('.composer .workspace-button')?.disabled === false
+SMOKE wait: document.querySelector('.message.assistant')?.textContent.includes('第一段')

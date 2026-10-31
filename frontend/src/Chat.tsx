@@ -5,6 +5,7 @@ import {
   useExternalStoreRuntime,
   ThreadPrimitive,
   MessagePrimitive,
+  MessagePartPrimitive,
   ComposerPrimitive,
   type AppendMessage,
 } from "@assistant-ui/react";
@@ -331,7 +332,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
           <p role="status">{status}</p>
           {imageRun&&<div className="image-run-actions" role="status">
             {imageRun.data.status==='failed'&&<button type="button" onClick={()=>void actOnImage('retry')}>重试图片识别</button>}
-            {running&&<button type="button" onClick={()=>void actOnImage('cancel')}>取消图片识别</button>}
+            {running&&imageRun.id===runId&&<button type="button" onClick={()=>void actOnImage('cancel')}>取消图片识别</button>}
           </div>}
           <ComposerPrimitive.Root className="composer">
             <ChatImageControls state={image} disabled={running||!!approvalId}/>
@@ -386,14 +387,16 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
 function UserMessage() {
   return (
     <MessagePrimitive.Root className="message user">
-      <MessagePrimitive.Parts />
+      <MessagePrimitive.Parts components={{Text:PlainMessageText}} />
     </MessagePrimitive.Root>
   );
 }
 function AssistantMessage() {
   return (
     <MessagePrimitive.Root className="message assistant">
-      <MessagePrimitive.Parts />
+      <MessagePrimitive.Parts components={{Text:PlainMessageText}} />
     </MessagePrimitive.Root>
   );
 }
+
+function PlainMessageText(){return <MessagePartPrimitive.Text smooth={false}/>;}

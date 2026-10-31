@@ -71,3 +71,18 @@ test('a delayed image retry response cannot take ownership of a new conversation
  await expect(page.getByRole('button',{name:'重试图片识别'})).toHaveCount(0);
  await expect(page.getByRole('button',{name:'新会话',exact:true})).toBeEnabled();
 });
+
+test('received streaming text remains visible when WebKit animation frames are suspended',async({page})=>{
+ await enter(page);
+ const rid='suspended-stream';let tid='';
+ await page.route('**/api/agent/runs',async route=>{tid=route.request().postDataJSON().thread_id;await route.fulfill({json:{id:rid,kind:'agent_run',revision:3,data:{thread_id:tid,status:'running',event_counter:2}}})});
+ await page.route('**/api/agent/runs/'+rid,route=>route.fulfill({json:{id:rid,kind:'agent_run',revision:3,data:{thread_id:tid,status:'running',event_counter:2}}}));
+ await page.route('**/api/agent/runs/'+rid+'/events?*',route=>{
+  const after=Number(new URL(route.request().url()).searchParams.get('after'));
+  const events=[{run_id:rid,seq:1,type:'message',payload:{role:'user',message_id:'s-user',content:'frame-test'}},{run_id:rid,seq:2,type:'message_delta',payload:{message_id:'s-assistant',delta:'首段已到达'}}];
+  return route.fulfill({contentType:'text/event-stream',body:events.filter(e=>e.seq>after).map(e=>'data: '+JSON.stringify(e)+'\n\n').join('')||': keepalive\n\n'});
+ });
+ await page.evaluate(()=>{window.requestAnimationFrame=()=>0});
+ await page.getByLabel('给助手的消息').fill('frame-test');await page.getByRole('button',{name:'发送',exact:true}).click();
+ await expect(page.locator('.message.assistant')).toContainText('首段已到达');
+});

@@ -1,0 +1,50 @@
+[WebServer] INFO:     Started server process [17171]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 1 test using 1 worker
+
+(node:17201) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 frontend/e2e/chat-images.spec.ts:75:1 › received streaming text remains visible when WebKit animation frames are suspended (5.7s)
+
+
+  1) frontend/e2e/chat-images.spec.ts:75:1 › received streaming text remains visible when WebKit animation frames are suspended
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.message.assistant')
+    Expected substring: "首段已到达"
+    Received string:    " ●"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.message.assistant') with timeout 5000ms
+      - waiting for locator('.message.assistant')
+        - locator resolved to <div class="message assistant" data-message-id="rVoz7xY">…</div>
+        13 × unexpected value " ●"
+           - locator resolved to <div class="message assistant" data-message-id="s-assistant">…</div>
+        - unexpected value " ●"
+
+
+      85 |  await page.evaluate(()=>{window.requestAnimationFrame=()=>0});
+      86 |  await page.getByLabel('给助手的消息').fill('frame-test');await page.getByRole('button',{name:'发送',exact:true}).click();
+    > 87 |  await expect(page.locator('.message.assistant')).toContainText('首段已到达');
+         |                                                   ^
+      88 | });
+      89 |
+        at /Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend/e2e/chat-images.spec.ts:87:51
+
+    Error Context: frontend/test-results/chat-images-received-strea-9ea12-mation-frames-are-suspended/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    frontend/test-results/chat-images-received-strea-9ea12-mation-frames-are-suspended/trace.zip
+    Usage:
+
+        npx playwright show-trace frontend/test-results/chat-images-received-strea-9ea12-mation-frames-are-suspended/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    frontend/e2e/chat-images.spec.ts:75:1 › received streaming text remains visible when WebKit animation frames are suspended

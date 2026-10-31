@@ -1,0 +1,22 @@
+[
+  {
+    "runs" : [
+      {
+        "run" : {
+          "revision" : 3,
+          "id" : "2c822026-b6da-4ad8-88f9-63cc9e55a752",
+          "kind" : "agent_run",
+          "data" : {
+            "status" : "running",
+            "thread_id" : "e9b448d1-77d0-420a-a9a3-ae83fdd2b877",
+            "approval_id" : null,
+            "event_counter" : 2,
+            "pet_phase" : "replying",
+            "message" : "流式测试"
+          }
+        }
+      }
+    ],
+    "thread" : "e9b448d1-77d0-420a-a9a3-ae83fdd2b877"
+  }
+]
