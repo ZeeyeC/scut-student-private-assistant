@@ -546,6 +546,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         alert.beginSheetModal(for: assistant) { _ in completionHandler() }
     }
     func webView(_ webView: WKWebView, runOpenPanelWith parameters: WKOpenPanelParameters, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping ([URL]?) -> Void) {
+        guard webView === self.webView, frame.isMainFrame, trusted(frame.request.url) else {
+            completionHandler(nil); return
+        }
         let picker = NSOpenPanel()
         picker.canChooseDirectories = false; picker.allowsMultipleSelection = parameters.allowsMultipleSelection
         picker.allowedContentTypes = [.png, .jpeg, .webP]
