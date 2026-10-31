@@ -70,8 +70,8 @@
     },
     "import-default": {
       "passed": true,
-      "different_pixels": 8560,
-      "difference_ratio": 0.008551790281329923,
+      "different_pixels": 8561,
+      "difference_ratio": 0.00855278932225064,
       "threshold": 0.12,
       "maximum_difference_ratio": 0.01,
       "size": [

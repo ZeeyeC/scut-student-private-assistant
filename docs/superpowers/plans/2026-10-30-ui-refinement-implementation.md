@@ -133,11 +133,11 @@
 **Interfaces:** 参考manifest锁定v2设计；实际验证目录和发布包引用其hash。发布继续使用现有脚本，新增版本不复用/复制旧App。
 
 - [x] 审核Task1–5的视觉截图：六页/详情、默认导入、桌宠收起/列表/详情，含1280与窄窗口；逐项核对F01–F08及后续意见。未通过就继续修复，不给“基本相同”结论。
-- [ ] Run前端测试/类型/构建、扩展测试/类型/构建、后端/脚本pytest、全量Playwright、原生逻辑/HTTP/真实App及素材冻结门禁；前端先build。扩展构建保留项目规定的PUBLIC_ORIGIN与SCUT_ADAPTER_PATH，不让构建配置退回null。
+- [x] Run前端测试/类型/构建、扩展测试/类型/构建、后端/脚本pytest、全量Playwright、原生逻辑/HTTP/真实App及素材冻结门禁；前端先build。扩展构建保留项目规定的PUBLIC_ORIGIN与SCUT_ADAPTER_PATH，不让构建配置退回null。
 - [x] 按现有执行工作流做最终独立代码检查；发现实质问题先复现再修复。设计原型通过、正式UI通过、原生实机通过及真实外部验收分开记录。
-- [ ] 确认2.5.1未占用，更新VERSION/README/本版说明后运行`backend/.venv/bin/python scripts/release-macos.py --version 2.5.1`。生成App、App ZIP、当前工作树源码ZIP、说明、验证结果、manifest及SHA256；所有门禁通过才清理明确缓存。
-- [ ] 核对哈希/签名/ZIP/无Key及个人资料、完整保留素材声明。旧2.5.0、源码、依赖、配置、data/backups与原任务书保留；实际学校/OCR/多物理显示器等未做的验收继续如实保留。
-- [ ] 更新工作区README最新入口、进度和提交记录；GitHub同步遵循用户已有授权范围，不创建PR或公开App release。最终报告附设计与实际对照及真实剩余项。
+- [x] 确认2.5.1未占用，更新VERSION/README/本版说明后运行`backend/.venv/bin/python scripts/release-macos.py --version 2.5.1`。生成App、App ZIP、当前工作树源码ZIP、说明、验证结果、manifest及SHA256；所有门禁通过才清理明确缓存。
+- [x] 核对哈希/签名/ZIP/无Key及个人资料、完整保留素材声明。旧2.5.0、源码、依赖、配置、data/backups与原任务书保留；实际学校/OCR/多物理显示器等未做的验收继续如实保留。
+- [x] 更新工作区README最新入口、进度和提交记录；GitHub同步遵循用户已有授权范围，不创建PR或公开App release。最终报告附设计与实际对照及真实剩余项。
 
 ## 计划自查
 

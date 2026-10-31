@@ -1,5 +1,5 @@
 {
-  "status": "first-user-passed-formal-release-running",
+  "status": "released-and-reopened",
   "backend_tests": 687,
   "backend_subtests": 20,
   "frontend_unit_tests": 105,
@@ -10,7 +10,11 @@
   "visual_passed": true,
   "first_user_app_start": "passed: copied App, empty isolated directory, exact bundled extension hashes",
   "real_extension": "Chrome for Testing temporary profile, real bundled0.1.3 extension, synthetic SCUT DOM; no saved course before review",
-  "formal_release_archive": "building with release-macos.py; final result in archive manifest",
+  "formal_release_archive": "/Users/czy/ProjectManagement/Demo2.5.1",
   "candidate_zip_crc": "passed",
-  "candidate_sha256": "eaaf67dbd77950465e4a76f65fcd15e277a850c39aa5b47cdf009cf4ef09bbc7"
+  "candidate_sha256": "eaaf67dbd77950465e4a76f65fcd15e277a850c39aa5b47cdf009cf4ef09bbc7",
+  "formal_gates": 17,
+  "formal_sha256_entries_verified": 35,
+  "formal_app_reopened_with_previous_database": true,
+  "both_config_roots_private_scan": "passed"
 }
