@@ -55,8 +55,22 @@ async def extract_assignment_payload(app, filename, asset_id, courses, reference
         payload = await app.state.gateway.extract_assignments(
             raw, "image/png", courses, reference
         )
+    if isinstance(payload, dict):
+        cleaned_items = [
+            {**item, "source_asset_id": asset_id} if isinstance(item, dict) else item
+            for item in payload.get("items", [])
+        ]
+        payload = {
+            **payload,
+            "items": cleaned_items,
+            "asset_id": asset_id,
+            "asset_ids": [asset_id],
+        }
     payload = normalize_extraction(payload, courses, reference)
     payload["asset_id"] = asset_id
+    payload["asset_ids"] = [asset_id]
+    for item in payload["items"]:
+        item["source_asset_id"] = asset_id
     return payload
 
 
@@ -88,7 +102,13 @@ async def run_assignment_job(app, owner, jid):
                 owner,
                 "assignment",
                 payload,
-                {"asset_id": asset.id, "reference_time": reference},
+                {
+                    "asset_id": asset.id,
+                    "asset_ids": [asset.id],
+                    "job_id": jid,
+                    "job_ids": [jid],
+                    "reference_time": reference,
+                },
             )
             job.data = {**job.data, "status": "done", "draft_id": d["id"]}
             job.revision += 1
@@ -201,8 +221,12 @@ def assignment_router(config, get_db, current_user):
         user=Depends(current_user),
         db=Depends(get_db),
     ):
-        if body.asset_id:
-            await store.owned(db, str(user.id), body.asset_id, "asset")
+        for aid in {
+            *(body.asset_ids or []),
+            *([body.asset_id] if body.asset_id else []),
+            *(item.source_asset_id for item in body.items if item.source_asset_id),
+        }:
+            await store.owned(db, str(user.id), aid, "asset")
         for item in body.items:
             if item.course_id:
                 await store.owned(db, str(user.id), item.course_id, "course")

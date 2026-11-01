@@ -91,8 +91,17 @@ class ChatImageModel(TextTimetableModel):
             # Check all real graph messages, catching accidental old checkpoint reuse.
             remembered = any("以后回答简短些" in str(m.content) for m in messages)
             return ChatResult(generations=[ChatGeneration(message=AIMessage(content="你希望回答简短些。" if remembered else "没有可召回的偏好。"))])
-        if text.startswith("识别这张作业截图"):
+        if text.startswith(("识别这张作业截图", "识别这些作业截图")):
             return ChatResult(generations=[ChatGeneration(message=AIMessage(content="已识别两项作业，请校对草稿后保存。"))])
+        if text == "第一项2026年11月6日20:00，第二项暂不填":
+            if isinstance(last, ToolMessage) and last.name == "list_assignment_drafts":
+                draft = json.loads(last.content)[0]
+                call = {"name": "update_assignment_draft", "args": {"draft_id": draft["id"], "revision": draft["revision"], "item_index": 0, "changes": {"due_at": "2026-11-06T20:00:00+08:00", "due_text": "2026年11月6日20:00"}}}
+            elif isinstance(last, ToolMessage):
+                return ChatResult(generations=[ChatGeneration(message=AIMessage(content="第一项日期已更新，第二项保持未填写，请确认后保存。"))])
+            else:
+                call = {"name": "list_assignment_drafts", "args": {}}
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="", tool_calls=[{**call, "id": __import__("uuid").uuid4().hex, "type": "tool_call"}]))])
         if text == "修改第二项为英语听力":
             if isinstance(last, ToolMessage) and last.name == "list_assignment_drafts":
                 draft = json.loads(last.content)[0]

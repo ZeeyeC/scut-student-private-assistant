@@ -280,6 +280,7 @@ class AssignmentCandidate(StrictModel):
     due_text: str | None = None
     deadline_basis: AcademicDeadlineBasis | CalendarDeadlineBasis | None = None
     submission_method: str | None = None
+    source_asset_id: str | None = None
     evidence: list[Evidence] = Field(default_factory=list)
     uncertain_fields: list[str] = Field(default_factory=list)
     priority: int = Field(default=2, ge=1, le=3)
@@ -295,6 +296,7 @@ class AssignmentExtraction(StrictModel):
     items: list[AssignmentCandidate] = Field(min_length=1, max_length=30)
     warnings: list[str] = Field(default_factory=list)
     asset_id: str | None = None
+    asset_ids: list[str] = Field(default_factory=list, max_length=5)
 
 
 class AssignmentJobRequest(StrictModel):

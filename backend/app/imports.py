@@ -49,7 +49,23 @@ def validate_payload(kind, payload):
         except ValidationError as exc:
             raise HTTPException(422, "课表无效：覆盖时至少保留一条课程，并核对周次和节次") from exc
     if kind == "assignment":
-        return AssignmentExtraction.model_validate(payload).model_dump(mode="json")
+        try:
+            data = AssignmentExtraction.model_validate(payload).model_dump(mode="json")
+        except ValidationError as exc:
+            raise HTTPException(422, "作业草稿格式无效") from exc
+        if data.get("asset_ids"):
+            if data.get("asset_id") is None:
+                data["asset_id"] = data["asset_ids"][0]
+            elif data["asset_id"] != data["asset_ids"][0]:
+                raise HTTPException(422, "不可更换作业草稿关联的原图")
+        elif data.get("asset_id"):
+            data["asset_ids"] = [data["asset_id"]]
+        if len(data.get("asset_ids", [])) == 1:
+            only_asset = data["asset_ids"][0]
+            for item in data["items"]:
+                if item.get("source_asset_id") is None:
+                    item["source_asset_id"] = only_asset
+        return data
     if kind == "decomposition":
         return Decomposition.model_validate(payload).model_dump(mode="json")
     if kind == "plan":
@@ -72,11 +88,36 @@ async def create_draft(db, owner, kind, payload, source=None):
         payload = {**payload, "campus_preset": s.data["campus_preset"]}
     source = dict(source or {})
     if kind == "assignment":
-        if not payload.get("asset_id"):
+        image_ids = payload.get("asset_ids") or ([payload["asset_id"]] if payload.get("asset_id") else [])
+        if len(image_ids) != len(set(image_ids)):
+            raise HTTPException(422, "作业原图列表不能重复")
+        for aid in image_ids:
+            await store.owned(db, owner, aid, "asset")
+        for candidate in payload["items"]:
+            if candidate.get("source_asset_id") and candidate["source_asset_id"] not in image_ids:
+                raise HTTPException(422, "作业条目的原图不在本次图片列表中")
+        has_image = bool(payload.get("asset_id") or payload.get("asset_ids"))
+        if not has_image:
             source.setdefault("reference_time", now().isoformat())
+        else:
+            source.setdefault(
+                "asset_ids",
+                list(
+                    payload.get("asset_ids")
+                    or ([payload["asset_id"]] if payload.get("asset_id") else [])
+                ),
+            )
+            if source["asset_ids"] and not source.get("asset_id"):
+                source["asset_id"] = source["asset_ids"][0]
+            source.setdefault("deadline_followup", "pending")
         payload = suggest_assignment_deadlines(
             payload, s.data, source.get("reference_time")
         )
+        if has_image:
+            source["item_asset_ids"] = [
+                item.get("source_asset_id") or payload.get("asset_id")
+                for item in payload["items"]
+            ]
     if kind == "plan":
         for previous in await store.rows(db, owner, "draft"):
             if (
@@ -116,7 +157,11 @@ async def review_view(db, owner, draft):
     if draft.data["draft_kind"] == "assignment" and draft.data["status"] == "pending":
         s = await store.settings(db, owner)
         reference = draft.data.get("source", {}).get("reference_time")
-        if not reference and not draft.data["payload"].get("asset_id"):
+        if (
+            not reference
+            and not draft.data["payload"].get("asset_id")
+            and not draft.data["payload"].get("asset_ids")
+        ):
             reference = draft.created_at
         proposed = suggest_assignment_deadlines(
             draft.data["payload"], s.data, reference
@@ -147,14 +192,59 @@ async def edit_draft(db, owner, rid, expected, payload):
         ):
             raise HTTPException(422, "请从禁排列表重新发起修改，不可更换草稿目标或版本")
     if r.data["draft_kind"] == "assignment":
-        original_asset = r.data["payload"].get("asset_id")
+        original_payload = r.data["payload"]
+        original_asset = original_payload.get("asset_id")
+        original_assets = original_payload.get("asset_ids") or (
+            [original_asset] if original_asset else []
+        )
+        raw_payload = payload if isinstance(payload, dict) else {}
         if original_asset:
-            if validated.get("asset_id") is None:
-                validated["asset_id"] = original_asset
-            elif validated.get("asset_id") != original_asset:
+            if raw_payload.get("asset_id") not in (None, original_asset):
                 raise HTTPException(422, "不可更换作业草稿关联的原图")
-        if validated.get("asset_id"):
-            await store.owned(db, owner, validated["asset_id"], "asset")
+            validated["asset_id"] = original_asset
+        if original_assets:
+            if raw_payload.get("asset_ids") not in (None, [], original_assets):
+                raise HTTPException(422, "不可更换作业草稿关联的原图")
+            validated["asset_ids"] = list(original_assets)
+        original_items = original_payload.get("items", [])
+        source_map = r.data.get("source", {}).get("item_asset_ids") or [
+            it.get("source_asset_id") or original_asset for it in original_items
+        ]
+        if original_assets or any(source_map):
+            if len(validated["items"]) != len(original_items):
+                raise HTTPException(422, "不可增删已绑定原图的作业条目")
+            raw_items = raw_payload.get("items")
+            for idx, item in enumerate(validated["items"]):
+                expected_source = (
+                    source_map[idx]
+                    if idx < len(source_map) and source_map[idx]
+                    else original_items[idx].get("source_asset_id") or original_asset
+                )
+                raw_item = (
+                    raw_items[idx]
+                    if isinstance(raw_items, list)
+                    and idx < len(raw_items)
+                    and isinstance(raw_items[idx], dict)
+                    else {}
+                )
+                supplied_source = raw_item.get("source_asset_id")
+                if supplied_source is not None and supplied_source != expected_source:
+                    raise HTTPException(422, "不可更换作业条目关联的原图")
+                item["source_asset_id"] = expected_source
+                original_evidence = original_items[idx].get("evidence", [])
+                if "evidence" in raw_item and raw_item["evidence"] != original_evidence:
+                    raise HTTPException(422, "不可更换作业截图的原文证据")
+                item["evidence"] = list(original_evidence)
+        for aid in {
+            *(validated.get("asset_ids") or []),
+            *([validated["asset_id"]] if validated.get("asset_id") else []),
+            *(
+                item.get("source_asset_id")
+                for item in validated["items"]
+                if item.get("source_asset_id")
+            ),
+        }:
+            await store.owned(db, owner, aid, "asset")
         for item in validated["items"]:
             if item.get("course_id"):
                 await store.owned(db, owner, item["course_id"], "course")
@@ -243,12 +333,21 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
 
         ids = await save_steps(db, owner, payload)
     if d.data["draft_kind"] == "assignment":
-        if payload.get("asset_id"):
-            await store.owned(db, owner, payload["asset_id"], "asset")
+        for aid in {
+            *(payload.get("asset_ids") or []),
+            *([payload["asset_id"]] if payload.get("asset_id") else []),
+            *(
+                c.get("source_asset_id")
+                for c in payload["items"]
+                if c.get("source_asset_id")
+            ),
+        }:
+            await store.owned(db, owner, aid, "asset")
         for candidate in payload["items"]:
             validate_deadline_basis(candidate, s.data)
             if candidate.get("course_id"):
                 await store.owned(db, owner, candidate["course_id"], "course")
+            item_asset_id = candidate.get("source_asset_id") or payload.get("asset_id")
             r = Resource(
                 id=str(uuid4()),
                 owner_id=owner,
@@ -256,7 +355,8 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
                 data={
                     **candidate,
                     "status": "open",
-                    "asset_id": payload.get("asset_id"),
+                    "asset_id": item_asset_id,
+                    "source_asset_id": item_asset_id,
                     "remedy_due_at": None,
                 },
             )
