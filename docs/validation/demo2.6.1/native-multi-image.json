@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "version": "2.6.1",
+  "scope": "Released AppKit/WebKit window + frontend files hash-matched to release + isolated source backend with explicit deterministic test models; no paid model calls. Frozen backend checks separately passed in release gates.",
+  "app_sha256": "55aa5e2e09bc3df714460abdb42fe7d5621e5291fceb61c12f281c673874bb25",
+  "checks": [
+    "native system picker supports two selected images",
+    "two pending thumbnails shown in composer",
+    "no consent checkbox or date input before send",
+    "no assets uploaded before explicit send",
+    "native two-image send creates two draft items and no tasks before confirmation",
+    "native inline review has no image side panel",
+    "native skip persists deferred status without filling dates",
+    "native confirm creates two tasks, both due_at null and distinct source assets",
+    "native task page displays both saved tasks"
+  ],
+  "remaining": [],
+  "limits": [
+    "explicit deterministic vision and text fixture, not real OCR accuracy",
+    "cross-window Finder multi-drop and system image clipboard not reverified manually in this round; browser event regressions passed, previous single-image manual acceptance retained"
+  ]
+}

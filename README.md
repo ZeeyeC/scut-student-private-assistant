@@ -1,8 +1,8 @@
 # 课间 · 华工学生助手
 
-当前开发 **2.6.1 简洁多图作业对话**，分支 `codex/chat-images-simple`。[本版说明](docs/releases/Demo2.6.1.md) · [实施计划](docs/superpowers/plans/2026-11-01-chat-images-simple.md) · [验证记录](docs/validation/demo2.6.1/README.md)。多图从输入框左上排列，发送后对话内列任务，日期可不填；取消图片授权勾选与日期选择。当前正在独立验收打包。
+最新发布 **2.6.1 简洁多图作业对话**，分支 `codex/chat-images-simple`。[本版说明](docs/releases/Demo2.6.1.md) · [实施计划](docs/superpowers/plans/2026-11-01-chat-images-simple.md) · [验收记录](docs/validation/demo2.6.1/README.md)。多图从输入框左上排列，发送后在对话内列任务，日期可不填；取消图片授权勾选与日期选择。17门禁、741后端+20子项、110前端、98界面及原生两图选取/合成识别/跳过日期/确认保存通过，35哈希/双ZIP/签名/私密值复核通过，原资料已恢复。[打开App](/Users/czy/ProjectManagement/Demo2.6.1/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.6.1/Demo2.6.1-Mac-AppleSilicon.zip)。真实模型准确率不以合成验收代替。
 
-最新发布 **2.6.0 可确认的个人记忆**，分支 `codex/personal-agent-memory`。[本版说明](docs/releases/Demo2.6.md) · [实施计划](docs/superpowers/plans/2026-11-01-personal-memory-implementation.md) · [验证记录](docs/validation/demo2.6/README.md)。本地偏好需确认后才召回，支持期限、修改、遗忘及关闭召回；设置 → 学习偏好 → 记忆与偏好。17项发布门禁、733后端+20子项、109前端、95界面、正式包原生记忆确认、35哈希及双ZIP检查通过，原资料身份已恢复。[打开App](/Users/czy/ProjectManagement/Demo2.6/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.6/Demo2.6-Mac-AppleSilicon.zip)。行为学习与真实模型自由表达评测仍留后续。
+历史发布 **2.6.0 可确认的个人记忆**，分支 `codex/personal-agent-memory`。[本版说明](docs/releases/Demo2.6.md) · [实施计划](docs/superpowers/plans/2026-11-01-personal-memory-implementation.md) · [验证记录](docs/validation/demo2.6/README.md)。本地偏好需确认后才召回，支持期限、修改、遗忘及关闭召回；设置 → 学习偏好 → 记忆与偏好。17项发布门禁、733后端+20子项、109前端、95界面、正式包原生记忆确认、35哈希及双ZIP检查通过，原资料身份已恢复。[打开App](/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.6/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.6/Demo2.6-Mac-AppleSilicon.zip)。行为学习与真实模型自由表达评测仍留后续。
 
 历史发布 **2.5.7 聊天作业截图闭环**：[说明](docs/releases/Demo2.5.7.md) · [验收](docs/validation/demo2.5.7/README.md)。17项发布检查通过，支持附件菜单、单图选择/拖入/粘贴、校对修改与确认保存。[打开App](/Users/czy/ProjectManagement/Demo2.5.7/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.5.7/Demo2.5.7-Mac-AppleSilicon.zip)。
 

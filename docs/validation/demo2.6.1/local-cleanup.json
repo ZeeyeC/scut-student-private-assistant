@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "older_release_moved_to_archive": "课间归档/历史版本/Demo2.6",
+  "removed_known_temporary_directories": [
+    "campus-chat-simple-agy-20261101",
+    "campus-chat-widget-agy",
+    "campus-chat-simple-native-2.6.1"
+  ],
+  "preserved": [
+    "current release",
+    "source names and locations",
+    ".env/model.env",
+    "personal data/backups",
+    "installed dependencies",
+    "existing archives"
+  ],
+  "published_release_overwritten": false
+}

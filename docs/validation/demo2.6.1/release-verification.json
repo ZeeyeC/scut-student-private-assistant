@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "version": "2.6.1",
+  "release_checks": 17,
+  "sha256_files_verified": 35,
+  "application_signature": "verified",
+  "zip_crc": "passed",
+  "zip_entries": {
+    "Demo2.6.1-源码.zip": 1413,
+    "Demo2.6.1-Mac-AppleSilicon.zip": 4314
+  },
+  "private_values_scan": "passed across current worktree, original source and normal Application Support config roots; no values printed",
+  "source_snapshot": "Current working tree at packaging; implementation commit 3cd09aa; final post-release evidence is recorded separately",
+  "native_image_ui": "passed",
+  "original_data_identity_restored": true,
+  "paid_model_calls": false,
+  "runtime_source_files_equal_packaged_snapshot": 205
+}

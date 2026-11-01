@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "launch": "Released App opened with no arguments using remembered original data identity",
+  "identity_matches_original": true,
+  "model_configured": true,
+  "vision_configured": true,
+  "no_personal_memory_test_writes": true
+}
