@@ -1,0 +1,9 @@
+{
+  "markitdown": "0.1.9",
+  "mcp-server-fetch": "2026.10.10",
+  "qdrant-client": "1.20.0",
+  "fastembed": "0.9.1",
+  "onnxruntime": "1.31.1",
+  "readabilipy": "0.3.0",
+  "markdownify": "1.2.3"
+}

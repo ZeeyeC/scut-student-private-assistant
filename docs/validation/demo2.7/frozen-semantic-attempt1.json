@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "scope": "Actual frozen binary + real local Chinese model, synthetic data, HF offline, no paid provider calls",
+  "model": "BAAI/bge-small-zh-v1.5",
+  "document_semantic_match": true,
+  "source_delete_not_recalled": true,
+  "canonical_memory_confirmed": true,
+  "note": "First independently built2.7 binary before backup-only fix; final binary must be retested. Not final release acceptance."
+}

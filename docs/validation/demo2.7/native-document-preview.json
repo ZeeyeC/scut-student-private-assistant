@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "scope": "CUA actual final2.7 AppKit/WKWebView NSOpenPanel, empty isolated data",
+  "selected": "synthetic Markdown course handout",
+  "visible_preview": true,
+  "send_enabled": true,
+  "knowledge_sources_before_send": 0,
+  "model_configured": false,
+  "note": "No model call or actual Finder cross-window document drop in this native check; full chat path covered by synthetic browser tests."
+}

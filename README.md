@@ -33,13 +33,15 @@
 - 助手可发送PDF、Word、PPT、Excel和文本资料，保存来源并跨会话检索；任务仍经校对确认。
 - 读取公开网页，按需配置自己的SearXNG搜索服务，不额外打开日常浏览器页面。
 - 可选FastEmbed中文语义检索 + Qdrant本地索引；SQLite仍保存正式记忆，保留确认、遗忘和有效期机制。
-- [2.7使用与发布说明](docs/releases/Demo2.7.md) · [本版验收记录](docs/validation/demo2.7/README.md)。本版正在构建，完整通过后更新正式入口。
+- [2.7使用与发布说明](docs/releases/Demo2.7.md) · [本版验收记录](docs/validation/demo2.7/README.md)。已独立构建并通过17项发布检查。
 
 ## 当前版本与历史记录
 
 App与安装包由本地发布流程生成，当前没有在GitHub Releases提供安装包下载；本地入口见工作区README，源码构建见下方说明。
 
-最新发布 **2.6.1 简洁多图作业对话**，分支 `codex/chat-images-simple`。[本版说明](docs/releases/Demo2.6.1.md) · [实施计划](docs/superpowers/plans/2026-11-01-chat-images-simple.md) · [验收记录](docs/validation/demo2.6.1/README.md)。多图从输入框左上排列，发送后在对话内列任务，日期可不填；取消图片授权勾选与日期选择。17门禁、741后端+20子项、110前端、98界面及原生两图选取/合成识别/跳过日期/确认保存通过，35哈希/双ZIP/签名/私密值复核通过，原资料已恢复。。真实模型准确率不以合成验收代替。
+最新发布 **2.7.0 资料、网页与语义检索**，分支 `codex/knowledge-web-semantic`。17门禁、768后端+20子项、113前端、101界面及原生文档选择/冻结本地语义检查通过。[本版说明](docs/releases/Demo2.7.md) · [验收记录](docs/validation/demo2.7/README.md)。
+
+历史发布 **2.6.1 简洁多图作业对话**，分支 `codex/chat-images-simple`。[本版说明](docs/releases/Demo2.6.1.md) · [实施计划](docs/superpowers/plans/2026-11-01-chat-images-simple.md) · [验收记录](docs/validation/demo2.6.1/README.md)。多图从输入框左上排列，发送后在对话内列任务，日期可不填；取消图片授权勾选与日期选择。17门禁、741后端+20子项、110前端、98界面及原生两图选取/合成识别/跳过日期/确认保存通过，35哈希/双ZIP/签名/私密值复核通过，原资料已恢复。。真实模型准确率不以合成验收代替。
 
 历史发布 **2.6.0 可确认的个人记忆**，分支 `codex/personal-agent-memory`。[本版说明](docs/releases/Demo2.6.md) · [实施计划](docs/superpowers/plans/2026-11-01-personal-memory-implementation.md) · [验证记录](docs/validation/demo2.6/README.md)。本地偏好需确认后才召回，支持期限、修改、遗忘及关闭召回；设置 → 学习偏好 → 记忆与偏好。17项发布门禁、733后端+20子项、109前端、95界面、正式包原生记忆确认、35哈希及双ZIP检查通过，原资料身份已恢复。。行为学习与真实模型自由表达评测仍留后续。
 
