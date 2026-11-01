@@ -37,13 +37,15 @@
 
 ## 2.8 文献助手
 
-新增可选Zotero只读MCP连接，在设置→模型连接启用，支持文献检索、信息/全文、笔记和批注。默认关闭，内置本机连接服务，也可配置自己的远端MCP；不修改文献库。[使用说明](docs/releases/Demo2.8.md) · [验收进度](docs/validation/demo2.8/README.md)。正式构建中。
+新增可选Zotero只读MCP连接，在设置→模型连接启用，支持文献检索、信息/全文、笔记和批注。默认关闭，内置本机连接服务，也可配置自己的远端MCP；不修改文献库。[使用说明](docs/releases/Demo2.8.md) · [验收进度](docs/validation/demo2.8/README.md)。已独立构建并通过18项发布检查。
 
 ## 当前版本与历史记录
 
 App与安装包由本地发布流程生成，当前没有在GitHub Releases提供安装包下载；本地入口见工作区README，源码构建见下方说明。
 
-最新发布 **2.7.0 资料、网页与语义检索**，分支 `codex/knowledge-web-semantic`。17门禁、768后端+20子项、113前端、101界面及原生文档选择/冻结本地语义检查通过。[本版说明](docs/releases/Demo2.7.md) · [验收记录](docs/validation/demo2.7/README.md)。
+最新发布 **2.8.0 Zotero文献助手**，分支 `codex/zotero-literature`。18门禁、780后端+20子项、113前端、102界面、实际冻结MCP6工具和原生默认关闭检查通过，签名/37哈希/245运行源码核对通过。[本版说明](docs/releases/Demo2.8.md) · [验收记录](docs/validation/demo2.8/README.md)。真实个人文献库仍待连接验收。
+
+历史发布 **2.7.0 资料、网页与语义检索**，分支 `codex/knowledge-web-semantic`。17门禁、768后端+20子项、113前端、101界面及原生文档选择/冻结本地语义检查通过。[本版说明](docs/releases/Demo2.7.md) · [验收记录](docs/validation/demo2.7/README.md)。
 
 历史发布 **2.6.1 简洁多图作业对话**，分支 `codex/chat-images-simple`。[本版说明](docs/releases/Demo2.6.1.md) · [实施计划](docs/superpowers/plans/2026-11-01-chat-images-simple.md) · [验收记录](docs/validation/demo2.6.1/README.md)。多图从输入框左上排列，发送后在对话内列任务，日期可不填；取消图片授权勾选与日期选择。17门禁、741后端+20子项、110前端、98界面及原生两图选取/合成识别/跳过日期/确认保存通过，35哈希/双ZIP/签名/私密值复核通过，原资料已恢复。。真实模型准确率不以合成验收代替。
 

@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "scope": "Read-only service identity, no business writes/model calls",
+  "configured_original_data_root_matched": [
+    {
+      "root": "/Users/czy/.codex/worktrees/demo24-execution/agentbuild",
+      "project_mode": false
+    },
+    {
+      "root": "/Users/czy/.codex/worktrees/demo24-execution/agentbuild",
+      "project_mode": true
+    }
+  ],
+  "model_configured": true,
+  "vision_configured": true,
+  "isolated_qa_roots_used": false
+}

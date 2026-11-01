@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "source_archive_private_paths_excluded": [
+    ".connector-secrets/example.json",
+    "data/.connector-secrets/example.json",
+    "knowledge-index/vectors/meta.json"
+  ],
+  "git_ignores_secret_and_index": true
+}

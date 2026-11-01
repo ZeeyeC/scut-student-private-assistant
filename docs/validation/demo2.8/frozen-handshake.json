@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "scope": "Actual2.8 staged frozen binary stdio handshake",
+  "read_only_tools": 6,
+  "library_reads": 0,
+  "not_final_release_gate": true
+}

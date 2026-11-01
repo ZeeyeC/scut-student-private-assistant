@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "old_releases_archived": [
+    "Demo2.6.1",
+    "Demo2.7"
+  ],
+  "first_failed_build_logs_preserved": true,
+  "failed_app_and_sanitized_authoring_native_temp_directories_removed": true,
+  "preserved": [
+    "source projects",
+    ".env/model.env",
+    "real data/backups",
+    "installed dependencies",
+    "existing archives",
+    "Demo2.8 App/applicationZIP/sourceZIP/manifest/SHA"
+  ]
+}
