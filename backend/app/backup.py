@@ -4,6 +4,27 @@ import sqlite3
 import tempfile
 import zipfile
 from pathlib import Path
+from uuid import UUID
+
+
+def allowed_upload(relative):
+    p = Path(relative)
+    if p.is_absolute() or ".." in p.parts or "\\" in str(p):
+        return False
+    if len(p.parts) == 1:
+        return p.suffix in {".png", ".jpg", ".webp", ".pdf"}
+    if (
+        len(p.parts) == 3
+        and p.parts[0] == "knowledge"
+        and p.suffix in {".pdf", ".docx", ".pptx", ".xlsx", ".txt", ".md"}
+    ):
+        try:
+            UUID(p.parts[1])
+            UUID(p.stem)
+            return True
+        except ValueError:
+            pass
+    return False
 
 
 def backup(database, checkpoint, uploads, output):
@@ -29,12 +50,15 @@ def backup(database, checkpoint, uploads, output):
                 if db.execute("pragma integrity_check").fetchone()[0] != "ok":
                     raise ValueError("数据库完整性检查失败")
             files[name] = (root / name).read_bytes()
-        for file in uploads.iterdir():
-            if file.suffix not in {".png", ".jpg", ".webp", ".pdf"}:
-                continue
+        for file in uploads.rglob("*"):
             if file.is_symlink():
-                raise ValueError("图片目录不允许符号链接")
-            files["uploads/" + file.name] = file.read_bytes()
+                raise ValueError("资料目录不允许符号链接")
+            if not file.is_file():
+                continue
+            relative = file.relative_to(uploads)
+            if not allowed_upload(relative):
+                continue
+            files["uploads/" + relative.as_posix()] = file.read_bytes()
         manifest = {
             name: hashlib.sha256(data).hexdigest() for name, data in files.items()
         }
@@ -62,8 +86,9 @@ def restore(package, target):
                 or (
                     name not in ("campus.db", "agent.db")
                     and not (
-                        p.parent == Path("uploads")
-                        and p.suffix in {".png", ".jpg", ".webp", ".pdf"}
+                        p.parts
+                        and p.parts[0] == "uploads"
+                        and allowed_upload(Path(*p.parts[1:]))
                     )
                 )
             ):

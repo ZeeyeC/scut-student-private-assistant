@@ -10,6 +10,8 @@
 - 本地语义检索可显式准备BAAI/bge-small-zh-v1.5中文模型并开启。下载模型无需付费模型API；索引使用Qdrant本地模式，权重按需下载，离线推理。未准备/关闭/故障时保留关键词检索。
 - 已确认记忆仍以SQLite为准，语义结果按所有者、当前revision/有效状态/privacy_epoch再次检查，修改/遗忘/关闭后使旧检索失效。资料不自动成为记忆，任务仍需校对确认。
 
+文档原件、业务库和对话检查点会随一致备份保留；恢复仍只允许空目录，不覆盖已有资料。向量索引是可重建派生数据，不进入备份。
+
 ## 实现与依赖
 MarkItDown文档转换；pypdf逐页文本；Fetch同源ReadabiliPy/Markdownify正文流程，使用纯Python避免Node动态安装；FastEmbed/ONNX Runtime中文向量与QdrantClient本地索引。开源声明随App的Resources/OpenSource保留。无需用户安装Python/Node/Docker。
 

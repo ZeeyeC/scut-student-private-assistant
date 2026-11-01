@@ -80,3 +80,26 @@ def test_delete_own_data_removes_assets_threads_but_keeps_other_owner(tmp_path):
             .headers["content-type"]
             .startswith("application/json")
         )
+
+
+def test_backup_preserves_nested_knowledge_originals(tmp_path):
+    from app.backup import backup, restore
+    from uuid import uuid4
+
+    src = tmp_path / "src"
+    src.mkdir()
+    uploads = src / "uploads"
+    uploads.mkdir()
+    owner = str(uuid4())
+    relative = Path("knowledge") / owner / (str(uuid4()) + ".docx")
+    (uploads / relative).parent.mkdir(parents=True)
+    (uploads / relative).write_bytes(b"synthetic-original")
+    for name in ("campus.db", "agent.db"):
+        with sqlite3.connect(src / name) as db:
+            db.execute("create table facts(value text)")
+    package = tmp_path / "backup.zip"
+    backup(src / "campus.db", src / "agent.db", uploads, package)
+    restore(package, tmp_path / "restored")
+    assert (
+        tmp_path / "restored/uploads" / relative
+    ).read_bytes() == b"synthetic-original"
