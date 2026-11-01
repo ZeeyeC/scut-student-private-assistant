@@ -1,0 +1,12 @@
+{
+  "model": "gemini-4-argon-medium",
+  "effort": "medium",
+  "status": "SUCCESS",
+  "duration_seconds": 215.921489,
+  "accepted_cli_files": [
+    "frontend/src/ZoteroSettings.tsx",
+    "backend/app/zotero_contracts.py"
+  ],
+  "root_work": "Read-only MCP worker and transport, secret/config binding, API/Agent/data-delete/packaging integration, fixes, synthetic actual-protocol tests and release",
+  "note": "No private prompts/logs or user config copied"
+}

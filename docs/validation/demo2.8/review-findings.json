@@ -1,0 +1,12 @@
+{
+  "important": 4,
+  "critical": 0,
+  "fixes": [
+    "Crash safety: secret endpoint/config revision binding; uncommitted destination token never sent",
+    "Clear/recreate ABA: per-owner data generation snapshot and fresh check",
+    "Notes/annotations: one pinned config/token snapshot and final revalidation",
+    "Frozen MCP: restore stdio pipes like existing Time MCP"
+  ],
+  "additional_fix": "Failed connection retest replaces old success status",
+  "verification": "Targeted regression and actual frozen MCP gate; real user library pending"
+}

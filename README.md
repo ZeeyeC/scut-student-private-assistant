@@ -35,6 +35,10 @@
 - 可选FastEmbed中文语义检索 + Qdrant本地索引；SQLite仍保存正式记忆，保留确认、遗忘和有效期机制。
 - [2.7使用与发布说明](docs/releases/Demo2.7.md) · [本版验收记录](docs/validation/demo2.7/README.md)。已独立构建并通过17项发布检查。
 
+## 2.8 文献助手
+
+新增可选Zotero只读MCP连接，在设置→模型连接启用，支持文献检索、信息/全文、笔记和批注。默认关闭，内置本机连接服务，也可配置自己的远端MCP；不修改文献库。[使用说明](docs/releases/Demo2.8.md) · [验收进度](docs/validation/demo2.8/README.md)。正式构建中。
+
 ## 当前版本与历史记录
 
 App与安装包由本地发布流程生成，当前没有在GitHub Releases提供安装包下载；本地入口见工作区README，源码构建见下方说明。

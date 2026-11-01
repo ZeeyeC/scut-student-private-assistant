@@ -109,6 +109,8 @@ def data_router(get_db, current_user):
                     path.parent.parent.rmdir()
                 except OSError:
                     pass
+        from app.zotero_bridge import write_token
+        write_token(request.app.state.config, str(user.id), "")
         generations=db.info.get("data_generations",{})
         generations[str(user.id)]=generations.get(str(user.id),0)+1
         await db.execute(delete(Resource).where(Resource.owner_id == str(user.id)))

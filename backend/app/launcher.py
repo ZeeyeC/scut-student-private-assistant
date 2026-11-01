@@ -316,19 +316,28 @@ def start(root: Path, resources: Path, *, project: bool, browser: bool):
         lock.unlink(missing_ok=True)
 
 
+def restore_pipe_streams():
+    # PyInstaller windowed apps set sys.std* to None even with real pipes.
+    # Restore the pipe streams only in this explicitly selected MCP child.
+    if sys.stdin is None:
+        sys.stdin = open(0, encoding="utf-8", closefd=False)
+    if sys.stdout is None:
+        sys.stdout = open(1, "w", encoding="utf-8", closefd=False)
+    if sys.stderr is None:
+        sys.stderr = open(2, "w", encoding="utf-8", closefd=False)
+
+
 def main():
+    if sys.argv[1:] == ["--zotero-mcp"]:
+        restore_pipe_streams()
+        from app.zotero_worker import main as zotero_main
+        return zotero_main()
     if len(sys.argv) == 3 and sys.argv[1] == "--prepare-semantic":
+        restore_pipe_streams()
         from app.semantic_index import prepare_worker
         return prepare_worker(Path(sys.argv[2]))
     if "--time-mcp" in sys.argv[1:]:
-        # PyInstaller windowed apps set sys.std* to None even with real pipes.
-        # Restore the pipe streams only in this explicitly selected MCP child.
-        if sys.stdin is None:
-            sys.stdin = open(0, encoding="utf-8", closefd=False)
-        if sys.stdout is None:
-            sys.stdout = open(1, "w", encoding="utf-8", closefd=False)
-        if sys.stderr is None:
-            sys.stderr = open(2, "w", encoding="utf-8", closefd=False)
+        restore_pipe_streams()
         from mcp_server_time import main as time_main
 
         sys.argv = [sys.argv[0]]

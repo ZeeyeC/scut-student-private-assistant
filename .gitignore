@@ -30,3 +30,6 @@ backups/
 # Installed dependency links in managed worktrees.
 .venv
 node_modules
+
+.connector-secrets/
+knowledge-index/

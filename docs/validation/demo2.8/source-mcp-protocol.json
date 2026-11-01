@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "actual_mcp_transport": true,
+  "frozen": false,
+  "tools": [
+    "zotero_get_collections",
+    "zotero_search_items",
+    "zotero_get_item_metadata",
+    "zotero_get_item_fulltext",
+    "zotero_get_item_fulltext",
+    "zotero_get_notes",
+    "zotero_get_annotations"
+  ],
+  "http_requests": 13,
+  "fixture": "Explicit synthetic HTTP server on unoccupied23119; no real library or model calls",
+  "real_user_library_acceptance": false
+}

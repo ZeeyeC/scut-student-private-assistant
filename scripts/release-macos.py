@@ -19,7 +19,7 @@ from pathlib import Path
 PROJECT = Path(__file__).resolve().parents[1]
 WORKSPACE = PROJECT.parent
 EXCLUDED_PARTS = {
-    ".git", ".superpowers", ".tools", ".venv", "node_modules", "__pycache__", ".pytest_cache",
+    ".connector-secrets", "knowledge-index", ".git", ".superpowers", ".tools", ".venv", "node_modules", "__pycache__", ".pytest_cache",
     ".ruff_cache", "build", "dist", ".output", ".output-e2e", ".wxt", "data",
     "backups", "test-results", "test-results-local", "playwright-report", "desktop-extension",
 }
@@ -177,6 +177,7 @@ def run_checks(project, stage, version):
                                   str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"),
                                   "--output", str(stage / "乙交互冻结检查.json")]),
     ]
+    commands.append(("frozen_zotero", [python, "scripts/verify-zotero-mcp.py", "--service", str(stage / "课间桌宠.app/Contents/Resources/service/CampusCompanion"), "--output", str(stage / "文献MCP冻结检查.json")]))
     results = {}
     for name, command in commands:
         print("Release check:", name, flush=True)

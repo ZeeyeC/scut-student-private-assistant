@@ -315,6 +315,8 @@ def create_app(config=None):
     app.include_router(knowledge_router(config, get_db, current_user))
     from app.web_research import research_router
     app.include_router(research_router(config, get_db, current_user))
+    from app.zotero_routes import zotero_router
+    app.include_router(zotero_router(config, get_db, current_user))
     app.include_router(integrations_router(config, get_db, current_user))
     app.include_router(profile_router(get_db, current_user))
     app.include_router(goal_router(get_db, current_user))

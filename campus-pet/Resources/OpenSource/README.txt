@@ -7,3 +7,5 @@ https://github.com/microsoft/onnxruntime
 https://github.com/huggingface/tokenizers
 https://github.com/google/magika
 https://huggingface.co/BAAI/bge-small-zh-v1.5
+
+2.8新增Zotero MCP Server0.15.2（MIT及随附插件AGPL许可分别保留，App仅运行只读Python服务，不安装上游Zotero插件）、FastMCP3.4.11、Pyzotero1.14.0、pdf-inspector0.2.6。没有引入Chroma或Torch，不自动读取其他助手配置/本机Zotero SQLite，不运行索引自动更新。上游原代码及许可来源https://github.com/54yyyu/zotero-mcp；依赖版本以backend/uv.lock为准。

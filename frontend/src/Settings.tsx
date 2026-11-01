@@ -12,6 +12,7 @@ import {
 } from "./CampusPresetSelector";
 import { AfterClassPreferences } from "./AfterClass";
 import {KnowledgeManager} from "./KnowledgeManager";
+import {ZoteroSettings} from "./ZoteroSettings";
 import {ResearchSettings} from "./ResearchSettings";
 import {MemoryManager} from "./MemoryManager";
 import {PersonalProfile} from "./PersonalProfile";
@@ -89,7 +90,7 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
     <>
       {group==='semester'&&<ImportBrowserSettings/>}
       {group==='data'&&<KnowledgeManager/>}
-      {group==='models'&&<ResearchSettings/>}
+      {group==='models'&&<><ResearchSettings/><ZoteroSettings/></>}
       {group==='preferences'&&<><PersonalProfile/><MemoryManager/></>}
       {group==='reminders'&&<><AfterClassPreferences/><ProactiveSettings/></>}
       {(group==='semester'||group==='preferences')&&<form
