@@ -197,3 +197,5 @@ U3c/Task3：统一导入面板已实现，学校/Chrome或保存的Edge为默认
 2026-11-01 GitHub提交与技术栈说明：用户明确要求确认完成后提交GitHub并补充项目技术栈/长期记忆介绍。已复核2.6.1发布证据并开始补README及架构说明，区分业务记忆与LangGraph检查点、关键词召回与未实现的向量/行为学习。Git fetch凭据读取失败，gh仓库查询返回401；已请用户恢复GitHub登录，文档与本地提交继续，尚未推送。
 
 2026-11-01 技术栈文档完成：d24c407补充README技术栈、长期记忆简介及docs/architecture/技术栈与长期记忆.md；新增相对链接均有效，239个未推送blob和89个嵌套归档条目已扫描，未发现三配置根已知Key或私有配置/数据库文件。本轮仅文档变更，沿用2.6.1已完成的构建验收。已实际执行git push -u origin codex/chat-images-simple，因Git凭据读取失败（-25293）退出128；gh auth status确认ZeeyeC当前令牌无效。尚未上传，等待用户恢复GitHub登录后继续；未改远端默认分支。
+
+2026-11-01 GitHub登录恢复：用户完成登录，gh仓库查询成功，确认私有仓库ZeeyeC/scut-student-private-assistant默认分支为main。配置gh的Git凭据助手后fetch成功；本次仅推送已授权的codex/chat-images-simple分支及其15个未上传历史提交，不修改main，不上传本地App安装包。重跑未推送历史的私密值/配置/数据库与嵌套归档扫描，结果见本轮推送核验；原有.DS_Store变更不纳入提交。准备推送并核对远端提交哈希。
