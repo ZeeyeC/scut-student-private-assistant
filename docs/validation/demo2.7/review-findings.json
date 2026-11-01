@@ -1,0 +1,36 @@
+{
+  "reviewer": "independent read-only subagent",
+  "critical": 0,
+  "important": [
+    {
+      "finding": "In-flight import repopulates after data clear",
+      "fix": "Shared per-owner import generation checked after parse/fetch; originals cleaned on invalidation",
+      "tests": [
+        "test_data_clear_invalidates_inflight_document_parse"
+      ]
+    },
+    {
+      "finding": "Corrupt disposable index blocks privacy operations",
+      "fix": "Recreate only corrupt derived vectors; index invalidation occurs before deleting canonical files",
+      "tests": [
+        "test_corrupt_disposable_index_can_be_cleared_and_rebuilt"
+      ]
+    },
+    {
+      "finding": "Stale index operations survive disable/recall settings",
+      "fix": "Generation token at index boundary, expire ORM snapshot, clear owner vectors on recall toggle",
+      "tests": [
+        "test_rank_cannot_repopulate_after_owner_invalidation",
+        "test_semantic_disable_invalidates_inflight_search_and_orm_snapshot"
+      ]
+    },
+    {
+      "finding": "Reused sources recover wrong earlier run",
+      "fix": "Replay exact Idempotency-Key and original run request rather than search attachments",
+      "tests": [
+        "lost response for a reused source recovers the exact new operation"
+      ]
+    }
+  ],
+  "scope": "Synthetic temporary data only; no real account data or paid calls"
+}

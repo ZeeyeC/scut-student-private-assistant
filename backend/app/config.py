@@ -22,6 +22,7 @@ class Config(BaseSettings):
     model_base_url: str | None = None
     model_use_system_proxy: bool = True
     scut_adapter_path: str = ""
+    search_endpoint: str = ""
 
     def prepare(self):
         if self.database_url.startswith("sqlite"):

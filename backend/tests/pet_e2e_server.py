@@ -82,6 +82,14 @@ class ChatImageModel(TextTimetableModel):
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         text = next(str(m.content) for m in reversed(messages) if isinstance(m, HumanMessage))
         last = messages[-1]
+        if text in {"资料里的作业是什么", "总结这些课程资料"}:
+            if isinstance(last, ToolMessage):
+                result=json.loads(last.content)
+                chunks=result.get('items',[])
+                content='；'.join(f"{c['title']} · {c['location']}：{c['text']}" for c in chunks) or '未找到匹配资料。'
+                return ChatResult(generations=[ChatGeneration(message=AIMessage(content=content))])
+            call={"name":"search_knowledge","args":{"query":"作业"},"id":__import__('uuid').uuid4().hex,"type":"tool_call"}
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="",tool_calls=[call]))])
         if text == "记住以后回答简短些":
             if isinstance(last, ToolMessage):
                 return ChatResult(generations=[ChatGeneration(message=AIMessage(content="已提出记忆候选，请确认后生效。"))])

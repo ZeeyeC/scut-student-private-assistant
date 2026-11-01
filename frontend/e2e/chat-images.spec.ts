@@ -9,7 +9,7 @@ async function enter(page:Page){
 }
 async function choose(page:Page,name='homework'){
  await page.getByRole('button',{name:'附件',exact:true}).click();
- await expect(page.getByRole('menuitem')).toHaveText(['图片识别作业','导入课表']);
+ await expect(page.getByRole('menuitem')).toHaveText(['图片识别作业','课程资料','导入课表']);
  await page.getByLabel('选择作业截图').setInputFiles({name:name+'.png',mimeType:'image/png',buffer:readFileSync(file(name))});
  await page.keyboard.press('Escape');
  await expect(page.getByAltText('待发送的作业截图')).toBeVisible();

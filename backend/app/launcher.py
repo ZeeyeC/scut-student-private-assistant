@@ -317,6 +317,9 @@ def start(root: Path, resources: Path, *, project: bool, browser: bool):
 
 
 def main():
+    if len(sys.argv) == 3 and sys.argv[1] == "--prepare-semantic":
+        from app.semantic_index import prepare_worker
+        return prepare_worker(Path(sys.argv[2]))
     if "--time-mcp" in sys.argv[1:]:
         # PyInstaller windowed apps set sys.std* to None even with real pipes.
         # Restore the pipe streams only in this explicitly selected MCP child.

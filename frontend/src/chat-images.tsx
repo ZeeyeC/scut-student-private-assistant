@@ -230,9 +230,11 @@ export function ImageDropArea({
 export function ChatImageControls({
   state,
   disabled,
+  onPickDocuments,
 }: {
   state: ReturnType<typeof useChatImage>;
   disabled: boolean;
+  onPickDocuments?: () => void;
 }) {
   const [menu, setMenu] = useState(false);
   const file = useRef<HTMLInputElement>(null);
@@ -315,6 +317,7 @@ export function ChatImageControls({
             >
               图片识别作业
             </button>
+            {onPickDocuments&&<button type="button" role="menuitem" disabled={disabled} onClick={()=>{setMenu(false);onPickDocuments();}}>课程资料</button>}
             <button
               type="button"
               role="menuitem"

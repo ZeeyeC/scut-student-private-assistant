@@ -1,0 +1,15 @@
+{
+  "real_local_model": true,
+  "status": {
+    "available": true,
+    "status": "ready",
+    "model": "BAAI/bge-small-zh-v1.5",
+    "enabled": true
+  },
+  "keyword_matches": 0,
+  "semantic_matches": 1,
+  "mode": "semantic+keyword",
+  "knowledge_semantic_mode": "semantic+keyword",
+  "knowledge_hits": 1,
+  "forgotten_not_recalled": true
+}

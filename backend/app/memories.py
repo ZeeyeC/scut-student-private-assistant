@@ -44,6 +44,8 @@ async def settings(db, owner, create=False):
 
 
 async def epoch(db, owner):
+    if db.info.get("semantic_index"):
+        await db.info["semantic_index"].clear_owner(owner)
     r = await settings(db, owner, True)
     r.data = {**r.data, "privacy_epoch": r.data["privacy_epoch"] + 1}
     r.revision += 1
@@ -350,6 +352,8 @@ async def write_preferences(db, owner, body):
         raise HTTPException(409, "记忆设置已变化，请刷新")
     s = await settings(db, owner, True)
     changed = s.data["recall_enabled"] != body.recall_enabled
+    if changed and db.info.get("semantic_index"):
+        await db.info["semantic_index"].clear_owner(owner)
     s.data = {
         **s.data,
         "recall_enabled": body.recall_enabled,
@@ -380,7 +384,7 @@ async def clear_memories(db, owner, revision):
     return {"cleared": True}
 
 
-async def recall(db, owner, query="", limit=5, max_chars=1000):
+async def recall(db, owner, query="", limit=5, max_chars=1000, semantic_scores=None):
     await reconcile(db, owner)
     s = await settings(db, owner)
     result = {
@@ -400,8 +404,10 @@ async def recall(db, owner, query="", limit=5, max_chars=1000):
             continue
         d = r.data
         score = sum(t in (d["key"] + d["content"]).casefold() for t in terms)
-        if score or all_query or d["category"] == "interaction_preference":
-            scored.append((score, r))
+        semantic = (semantic_scores or {}).get(r.id)
+        similarity = semantic.get("score", 0) if isinstance(semantic, dict) and semantic.get("revision") == r.revision else 0
+        if score or all_query or d["category"] == "interaction_preference" or similarity >= 0.5:
+            scored.append((score / max(1, len(terms)) + similarity * 2, r))
     budget = min(1000, max(0, max_chars))
     for _, r in sorted(scored, key=lambda x: (-x[0], x[1].id))[: min(5, max(0, limit))]:
         content = r.data["content"][:budget]

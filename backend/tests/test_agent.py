@@ -79,6 +79,7 @@ def test_actual_tools_restricted_and_real_service_query(tmp_path):
         assert c.get("/api/agent/tools").json()["tools"] == sorted(
             [
                 "get_personal_context", "search_memories", "propose_memory", "propose_forget_memory",
+                "list_knowledge_sources", "search_knowledge", "read_knowledge_source", "read_webpage", "search_web",
                 "list_constraint_intents",
                 "propose_constraint_intent",
                 "update_constraint_intent",

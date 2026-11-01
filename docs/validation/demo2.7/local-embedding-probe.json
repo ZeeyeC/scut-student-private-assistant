@@ -1,0 +1,13 @@
+{
+  "model": "BAAI/bge-small-zh-v1.5",
+  "dimension": 512,
+  "scores": [
+    0.6810641288757324,
+    0.41290098428726196,
+    0.5495872497558594
+  ],
+  "chinese_paraphrase_top_match": 0,
+  "real_local_embedding": true,
+  "scope": "Isolated local FastEmbed inference; synthetic Chinese preferences, no business/model provider calls",
+  "not_app_acceptance": true
+}

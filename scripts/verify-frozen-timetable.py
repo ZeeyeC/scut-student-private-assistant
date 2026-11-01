@@ -524,7 +524,15 @@ def verify(service):
                     == 200
                 )
                 assert list((root / "data/uploads").iterdir()) == []
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("frozen_knowledge", Path(__file__).with_name("verify-frozen-knowledge.py"))
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                knowledge_result = module.knowledge_checks(lambda path: json.load(opener.open(origin + "/api" + path)), request)
+                request("/data-delete", json.dumps({"confirmation": "删除我的所有数据"}).encode()).read()
+                assert not any(p.is_file() for p in (root / "data/uploads").rglob("*"))
                 return {
+                    "knowledge": knowledge_result,
                     "passed": True,
                     "scope": "actual frozen backend, temporary local profile, no model calls",
                     "checks": [

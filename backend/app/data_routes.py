@@ -42,7 +42,14 @@ def data_router(get_db, current_user):
                     files[name] = base64.b64encode(
                         Path(request.app.state.config.upload_dir, name).read_bytes()
                     ).decode()
+        from app.knowledge import storage_path
+        knowledge_files = {}
+        for r in resources:
+            if r.kind == "knowledge_source" and r.data.get("storage_name"):
+                path = storage_path(request.app.state.config, str(user.id), r.data["storage_name"])
+                knowledge_files[r.data["storage_name"]] = base64.b64encode(path.read_bytes()).decode()
         return {
+            "knowledge_files_base64": knowledge_files,
             "schema_version": 2,
             "resources": [store.view(r) for r in resources],
             "images_png_base64": images,
@@ -77,6 +84,8 @@ def data_router(get_db, current_user):
             for r in resources
         ):
             raise HTTPException(409, "图片正在识别，请等待结束后删除")
+        if hasattr(request.app.state, "semantic_index"):
+            await request.app.state.semantic_index.clear_owner(str(user.id))
         checkpoint_ids = {r.id for r in resources if r.kind == "agent_thread"}
         checkpoint_ids.update(r.data.get("checkpoint_id", r.data["thread_id"]) for r in resources if r.kind == "agent_run")
         for checkpoint_id in checkpoint_ids:
@@ -90,6 +99,18 @@ def data_router(get_db, current_user):
                     Path(request.app.state.config.upload_dir, name).unlink(
                         missing_ok=True
                     )
+        from app.knowledge import storage_path
+        for r in resources:
+            if r.kind == "knowledge_source" and r.data.get("storage_name"):
+                path = storage_path(request.app.state.config, str(user.id), r.data["storage_name"])
+                path.unlink(missing_ok=True)
+                try:
+                    path.parent.rmdir()
+                    path.parent.parent.rmdir()
+                except OSError:
+                    pass
+        generations=db.info.get("data_generations",{})
+        generations[str(user.id)]=generations.get(str(user.id),0)+1
         await db.execute(delete(Resource).where(Resource.owner_id == str(user.id)))
         await db.execute(delete(Receipt).where(Receipt.owner_id == str(user.id)))
         return {"deleted": True}

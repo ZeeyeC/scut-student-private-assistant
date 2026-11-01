@@ -551,7 +551,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         }
         let picker = NSOpenPanel()
         picker.canChooseDirectories = false; picker.allowsMultipleSelection = parameters.allowsMultipleSelection
-        picker.allowedContentTypes = [.png, .jpeg, .webP]
+        picker.allowedContentTypes = [.png, .jpeg, .webP, .pdf, .plainText] + ["docx", "pptx", "xlsx", "md"].compactMap { UTType(filenameExtension: $0) }
         picker.beginSheetModal(for: assistant) { completionHandler($0 == .OK ? picker.urls : nil) }
     }
 }

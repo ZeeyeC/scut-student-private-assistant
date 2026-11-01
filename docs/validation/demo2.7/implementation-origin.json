@@ -1,0 +1,63 @@
+{
+  "tasks": [
+    {
+      "task": "authoring-build",
+      "model": "gemini-4-argon-medium",
+      "effort": "medium",
+      "status": "ERROR",
+      "finished_reason": "error",
+      "duration_seconds": 535.732284,
+      "accepted_files": [
+        "backend/app/knowledge_contracts.py"
+      ]
+    },
+    {
+      "task": "frontend-build",
+      "model": "gemini-4-argon-medium",
+      "effort": "medium",
+      "status": "ERROR",
+      "finished_reason": "error",
+      "duration_seconds": 536.085988,
+      "accepted_files": [
+        "frontend/src/chat-documents.tsx"
+      ]
+    },
+    {
+      "task": "semantic",
+      "model": "gemini-4-argon-medium",
+      "effort": "medium",
+      "status": "SUCCESS",
+      "finished_reason": null,
+      "duration_seconds": 162.645879,
+      "accepted_files": [
+        "backend/app/semantic_index.py"
+      ]
+    },
+    {
+      "task": "components",
+      "model": "gemini-4-argon-medium",
+      "effort": "medium",
+      "status": "SUCCESS",
+      "finished_reason": null,
+      "duration_seconds": 182.505808,
+      "accepted_files": [
+        "frontend/src/KnowledgeManager.tsx",
+        "frontend/src/ResearchSettings.tsx"
+      ]
+    },
+    {
+      "task": "connector-tests",
+      "model": "gemini-4-argon-medium",
+      "effort": "medium",
+      "status": "SUCCESS",
+      "finished_reason": null,
+      "duration_seconds": 139.359128,
+      "accepted_files": [
+        "backend/tests/test_web_research.py",
+        "backend/tests/test_semantic_index.py"
+      ]
+    }
+  ],
+  "root_work": "Backend document/web/integrations/agent wiring, frontend integration, privacy/cancellation/race fixes, actual testing and release; initial broad tasks timed out with partial files only",
+  "note": "CLI success flags are not acceptance. Private prompts/logs excluded."
+}

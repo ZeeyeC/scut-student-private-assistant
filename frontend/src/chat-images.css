@@ -189,3 +189,5 @@
 .chat-assignment-images img{max-width:140px;max-height:180px;object-fit:contain;border:1px solid var(--workspace-button-border,#e6e9ef);border-radius:8px}
 .message.user{flex-wrap:wrap}
 .message.user img{max-width:140px;max-height:150px}
+
+.chat-doc-thumb{height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--accent,#6464ca);background:#f3f4f8;border-radius:10px}.chat-source-tokens{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0}.chat-source-token{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:6px 10px;background:#f3f4f8;border-radius:8px}.chat-source-token>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}.chat-source-token-remove{border:0;background:transparent;cursor:pointer}

@@ -24,6 +24,8 @@ import {PageHeader} from './layout/PageHeader';
 import {DetailPanel} from './layout/DetailPanel';
 import {ArrowUp} from 'lucide-react';
 import {useChatImage,ImageDropArea,ChatImageControls} from './chat-images';
+import {useChatDocuments,ChatDocumentControls,DOC_ACCEPT,isDocFile} from './chat-documents';
+import {KnowledgeManager} from './KnowledgeManager';
 import {scrollWithinWorkspace} from './layout/scrollWithin';
 const labels: Record<string, string> = {
   get_current_time: "核对当前日期",
@@ -73,6 +75,12 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const [historyOpen,setHistoryOpen]=useState(false);
   const [navigating,setNavigating]=useState(false);
   const image = useChatImage();
+  const documents = useChatDocuments();
+  const documentInput = useRef<HTMLInputElement>(null);
+  const [knowledgeOpen,setKnowledgeOpen] = useState(false);
+  const batchKeys = useRef({signature:"",runKey:"",threadKey:""});
+  const sources = useQuery({queryKey:["knowledge-sources"],queryFn:()=>api<Resource[]>("/knowledge/sources")});
+  const receiveFiles=(files:File[])=>{const docs=files.filter(isDocFile);const images=files.filter(f=>!isDocFile(f));if(docs.length)void documents.add(docs);if(images.length)void image.add(images);};
   const composerInput = useRef<HTMLTextAreaElement>(null);
   const [imageRun,setImageRun]=useState<Resource|null>(null);
   const viewEpoch=useRef(0);
@@ -90,7 +98,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const activeRun=useRef("");
   useEffect(() => {
     if (!focusThreadId) return;
-    viewEpoch.current++;setNavigating(false);image.clear();setImageRun(null);activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
+    viewEpoch.current++;setNavigating(false);image.clear();documents.clear();setImageRun(null);activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
     cursors.current = {};
     setThreadId(focusThreadId); setEpoch(value => value + 1);
   }, [focusThreadId, focusRequest]);
@@ -200,10 +208,15 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
     return () => abort.abort();
   }, [runId, epoch]);
   async function sendMessage(text:string){
-      if ((!text.trim() && !image.images.length) || activeRun.current || navigating) return;
-      const attached=[...image.images];
-      text=text.trim() || (attached.length>1?"识别这些作业截图":"识别这张作业截图");
-      image.freeze();
+      if ((!text.trim() && !image.images.length && !documents.totalCount) || activeRun.current || navigating) return;
+      const attached=[...image.images], attachedDocs=[...documents.documents], attachedSources=[...documents.selectedSources];
+      const hasAttachments=!!(attached.length||attachedDocs.length||attachedSources.length);
+      const signature=image.runKey+documents.runKey;
+      if(batchKeys.current.signature!==signature)batchKeys.current={signature,runKey:crypto.randomUUID(),threadKey:crypto.randomUUID()};
+      const keys={...batchKeys.current};
+      let sourceIds:string[]=[];
+      text=text.trim() || (documents.totalCount?"总结这些课程资料":attached.length>1?"识别这些作业截图":"识别这张作业截图");
+      image.freeze();if(hasAttachments)documents.freeze();
       const owner='request:'+crypto.randomUUID();activeRun.current=owner;
       setError("");
       setRunning(true);
@@ -213,12 +226,14 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
           const t = await api<Resource>("/agent/threads", {
             method: "POST",
             body: "{}",
-            headers: attached.length ? {"Idempotency-Key":image.threadKey} : {},
+            headers: hasAttachments ? {"Idempotency-Key":keys.threadKey} : {},
           });
           if(activeRun.current!==owner)return;
           tid = t.id;
           setThreadId(tid);
         }
+        sourceIds=await documents.onSend(attachedDocs,attachedSources,()=>activeRun.current===owner);
+        if(activeRun.current!==owner)return;
         for(const item of attached){
           if(activeRun.current!==owner)return;
           if(!item.assetId){
@@ -230,24 +245,23 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
         if(activeRun.current!==owner)return;
         const r = await api<Resource>("/agent/runs", {
           method: "POST",
-          body: JSON.stringify({ thread_id: tid, message: text, ...(attached.length?{attachments:attached.map(item=>({kind:"assignment_image",asset_id:item.assetId,consent:true}))}:{}) }),
-          headers:attached.length?{"Idempotency-Key":image.runKey}:{},
+          body: JSON.stringify({ thread_id: tid, message: text, ...(sourceIds.length?{source_ids:sourceIds}:{}), ...(attached.length?{attachments:attached.map(item=>({kind:"assignment_image",asset_id:item.assetId,consent:true}))}:{}) }),
+          headers:hasAttachments?{"Idempotency-Key":keys.runKey}:{},
         });
         if(activeRun.current!==owner)return;
         activeRun.current=r.id;setRunId(r.id);
-        if(attached.length){setImageRun(r);image.clear();runtime.thread.composer.setText("");}
+        if(hasAttachments){if(attached.length)setImageRun(r);image.clear();documents.clear();runtime.thread.composer.setText("");void q.invalidateQueries({queryKey:["knowledge-sources"]});}
       } catch (e) {
         if(activeRun.current!==owner)return;
-        if(attached.length&&attached.every(item=>item.assetId)&&tid){
+        if(hasAttachments&&attached.every(item=>item.assetId)&&attachedDocs.every(item=>item.sourceId)&&tid){
           try{
-            const runs=await api<Resource[]>('/agent/threads/'+tid+'/runs');
-            const ids=attached.map(item=>item.assetId);
-            const recovered=runs.find(r=>JSON.stringify(r.data.attachments?.map((a:{asset_id:string})=>a.asset_id)??(r.data.attachment?[r.data.attachment.asset_id]:[]))===JSON.stringify(ids));
+            // Replay the exact operation key: reusable sources cannot identify a run.
+            const recovered=await api<Resource>('/agent/runs',{method:'POST',headers:{'Idempotency-Key':keys.runKey},body:JSON.stringify({thread_id:tid,message:text,...(sourceIds.length?{source_ids:sourceIds}:{}),...(attached.length?{attachments:attached.map(item=>({kind:'assignment_image',asset_id:item.assetId,consent:true}))}:{})})});
             if(activeRun.current!==owner)return;
-            if(recovered){setImageRun(recovered);setRunId(recovered.id);activeRun.current=recovered.id;syncRun(recovered);image.clear();if(recovered.data.message===text)runtime.thread.composer.setText("");else setError("已恢复原图片消息，新的文字说明请另行发送。");return;}
+            if(recovered){if(attached.length)setImageRun(recovered);setRunId(recovered.id);activeRun.current=recovered.id;syncRun(recovered);image.clear();documents.clear();if(recovered.data.message===text)runtime.thread.composer.setText("");else setError("已恢复原图片消息，新的文字说明请另行发送。");return;}
           }catch{/* Keep selection and stable operation keys for explicit retry. */}
         }
-        activeRun.current='';setError(String(e));
+        documents.unfreeze();activeRun.current='';setError(String(e));
         setRunning(false);
       }
   }
@@ -270,7 +284,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
     convertMessage: (m) => ({
       id: m.id,
       role: m.role,
-      content: [{ type: "text", text: m.content }, ...messageAssetIds(m).map(id=>({type:"image" as const,image:"/api/assets/"+id}))],
+      content: [{ type: "text", text: m.content + (m.source_ids?.length?"\n附件："+m.source_ids.map(id=>sources.data?.find(s=>s.id===id)?.data.title??"课程资料").join("、"):"") }, ...messageAssetIds(m).map(id=>({type:"image" as const,image:"/api/assets/"+id}))],
     }),
     onNew: async (message: AppendMessage) => {
       await sendMessage(message.content.filter(c=>c.type==='text').map(c=>c.text).join('\n'));
@@ -286,6 +300,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const hasReview = pendingMemoryCount>0 || !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
   return (
     <div className={embedded ? "assistant-page embedded" : "assistant-page"}>
+      <DetailPanel open={knowledgeOpen} title="课程资料" onClose={()=>setKnowledgeOpen(false)}><KnowledgeManager disabled={running||!!approvalId||navigating} onSelect={source=>documents.toggleSource(source)} selectedIds={documents.selectedSources.map(s=>s.id)}/></DetailPanel>
       {!embedded&&<PageHeader title="助手"/>}
       <header className="chat-toolbar">
         <div>
@@ -297,7 +312,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
           disabled={running||navigating}
           onClick={async () => {
             const view=++viewEpoch.current;
-            image.clear();setImageRun(null);activeRun.current='';setNavigating(true);
+            image.clear();documents.clear();setImageRun(null);activeRun.current='';setNavigating(true);
             setRunId("");setApprovalId("");setError("");setStatus("");setMessages([]);cursors.current={};
             try {
               const t=await api<Resource>("/agent/threads",{method:"POST",body:"{}"});
@@ -313,11 +328,12 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
         </Button>
         <Button variant="outline" onClick={()=>setShowConstraints(v=>!v)}>{showConstraints?"收起约束入口":"安排持续约束"}</Button>
         {!embedded&&<button type="button" className="workspace-text-button" onClick={()=>setHistoryOpen(true)}>会话记录</button>}
+        {!embedded&&<button type="button" className="workspace-text-button" onClick={()=>setKnowledgeOpen(true)}>课程资料</button>}
       </header>
       <div className={hasReview ? "assistant-layout has-review" : "assistant-layout"}>
         <div className="chat-area">
       <AssistantRuntimeProvider runtime={runtime}>
-        <ImageDropArea disabled={running||!!approvalId||navigating} onFiles={files=>void image.add(files)}><ThreadPrimitive.Root className="chat card">
+        <ImageDropArea disabled={running||!!approvalId||navigating} onFiles={receiveFiles}><ThreadPrimitive.Root className="chat card">
           <ThreadPrimitive.Viewport className="chat-viewport">
             <ThreadPrimitive.Empty>
               <p>想安排什么？</p>
@@ -343,7 +359,9 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
             {running&&imageRun.id===runId&&<button type="button" onClick={()=>void actOnImage('cancel')}>取消图片识别</button>}
           </div>}
           <ComposerPrimitive.Root className="composer">
-            <ChatImageControls state={image} disabled={running||!!approvalId||navigating}/>
+            <ChatImageControls state={image} disabled={running||!!approvalId||navigating} onPickDocuments={()=>documentInput.current?.click()}/>
+            <ChatDocumentControls state={documents} disabled={running||!!approvalId||navigating} onPickFiles={()=>documentInput.current?.click()}/>
+            <input ref={documentInput} hidden multiple type="file" accept={DOC_ACCEPT} aria-label="选择课程资料" disabled={running||!!approvalId||navigating} onChange={e=>{if(e.target.files?.length)void documents.add(Array.from(e.target.files));e.target.value="";}}/>
 
             <ComposerPrimitive.Input
               disabled={navigating}
@@ -351,9 +369,9 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
               placeholder="说说你想安排什么"
               aria-label="给助手的消息"
             />
-            <div className="composer-bottom"><span/>{image.images.length?<button type="button" className="workspace-button" aria-label="发送" disabled={running||!!approvalId||navigating} onClick={()=>void sendMessage(composerInput.current?.value??'')}><ArrowUp size={16}/>发送</button>:<ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId||navigating}><ArrowUp size={16}/>发送</ComposerPrimitive.Send>}</div>
+            <div className="composer-bottom"><span/>{(image.images.length||documents.totalCount)?<button type="button" className="workspace-button" aria-label="发送" disabled={running||!!approvalId||navigating} onClick={()=>void sendMessage(composerInput.current?.value??'')}><ArrowUp size={16}/>发送</button>:<ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId||navigating}><ArrowUp size={16}/>发送</ComposerPrimitive.Send>}</div>
           </ComposerPrimitive.Root>
-          {!!image.images.length&&<p className="chat-image-disclosure">发送图片将交由已配置的模型识别</p>}
+          {!!(image.images.length||documents.totalCount)&&<p className="chat-image-disclosure">发送附件的相关内容将交给已配置的模型</p>}
         </ThreadPrimitive.Root></ImageDropArea>
       </AssistantRuntimeProvider>
       {error && (
@@ -391,7 +409,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
       ))}
       </div>}
       </div>
-      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{viewEpoch.current++;setNavigating(false);image.clear();setImageRun(null);activeRun.current="";setRunning(false);setStatus("");setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
+      <DetailPanel open={historyOpen} title="会话记录" onClose={()=>setHistoryOpen(false)}>{threads.data?.map(thread=><button type="button" className="thread-history-row" key={thread.id} onClick={()=>{viewEpoch.current++;setNavigating(false);image.clear();documents.clear();setImageRun(null);activeRun.current="";setRunning(false);setStatus("");setThreadId(thread.id);setMessages([]);setRunId('');setApprovalId('');setError('');cursors.current={};setEpoch(v=>v+1);setHistoryOpen(false);}}>{thread.data.title??'会话'}</button>)}</DetailPanel>
     </div>
   );
 }

@@ -46,7 +46,9 @@ def create_app(config=None):
     config = Config(**(config or {})) if not isinstance(config, Config) else config
     config.prepare()
     engine = create_async_engine(config.database_url, connect_args={"timeout": 30})
-    sessions = async_sessionmaker(engine, expire_on_commit=False)
+    from app.semantic_index import SemanticIndex
+    semantic_index = SemanticIndex(Path(config.agent_db_path).parent / "knowledge-index")
+    sessions = async_sessionmaker(engine, expire_on_commit=False, info={"semantic_index": semantic_index, "data_generations": {}})
 
     @asynccontextmanager
     async def lifespan(app):
@@ -135,6 +137,7 @@ def create_app(config=None):
         finally:
             if hasattr(app.state.gateway, "aclose"):
                 await app.state.gateway.aclose()
+            await semantic_index.close()
             await engine.dispose()
             lock.unlink(missing_ok=True)
 
@@ -152,6 +155,7 @@ def create_app(config=None):
 
     app.state.config, app.state.sessions = config, sessions
     app.state.gateway = ModelGateway(config)
+    app.state.semantic_index = semantic_index
 
     async def get_db():
         # SQLite serializes short business transactions, including replay checks.
@@ -306,6 +310,12 @@ def create_app(config=None):
     app.include_router(timer_router(get_db, current_user, str(uuid4())))
     from app.memory_routes import memory_router
     app.include_router(memory_router(config, get_db, current_user))
+    from app.knowledge_routes import knowledge_router
+    from app.integrations_routes import integrations_router
+    app.include_router(knowledge_router(config, get_db, current_user))
+    from app.web_research import research_router
+    app.include_router(research_router(config, get_db, current_user))
+    app.include_router(integrations_router(config, get_db, current_user))
     app.include_router(profile_router(get_db, current_user))
     app.include_router(goal_router(get_db, current_user))
     app.include_router(review_router(get_db, current_user))

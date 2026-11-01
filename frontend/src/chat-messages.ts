@@ -6,6 +6,7 @@ export type ChatMessage = {
   seq: number;
   asset_id?: string;
   asset_ids?: string[];
+  source_ids?: string[];
 };
 
 export function messageAssetIds(source?: {
@@ -43,6 +44,7 @@ export function applyMessage(messages: ChatMessage[], event: PublicEvent): ChatM
     role: event.type === "message_delta" ? "assistant" : p.role,
     content: event.type === "message_delta" ? (previous?.content ?? "") + p.delta : p.content,
     seq: event.seq,
+    source_ids: Array.isArray(p.source_ids)?p.source_ids:previous?.source_ids,
     ...(assetIds.length > 0 ? { asset_ids: assetIds, asset_id: assetIds[0] } : {}),
   };
   return index < 0 ? [...messages, message] : messages.map((m, i) => i === index ? message : m);
