@@ -1,16 +1,48 @@
 # 课间 · 华工学生助手
 
-最新发布 **2.6.1 简洁多图作业对话**，分支 `codex/chat-images-simple`。[本版说明](docs/releases/Demo2.6.1.md) · [实施计划](docs/superpowers/plans/2026-11-01-chat-images-simple.md) · [验收记录](docs/validation/demo2.6.1/README.md)。多图从输入框左上排列，发送后在对话内列任务，日期可不填；取消图片授权勾选与日期选择。17门禁、741后端+20子项、110前端、98界面及原生两图选取/合成识别/跳过日期/确认保存通过，35哈希/双ZIP/签名/私密值复核通过，原资料已恢复。[打开App](/Users/czy/ProjectManagement/Demo2.6.1/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.6.1/Demo2.6.1-Mac-AppleSilicon.zip)。真实模型准确率不以合成验收代替。
+课间是一款面向华工学生的个人学习助手，整合课表导入、作业截图整理、待办、学习排程、桌宠和可确认的长期偏好记忆。日常在独立App内使用，学校课表导入按需唤起Chrome/Edge。
 
-历史发布 **2.6.0 可确认的个人记忆**，分支 `codex/personal-agent-memory`。[本版说明](docs/releases/Demo2.6.md) · [实施计划](docs/superpowers/plans/2026-11-01-personal-memory-implementation.md) · [验证记录](docs/validation/demo2.6/README.md)。本地偏好需确认后才召回，支持期限、修改、遗忘及关闭召回；设置 → 学习偏好 → 记忆与偏好。17项发布门禁、733后端+20子项、109前端、95界面、正式包原生记忆确认、35哈希及双ZIP检查通过，原资料身份已恢复。[打开App](/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.6/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/课间归档/历史版本/Demo2.6/Demo2.6-Mac-AppleSilicon.zip)。行为学习与真实模型自由表达评测仍留后续。
+## 技术栈
 
-历史发布 **2.5.7 聊天作业截图闭环**：[说明](docs/releases/Demo2.5.7.md) · [验收](docs/validation/demo2.5.7/README.md)。17项发布检查通过，支持附件菜单、单图选择/拖入/粘贴、校对修改与确认保存。[打开App](/Users/czy/ProjectManagement/Demo2.5.7/课间桌宠.app) · [安装包](/Users/czy/ProjectManagement/Demo2.5.7/Demo2.5.7-Mac-AppleSilicon.zip)。
+| 模块 | 使用技术 | 作用 |
+| --- | --- | --- |
+| macOS桌面端 | Swift、AppKit、WebKit / WKWebView | 原生窗口、桌宠、Dock/菜单栏、系统多图选择与后台生命周期 |
+| App内嵌界面 | React 19、TypeScript、Vite 8、Tailwind CSS 4、Radix UI | 页面、表单与简洁对话交互，无需单独使用日常网页端 |
+| 聊天与日历 | assistant-ui、TanStack Query、FullCalendar、Luxon | 对话运行时、请求状态刷新、日历与时区 |
+| 本机后端 | Python 3.12、FastAPI、Uvicorn、Pydantic | 业务API、数据校验、同源界面服务和SSE事件流 |
+| 数据与迁移 | SQLite、SQLAlchemy异步ORM、aiosqlite、Alembic | 课程、任务、档案、记忆的持久化及事务/版本/幂等控制 |
+| Agent | Deep Agents、LangChain、LangGraph、MCP时间工具 | 工具调用、审批与恢复、对话上下文、实际日期查询 |
+| 浏览器扩展 | WXT、TypeScript、Manifest V3、DOMPurify | Chrome/Edge学校课表捕获、清理与导入桥接 |
+| 图片与文档 | Pillow、pypdfium2、pypdf、pandas、lxml、视觉模型网关 | 图像/PDF处理、表格解析和可配置模型的结构化提取 |
+| 验证与打包 | pytest、Vitest、Playwright、原生Swift检查、PyInstaller | 自动化回归、原生验收、独立App与源码归档 |
 
-当前更新 **2.5.4 校区节次快捷选择**：[说明](docs/releases/Demo2.5.4.md) · [验证](docs/validation/demo2.5.4/README.md)。课表预览内选择五山/国际/大学城；设置中仍可自定义。17项正式门禁通过，新版已沿原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.4/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.4/Demo2.5.4-Mac-AppleSilicon.zip)。
+## 长期记忆怎样实现
 
-当前更新 **2.5.3 重新导入与覆盖课表**：课表校对中可明确选择替换全部旧课程，准备保存展示移除数量，确认后生效；修复空课表的过期设置版本冲突。[本版说明](docs/releases/Demo2.5.3.md) · [验证](docs/validation/demo2.5.3/README.md)。已通过17项正式门禁，35项哈希复核通过，新版已沿用原资料打开。[打开新版](/Users/czy/ProjectManagement/Demo2.5.3/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.3/Demo2.5.3-Mac-AppleSilicon.zip)。以下为旧版记录。
+当前采用**本地结构化记忆 + 用户确认 + 有界关键词召回 + 模型上下文注入**。
 
-当前更新 **2.5.2 Dock入口修复**：普通App模式，关闭窗口/隐藏桌宠后Dock保留，点击恢复主窗口和桌宠，菜单栏同时保留。[本版说明](docs/releases/Demo2.5.2.md) · [本版验证](docs/validation/demo2.5.2/README.md)。17项正式门禁通过，35项哈希复核通过，新版已用原资料启动。[打开新版](/Users/czy/ProjectManagement/Demo2.5.2/课间桌宠.app) · [应用ZIP](/Users/czy/ProjectManagement/Demo2.5.2/Demo2.5.2-Mac-AppleSilicon.zip)。以下2.5.1记录作为已有版本保留。
+- 用SQLite和SQLAlchemy保存记忆、候选及开关；Pydantic校验数据，FastAPI提供管理与确认接口。
+- Agent只提出候选，确认后才跨会话召回；永久专注/休息/每日上限同步到现有个人档案。
+- 每次最多召回5条，正文总计1000字符；当前使用关键词评分，未接入向量数据库或Embedding服务。
+- LangGraph检查点另存对话执行状态；遗忘等变化通过`privacy_epoch`切换后续上下文作用域，避免旧检查点重新带入旧记忆。
+- 相关记忆可能发送给已配置的在线模型。遗忘不会自动删除已有聊天和备份；习惯自动学习与模型训练属于后续范围。
+
+[技术栈与长期记忆详解](docs/architecture/技术栈与长期记忆.md) · [依赖与实现决策](docs/decisions.md)
+
+## 当前版本与历史记录
+
+App与安装包由本地发布流程生成，当前没有在GitHub Releases提供安装包下载；本地入口见工作区README，源码构建见下方说明。
+
+最新发布 **2.6.1 简洁多图作业对话**，分支 `codex/chat-images-simple`。[本版说明](docs/releases/Demo2.6.1.md) · [实施计划](docs/superpowers/plans/2026-11-01-chat-images-simple.md) · [验收记录](docs/validation/demo2.6.1/README.md)。多图从输入框左上排列，发送后在对话内列任务，日期可不填；取消图片授权勾选与日期选择。17门禁、741后端+20子项、110前端、98界面及原生两图选取/合成识别/跳过日期/确认保存通过，35哈希/双ZIP/签名/私密值复核通过，原资料已恢复。。真实模型准确率不以合成验收代替。
+
+历史发布 **2.6.0 可确认的个人记忆**，分支 `codex/personal-agent-memory`。[本版说明](docs/releases/Demo2.6.md) · [实施计划](docs/superpowers/plans/2026-11-01-personal-memory-implementation.md) · [验证记录](docs/validation/demo2.6/README.md)。本地偏好需确认后才召回，支持期限、修改、遗忘及关闭召回；设置 → 学习偏好 → 记忆与偏好。17项发布门禁、733后端+20子项、109前端、95界面、正式包原生记忆确认、35哈希及双ZIP检查通过，原资料身份已恢复。。行为学习与真实模型自由表达评测仍留后续。
+
+历史发布 **2.5.7 聊天作业截图闭环**：[说明](docs/releases/Demo2.5.7.md) · [验收](docs/validation/demo2.5.7/README.md)。17项发布检查通过，支持附件菜单、单图选择/拖入/粘贴、校对修改与确认保存。。
+
+当前更新 **2.5.4 校区节次快捷选择**：[说明](docs/releases/Demo2.5.4.md) · [验证](docs/validation/demo2.5.4/README.md)。课表预览内选择五山/国际/大学城；设置中仍可自定义。17项正式门禁通过，新版已沿原资料打开。。
+
+当前更新 **2.5.3 重新导入与覆盖课表**：课表校对中可明确选择替换全部旧课程，准备保存展示移除数量，确认后生效；修复空课表的过期设置版本冲突。[本版说明](docs/releases/Demo2.5.3.md) · [验证](docs/validation/demo2.5.3/README.md)。已通过17项正式门禁，35项哈希复核通过，新版已沿用原资料打开。。以下为旧版记录。
+
+当前更新 **2.5.2 Dock入口修复**：普通App模式，关闭窗口/隐藏桌宠后Dock保留，点击恢复主窗口和桌宠，菜单栏同时保留。[本版说明](docs/releases/Demo2.5.2.md) · [本版验证](docs/validation/demo2.5.2/README.md)。17项正式门禁通过，35项哈希复核通过，新版已用原资料启动。。以下2.5.1记录作为已有版本保留。
 
 2.5.1历史开发分支为 **`codex/demo2.5.1-ui-refinement`**，按已批准的[完整窗口与桌宠参考](docs/design/ui-redesign-v2/README.md)实施。[修改计划](docs/superpowers/plans/2026-10-30-ui-refinement-implementation.md) · [开发进度](docs/roadmap/Demo2.5-开发进度追踪表.md) · [本版说明](docs/releases/Demo2.5.1.md) · [当前验证](docs/validation/demo2.5.1/README.md)。2.5.1加入内置扩展安装引导与独立分发模式，已完成17项正式发布门禁并归档，35项SHA256复核通过，新版已用原资料重新打开；已有2.5.0归档保留。
 
@@ -40,7 +72,7 @@
 
 ## 双击打开
 
-- 正式包入口：[Demo2.5.3](/Users/czy/ProjectManagement/Demo2.5.3/)；已有Demo2.5.2、Demo2.5.1及历史归档保留。
+- 正式包位于本地版本归档目录；已有Demo2.5.2、Demo2.5.1及历史归档保留。
 - `campus-pet/启动课间桌宠.command` 优先打开 VERSION 对应的发布包，未发布时会从源码构建。桌宠会启动所需后台，日常界面在App内完成。
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。
