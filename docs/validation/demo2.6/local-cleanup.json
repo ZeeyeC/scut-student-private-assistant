@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "older_release_moved_to_archive": "课间归档/历史版本/Demo2.5.7",
+  "removed_known_temporary_directories": [
+    "campus-memory-native-qa-2.6",
+    "campus-memory-implementation-20261101"
+  ],
+  "preserved": [
+    "current release",
+    "source names and paths",
+    "private env/model.env",
+    "personal data/backups",
+    "installed dependencies",
+    "previous archives"
+  ],
+  "no_published_release_overwritten": true
+}

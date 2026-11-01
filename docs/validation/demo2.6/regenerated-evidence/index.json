@@ -1,0 +1,19 @@
+{
+  "scope": "Current 2.6 full-run synthetic outputs; historical tracked originals restored after evidence copy",
+  "files": [
+    "docs/validation/demo2.5.1/e2e/b-interaction/chat-conflict-review.png",
+    "docs/validation/demo2.5.1/e2e/b-interaction/negotiation-confirmed.png",
+    "docs/validation/demo2.5.1/e2e/b-interaction/weekly-confirmed.png",
+    "docs/validation/demo2.5.1/e2e/course-conflicts-review.png",
+    "docs/validation/demo2.5.1/e2e/independent/goal-paused.png",
+    "docs/validation/demo2.5.1/e2e/independent/profile-confirmed.png",
+    "docs/validation/demo2.5.1/e2e/independent/timer-paused.png",
+    "docs/validation/demo2.5.1/e2e/independent/weekly-intent.png",
+    "docs/validation/demo2.5.1/e2e/timetable-recognition-review.png",
+    "docs/validation/demo2.5.1/e2e/timetable-text-review.png",
+    "docs/validation/demo2.5.1/e2e/today-plan-review.png",
+    "docs/validation/demo2.5.1/visual/assistant-desktop.png",
+    "docs/validation/demo2.5.1/visual/comparison.json",
+    "docs/validation/demo2.5.3/覆盖保存确认.png"
+  ]
+}

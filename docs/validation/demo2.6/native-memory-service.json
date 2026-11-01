@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "scope": "Released App and frozen bundled backend, explicitly isolated data; no model calls",
+  "version": "2.6.0",
+  "app_sha256": "c818d9e7fa284917bb3668ec441b128f5753c7dfd5ce396e838cb260f604b71d",
+  "checks": [
+    "service identity matches isolated directory",
+    "model and vision unconfigured",
+    "candidate is not active before confirmation",
+    "confirmed numeric preference updates canonical profile",
+    "separate pending candidate prepared for native UI review",
+    "frozen service restart retains canonical preference and pending candidate",
+    "native Settings > study preferences displays active and pending memory",
+    "native confirmation changes active count from 1 to 2 and clears pending",
+    "API independently confirms native UI transaction",
+    "native panel visually inspected; original sidebar and dialog layout retained"
+  ],
+  "native_ui": "passed via CUA on released App",
+  "test_launch_note": "First direct subprocess setup ended with its parent while frozen backend remained; identity enforcement blocked a default-directory connection. Stopped only isolated backend, relaunched App using LaunchServices with explicit isolated directory, then completed UI acceptance. No model calls or personal data mutations."
+}
