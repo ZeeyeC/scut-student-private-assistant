@@ -11,7 +11,7 @@
   --workspace-selected: light-dark(#eaeefa,#303b59);
   --workspace-focus: light-dark(#f7f8fd,#272f40);
   --workspace-button-border: light-dark(#dfe3ec,#414b5d);
-  --workspace-sidebar-width: 176px;
+  --workspace-sidebar-width: 168px;
   --workspace-padding-x: 38px;
   --workspace-padding-top: 31px;
 }

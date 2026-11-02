@@ -1,9 +1,9 @@
-export type PageId = 'today' | 'calendar' | 'tasks' | 'assistant' | 'settings';
+export type PageId = 'today' | 'calendar' | 'tasks' | 'assistant' | 'knowledge' | 'settings';
 export type CalendarFilter = 'all' | 'courses' | 'study';
 export type TaskTab = 'todo' | 'goals' | 'review';
 export type NavigationTarget = {
   page: PageId; taskId?: string; focusDate?: string;
-  calendarFilter?: CalendarFilter; taskTab?: TaskTab; threadId?: string;
+  calendarFilter?: CalendarFilter; taskTab?: TaskTab; threadId?: string; sourceId?: string; courseId?: string;
 };
 export type NavigationState = NavigationTarget & { request: number };
 const aliases: Record<string, NavigationTarget> = {
@@ -12,8 +12,9 @@ const aliases: Record<string, NavigationTarget> = {
   '作业': {page:'tasks'}, '任务': {page:'tasks'},
   '目标与复盘': {page:'tasks',taskTab:'goals'},
   '助手': {page:'assistant'}, '设置': {page:'settings'},
+  '课程资料': {page:'knowledge'},
 };
-const pages: PageId[] = ['today','calendar','tasks','assistant','settings'];
+const pages: PageId[] = ['today','calendar','tasks','assistant','knowledge','settings'];
 const identifier = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0 && v.length <= 200 && !/[\r\n]/.test(v);
 function date(v: unknown): v is string {
   if(typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(v) || !Number.isFinite(Date.parse(v))) return false;
@@ -27,6 +28,8 @@ function target(value: unknown): NavigationTarget | null {
   const result: NavigationTarget = {page:v.page as PageId};
   if(v.taskId !== undefined) { if(v.page !== 'tasks' || !identifier(v.taskId)) return null; result.taskId=v.taskId; }
   if(v.threadId !== undefined) { if(v.page !== 'assistant' || !identifier(v.threadId)) return null; result.threadId=v.threadId; }
+  if(v.sourceId !== undefined) { if(v.page !== 'assistant' || !identifier(v.sourceId)) return null; result.sourceId=v.sourceId; }
+  if(v.courseId !== undefined) { if(v.page !== 'knowledge' || !identifier(v.courseId)) return null; result.courseId=v.courseId; }
   if(v.focusDate !== undefined) { if(v.page !== 'calendar' || !date(v.focusDate)) return null; result.focusDate=v.focusDate; }
   if(v.calendarFilter !== undefined) { if(v.page !== 'calendar' || !['all','courses','study'].includes(String(v.calendarFilter))) return null; result.calendarFilter=v.calendarFilter as CalendarFilter; }
   if(v.taskTab !== undefined) { if(v.page !== 'tasks' || !['todo','goals','review'].includes(String(v.taskTab))) return null; result.taskTab=v.taskTab as TaskTab; }

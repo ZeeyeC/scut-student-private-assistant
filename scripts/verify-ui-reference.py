@@ -38,14 +38,15 @@ def main():
         if hashlib.sha256((project / entry["path"]).read_bytes()).hexdigest() != entry["sha256"]:
             raise SystemExit("Reference changed without acceptance: " + entry["path"])
     result = {}
-    for page in ("today", "calendar", "tasks", "assistant", "settings", "task-detail", "import-default"):
+    for page in manifest.get("pages", ("today", "calendar", "tasks", "assistant", "settings", "task-detail", "import-default")):
         name = page + (".png" if page in ("task-detail", "import-default") else "-desktop.png")
         actual = args.actual / name
         result[page] = compare(args.reference / "screens" / name, actual) if actual.exists() else {"passed": False, "error": "missing actual capture"}
     geometry_path = args.actual / "geometry.json"
     if geometry_path.exists():
         geometry = json.loads(geometry_path.read_text())
-        result["geometry"] = {"passed": isinstance(geometry,dict) and set(geometry)=={"today","calendar","tasks","assistant","settings"} and all(isinstance(g,dict) and all(isinstance(g.get(k),(int,float)) and math.isfinite(g[k]) and abs(g[k]-v)<=2 for k,v in {"x":214,"y":31,"width":1028,"height":43}.items()) for g in geometry.values()), "actual": geometry}
+        expected_geometry = manifest.get("pageHead", {"x":214,"y":31,"width":1028,"height":43})
+        result["geometry"] = {"passed": isinstance(geometry,dict) and set(geometry)=={"today","calendar","tasks","assistant","settings"} and all(isinstance(g,dict) and all(isinstance(g.get(k),(int,float)) and math.isfinite(g[k]) and abs(g[k]-v)<=2 for k,v in expected_geometry.items()) for g in geometry.values()), "actual": geometry}
     else:
         result["geometry"]={"passed":False,"error":"missing geometry evidence"}
     if args.native:

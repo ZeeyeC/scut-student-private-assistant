@@ -217,6 +217,7 @@ async def create_document(db, owner, config, name, raw, course_id, key):
                     "course_id": course_id,
                     "chunks": chunks,
                     "storage_name": storage,
+                    "size_bytes": len(raw),
                     "created_at": now().isoformat(),
                     "truncated": truncated,
                     "untrusted": True,
@@ -287,7 +288,7 @@ async def create_web(db, owner, body, key):
     return await store.mutate(db, owner, "knowledge-web", key, payload, op)
 
 
-async def search_sources(db, owner, query, source_ids=None, course_id=None, limit=8):
+async def search_sources(db, owner, query, source_ids=None, course_id=None, limit=8, *, unclassified=False):
     if not query.strip() or len(query) > 500:
         raise HTTPException(422, "检索词应为1至500字")
     await check_course(db, owner, course_id)
@@ -299,6 +300,8 @@ async def search_sources(db, owner, query, source_ids=None, course_id=None, limi
     records = []
     for r in await store.rows(db, owner, "knowledge_source"):
         if source_ids is not None and r.id not in source_ids:
+            continue
+        if unclassified and r.data.get("course_id"):
             continue
         if course_id and r.data.get("course_id") != course_id:
             continue

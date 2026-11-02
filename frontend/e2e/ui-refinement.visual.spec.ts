@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {visualFixture} from './ui-visual-fixture';
-const output=fileURLToPath(new URL('../../docs/validation/demo2.5.1/visual/',import.meta.url));
+const output=fileURLToPath(new URL('../../docs/validation/demo2.9/visual/',import.meta.url));
 
 test('workspace matches the accepted reference geometry on every page',async({page})=>{
  page.on('pageerror',error=>console.log('Visual fixture runtime:',error.message));

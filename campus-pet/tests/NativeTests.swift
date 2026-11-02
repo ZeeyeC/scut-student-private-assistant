@@ -105,7 +105,7 @@ struct NativeTests {
             app.ready = false
             precondition(app.applicationShouldTerminate(NSApp) == .terminateNow, "Disconnected App must quit without stopping the conflicting service")
             let identity: [String: Any] = ["application": "campus-companion", "mode": "local", "desktop_protocol": 1]
-            precondition(AppDelegate.pages == ["今日", "日程", "任务", "助手", "设置"], "Native navigation follows the App workspace")
+            precondition(AppDelegate.pages == ["助手", "今日", "日程", "任务", "课程资料", "设置"], "Native navigation follows the App workspace")
             precondition(AppDelegate.displayPage("目标与复盘") == "任务", "Legacy goals entry still reaches the task subview")
             precondition(AppDelegate.displayPage("课表") == "日程")
             precondition(AppDelegate.displayPage("作业") == "任务")

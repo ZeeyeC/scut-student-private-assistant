@@ -1,0 +1,83 @@
+{
+  "status": "accepted",
+  "accepted_by": "用户：同意执行",
+  "date": "2026-11-02",
+  "file": "reference.html",
+  "sha256": "6f88fe91ff30c4d3f7aa854bd2744a71e3e365e702e8ace06e61411cf94e7ca8",
+  "scope": "课程资料独立页、助手置顶分区。其他页面正文与桌宠沿用ui-redesign-v2；不覆盖旧参考。",
+  "pages": [
+    "today",
+    "calendar",
+    "tasks",
+    "assistant",
+    "knowledge",
+    "settings",
+    "task-detail",
+    "import-default"
+  ],
+  "pageHead": {
+    "x": 206,
+    "y": 31,
+    "width": 1036,
+    "height": 43
+  },
+  "knownIssues": [],
+  "files": [
+    {
+      "path": "docs/design/course-library-v1/reference.html",
+      "sha256": "6f88fe91ff30c4d3f7aa854bd2744a71e3e365e702e8ace06e61411cf94e7ca8"
+    },
+    {
+      "path": "docs/design/course-library-v1/existing-pages-reference.html",
+      "sha256": "4830e38f9ed7e724d89d75c04c6134d4a73f56ed41e364949b9c117b510c0aeb"
+    },
+    {
+      "path": "docs/design/course-library-v1/capture-reference.mjs",
+      "sha256": "b56a594181a95837fab0474ac9f88cc2e28ae0295dc44ae0ad2cd30643668023"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/assistant-desktop.png",
+      "sha256": "15c29703f28cb7482e92092fc43916569c831c15bcdf8c3da732b80d42eee6b4"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/calendar-desktop.png",
+      "sha256": "f2a0f37db5e5bc05a0a2d4390e6920e951e2168c8233a1125a897661ff7f7997"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/import-default.png",
+      "sha256": "c9fe557fed69c6fd4db1a95d93ad4894d175471fda9c6a21c2f75f67bdace704"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/knowledge-desktop.png",
+      "sha256": "90254371efe642c400ed21b065d6e340c7633b8b3f0dc3a98f3cca03f2efa99e"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/pet-detail.png",
+      "sha256": "7fe1e2e98cf46a30f25760dccc4ed3ed77e29566ba94d5869f6b43d2a1b76cdd"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/pet-idle.png",
+      "sha256": "a8b59b568d30cd98e086f392139b8e70f0735f713042b23c527afb9f1d7352b6"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/pet-todos.png",
+      "sha256": "24f12bdd6d4074ca91ba35177c72e59884d1eb3e1e3ac0ebf611d4604f6481f0"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/settings-desktop.png",
+      "sha256": "dc236acb05a175c0c9e088cf178f56a479d8c5778633ef9dc97e61911cc41a7b"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/task-detail.png",
+      "sha256": "b83c817eb10c4308b2cea809912646d675fd6ff3545ebe23e272ec60a7dc94c4"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/tasks-desktop.png",
+      "sha256": "d2ae06a3f47eb81b3fcfc3b3fab9c0862cc66af2e666587cd716cf47e0c11cdb"
+    },
+    {
+      "path": "docs/design/course-library-v1/screens/today-desktop.png",
+      "sha256": "06e3b9b141573b8244c8911ba0bda4e2f0e0040ba601c88b14afb4bb8891b56a"
+    }
+  ]
+}

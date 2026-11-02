@@ -1,0 +1,57 @@
+{
+  ".calendar-toolbar": {
+    "rect": {
+      "x": 206,
+      "y": 160.140625,
+      "width": 1036,
+      "height": 21.6875
+    },
+    "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "0px 0px 21px"
+  },
+  ".workspace-calendar": {
+    "rect": {
+      "x": 206,
+      "y": 202.828125,
+      "width": 1036,
+      "height": 544
+    },
+    "font": "14px / 21.7px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "0px"
+  },
+  ".fc-col-header": {
+    "rect": {
+      "x": 207,
+      "y": 203.828125,
+      "width": 1033,
+      "height": 61
+    },
+    "font": "700 11px / 17.05px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "0px"
+  },
+  ".fc-timegrid-body": {
+    "rect": {
+      "x": 207,
+      "y": 264.828125,
+      "width": 1033,
+      "height": 480
+    },
+    "font": "11px / 17.05px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "0px",
+    "margin": "0px"
+  },
+  ".fc-event-main": {
+    "rect": {
+      "x": 253.5,
+      "y": 270.828125,
+      "width": 130.84375,
+      "height": 75
+    },
+    "font": "9.35px / 14.4925px -apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "padding": "4px 5px 7px 5.5px",
+    "margin": "0px"
+  }
+}

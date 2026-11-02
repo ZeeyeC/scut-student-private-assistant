@@ -43,11 +43,17 @@
 
 新增多版本/多资料冲突说明与安全切换，后台构建身份校验及未连接窗口退出修复。[使用说明](docs/releases/Demo2.8.1.md) · [验收进度](docs/validation/demo2.8.1/README.md)。已通过19项发布检查。
 
+## 2.9 课程资料工作区
+
+左侧新增独立课程资料入口，支持全部文件浏览、按课程筛选、修改分类和选用提问。助手单独置顶，导航固定；旧资料原位复用。[本版说明](docs/releases/Demo2.9.md) · [验收记录](docs/validation/demo2.9/README.md)。
+
 ## 当前版本与历史记录
 
 App与安装包由本地发布流程生成；本地最新版入口见工作区README。历史版本已备份到既有私有GitHub Releases，需登录有权限的账号下载，见[云端归档与恢复](docs/releases/历史版本云端归档.md)。源码构建见下方说明。
 
-最新发布 **2.8.1 启动交接修复**，分支`codex/demo2.8.1-startup-handoff`。19门禁、796后台+20子项、113前端、102界面通过，正式包实际旧版→新版原生交接通过；签名/39哈希/246运行源码核对通过。[本版说明](docs/releases/Demo2.8.1.md) · [验收记录](docs/validation/demo2.8.1/README.md)。
+当前构建 **2.9.0 课程资料工作区**，分支`codex/course-library-workspace`。最终进度见[本版记录](docs/validation/demo2.9/README.md)。
+
+历史发布 **2.8.1 启动交接修复**，分支`codex/demo2.8.1-startup-handoff`。19门禁、796后台+20子项、113前端、102界面通过，正式包实际旧版→新版原生交接通过；签名/39哈希/246运行源码核对通过。[本版说明](docs/releases/Demo2.8.1.md) · [验收记录](docs/validation/demo2.8.1/README.md)。
 
 历史发布 **2.8.0 Zotero文献助手**，分支 `codex/zotero-literature`。18门禁、780后端+20子项、113前端、102界面、实际冻结MCP6工具和原生默认关闭检查通过，签名/37哈希/245运行源码核对通过。[本版说明](docs/releases/Demo2.8.md) · [验收记录](docs/validation/demo2.8/README.md)。真实个人文献库仍待连接验收。
 

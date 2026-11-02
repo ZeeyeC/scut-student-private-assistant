@@ -11,7 +11,6 @@ import {
   type CampusPresetId,
 } from "./CampusPresetSelector";
 import { AfterClassPreferences } from "./AfterClass";
-import {KnowledgeManager} from "./KnowledgeManager";
 import {ZoteroSettings} from "./ZoteroSettings";
 import {ResearchSettings} from "./ResearchSettings";
 import {MemoryManager} from "./MemoryManager";
@@ -89,7 +88,7 @@ function SettingsContent({local,group}:{local:boolean;group:SettingsGroup}) {
   return (
     <>
       {group==='semester'&&<ImportBrowserSettings/>}
-      {group==='data'&&<KnowledgeManager/>}
+      {group==='data'&&<Button variant="outline" onClick={()=>window.dispatchEvent(new CustomEvent('campus-navigate',{detail:'课程资料'}))}>打开课程资料</Button>}
       {group==='models'&&<><ResearchSettings/><ZoteroSettings/></>}
       {group==='preferences'&&<><PersonalProfile/><MemoryManager/></>}
       {group==='reminders'&&<><AfterClassPreferences/><ProactiveSettings/></>}

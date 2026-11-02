@@ -44,12 +44,24 @@ class KnowledgeSourceData(StrictModel):
     source_type: Literal["document", "web"] = "document"
     url: str | None = None
     storage_name: str | None = None
+    size_bytes: int | None = Field(default=None, ge=0)
     truncated: bool = False
     untrusted: bool = True
 
 
 class KnowledgeDelete(StrictModel):
     revision: int = Field(ge=1, strict=True)
+
+
+class KnowledgeClassification(StrictModel):
+    revision: int = Field(ge=1, strict=True)
+    course_id: str | None = Field(max_length=100)
+
+    @model_validator(mode="after")
+    def normalize_course(self):
+        if self.course_id is not None:
+            self.course_id = self.course_id.strip() or None
+        return self
 
 
 class KnowledgeWebCreate(StrictModel):
@@ -70,6 +82,7 @@ class KnowledgeWebCreate(StrictModel):
 
 
 class KnowledgeSearchRequest(StrictModel):
+    unclassified: bool = False
     query: str = Field(min_length=1, max_length=500)
     source_ids: list[str] | None = Field(default=None, max_length=100)
     course_id: str | None = Field(default=None, max_length=100)
@@ -77,6 +90,8 @@ class KnowledgeSearchRequest(StrictModel):
 
     @model_validator(mode="after")
     def validate_query(self):
+        if self.unclassified and self.course_id:
+            raise ValueError("未分类检索不能同时指定课程")
         self.query = self.query.strip()
         if not self.query:
             raise ValueError("检索关键词不能为空")

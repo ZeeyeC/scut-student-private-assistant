@@ -12,7 +12,7 @@ test('documents stay local before send, source tools answer with citations, reta
  await page.getByLabel('给助手的消息').fill('资料里的作业是什么');await page.getByRole('button',{name:'发送',exact:true}).click();
  await expect(page.locator('.message.assistant').last()).toContainText('微积分');await expect(page.locator('.message.assistant').last()).toContainText('段落1');
  expect(uploads).toBe(1);expect((await page.request.get('/api/tasks')).ok()).toBe(true);expect(await page.request.get('/api/tasks').then(r=>r.json())).toEqual([]);
- await page.getByRole('button',{name:'新会话',exact:true}).click();await page.getByRole('button',{name:'课程资料',exact:true}).click();
+ await page.getByRole('button',{name:'新会话',exact:true}).click();await page.getByRole('button',{name:'选择资料',exact:true}).click();
  const panel=page.getByRole('dialog',{name:'课程资料',exact:true});await expect(panel.getByText('课程讲义.md',{exact:true})).toBeVisible();
  await panel.getByRole('button',{name:'选用',exact:true}).click();await page.keyboard.press('Escape');await expect(page.getByLabel('已选课程资料')).toContainText('课程讲义.md');
  await page.getByRole('button',{name:'发送',exact:true}).click();await expect(page.locator('.message.assistant').last()).toContainText('微积分');expect(uploads).toBe(1);
@@ -31,7 +31,7 @@ test('lost response for a reused source recovers the exact new operation',async(
  await page.getByLabel('选择课程资料',{exact:true}).setInputFiles({name:'复习.md',mimeType:'text/markdown',buffer:Buffer.from('作业：完成微积分练习。')});
  await page.getByRole('button',{name:'发送',exact:true}).click();await expect(page.locator('.message.assistant')).toHaveCount(1);
  await expect.poll(()=>page.request.get('/api/agent/threads').then(r=>r.json()).then(async ts=>{const rs=await page.request.get(`/api/agent/threads/${ts.at(-1).id}/runs`).then(r=>r.json());return rs.every((r:any)=>r.data.status==='done');})).toBe(true);
- await page.getByRole('button',{name:'课程资料',exact:true}).click();await page.getByRole('dialog',{name:'课程资料',exact:true}).getByRole('button',{name:'选用',exact:true}).click();await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'选择资料',exact:true}).click();await page.getByRole('dialog',{name:'课程资料',exact:true}).getByRole('button',{name:'选用',exact:true}).click();await page.keyboard.press('Escape');
  let lost=false;
  await page.route('**/api/agent/runs',async route=>{if(!lost){lost=true;await route.fetch();await route.abort('failed');}else await route.continue();});
  await page.getByRole('button',{name:'发送',exact:true}).click();await expect(page.locator('.message.assistant')).toHaveCount(2);await expect(page.locator('.message.assistant').last()).toContainText('微积分');

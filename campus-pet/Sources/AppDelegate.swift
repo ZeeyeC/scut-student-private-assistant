@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, NSWindowDelegate {
-    static let pages = ["今日", "日程", "任务", "助手", "设置"]
+    static let pages = ["助手", "今日", "日程", "任务", "课程资料", "设置"]
     static func displayPage(_ value: String) -> String {
         ["课表": "日程", "作业": "任务", "目标与复盘": "任务"][value] ?? value
     }

@@ -21,6 +21,7 @@ const CalendarPage = lazy(() =>
 const ChatPage = lazy(() =>
   import("./Chat").then((m) => ({ default: m.ChatPage })),
 );
+const KnowledgeLibrary = lazy(() => import('./KnowledgeLibrary').then(m=>({default:m.KnowledgeLibrary})));
 
 export default function App() {
   const mode = useQuery({
@@ -181,7 +182,9 @@ function Workspace({ local = false }: { local?: boolean }) {
           ) : page === "tasks" ? (
             <TasksPage tab={navigation.taskTab} onTab={taskTab=>go({page:'tasks',taskTab})} taskId={navigation.taskId} focusRequest={navigation.request} createRequested={createTaskRequested} onCreateHandled={()=>setCreateTaskRequested(false)}/>
           ) : page === "assistant" ? (
-            <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} />
+            <ChatPage focusThreadId={reviewThread} focusRequest={reviewRequest} focusSourceId={navigation.sourceId}/>
+          ) : page === 'knowledge' ? (
+            <KnowledgeLibrary courseId={navigation.courseId} onUseSource={sourceId=>go({page:'assistant',sourceId})}/>
           ) : (
             <Settings local={local} />
           )}

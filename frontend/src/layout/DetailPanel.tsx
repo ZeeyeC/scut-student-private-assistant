@@ -15,7 +15,7 @@ function syncPanels() {
   });
 }
 
-export function DetailPanel({open,title,heading,onClose,children,footer}:{open:boolean;title:string;heading?:string;onClose:()=>void;children:ReactNode;footer?:ReactNode}) {
+export function DetailPanel({open,title,heading,onClose,children,footer,className=''}:{open:boolean;title:string;heading?:string;onClose:()=>void;children:ReactNode;footer?:ReactNode;className?:string}) {
   const panel=useRef<HTMLDivElement>(null),overlay=useRef<HTMLDivElement>(null),close=useRef(onClose);
   close.current=onClose;
   useEffect(()=>{
@@ -43,7 +43,7 @@ export function DetailPanel({open,title,heading,onClose,children,footer}:{open:b
   },[open]);
   return createPortal(<div className="detail-host" hidden={!open}>
       <div ref={overlay} className="dialog-overlay detail-overlay" onClick={()=>close.current()} aria-hidden="true"/>
-      <div ref={panel} className="detail-panel" role="dialog" aria-modal="true" aria-label={title}>
+      <div ref={panel} className={`detail-panel ${className}`} role="dialog" aria-modal="true" aria-label={title}>
         <header><h2>{heading??title}</h2><button type="button" onClick={()=>close.current()} aria-label={`关闭${title}`}><X size={20}/></button></header>
         <div className="detail-panel-content">{children}</div>
         {footer&&<footer>{footer}</footer>}

@@ -1,6 +1,6 @@
 (() => {
   if (window.__campusPet) return;
-  const pages = ['助手', '今日', '课表', '作业', '目标与复盘', '设置', '日程', '任务', 'today', 'calendar', 'tasks', 'assistant', 'settings'];
+  const pages = ['助手', '今日', '课表', '作业', '目标与复盘', '设置', '日程', '任务', 'today', 'calendar', 'tasks', 'assistant', 'knowledge', 'settings', '课程资料'];
   const nativeRequests = new Map();
   if (window.webkit?.messageHandlers?.petState) {
     window.addEventListener('campus-native-import-result', event => {

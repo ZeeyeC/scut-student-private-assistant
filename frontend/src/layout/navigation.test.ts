@@ -2,6 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { navigationFromEvent, nextNavigation } from './navigation';
 
 describe('App navigation', () => {
+  it('opens a standalone library and passes only validated source ids to chat', () => {
+    expect(navigationFromEvent('campus-navigate','课程资料')).toEqual({page:'knowledge'});
+    expect(navigationFromEvent('campus-navigate',{page:'assistant',sourceId:'source-1'})).toEqual({page:'assistant',sourceId:'source-1'});
+    expect(navigationFromEvent('campus-navigate',{page:'knowledge',courseId:'course-1'})).toEqual({page:'knowledge',courseId:'course-1'});
+    expect(navigationFromEvent('campus-navigate',{page:'tasks',sourceId:'source-1'})).toBeNull();
+    expect(navigationFromEvent('campus-navigate',{page:'assistant',sourceId:42})).toBeNull();
+  });
   it('maps legacy entries into the four pages and preserves the subview', () => {
     expect(navigationFromEvent('campus-navigate', '作业')).toEqual({page:'tasks'});
     expect(navigationFromEvent('campus-navigate', '目标与复盘')).toEqual({page:'tasks',taskTab:'goals'});

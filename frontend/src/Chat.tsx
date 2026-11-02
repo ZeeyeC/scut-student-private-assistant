@@ -61,7 +61,7 @@ const labels: Record<string, string> = {
   set_task_status: "更新作业状态",
   set_task_deadline: "更新截止时间",
 };
-export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=false, focusThreadId, focusRequest = 0 }: { embedded?: boolean; courseEntry?: boolean; reviewOutside?:boolean;focusThreadId?: string; focusRequest?: number }) {
+export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=false, focusThreadId, focusSourceId, focusRequest = 0 }: { embedded?: boolean; courseEntry?: boolean; reviewOutside?:boolean;focusThreadId?: string; focusSourceId?:string; focusRequest?: number }) {
   const q = useQueryClient(),
     [threadId, setThreadId] = useState(focusThreadId ?? ""),
     [runId, setRunId] = useState(""),
@@ -79,7 +79,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const documentInput = useRef<HTMLInputElement>(null);
   const [knowledgeOpen,setKnowledgeOpen] = useState(false);
   const batchKeys = useRef({signature:"",runKey:"",threadKey:""});
-  const sources = useQuery({queryKey:["knowledge-sources"],queryFn:()=>api<Resource[]>("/knowledge/sources")});
+  const sources = useQuery({queryKey:["knowledge-sources"],queryFn:()=>api<{items:Resource[]}>("/knowledge/library?limit=100").then(r=>r.items)});
   const receiveFiles=(files:File[])=>{const docs=files.filter(isDocFile);const images=files.filter(f=>!isDocFile(f));if(docs.length)void documents.add(docs);if(images.length)void image.add(images);};
   const composerInput = useRef<HTMLTextAreaElement>(null);
   const [imageRun,setImageRun]=useState<Resource|null>(null);
@@ -96,6 +96,17 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   });
   const constraintIntents = useQuery({queryKey:["constraint-intents"], queryFn:()=>api<Resource[]>("/constraint-intents")});
   const activeRun=useRef("");
+  useEffect(()=>{
+    if(!focusSourceId)return;
+    const abort=new AbortController(), view=viewEpoch.current;
+    if(activeRun.current){setError('助手正在处理请求，请结束后再选用资料。');return;}
+    api<Resource>('/knowledge/sources/'+encodeURIComponent(focusSourceId),{signal:abort.signal}).then(source=>{
+      if(abort.signal.aborted||viewEpoch.current!==view)return;
+      if(activeRun.current){setError('助手正在处理请求，资料尚未选用，请稍后重新选择。');return;}
+      documents.attachSource(source);
+    }).catch(e=>{if(!abort.signal.aborted&&viewEpoch.current===view)setError(String(e));});
+    return ()=>abort.abort();
+  },[focusSourceId,focusRequest]);
   useEffect(() => {
     if (!focusThreadId) return;
     viewEpoch.current++;setNavigating(false);image.clear();documents.clear();setImageRun(null);activeRun.current='';setMessages([]); setRunId(""); setApprovalId(""); setStatus(""); setError(""); setRunning(false);
@@ -328,7 +339,7 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
         </Button>
         <Button variant="outline" onClick={()=>setShowConstraints(v=>!v)}>{showConstraints?"收起约束入口":"安排持续约束"}</Button>
         {!embedded&&<button type="button" className="workspace-text-button" onClick={()=>setHistoryOpen(true)}>会话记录</button>}
-        {!embedded&&<button type="button" className="workspace-text-button" onClick={()=>setKnowledgeOpen(true)}>课程资料</button>}
+        {!embedded&&<button type="button" className="workspace-text-button" onClick={()=>setKnowledgeOpen(true)}>选择资料</button>}
       </header>
       <div className={hasReview ? "assistant-layout has-review" : "assistant-layout"}>
         <div className="chat-area">
