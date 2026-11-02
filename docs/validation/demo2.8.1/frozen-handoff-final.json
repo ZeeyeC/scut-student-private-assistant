@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "scope": "Actual frozen helper and backend; explicit synthetic legacy HTTP; isolated data; no model calls",
+  "different_profile_conflict": true,
+  "same_profile_old_build_conflict": true,
+  "inspection_has_no_mutations": true,
+  "stale_handoff_rejected": true,
+  "legacy_204_session": true,
+  "graceful_stop_count": 1,
+  "replacement_database_identity": true,
+  "replacement_runtime_identity": true
+}

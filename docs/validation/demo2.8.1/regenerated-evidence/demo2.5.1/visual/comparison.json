@@ -1,0 +1,151 @@
+{
+  "passed": true,
+  "kind": "same-fixture-design-comparison",
+  "results": {
+    "today": {
+      "passed": true,
+      "different_pixels": 7610,
+      "difference_ratio": 0.007602701406649617,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "calendar": {
+      "passed": true,
+      "different_pixels": 9545,
+      "difference_ratio": 0.009535845588235295,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "tasks": {
+      "passed": true,
+      "different_pixels": 3630,
+      "difference_ratio": 0.0036265185421994884,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "assistant": {
+      "passed": true,
+      "different_pixels": 8741,
+      "difference_ratio": 0.00873261668797954,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "settings": {
+      "passed": true,
+      "different_pixels": 7883,
+      "difference_ratio": 0.007875439578005116,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "task-detail": {
+      "passed": true,
+      "different_pixels": 7059,
+      "difference_ratio": 0.007052229859335038,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "import-default": {
+      "passed": true,
+      "different_pixels": 8561,
+      "difference_ratio": 0.00855278932225064,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        782
+      ]
+    },
+    "geometry": {
+      "passed": true,
+      "actual": {
+        "today": {
+          "x": 214,
+          "y": 31,
+          "width": 1028,
+          "height": 43
+        },
+        "calendar": {
+          "x": 214,
+          "y": 31,
+          "width": 1028,
+          "height": 43
+        },
+        "tasks": {
+          "x": 214,
+          "y": 31,
+          "width": 1028,
+          "height": 43
+        },
+        "assistant": {
+          "x": 214,
+          "y": 31,
+          "width": 1028,
+          "height": 43
+        },
+        "settings": {
+          "x": 214,
+          "y": 31,
+          "width": 1028,
+          "height": 43
+        }
+      }
+    },
+    "pet-idle": {
+      "passed": true,
+      "different_pixels": 1457,
+      "difference_ratio": 0.002421875,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        470
+      ]
+    },
+    "pet-todos": {
+      "passed": true,
+      "different_pixels": 5478,
+      "difference_ratio": 0.009105718085106383,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        470
+      ]
+    },
+    "pet-detail": {
+      "passed": true,
+      "different_pixels": 5601,
+      "difference_ratio": 0.009310172872340426,
+      "threshold": 0.12,
+      "maximum_difference_ratio": 0.01,
+      "size": [
+        1280,
+        470
+      ]
+    }
+  }
+}

@@ -41,13 +41,15 @@
 
 ## 2.8.1 启动交接修复
 
-新增多版本/多资料冲突说明与安全切换，后台构建身份校验及未连接窗口退出修复。[使用说明](docs/releases/Demo2.8.1.md) · [验收进度](docs/validation/demo2.8.1/README.md)。正式构建中。
+新增多版本/多资料冲突说明与安全切换，后台构建身份校验及未连接窗口退出修复。[使用说明](docs/releases/Demo2.8.1.md) · [验收进度](docs/validation/demo2.8.1/README.md)。已通过19项发布检查。
 
 ## 当前版本与历史记录
 
-App与安装包由本地发布流程生成，当前没有在GitHub Releases提供安装包下载；本地入口见工作区README，源码构建见下方说明。
+App与安装包由本地发布流程生成；本地最新版入口见工作区README。历史版本已备份到既有私有GitHub Releases，需登录有权限的账号下载，见[云端归档与恢复](docs/releases/历史版本云端归档.md)。源码构建见下方说明。
 
-最新发布 **2.8.0 Zotero文献助手**，分支 `codex/zotero-literature`。18门禁、780后端+20子项、113前端、102界面、实际冻结MCP6工具和原生默认关闭检查通过，签名/37哈希/245运行源码核对通过。[本版说明](docs/releases/Demo2.8.md) · [验收记录](docs/validation/demo2.8/README.md)。真实个人文献库仍待连接验收。
+最新发布 **2.8.1 启动交接修复**，分支`codex/demo2.8.1-startup-handoff`。19门禁、796后台+20子项、113前端、102界面通过，正式包实际旧版→新版原生交接通过；签名/39哈希/246运行源码核对通过。[本版说明](docs/releases/Demo2.8.1.md) · [验收记录](docs/validation/demo2.8.1/README.md)。
+
+历史发布 **2.8.0 Zotero文献助手**，分支 `codex/zotero-literature`。18门禁、780后端+20子项、113前端、102界面、实际冻结MCP6工具和原生默认关闭检查通过，签名/37哈希/245运行源码核对通过。[本版说明](docs/releases/Demo2.8.md) · [验收记录](docs/validation/demo2.8/README.md)。真实个人文献库仍待连接验收。
 
 历史发布 **2.7.0 资料、网页与语义检索**，分支 `codex/knowledge-web-semantic`。17门禁、768后端+20子项、113前端、101界面及原生文档选择/冻结本地语义检查通过。[本版说明](docs/releases/Demo2.7.md) · [验收记录](docs/validation/demo2.7/README.md)。
 
@@ -96,7 +98,7 @@ App与安装包由本地发布流程生成，当前没有在GitHub Releases提�
 - 根目录两个旧“启动课间助手”脚本和旧桌面打包副本已清理，避免误点。源码首次初始化及 Windows 构建所需的底层脚本仍保留在 `scripts/`，详见 [开发与初始化说明](docs/desktop.md)。
 - 打开后直接进入“今日”。有旧资料时首次明确选择，之后免登录。模型可在“设置 → 模型连接”填写；已有OpenRouter配置不覆盖。
 - 日程中点击“导入课表”，默认显示学校导入；扩展安装指引在底部展开。首次仍需用户在Chrome/Edge安装扩展一次。
-- 桌宠右键“关闭与退出”提供仅退出桌宠或停止后台并退出；关闭App窗口后服务仍运行。重复启动复用已有服务。
+- 桌宠右键“关闭与退出”提供仅退出桌宠或停止后台并退出；关闭App窗口后服务仍运行。重复启动仅复用同资料、同构建后台；旧版或另一份资料可在确认后安全切换。
 
 详细步骤、资料位置、Windows PowerShell/macOS构建命令、扩展安装和备份见 [桌面使用说明](docs/desktop.md)。当前已实际构建并验证macOS arm64包，无需终端Python/Node运行环境；Windows/Intel Mac尚未原生验收，没有开发者签名、公证或公开发布。
 

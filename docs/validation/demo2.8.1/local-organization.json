@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "historical_versions_removed_after_download_verification": 14,
+  "failed_generated_apps_removed": 3,
+  "diagnostics_backed_up_and_removed": true,
+  "cloud_archive_assets": 16,
+  "local_latest": "Demo2.8.1",
+  "stable_entry": "/Users/czy/ProjectManagement/课间桌宠.app",
+  "preserved": [
+    "both source directories",
+    "private configuration",
+    "personal data and backups",
+    "installed dependencies",
+    "unrelated projects"
+  ]
+}

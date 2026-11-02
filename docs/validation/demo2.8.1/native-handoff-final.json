@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "scope": "Actual released2.8.1 App + actual old2.5.4 App, two empty isolated profiles, CUA",
+  "conflict_sheet_shown": true,
+  "confirmed_switch_success": true,
+  "selected_data_and_runtime_identity_verified": true,
+  "native_workspace_visible": true,
+  "command_q_stops_service": true,
+  "personal_data_touched": false,
+  "paid_model_calls": false
+}

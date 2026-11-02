@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "scope": "Final App opened without arguments using stable entry; read-only verification",
+  "original_selected_identity_matched": true,
+  "app_version": "2.8.1",
+  "model_configured": true,
+  "vision_configured": true,
+  "private_config_files_unchanged": true,
+  "original_course_task_step_profile_memory_settings_rows_unchanged": true,
+  "paid_model_calls": false,
+  "native_workspace_visible": true
+}

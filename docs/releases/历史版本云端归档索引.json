@@ -1,0 +1,183 @@
+{
+  "status": "completed",
+  "verification": "Uploaded archive downloaded again and SHA256 matched; metadata rename retained identical GitHub digest",
+  "records": [
+    {
+      "release": "Demo2.4.7",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.4.7-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.4.7-20261102",
+      "asset": "Demo2.4.7-full-archive.zip",
+      "sha256": "9868e058220374c30bb811c06421ffe415b54431611ff7cd7e4aa14880137c08",
+      "bytes": 196136162,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.4.9",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.4.9-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.4.9-20261102",
+      "asset": "Demo2.4.9-full-archive.zip",
+      "sha256": "3bfdaa0a5c2b63a175a4015c9857242b82204fe5625b1ffe6cfa9fd81b17cd4c",
+      "bytes": 200386042,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5-20261102",
+      "asset": "Demo2.5-full-archive.zip",
+      "sha256": "7c700f873d5dd46e2e7724de0f0d70c2ab2e45c6548334e0363a9b9facc4584f",
+      "bytes": 235105317,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5.1",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5.1-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5.1-20261102",
+      "asset": "Demo2.5.1-full-archive.zip",
+      "sha256": "b9cc2e982ec7f467dab502046f8f6e270375b9b0c39fbf6c9dc9a1526839a993",
+      "bytes": 240494650,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5.2",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5.2-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5.2-20261102",
+      "asset": "Demo2.5.2-full-archive.zip",
+      "sha256": "0dbaceb3fa0c732ade2c511e21b37e71af11cee98fa2504e08a6229ee15e2db4",
+      "bytes": 240521832,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5.3",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5.3-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5.3-20261102",
+      "asset": "Demo2.5.3-full-archive.zip",
+      "sha256": "223972d10e89f136e9bdbeed04710a3ba2a28fa2b4194be294f30063735e3fd4",
+      "bytes": 240597986,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5.4",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5.4-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5.4-20261102",
+      "asset": "Demo2.5.4-full-archive.zip",
+      "sha256": "3a0eb91009ed3b562b7bcd4d0dd15ab99b75932525c2e5c0c18ca0abb7c43a2e",
+      "bytes": 331662436,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5.5",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5.5-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5.5-20261102",
+      "asset": "Demo2.5.5-full-archive.zip",
+      "sha256": "224702a678e6881da3d9d451c45be91defe6fe62695fcb176be37bc6a2088d91",
+      "bytes": 243199658,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5.6",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5.6-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5.6-20261102",
+      "asset": "Demo2.5.6-full-archive.zip",
+      "sha256": "298dd44764a21328b777fecc238aa666f69bc6d233a9dcfc02f73ca57a5c2005",
+      "bytes": 243528087,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.5.7",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.5.7-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.5.7-20261102",
+      "asset": "Demo2.5.7-full-archive.zip",
+      "sha256": "fe634ea640d1ccfc3025e8c56566ff0dc499abf2a0ddcef8acf75d3756deb84e",
+      "bytes": 244275291,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.6",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.6-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.6-20261102",
+      "asset": "Demo2.6-full-archive.zip",
+      "sha256": "c1f3ad1ee14c95ef6d9fdd842e6f6f550e47cd53999054729e8090f91df52e27",
+      "bytes": 245088869,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.6.1",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.6.1-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.6.1-20261102",
+      "asset": "Demo2.6.1-full-archive.zip",
+      "sha256": "277a2908b4fa0aeac021988a9e29cb544e18a962dd1ac72dca4d2c8dcdaa06a0",
+      "bytes": 246098532,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.7",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.7-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.7-20261102",
+      "asset": "Demo2.7-full-archive.zip",
+      "sha256": "1c2c38cbad94f84406ddadb86b6378aba76236e85ae7073a81923098ca15a6c0",
+      "bytes": 344619949,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.8",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.8-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.8-20261102",
+      "asset": "Demo2.8-full-archive.zip",
+      "sha256": "206d8d94658bd04d93ce39ecca0ec9c44221dab56402c32d4b07eedfc766310e",
+      "bytes": 366385146,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "Diagnostics",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/diagnostics-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/diagnostics-20261102",
+      "asset": "Diagnostics-full-archive.zip",
+      "sha256": "38c2c8c93d4d98b888b40aa1afa84f924cad060491ae5eeff0e153aae69702b7",
+      "bytes": 121273,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    },
+    {
+      "release": "StartupDiagnostics-followup",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/diagnostics-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/diagnostics-20261102",
+      "asset": "StartupDiagnostics-followup.zip",
+      "sha256": "5980204f96c1e8cd7a14025d61d6e0c90b998d34d23562112b075806b99a7428",
+      "bytes": 16411,
+      "remote_verified": true,
+      "local_old_copy_removed": true
+    }
+  ],
+  "local_latest": "Demo2.8.1"
+}
