@@ -92,6 +92,7 @@ struct NativeTests {
             while replies.count < 1 { RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.01)) }
             precondition(stopCalls == 1 && replies == [true] && !app.ready, "Successful stopBackend must reply true and clear ready")
             app.lastStopError = nil
+            app.ready = true
             app.stopBackendOperation = {
                 stopCalls += 1
                 throw ServiceError.message("后台忙碌")
@@ -101,6 +102,8 @@ struct NativeTests {
             precondition(stopCalls == 2 && replies == [true, false] && app.lastStopError == "后台忙碌", "Failed stopBackend must reply false and report error")
             app.stopBackendOperation = nil
             app.terminationReplyHandler = nil
+            app.ready = false
+            precondition(app.applicationShouldTerminate(NSApp) == .terminateNow, "Disconnected App must quit without stopping the conflicting service")
             let identity: [String: Any] = ["application": "campus-companion", "mode": "local", "desktop_protocol": 1]
             precondition(AppDelegate.pages == ["今日", "日程", "任务", "助手", "设置"], "Native navigation follows the App workspace")
             precondition(AppDelegate.displayPage("目标与复盘") == "任务", "Legacy goals entry still reaches the task subview")
@@ -120,6 +123,16 @@ struct NativeTests {
             precondition(rejects(compatible, status: 503))
             precondition(rejects(compatible.merging(["application": "other"]) { _, new in new }))
             precondition(rejects(compatible.merging(["mode": "shared"]) { _, new in new }))
+            let build = String(repeating: "a", count: 64)
+            precondition((try? ServiceController.validateHealth(status: 200, body: compatible, expectedRuntime: build)) == nil, "A same-profile old backend must not pass the new build check")
+            do {
+                try ServiceController.validateHealth(status: 200, body: compatible, expectedRuntime: build)
+                preconditionFailure("Missing runtime must reject")
+            } catch {}
+            try! ServiceController.validateHealth(status: 200, body: compatible.merging(["runtime_id": build]) { _, new in new }, expectedRuntime: build)
+            precondition(ServiceInspection(body: ["state":"conflict", "token":build, "different_data":true, "old_version":true]).handoffToken == build)
+            precondition(ServiceInspection(body: ["state":"foreign", "token":build]).handoffToken == nil, "Unrelated services must have no switch action")
+            precondition(ServiceInspection(body: ["state":"conflict", "token":"invalid"]).handoffToken == nil)
             precondition((try? LocalHealthTransport.healthURL(for: URL(string: "http://127.0.0.1:5189")!))?.absoluteString == "http://127.0.0.1:5189/api/healthz")
             for origin in ["https://127.0.0.1:5189", "http://localhost:5189", "http://127.0.0.1.example.com:5189", "http://192.0.2.1:5189", "http://127.0.0.1:80", "http://user:pass@127.0.0.1:5189", "http://127.0.0.1:5189/other", "http://127.0.0.1:5189?q=1", "http://127.0.0.1:5189/#fragment"] {
                 precondition((try? LocalHealthTransport.healthURL(for: URL(string: origin)!)) == nil, "Health must refuse non-loopback, credentials, untrusted ports and alternate paths before networking")

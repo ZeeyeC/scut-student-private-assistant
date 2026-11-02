@@ -219,8 +219,13 @@ def test_reuse_keeps_database_identity_checks_even_with_pet_capabilities(tmp_pat
     import app.launcher as launcher
     config = desktop_config(tmp_path, tmp_path, project=False)
     identity = service_identity(config)
-    monkeypatch.setattr(launcher, "probe", lambda: {**identity, "capabilities": ["pet-state"]})
+    from app.desktop_handoff import runtime_manifest
+    runtime = runtime_manifest(launcher.resource_root())
+    monkeypatch.setattr(launcher, "probe", lambda: {**identity, **runtime, "capabilities": ["pet-state"]})
     assert same_service(config)
+    monkeypatch.setattr(launcher, "probe", lambda: {**identity, "capabilities": ["pet-state"]})
+    with pytest.raises(RuntimeError, match="旧版本后台"):
+        same_service(config)
     monkeypatch.setattr(launcher, "probe", lambda: {**identity, "database_id": "other-profile", "capabilities": ["pet-state"]})
     with pytest.raises(RuntimeError, match="另一份资料"):
         same_service(config)

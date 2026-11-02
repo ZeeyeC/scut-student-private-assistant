@@ -192,6 +192,9 @@ def same_service(config):
         raise RuntimeError(
             "5173 端口运行着其他服务或另一份资料。请先停止它，再打开本助手"
         )
+    from app.desktop_handoff import runtime_manifest
+    if health.get("runtime_id") != runtime_manifest(resource_root())["runtime_id"]:
+        raise RuntimeError("旧版本后台仍在运行，请在课间窗口选择「切换到此版本」。")
     return True
 
 
@@ -352,18 +355,35 @@ def main():
     )
     parser.add_argument("--no-browser", action="store_true")
     parser.add_argument("--serve", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--inspect-service", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--handoff-service", help=argparse.SUPPRESS)
     args = parser.parse_args()
     root = (args.data_dir or user_data_dir()).expanduser().resolve()
     if args.project and not args.data_dir:
         parser.error("--project 需要明确指定 --data-dir，避免误用其他目录")
     try:
-        if args.serve:
+        if args.inspect_service or args.handoff_service:
+            restore_pipe_streams()
+            from app.desktop_handoff import inspect_service, runtime_manifest, stop_observed_service
+            if args.handoff_service:
+                stop_observed_service(args.handoff_service, probe)
+                result = {"stopped": True}
+            else:
+                config = desktop_config(root, resource_root(), project=args.project)
+                result = inspect_service(service_identity(config), probe, runtime_manifest(resource_root()))
+            print(json.dumps(result, ensure_ascii=False))
+        elif args.serve:
             serve(desktop_config(root, resource_root(), project=args.project))
         else:
             start(
                 root, resource_root(), project=args.project, browser=False
             )
     except Exception as exc:
+        if args.inspect_service or args.handoff_service:
+            # Structured helpers never write private logs or open an error file.
+            message = str(exc) if isinstance(exc, RuntimeError) else "检查后台失败，请重新连接。"
+            print(json.dumps({"error": message}, ensure_ascii=False))
+            return 1
         root.mkdir(parents=True, exist_ok=True)
         with (root / "desktop-error.txt").open("a", encoding="utf-8") as log:
             log.write(f"{type(exc).__name__}: {exc}\n")

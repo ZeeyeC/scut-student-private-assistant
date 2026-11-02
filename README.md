@@ -39,6 +39,10 @@
 
 新增可选Zotero只读MCP连接，在设置→模型连接启用，支持文献检索、信息/全文、笔记和批注。默认关闭，内置本机连接服务，也可配置自己的远端MCP；不修改文献库。[使用说明](docs/releases/Demo2.8.md) · [验收进度](docs/validation/demo2.8/README.md)。已独立构建并通过18项发布检查。
 
+## 2.8.1 启动交接修复
+
+新增多版本/多资料冲突说明与安全切换，后台构建身份校验及未连接窗口退出修复。[使用说明](docs/releases/Demo2.8.1.md) · [验收进度](docs/validation/demo2.8.1/README.md)。正式构建中。
+
 ## 当前版本与历史记录
 
 App与安装包由本地发布流程生成，当前没有在GitHub Releases提供安装包下载；本地入口见工作区README，源码构建见下方说明。

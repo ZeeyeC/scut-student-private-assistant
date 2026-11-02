@@ -59,6 +59,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     var stopBackendOperation: (() async throws -> Void)?
     var terminationReplyHandler: ((Bool) -> Void)?
     var exitConfirmation: NSAlert?
+    var serviceConflictAlert: NSAlert?
     var nextPerformanceAt = ProcessInfo.processInfo.systemUptime + 20
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -73,7 +74,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         if options.smokeDirectory == nil,
            let identifier = Bundle.main.bundleIdentifier,
            let existing = NSRunningApplication.runningApplications(withBundleIdentifier: identifier)
-            .first(where: { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }) {
+            .first(where: {
+                guard $0.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return false }
+                if $0.bundleURL?.standardizedFileURL == Bundle.main.bundleURL.standardizedFileURL { return true }
+                guard let other = $0.bundleURL, let runtime = ServiceController.runtimeID() else { return false }
+                return ServiceController.runtimeID(in: other) == runtime
+            }) {
             existing.activate(options: [.activateAllWindows])
             bypassServiceShutdownOnTerminate = true
             NSApp.terminate(nil); return
@@ -242,7 +248,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
 
     func beginService() {
-        guard !starting else { return }
+        guard !starting, serviceConflictAlert == nil else { return }
         starting = true; ready = false; receiveAssistantMood(.starting)
         let startingHTML = "<html lang='zh'><meta charset='utf-8'><body style='font:15px -apple-system;padding:36px;background:white;color:#303640'><h2>课间</h2><p>正在连接助手…</p></body></html>"
         webView.loadHTMLString(startingHTML, baseURL: nil)
@@ -257,7 +263,51 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
                 let safe = error.localizedDescription.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;")
                 webView.loadHTMLString("<meta charset='utf-8'><body style='font:15px -apple-system;padding:32px'><h2>暂时没有连接成功</h2><p>\(safe)</p><p>处理后，点击菜单栏「重新连接本机服务」。</p></body>", baseURL: nil)
                 showAssistant()
+                if let conflict = error as? ServiceConflict, options.smokeDirectory == nil {
+                    presentServiceConflict(conflict.inspection)
+                }
                 if options.smokeDirectory != nil { finishSmoke(error: error.localizedDescription) }
+            }
+        }
+    }
+
+    func presentServiceConflict(_ inspection: ServiceInspection) {
+        guard let token = inspection.handoffToken, serviceConflictAlert == nil else { return }
+        let alert = NSAlert()
+        alert.messageText = "另一份课间正在运行"
+        alert.informativeText = "切换会正常退出旧版本并停止其后台，再启动当前版本。请先保存旧窗口中未提交的内容。\n\n当前将使用的资料：\n\(options.dataDirectory.path)\n\n各资料目录都会保留，不会合并或覆盖。"
+        alert.addButton(withTitle: "切换到此版本")
+        alert.addButton(withTitle: "取消")
+        alert.buttons.last?.keyEquivalent = "\u{1b}"
+        serviceConflictAlert = alert
+        alert.beginSheetModal(for: assistant) { [weak self] response in
+            guard let self else { return }
+            self.serviceConflictAlert = nil
+            guard response == .alertFirstButtonReturn else { return }
+            self.starting = true
+            Task { @MainActor in
+                do {
+                    // Ask other versions to quit normally; never force terminate.
+                    let others = NSRunningApplication.runningApplications(withBundleIdentifier: Bundle.main.bundleIdentifier ?? "cn.campuscompanion.pet")
+                        .filter { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }
+                    for old in others { _ = old.terminate() }
+                    let deadline = ProcessInfo.processInfo.systemUptime + 12
+                    while others.contains(where: { !$0.isTerminated }) {
+                        guard ProcessInfo.processInfo.systemUptime < deadline else {
+                            throw ServiceError.message("旧版本尚未退出，可能正在处理请求。请在旧窗口完成操作后重试，个人资料已保留。")
+                        }
+                        try await Task.sleep(nanoseconds: 200_000_000)
+                    }
+                    // A normal quit may have already stopped it. If not, stop only
+                    // the exact service snapshot approved in this sheet.
+                    let current = try await self.service.inspect()
+                    if current.state != "absent" { try await self.service.handoff(token: token) }
+                    self.starting = false
+                    self.beginService()
+                } catch {
+                    self.starting = false
+                    self.showStopError(error.localizedDescription)
+                }
             }
         }
     }
@@ -470,6 +520,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             bypassServiceShutdownOnTerminate = false
             return .terminateNow
         }
+        // A failed connection owns no backend. Quitting its window must neither
+        // be blocked nor stop the conflicting profile/version.
+        if !ready && !starting { return .terminateNow }
         Task { @MainActor in
             do {
                 try await self.stopBackend()

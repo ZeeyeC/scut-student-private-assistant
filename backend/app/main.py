@@ -225,12 +225,19 @@ def create_app(config=None):
         )
         return response
 
+    from app.desktop_handoff import runtime_manifest
+    from uuid import uuid4
+    desktop_runtime = runtime_manifest(resource_root())
+    desktop_instance = uuid4().hex
+
     @app.get("/api/healthz")
     def health():
         from app.launcher import service_identity
 
         return {
             **service_identity(config),
+            **desktop_runtime,
+            "instance_id": desktop_instance,
             "status": "ok",
             "capabilities": [
                 "after-class-checkin",

@@ -68,6 +68,27 @@ enum ServiceError: LocalizedError {
     var errorDescription: String? { if case .message(let value) = self { return value }; return nil }
 }
 
+struct ServiceInspection {
+    let state: String
+    let handoffToken: String?
+    let differentData: Bool
+    let oldVersion: Bool
+    init(body: [String: Any]) {
+        state = body["state"] as? String ?? "foreign"
+        let token = body["token"] as? String ?? ""
+        handoffToken = state == "conflict" && token.range(of: "^[0-9a-f]{64}$", options: .regularExpression) != nil ? token : nil
+        differentData = body["different_data"] as? Bool ?? false
+        oldVersion = body["old_version"] as? Bool ?? false
+    }
+}
+
+struct ServiceConflict: LocalizedError {
+    let inspection: ServiceInspection
+    var errorDescription: String? {
+        inspection.differentData ? "另一份课间资料正在运行。可以停止旧后台，再打开当前选择的资料。" : "旧版本后台仍在运行。切换后即可使用当前版本的功能。"
+    }
+}
+
 @MainActor
 final class ServiceController {
     let options: LaunchOptions
@@ -75,6 +96,55 @@ final class ServiceController {
     private let healthTransport = LocalHealthTransport(origin: assistantOrigin)
     private(set) var healthDiagnostics: [HealthDiagnostic] = []
     init(options: LaunchOptions) { self.options = options }
+
+    static func runtimeID(in bundle: URL = Bundle.main.bundleURL) -> String? {
+        let file = bundle.appendingPathComponent("Contents/Resources/service/_internal/service-build.json")
+        guard let data = try? Data(contentsOf: file),
+              let body = try? JSONSerialization.jsonObject(with: data) as? [String:Any],
+              let value = body["runtime_id"] as? String,
+              value.range(of: "^[0-9a-f]{64}$", options: .regularExpression) != nil else { return nil }
+        return value
+    }
+
+    // Small, structured commands from our bundled launcher; never parse private logs.
+    private func command(_ arguments: [String]) async throws -> [String:Any] {
+        guard let executable = Bundle.main.resourceURL?.appendingPathComponent("service/CampusCompanion"),
+              FileManager.default.isExecutableFile(atPath: executable.path) else {
+            throw ServiceError.message("缺少助手服务，请重新构建安装包。")
+        }
+        let child = Process(), output = Pipe()
+        child.executableURL = executable
+        child.arguments = arguments + ["--no-browser", "--data-dir", options.dataDirectory.path] + (options.projectMode ? ["--project"] : [])
+        var environment = ProcessInfo.processInfo.environment
+        environment["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
+        child.environment = environment
+        child.standardOutput = output; child.standardError = FileHandle.nullDevice
+        try child.run()
+        let deadline = ProcessInfo.processInfo.systemUptime + 40
+        while child.isRunning {
+            if ProcessInfo.processInfo.systemUptime > deadline {
+                child.terminate()
+                throw ServiceError.message("检查后台超时，请稍后重试。")
+            }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        let data = output.fileHandleForReading.readDataToEndOfFile()
+        guard data.count <= 65536, let reply = try? JSONSerialization.jsonObject(with: data) as? [String:Any] else {
+            throw ServiceError.message("未能检查本机后台，请重新连接。")
+        }
+        guard child.terminationStatus == 0 else {
+            throw ServiceError.message(reply["error"] as? String ?? "旧后台未能停止，原资料已保留。")
+        }
+        return reply
+    }
+
+    func inspect() async throws -> ServiceInspection {
+        ServiceInspection(body: try await command(["--inspect-service"]))
+    }
+
+    func handoff(token: String) async throws {
+        _ = try await command(["--handoff-service", token])
+    }
 
     func persistSelectionIfNeeded(defaults: UserDefaults = .standard) {
         options.persistSelectionIfNeeded(defaults: defaults)
@@ -126,6 +196,11 @@ final class ServiceController {
 
     func start() async throws {
         if options.externalService { try await verifyHealth(); return }
+        let inspection = try await inspect()
+        if inspection.handoffToken != nil { throw ServiceConflict(inspection: inspection) }
+        if inspection.state == "foreign" {
+            throw ServiceError.message("本机端口被其他服务占用。请先关闭冲突服务；课间不会停止其他软件。")
+        }
         guard let executable = Bundle.main.resourceURL?.appendingPathComponent("service/CampusCompanion"),
               FileManager.default.isExecutableFile(atPath: executable.path) else {
             throw ServiceError.message("缺少助手服务，请重新运行构建脚本。")
@@ -167,10 +242,10 @@ final class ServiceController {
         guard let body = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             throw ServiceError.message("本机端口返回了无法识别的服务。")
         }
-        try Self.validateHealth(status: response?.statusCode ?? 0, body: body)
+        try Self.validateHealth(status: response?.statusCode ?? 0, body: body, expectedRuntime: options.externalService ? nil : Self.runtimeID())
     }
 
-    nonisolated static func validateHealth(status: Int, body: [String: Any]) throws {
+    nonisolated static func validateHealth(status: Int, body: [String: Any], expectedRuntime: String? = nil) throws {
         guard status == 200,
               body["application"] as? String == "campus-companion",
               body["mode"] as? String == "local" else {
@@ -179,6 +254,9 @@ final class ServiceController {
         let required: Set<String> = ["after-class-checkin", "calendar-course-entry", "pet-state", "schedule-reminders", "planning-constraints-once", "timetable-recognition", "timetable-text", "planning-today", "course-changes", "execution-timers-v1", "profiles-v1", "goals-v1", "weekly-review-v1", "planning-core-v1", "b-interaction-v1", "project-completion-v1", "desktop-workspace-v1", "desktop-import-bridge-v1"]
         guard let available = body["capabilities"] as? [String], required.isSubset(of: Set(available)) else {
             throw ServiceError.message("检测到旧版后台，缺少新版桌宠功能。请在旧助手设置中停止服务，再点击「重新连接本机服务」。个人资料无需删除。")
+        }
+        if let expectedRuntime, body["runtime_id"] as? String != expectedRuntime {
+            throw ServiceError.message("后台与当前版本不一致，请重新连接并切换到此版本。")
         }
     }
 }
