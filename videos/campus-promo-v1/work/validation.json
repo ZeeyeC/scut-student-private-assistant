@@ -1,5 +1,5 @@
 {
-  "stage": "V2_browser_review_ready",
+  "stage": "audiovisual_browser_review_ready",
   "main_video_complete": false,
   "fictional_business_content": true,
   "style_preview": {
@@ -62,7 +62,7 @@
   },
   "personal_profile_restored": true,
   "final_mp4_exported": false,
-  "audio_added": false,
+  "audio_added": true,
   "full_playback_review": "pending user review",
   "actual_results": {
     "tasks_saved": 2,
@@ -102,5 +102,6 @@
     "seconds": 62,
     "fps": 30
   },
-  "v2_validation": "work/v2-validation.json"
+  "v2_validation": "work/v2-validation.json",
+  "audio_validation": "work/audio-validation.json"
 }

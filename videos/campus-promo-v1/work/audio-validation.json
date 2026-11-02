@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "main_seconds": 62,
+  "sample_seconds": 15,
+  "narration_sentences": 18,
+  "scene_frames_unchanged": 1860,
+  "business_model_requests_added": 0,
+  "paid_service_calls": 0,
+  "video_exported": false,
+  "subjective_listening": "pending user review in browser",
+  "mixes": [
+    {
+      "name": "main",
+      "seconds": 62,
+      "sample_frames": 2976000,
+      "narration_slots": "passed",
+      "separate_stem_peak_dbfs": -2.932783365249634,
+      "loudness": {
+        "integrated_lufs": -18.03,
+        "true_peak_dbtp": -2.92,
+        "loudness_range_lu": 5.1
+      },
+      "voice_loudness": {
+        "integrated_lufs": -16.1,
+        "true_peak_dbtp": -3.26,
+        "loudness_range_lu": 5.6
+      },
+      "music_loudness": {
+        "integrated_lufs": -28.71,
+        "true_peak_dbtp": -10.3,
+        "loudness_range_lu": 3.6
+      },
+      "remotion_audio_seconds": 62.0,
+      "remotion_stem_correlation": 0.9999999782435696,
+      "remotion_residual_rms": 2.318940096301958e-05
+    },
+    {
+      "name": "sample",
+      "seconds": 15,
+      "sample_frames": 720000,
+      "narration_slots": "passed",
+      "separate_stem_peak_dbfs": -3.382047653198242,
+      "loudness": {
+        "integrated_lufs": -16.75,
+        "true_peak_dbtp": -3.35,
+        "loudness_range_lu": 4.2
+      },
+      "voice_loudness": {
+        "integrated_lufs": -15.86,
+        "true_peak_dbtp": -3.26,
+        "loudness_range_lu": 5.0
+      },
+      "music_loudness": {
+        "integrated_lufs": -30.62,
+        "true_peak_dbtp": -11.18,
+        "loudness_range_lu": 7.4
+      },
+      "remotion_audio_seconds": 15.0,
+      "remotion_stem_correlation": 0.9999999795237277,
+      "remotion_residual_rms": 2.3675484044360928e-05
+    }
+  ]
+}

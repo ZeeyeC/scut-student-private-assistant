@@ -1,0 +1,189 @@
+{
+  "engine": "rany2/edge-tts",
+  "version": "7.3.1",
+  "voice": "zh-CN-XiaoxiaoNeural",
+  "rate": "+8%",
+  "transmission": "fictional promotional copy only",
+  "segments": [
+    {
+      "id": "01",
+      "start": 0.15,
+      "latest_end": 2.9,
+      "text": "课表，作业，资料。",
+      "raw_file": "work/audio-raw/voice-01.mp3",
+      "raw_seconds": 2.496,
+      "available_seconds": 2.63,
+      "needs_fit": false
+    },
+    {
+      "id": "02",
+      "start": 3.15,
+      "latest_end": 5.9,
+      "text": "接进同一个学习流程。",
+      "raw_file": "work/audio-raw/voice-02.mp3",
+      "raw_seconds": 2.28,
+      "available_seconds": 2.6300000000000003,
+      "needs_fit": false
+    },
+    {
+      "id": "03",
+      "start": 6.15,
+      "latest_end": 8.9,
+      "text": "一张截图，变成待办。",
+      "raw_file": "work/audio-raw/voice-03.mp3",
+      "raw_seconds": 2.472,
+      "available_seconds": 2.63,
+      "needs_fit": false
+    },
+    {
+      "id": "04",
+      "start": 9.3,
+      "latest_end": 12.9,
+      "text": "助手整理出作业要求。",
+      "raw_file": "work/audio-raw/voice-04.mp3",
+      "raw_seconds": 2.4,
+      "available_seconds": 3.4799999999999995,
+      "needs_fit": false
+    },
+    {
+      "id": "05",
+      "start": 13.15,
+      "latest_end": 15.9,
+      "text": "日期，可以之后补充。",
+      "raw_file": "work/audio-raw/voice-05.mp3",
+      "raw_seconds": 2.304,
+      "available_seconds": 2.63,
+      "needs_fit": false
+    },
+    {
+      "id": "06",
+      "start": 16.15,
+      "latest_end": 17.9,
+      "text": "确认，再保存。",
+      "raw_file": "work/audio-raw/voice-06.mp3",
+      "raw_seconds": 2.016,
+      "available_seconds": 1.63,
+      "needs_fit": true
+    },
+    {
+      "id": "07",
+      "start": 18.15,
+      "latest_end": 22.7,
+      "text": "已有课程，一起考虑。",
+      "raw_file": "work/audio-raw/voice-07.mp3",
+      "raw_seconds": 2.4,
+      "available_seconds": 4.430000000000001,
+      "needs_fit": false
+    },
+    {
+      "id": "08",
+      "start": 23.15,
+      "latest_end": 26.8,
+      "text": "生成学习安排草稿。",
+      "raw_file": "work/audio-raw/voice-08.mp3",
+      "raw_seconds": 2.28,
+      "available_seconds": 3.530000000000002,
+      "needs_fit": false
+    },
+    {
+      "id": "09",
+      "start": 27.15,
+      "latest_end": 30.8,
+      "text": "由你确认，才进入日程。",
+      "raw_file": "work/audio-raw/voice-09.mp3",
+      "raw_seconds": 2.592,
+      "available_seconds": 3.530000000000002,
+      "needs_fit": false
+    },
+    {
+      "id": "10",
+      "start": 31.15,
+      "latest_end": 33.9,
+      "text": "资料，按课程收好。",
+      "raw_file": "work/audio-raw/voice-10.mp3",
+      "raw_seconds": 2.328,
+      "available_seconds": 2.63,
+      "needs_fit": false
+    },
+    {
+      "id": "11",
+      "start": 34.15,
+      "latest_end": 37.9,
+      "text": "带着原文提问，回答标明来源。",
+      "raw_file": "work/audio-raw/voice-11.mp3",
+      "raw_seconds": 3.144,
+      "available_seconds": 3.63,
+      "needs_fit": false
+    },
+    {
+      "id": "12",
+      "start": 38.15,
+      "latest_end": 40.9,
+      "text": "每次专注二十五分钟。",
+      "raw_file": "work/audio-raw/voice-12.mp3",
+      "raw_seconds": 2.352,
+      "available_seconds": 2.63,
+      "needs_fit": false
+    },
+    {
+      "id": "13",
+      "start": 41.15,
+      "latest_end": 44.8,
+      "text": "确认之后，才会记住。",
+      "raw_file": "work/audio-raw/voice-13.mp3",
+      "raw_seconds": 2.4,
+      "available_seconds": 3.5299999999999985,
+      "needs_fit": false
+    },
+    {
+      "id": "14",
+      "start": 45.15,
+      "latest_end": 48.8,
+      "text": "换个对话，继续记得。",
+      "raw_file": "work/audio-raw/voice-14.mp3",
+      "raw_seconds": 2.328,
+      "available_seconds": 3.5299999999999985,
+      "needs_fit": false
+    },
+    {
+      "id": "15",
+      "start": 49.15,
+      "latest_end": 50.95,
+      "text": "关上主窗口。",
+      "raw_file": "work/audio-raw/voice-15.mp3",
+      "raw_seconds": 1.872,
+      "available_seconds": 1.6800000000000042,
+      "needs_fit": true
+    },
+    {
+      "id": "16",
+      "start": 51.15,
+      "latest_end": 54.0,
+      "text": "桌宠仍能查看今日待办。",
+      "raw_file": "work/audio-raw/voice-16.mp3",
+      "raw_seconds": 2.592,
+      "available_seconds": 2.7300000000000013,
+      "needs_fit": false
+    },
+    {
+      "id": "17",
+      "start": 54.3,
+      "latest_end": 56.85,
+      "text": "从截图，到安排。",
+      "raw_file": "work/audio-raw/voice-17.mp3",
+      "raw_seconds": 2.112,
+      "available_seconds": 2.430000000000004,
+      "needs_fit": false
+    },
+    {
+      "id": "18",
+      "start": 57.2,
+      "latest_end": 61.25,
+      "text": "课间，让学习安排更清楚。",
+      "raw_file": "work/audio-raw/voice-18.mp3",
+      "raw_seconds": 2.808,
+      "available_seconds": 3.929999999999997,
+      "needs_fit": false
+    }
+  ]
+}

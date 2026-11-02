@@ -4,6 +4,7 @@ import {wipe} from '@remotion/transitions/wipe';
 import {slide} from '@remotion/transitions/slide';
 import {AbsoluteFill, CanvasImage, Easing, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import './Composition';
+import {MainPromoAudio, SamplePromoAudio} from './PromoAudio';
 
 const ink='#111329', violet='#7665f5', paper='#f3f5fa';
 const motion={extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.bezier(.16,1,.3,1)} as const;
@@ -180,7 +181,7 @@ const Finale=()=>{
 // Core durations total 62 seconds, with no shortening or uncounted overlap.
 export const CampusPromoV2=()=>{
  const {fps}=useVideoConfig();
- return <TransitionSeries>
+ return <><MainPromoAudio/><TransitionSeries>
   <TransitionSeries.Sequence name="01 快速大字开场" durationInFrames={3*fps+8}><Hook/></TransitionSeries.Sequence>
   <TransitionSeries.Transition presentation={wipe({direction:'from-left'})} timing={linearTiming({durationInFrames:8})}/>
   <TransitionSeries.Sequence name="02 品牌与完整窗口" durationInFrames={3*fps+8}><BrandReveal/></TransitionSeries.Sequence>
@@ -216,12 +217,12 @@ export const CampusPromoV2=()=>{
   <TransitionSeries.Sequence name="17 卡片交叠蒙太奇" durationInFrames={3*fps+8}><Montage/></TransitionSeries.Sequence>
   <TransitionSeries.Transition presentation={wipe({direction:'from-left'})} timing={linearTiming({durationInFrames:8})}/>
   <TransitionSeries.Sequence name="18 品牌收束" durationInFrames={5*fps}><Finale/></TransitionSeries.Sequence>
- </TransitionSeries>;
+ </TransitionSeries></>;
 };
 
 export const HomeworkPreviewV2=()=>{
  const {fps}=useVideoConfig();
- return <TransitionSeries>
+ return <><SamplePromoAudio/><TransitionSeries>
   <TransitionSeries.Sequence name="原图进入" durationInFrames={3*fps+8}><UploadSplit/></TransitionSeries.Sequence>
   <TransitionSeries.Transition presentation={wipe({direction:'from-left'})} timing={linearTiming({durationInFrames:8})}/>
   <TransitionSeries.Sequence name="草稿全幅近景" durationInFrames={4*fps+8}><DraftFocus/></TransitionSeries.Sequence>
@@ -231,5 +232,5 @@ export const HomeworkPreviewV2=()=>{
   <TransitionSeries.Sequence name="待办结果" durationInFrames={2*fps+8}><TaskLaunch/></TransitionSeries.Sequence>
   <TransitionSeries.Transition presentation={slide({direction:'from-left'})} timing={linearTiming({durationInFrames:8})}/>
   <TransitionSeries.Sequence name="课间" durationInFrames={3*fps}><Finale/></TransitionSeries.Sequence>
- </TransitionSeries>;
+ </TransitionSeries></>;
 };

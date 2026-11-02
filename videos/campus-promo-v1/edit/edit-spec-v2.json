@@ -1,5 +1,5 @@
 {
-  "status": "silent_browser_review",
+  "status": "audiovisual_browser_review",
   "revision": "V2",
   "durationInFrames": 1860,
   "fps": 30,
@@ -124,5 +124,16 @@
     "frames_each": 8,
     "overlap_compensated": true
   },
-  "user_constraint": "browser preview only, do not export video"
+  "user_constraint": "browser preview only, do not export video",
+  "audio": {
+    "duration_seconds": 62,
+    "narration": "18 Chinese sentences / Xiaoxiao",
+    "music": "original 120 BPM synthesized locally",
+    "sfx": "original synthesized locally",
+    "voice_script": "work/voiceover-script.json",
+    "source_manifest": "work/audio-manifest.json",
+    "validation": "work/audio-validation.json",
+    "timeline_component": "remotion-app/src/PromoAudio.tsx",
+    "paid_service_calls": 0
+  }
 }

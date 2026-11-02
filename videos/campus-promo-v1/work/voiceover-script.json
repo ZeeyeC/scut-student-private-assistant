@@ -1,0 +1,34 @@
+{
+  "language": "zh-CN",
+  "voice": "zh-CN-XiaoxiaoNeural",
+  "rate": "+8%",
+  "pitch": "+0Hz",
+  "duration_seconds": 62,
+  "segments": [
+    {"id":"01","start":0.15,"latest_end":2.9,"text":"课表，作业，资料。"},
+    {"id":"02","start":3.15,"latest_end":5.9,"text":"接进同一个学习流程。"},
+    {"id":"03","start":6.15,"latest_end":8.9,"text":"一张截图，变成待办。"},
+    {"id":"04","start":9.3,"latest_end":12.9,"text":"助手整理出作业要求。"},
+    {"id":"05","start":13.15,"latest_end":15.9,"text":"日期，可以之后补充。"},
+    {"id":"06","start":16.15,"latest_end":17.9,"text":"确认，再保存。"},
+    {"id":"07","start":18.15,"latest_end":22.7,"text":"已有课程，一起考虑。"},
+    {"id":"08","start":23.15,"latest_end":26.8,"text":"生成学习安排草稿。"},
+    {"id":"09","start":27.15,"latest_end":30.8,"text":"由你确认，才进入日程。"},
+    {"id":"10","start":31.15,"latest_end":33.9,"text":"资料，按课程收好。"},
+    {"id":"11","start":34.15,"latest_end":37.9,"text":"带着原文提问，回答标明来源。"},
+    {"id":"12","start":38.15,"latest_end":40.9,"text":"每次专注二十五分钟。"},
+    {"id":"13","start":41.15,"latest_end":44.8,"text":"确认之后，才会记住。"},
+    {"id":"14","start":45.15,"latest_end":48.8,"text":"换个对话，继续记得。"},
+    {"id":"15","start":49.15,"latest_end":50.95,"text":"关上主窗口。"},
+    {"id":"16","start":51.15,"latest_end":54.0,"text":"桌宠仍能查看今日待办。"},
+    {"id":"17","start":54.3,"latest_end":56.85,"text":"从截图，到安排。"},
+    {"id":"18","start":57.2,"latest_end":61.25,"text":"课间，让学习安排更清楚。"}
+  ],
+  "sample": [
+    {"source":"03","start":0.15,"latest_end":2.9},
+    {"source":"04","start":3.3,"latest_end":6.9},
+    {"source":"05","start":7.15,"latest_end":9.9},
+    {"source":"06","start":10.15,"latest_end":11.9},
+    {"source":"18","start":12.05,"latest_end":14.9}
+  ]
+}

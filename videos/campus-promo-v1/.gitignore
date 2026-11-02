@@ -5,6 +5,9 @@ work/font-characters.txt
 work/v2-qa/
 work/v2-boundary-qa/
 work/v2-frames-arg.txt
+work/audio-venv/
+work/audio-raw/
+work/audio-check/
 !source/.gitkeep
 work/profile/
 work/*.log

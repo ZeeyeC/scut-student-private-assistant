@@ -1,14 +1,14 @@
 # 课间宣传片制作工程
 
-V2 主版 62 秒，1920 × 1080 / 30fps。真实 App 操作，业务内容全部虚构。V1 的75秒版本保留作对照。
+V2 主版 62 秒，1920 × 1080 / 30fps，已接入中文旁白、原创配乐和转场音效。真实 App 操作，业务内容全部虚构。V1 的75秒版本保留作对照。
 
 当前已提供两个可编辑预览：
 
-- `http://localhost:3010/StylePreview` 或 `/CampusPromoV2`：62 秒 V2 无声审片版，18 个镜头与17处转场。
+- `http://localhost:3010/StylePreview` 或 `/CampusPromoV2`：62 秒 V2 有声审片版，18 个镜头与17处转场。
 - `http://localhost:3010/HomeworkPreview`：15 秒 V2 截图整理样段。
 - V1 在 Studio 的 `Earlier` 文件夹保留。
 
-运行：进入 `remotion-app/`，执行 `npm ci`、`npm run dev -- --port 3010`。用户只在浏览器审阅，不需要导出。本轮未制作旁白、字幕和音乐，也没有最终 MP4。录屏切片先完成了实际结果核对、CFR 转换与黑帧检查；部分点击动作未完整收录。详情见 `docs/video/campus-promo-v1/V2-节奏与视觉修改.md`。
+运行：进入 `remotion-app/`，执行 `npm ci`、`npm run dev -- --port 3010`。用户只在浏览器审阅，不需要导出。旁白、音乐与音效已完成并接入；尚未加入字幕，也没有最终 MP4。录屏切片先完成了实际结果核对、CFR 转换与黑帧检查；部分点击动作未完整收录。详情见 `docs/video/campus-promo-v1/V2-节奏与视觉修改.md`与`音频制作方案.md`。
 
 - `materials/`：原创虚构作业截图、课程讲义、演示数据清单。
 - `source/`：本轮真实录屏原件，只读保留，不自动提交 Git。
@@ -23,4 +23,8 @@ V2 主版 62 秒，1920 × 1080 / 30fps。真实 App 操作，业务内容全部
 
 用户已允许当前模型最多 8 次演示请求，仅发送本轮虚构材料。每次发起前后更新 `work/model-requests.json`；不把 API Key 或供应商请求日志放入素材目录。
 
-8 次演示请求已用完（2 次失败、6 次成功）；没有继续发起模型调用。个人资料 App 已恢复。当前阶段不调用付费配音，也不自动公开上传或发布。
+8 次演示请求已用完（2 次失败、6 次成功）；没有继续发起业务模型调用。个人资料 App 已恢复。音频使用免费Edge TTS与本地原创合成，没有付费服务调用，也不自动公开上传或发布。
+
+## 音频复现
+
+独立环境安装 `work/audio-requirements.txt`，运行 `work/generate-voice.py`（向在线TTS发送旁白文字），再运行 `work/build-audio.py`（仅本地处理）。音轨位于 `remotion-app/public/audio/`，来源见该目录 `SOURCES.md`。逐句时间槽和配乐可编辑；Studio中旁白、音乐、音效为独立轨。`work/validate-audio.py`检查语句边界、声道/长度、响度、峰值及实际Remotion混音。

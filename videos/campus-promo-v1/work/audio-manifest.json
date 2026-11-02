@@ -1,0 +1,526 @@
+{
+  "speech_engine": "edge-tts / Microsoft Edge online TTS",
+  "voice": "zh-CN-XiaoxiaoNeural",
+  "rate": "+8%",
+  "segments": [
+    {
+      "id": "01",
+      "start": 0.15,
+      "latest_end": 2.9,
+      "text": "课表，作业，资料。",
+      "file": "audio/voice-01.wav",
+      "raw_duration": 2.496,
+      "duration": 1.9223333333333332,
+      "speed_adjustment": 1,
+      "end": 2.0723333333333334
+    },
+    {
+      "id": "02",
+      "start": 3.15,
+      "latest_end": 5.9,
+      "text": "接进同一个学习流程。",
+      "file": "audio/voice-02.wav",
+      "raw_duration": 2.28,
+      "duration": 1.7383125,
+      "speed_adjustment": 1,
+      "end": 4.8883125
+    },
+    {
+      "id": "03",
+      "start": 6.15,
+      "latest_end": 8.9,
+      "text": "一张截图，变成待办。",
+      "file": "audio/voice-03.wav",
+      "raw_duration": 2.472,
+      "duration": 1.9194166666666668,
+      "speed_adjustment": 1,
+      "end": 8.069416666666667
+    },
+    {
+      "id": "04",
+      "start": 9.3,
+      "latest_end": 12.9,
+      "text": "助手整理出作业要求。",
+      "file": "audio/voice-04.wav",
+      "raw_duration": 2.4,
+      "duration": 1.8394166666666667,
+      "speed_adjustment": 1,
+      "end": 11.139416666666667
+    },
+    {
+      "id": "05",
+      "start": 13.15,
+      "latest_end": 15.9,
+      "text": "日期，可以之后补充。",
+      "file": "audio/voice-05.wav",
+      "raw_duration": 2.304,
+      "duration": 1.8088125,
+      "speed_adjustment": 1,
+      "end": 14.9588125
+    },
+    {
+      "id": "06",
+      "start": 16.15,
+      "latest_end": 17.9,
+      "text": "确认，再保存。",
+      "file": "audio/voice-06.wav",
+      "raw_duration": 2.016,
+      "duration": 1.4763541666666666,
+      "speed_adjustment": 1,
+      "end": 17.626354166666665
+    },
+    {
+      "id": "07",
+      "start": 18.15,
+      "latest_end": 22.7,
+      "text": "已有课程，一起考虑。",
+      "file": "audio/voice-07.wav",
+      "raw_duration": 2.4,
+      "duration": 1.8498333333333334,
+      "speed_adjustment": 1,
+      "end": 19.99983333333333
+    },
+    {
+      "id": "08",
+      "start": 23.15,
+      "latest_end": 26.8,
+      "text": "生成学习安排草稿。",
+      "file": "audio/voice-08.wav",
+      "raw_duration": 2.28,
+      "duration": 1.7165625,
+      "speed_adjustment": 1,
+      "end": 24.866562499999997
+    },
+    {
+      "id": "09",
+      "start": 27.15,
+      "latest_end": 30.8,
+      "text": "由你确认，才进入日程。",
+      "file": "audio/voice-09.wav",
+      "raw_duration": 2.592,
+      "duration": 2.0593541666666666,
+      "speed_adjustment": 1,
+      "end": 29.209354166666664
+    },
+    {
+      "id": "10",
+      "start": 31.15,
+      "latest_end": 33.9,
+      "text": "资料，按课程收好。",
+      "file": "audio/voice-10.wav",
+      "raw_duration": 2.328,
+      "duration": 1.7842916666666666,
+      "speed_adjustment": 1,
+      "end": 32.93429166666667
+    },
+    {
+      "id": "11",
+      "start": 34.15,
+      "latest_end": 37.9,
+      "text": "带着原文提问，回答标明来源。",
+      "file": "audio/voice-11.wav",
+      "raw_duration": 3.144,
+      "duration": 2.601395833333333,
+      "speed_adjustment": 1,
+      "end": 36.75139583333333
+    },
+    {
+      "id": "12",
+      "start": 38.15,
+      "latest_end": 40.9,
+      "text": "每次专注二十五分钟。",
+      "file": "audio/voice-12.wav",
+      "raw_duration": 2.352,
+      "duration": 1.8349166666666668,
+      "speed_adjustment": 1,
+      "end": 39.98491666666666
+    },
+    {
+      "id": "13",
+      "start": 41.15,
+      "latest_end": 44.8,
+      "text": "确认之后，才会记住。",
+      "file": "audio/voice-13.wav",
+      "raw_duration": 2.4,
+      "duration": 1.8727291666666666,
+      "speed_adjustment": 1,
+      "end": 43.022729166666664
+    },
+    {
+      "id": "14",
+      "start": 45.15,
+      "latest_end": 48.8,
+      "text": "换个对话，继续记得。",
+      "file": "audio/voice-14.wav",
+      "raw_duration": 2.328,
+      "duration": 1.7662916666666666,
+      "speed_adjustment": 1,
+      "end": 46.916291666666666
+    },
+    {
+      "id": "15",
+      "start": 49.15,
+      "latest_end": 50.95,
+      "text": "关上主窗口。",
+      "file": "audio/voice-15.wav",
+      "raw_duration": 1.872,
+      "duration": 1.14975,
+      "speed_adjustment": 1,
+      "end": 50.299749999999996
+    },
+    {
+      "id": "16",
+      "start": 51.15,
+      "latest_end": 54.0,
+      "text": "桌宠仍能查看今日待办。",
+      "file": "audio/voice-16.wav",
+      "raw_duration": 2.592,
+      "duration": 2.0172083333333335,
+      "speed_adjustment": 1,
+      "end": 53.167208333333335
+    },
+    {
+      "id": "17",
+      "start": 54.3,
+      "latest_end": 56.85,
+      "text": "从截图，到安排。",
+      "file": "audio/voice-17.wav",
+      "raw_duration": 2.112,
+      "duration": 1.6037083333333333,
+      "speed_adjustment": 1,
+      "end": 55.90370833333333
+    },
+    {
+      "id": "18",
+      "start": 57.2,
+      "latest_end": 61.25,
+      "text": "课间，让学习安排更清楚。",
+      "file": "audio/voice-18.wav",
+      "raw_duration": 2.808,
+      "duration": 2.2523958333333334,
+      "speed_adjustment": 1,
+      "end": 59.452395833333334
+    }
+  ],
+  "mixes": [
+    {
+      "name": "main",
+      "seconds": 62,
+      "sample_rate": 48000,
+      "sample_frames": 2976000,
+      "voice_segments": [
+        {
+          "source": "01",
+          "start": 0.15,
+          "end": 2.0723333333333334,
+          "latest_end": 2.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "02",
+          "start": 3.15,
+          "end": 4.8883125,
+          "latest_end": 5.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "03",
+          "start": 6.15,
+          "end": 8.069416666666667,
+          "latest_end": 8.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "04",
+          "start": 9.3,
+          "end": 11.139416666666667,
+          "latest_end": 12.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "05",
+          "start": 13.15,
+          "end": 14.9588125,
+          "latest_end": 15.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "06",
+          "start": 16.15,
+          "end": 17.626354166666665,
+          "latest_end": 17.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "07",
+          "start": 18.15,
+          "end": 19.99983333333333,
+          "latest_end": 22.7,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "08",
+          "start": 23.15,
+          "end": 24.866562499999997,
+          "latest_end": 26.8,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "09",
+          "start": 27.15,
+          "end": 29.209354166666664,
+          "latest_end": 30.8,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "10",
+          "start": 31.15,
+          "end": 32.93429166666667,
+          "latest_end": 33.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "11",
+          "start": 34.15,
+          "end": 36.75139583333333,
+          "latest_end": 37.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "12",
+          "start": 38.15,
+          "end": 39.98491666666666,
+          "latest_end": 40.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "13",
+          "start": 41.15,
+          "end": 43.022729166666664,
+          "latest_end": 44.8,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "14",
+          "start": 45.15,
+          "end": 46.916291666666666,
+          "latest_end": 48.8,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "15",
+          "start": 49.15,
+          "end": 50.299749999999996,
+          "latest_end": 50.95,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "16",
+          "start": 51.15,
+          "end": 53.167208333333335,
+          "latest_end": 54.0,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "17",
+          "start": 54.3,
+          "end": 55.90370833333333,
+          "latest_end": 56.85,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "18",
+          "start": 57.2,
+          "end": 59.452395833333334,
+          "latest_end": 61.25,
+          "speed_adjustment": 1
+        }
+      ],
+      "master_gain": 1,
+      "peak_dbfs": -2.6723600572676376,
+      "music_bpm": 120,
+      "music_original": true,
+      "audio_only_no_video_export": true
+    },
+    {
+      "name": "sample",
+      "seconds": 15,
+      "sample_rate": 48000,
+      "sample_frames": 720000,
+      "voice_segments": [
+        {
+          "source": "03",
+          "start": 0.15,
+          "end": 2.0694166666666667,
+          "latest_end": 2.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "04",
+          "start": 3.3,
+          "end": 5.1394166666666665,
+          "latest_end": 6.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "05",
+          "start": 7.15,
+          "end": 8.9588125,
+          "latest_end": 9.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "06",
+          "start": 10.15,
+          "end": 11.626354166666667,
+          "latest_end": 11.9,
+          "speed_adjustment": 1
+        },
+        {
+          "source": "18",
+          "start": 12.05,
+          "end": 14.302395833333334,
+          "latest_end": 14.9,
+          "speed_adjustment": 1
+        }
+      ],
+      "master_gain": 1,
+      "peak_dbfs": -3.1191521666074125,
+      "music_bpm": 120,
+      "music_original": true,
+      "audio_only_no_video_export": true
+    }
+  ],
+  "assets": [
+    {
+      "file": "remotion-app/public/audio/main-mix.mp3",
+      "bytes": 1489580,
+      "sha256": "9ecedcdb41e09152d86826349d85f1544dabfadd8ba5e1fb0a579d727bd59135"
+    },
+    {
+      "file": "remotion-app/public/audio/main-music.mp3",
+      "bytes": 1489580,
+      "sha256": "67ac6f4aa468062ce0f9d13a5ebdb5a833075247107c354251ea46f7d3c9a1b3"
+    },
+    {
+      "file": "remotion-app/public/audio/main-sfx.mp3",
+      "bytes": 1489580,
+      "sha256": "6c5f325512448ed0ad87302179d6898965d350e1f1315836bdca9ce8fa0b22ca"
+    },
+    {
+      "file": "remotion-app/public/audio/main-voice.mp3",
+      "bytes": 1489580,
+      "sha256": "1d18d1e2443eccdd45824c434fe837978a7c0445a10c864e857b1c33134c1ab2"
+    },
+    {
+      "file": "remotion-app/public/audio/sample-mix.mp3",
+      "bytes": 361196,
+      "sha256": "d6857560f36cabcd77fcb23b1e9d41f77c6858c2cfd81d08b583074242b9359c"
+    },
+    {
+      "file": "remotion-app/public/audio/sample-music.mp3",
+      "bytes": 361196,
+      "sha256": "8f75494bba05b2f7aafa53ee85e05090061148f9edbfc149e536659c1ffbe25a"
+    },
+    {
+      "file": "remotion-app/public/audio/sample-sfx.mp3",
+      "bytes": 361196,
+      "sha256": "1d108e6d561336377badb2b96adb031f94a9fcf6a202637d385351fca25f3af1"
+    },
+    {
+      "file": "remotion-app/public/audio/sample-voice.mp3",
+      "bytes": 361196,
+      "sha256": "e345b1e0fb4f542260566922b50a3136e6316d28a144bdde43b4305887d3608b"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-01.wav",
+      "bytes": 184588,
+      "sha256": "160998616d122f8389df5a04a1e298eee305f4dd05bc74c011c6ee452fd681f1"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-02.wav",
+      "bytes": 166922,
+      "sha256": "bb41b6d8c9891e4d5409263fdca50ac11035d956027ddd5d9a9c2575ba599f95"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-03.wav",
+      "bytes": 184308,
+      "sha256": "17724dfbe1acb4b5b11868883ef16d9f25dd08bf9ba0a4238929b9f346c7d16f"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-04.wav",
+      "bytes": 176628,
+      "sha256": "de9325aaa60c949ad82d0306a0fb0ec1e284917d0dfc6a824c06691140d8c599"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-05.wav",
+      "bytes": 173690,
+      "sha256": "f07ff5ecc169624905cee2a0f6984bc3be27ced439f367e28f02902a422dbe58"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-06.wav",
+      "bytes": 141774,
+      "sha256": "19eb4e3e23d294202a46c7f5c64876c17ba65c87c1bf476f183fd798b330eb26"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-07.wav",
+      "bytes": 177628,
+      "sha256": "aba489e1272cb532030c0ac95da716c4e8c733bf79bca8364efda2e539f14738"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-08.wav",
+      "bytes": 164834,
+      "sha256": "ce3c688b94b1ccc0af39857d2338cf4af8665e1b19d944b370a518f3b9f26b3c"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-09.wav",
+      "bytes": 197742,
+      "sha256": "766958dc504c976ba4fb7d8f6665f695c7daf70145b502a08d14292864bba128"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-10.wav",
+      "bytes": 171336,
+      "sha256": "577678b8d4c87123cf6ddf3249979290677e0e9508bbebcb4aaa57b3a5c990f2"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-11.wav",
+      "bytes": 249778,
+      "sha256": "4f26ba57e521fda1e65a46593dc5c69c1e0005896f200efcd14b2b8048d9ed89"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-12.wav",
+      "bytes": 176196,
+      "sha256": "81cba6a67ac10afdefd5b4e79b005025aa9f6aa8c978f21b842b476d62e81c6c"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-13.wav",
+      "bytes": 179826,
+      "sha256": "c71a3bfbd794b0877fb955c1ed12887a0e09820476945a7939c377f6948b8833"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-14.wav",
+      "bytes": 169608,
+      "sha256": "749b56b8162bb7734295d52899e8c37a3693df266d1c3720d2f9c97dcee2fccf"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-15.wav",
+      "bytes": 110420,
+      "sha256": "d93d8d935745729a892ab1fdf24766db71b580e1008f1bfd2e5f17f9eb52a88e"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-16.wav",
+      "bytes": 193696,
+      "sha256": "393448dd73de1daa541080330769685a888523b306bd6819212c17fbc39f7e58"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-17.wav",
+      "bytes": 154000,
+      "sha256": "cedf4f10a14d6e544e52ecf943aeeeede0350e4692a44a8226c7c8f3e7cd5475"
+    },
+    {
+      "file": "remotion-app/public/audio/voice-18.wav",
+      "bytes": 216274,
+      "sha256": "fa2a743f3174210ef79e891d419b460b8068eeb0f0471d140b658c7db34d8021"
+    }
+  ]
+}
