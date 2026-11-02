@@ -1,0 +1,104 @@
+{
+  "passed": true,
+  "composition": "CampusPromoV2",
+  "file": "课间-宣传片-V2-1080p.mp4",
+  "bytes": 7334322,
+  "sha256": "43d8a41b64af0d0e0c8b9ed2ff7b1adc915e44342a0e76a6e8ae25b797d14467",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "frames": 1860,
+  "seconds": 62,
+  "video_codec": "H.264",
+  "pixel_format": "yuv420p",
+  "audio_codec": "AAC",
+  "audio_channels": 2,
+  "full_decode": "passed",
+  "black_intervals": [],
+  "audio_correlation_against_approved_mix": 0.9999630497621232,
+  "decoded_audio_peak_dbfs": -2.9446167945861816,
+  "visual_frame_comparisons": [
+    {
+      "frame": 35,
+      "seconds": 1.1666666666666667,
+      "psnr_against_checked_preview_db": 43.291
+    },
+    {
+      "frame": 140,
+      "seconds": 4.666666666666667,
+      "psnr_against_checked_preview_db": 49.214
+    },
+    {
+      "frame": 245,
+      "seconds": 8.166666666666666,
+      "psnr_against_checked_preview_db": 45.708
+    },
+    {
+      "frame": 370,
+      "seconds": 12.333333333333334,
+      "psnr_against_checked_preview_db": 41.587
+    },
+    {
+      "frame": 500,
+      "seconds": 16.666666666666668,
+      "psnr_against_checked_preview_db": 48.441
+    },
+    {
+      "frame": 595,
+      "seconds": 19.833333333333332,
+      "psnr_against_checked_preview_db": 48.067
+    },
+    {
+      "frame": 740,
+      "seconds": 24.666666666666668,
+      "psnr_against_checked_preview_db": 45.593
+    },
+    {
+      "frame": 845,
+      "seconds": 28.166666666666668,
+      "psnr_against_checked_preview_db": 48.458
+    },
+    {
+      "frame": 980,
+      "seconds": 32.666666666666664,
+      "psnr_against_checked_preview_db": 41.307
+    },
+    {
+      "frame": 1090,
+      "seconds": 36.333333333333336,
+      "psnr_against_checked_preview_db": 48.874
+    },
+    {
+      "frame": 1220,
+      "seconds": 40.666666666666664,
+      "psnr_against_checked_preview_db": 49.075
+    },
+    {
+      "frame": 1370,
+      "seconds": 45.666666666666664,
+      "psnr_against_checked_preview_db": 50.233
+    },
+    {
+      "frame": 1520,
+      "seconds": 50.666666666666664,
+      "psnr_against_checked_preview_db": 46.905
+    },
+    {
+      "frame": 1670,
+      "seconds": 55.666666666666664,
+      "psnr_against_checked_preview_db": 49.746
+    },
+    {
+      "frame": 1800,
+      "seconds": 60.0,
+      "psnr_against_checked_preview_db": 47.446
+    },
+    {
+      "frame": 1859,
+      "seconds": 61.96666666666667,
+      "psnr_against_checked_preview_db": 47.446
+    }
+  ],
+  "subjective_preview": "user approved browser audiovisual preview before export",
+  "public_upload": false
+}

@@ -2,6 +2,8 @@
 
 当前入口为 `StylePreview` / `CampusPromoV2`（62秒V2）与 `HomeworkPreview`（15秒V2样段），均为1920×1080、30fps。采用18镜头、深浅场景交替、动态大字、错位卡片、左右分屏与全幅界面，已加入中文旁白、原创电子配乐与转场音效。V1位于`Earlier`文件夹。用户只在浏览器审阅，不需要导出；字幕尚未加入。
 
+后续状态：用户已通过有声版并明确要求导出，V2 MP4已完成并验证，见上级`edit/export-v2/`。上一段的浏览器审阅约定记录了导出前阶段，之后以本条用户授权为准。
+
 声音由 `src/PromoAudio.tsx` 的三个独立音轨控制。首尾淡化与人声期间的音乐降低已写入素材，轨道默认unity音量。若试听没有声音，请检查Studio静音按钮和系统音量；浏览器需要点击播放后开始音频。
 
 运行 `npm run dev -- --port 3010`，打开 `/StylePreview` 或 `/HomeworkPreview`。`npm run lint` 检查 TypeScript 和 ESLint。运行依赖仅用于视频制作，与 App 产品依赖分离。

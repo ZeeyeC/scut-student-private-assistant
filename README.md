@@ -2,7 +2,7 @@
 
 课间是一款面向华工学生的个人学习助手，整合课表导入、作业截图整理、待办、学习排程、桌宠和可确认的长期偏好记忆。日常在独立App内使用，学校课表导入按需唤起Chrome/Edge。
 
-宣传片制作工程见 [videos/campus-promo-v1](videos/campus-promo-v1/README.md)：采用完全虚构的业务资料、真实 App 录屏与 Remotion 动画。当前为62秒V2有声审片版及15秒样段，已接入中文旁白、原创配乐与转场音效，用户在浏览器审阅，不导出视频。
+宣传片制作工程见 [videos/campus-promo-v1](videos/campus-promo-v1/README.md)：采用完全虚构的业务资料、真实 App 录屏与 Remotion 动画。62秒V2有声版已由用户通过并授权导出，成片为1080p/30fps的H.264/AAC MP4，检查通过；便于访达访问的副本位于`/Users/czy/ProjectManagement/agentbuild/exports/课间宣传片-V2/`。
 
 ## 技术栈
 

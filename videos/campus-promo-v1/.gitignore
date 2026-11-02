@@ -8,6 +8,7 @@ work/v2-frames-arg.txt
 work/audio-venv/
 work/audio-raw/
 work/audio-check/
+work/export-check/
 !source/.gitkeep
 work/profile/
 work/*.log
@@ -15,6 +16,7 @@ work/*.mov
 work/*.mp4
 edit/*.mp4
 edit/*.mov
+edit/export-*/*.mp4
 remotion-app/public/footage/*
 !remotion-app/public/footage/.gitkeep
 remotion-app/.remotion/

@@ -2,13 +2,15 @@
 
 V2 主版 62 秒，1920 × 1080 / 30fps，已接入中文旁白、原创配乐和转场音效。真实 App 操作，业务内容全部虚构。V1 的75秒版本保留作对照。
 
+**最新交付：**用户通过有声预览并明确授权导出后，已生成`edit/export-v2/课间-宣传片-V2-1080p.mp4`（H.264/AAC，62秒，约7.3MB）。整片解码、黑帧扫描、16个画面抽检及导出音轨比对通过；同目录附SHA256和验证结果。访达可见副本：`/Users/czy/ProjectManagement/agentbuild/exports/课间宣传片-V2/`。仅本地交付，未公开上传。
+
 当前已提供两个可编辑预览：
 
 - `http://localhost:3010/StylePreview` 或 `/CampusPromoV2`：62 秒 V2 有声审片版，18 个镜头与17处转场。
 - `http://localhost:3010/HomeworkPreview`：15 秒 V2 截图整理样段。
 - V1 在 Studio 的 `Earlier` 文件夹保留。
 
-运行：进入 `remotion-app/`，执行 `npm ci`、`npm run dev -- --port 3010`。用户只在浏览器审阅，不需要导出。旁白、音乐与音效已完成并接入；尚未加入字幕，也没有最终 MP4。录屏切片先完成了实际结果核对、CFR 转换与黑帧检查；部分点击动作未完整收录。详情见 `docs/video/campus-promo-v1/V2-节奏与视觉修改.md`与`音频制作方案.md`。
+运行：进入 `remotion-app/`，执行 `npm ci`、`npm run dev -- --port 3010`。旁白、音乐与音效已完成并接入，字幕未加入，用户已通过当前画面和声音并授权导出。录屏切片完成了实际结果核对、CFR 转换与黑帧检查；部分点击动作未完整收录，未将其伪造成连续操作。详情见 `docs/video/campus-promo-v1/V2-节奏与视觉修改.md`与`音频制作方案.md`。
 
 - `materials/`：原创虚构作业截图、课程讲义、演示数据清单。
 - `source/`：本轮真实录屏原件，只读保留，不自动提交 Git。

@@ -1,6 +1,6 @@
 {
   "revision": "V2",
-  "stage": "audiovisual_browser_review_ready",
+  "stage": "user_approved_and_mp4_export_verified",
   "composition": "CampusPromoV2",
   "entry_alias": "StylePreview",
   "width": 1920,
@@ -27,5 +27,8 @@
   "source_sha256": "d93a1c8ec8c7df987bb4afda031ea369490f4ee1e481bddd1447300cebe60484",
   "audio_added": true,
   "audio_validation": "work/audio-validation.json",
-  "audio_component_sha256": "d650275eef4af21820bf190bea646cf8f48b22deff3f5f79fdb222f018e55f14"
+  "audio_component_sha256": "d650275eef4af21820bf190bea646cf8f48b22deff3f5f79fdb222f018e55f14",
+  "final_mp4_exported": true,
+  "export_verification": "edit/export-v2/verification.json",
+  "user_listening_review": "approved"
 }

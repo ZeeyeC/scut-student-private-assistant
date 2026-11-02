@@ -1,6 +1,6 @@
 {
-  "stage": "audiovisual_browser_review_ready",
-  "main_video_complete": false,
+  "stage": "user_approved_and_mp4_export_verified",
+  "main_video_complete": true,
   "fictional_business_content": true,
   "style_preview": {
     "width": 1920,
@@ -61,7 +61,7 @@
     "successful": 6
   },
   "personal_profile_restored": true,
-  "final_mp4_exported": false,
+  "final_mp4_exported": true,
   "audio_added": true,
   "full_playback_review": "pending user review",
   "actual_results": {
@@ -103,5 +103,8 @@
     "fps": 30
   },
   "v2_validation": "work/v2-validation.json",
-  "audio_validation": "work/audio-validation.json"
+  "audio_validation": "work/audio-validation.json",
+  "export_verification": "edit/export-v2/verification.json",
+  "user_listening_review": "approved",
+  "completion_scope": "User-approved V2 promo export; not a claim about all project features or continuous recording coverage."
 }
