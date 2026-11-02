@@ -1,0 +1,17 @@
+{
+  "removed_generated_paths": [
+    "../.codex/worktrees/demo24-execution/agentbuild/campus-pet/build",
+    "../.codex/worktrees/demo24-execution/agentbuild/frontend/test-results",
+    "../.codex/worktrees/demo24-execution/agentbuild/backend/.pytest_cache",
+    "../.codex/worktrees/demo24-execution/agentbuild/scripts/tests/__pycache__"
+  ],
+  "preserved": [
+    "existing archives",
+    "Demo2.9.2",
+    "active source project",
+    ".env / model.env",
+    "data / backups",
+    "installed dependencies",
+    "development taskbook"
+  ]
+}

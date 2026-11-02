@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "version": "2.9.2",
+  "checks": 19,
+  "sha256_files": 39,
+  "source_runtime_files_compared": 255,
+  "recursive_zip_audit": "passed",
+  "known_private_values_scan_roots": 3,
+  "runtime_id": "42c8734ef9d4fd50b844e163281b2382abde4bb797eb057a140d706eab8d1500",
+  "scope": "Final local release; synthetic Markdown/math messages; no paid model requests"
+}

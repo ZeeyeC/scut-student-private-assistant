@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "version": "2.9.2",
+  "platform": "final AppKit/WKWebView",
+  "scope": "explicit isolated temporary profile; synthetic completed message history inserted without model calls",
+  "no_model_configured": true,
+  "observed": [
+    "heading and strong emphasis rendered without markers",
+    "ordered list and semantic table",
+    "display integral with fraction and inline Pythagorean formula",
+    "local font glyphs",
+    "code block and visible copy control",
+    "reply area scroll preserves composer and sidebar"
+  ],
+  "native_clipboard_contents": "not separately read or modified in this manual check; copy argument and feedback tested in browser integration",
+  "model_requests": 0
+}

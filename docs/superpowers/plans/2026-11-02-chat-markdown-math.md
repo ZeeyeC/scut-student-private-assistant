@@ -43,8 +43,8 @@
 
 **Interfaces:** Task1 consumes no backend changes; final App includes built frontend, fonts and license files.
 
-- [ ] Fresh whole-branch review against spec, resolve material findings with meaningful failing regressions.
-- [ ] Update2.9.2/version/docs/progress. Gracefully quit currentApp for5173 isolated checks, preserve data identity.
-- [ ] Run scripts/release-macos.py --version2.9.2 --workspace /Users/czy/ProjectManagement with existing validated PET_EXTENSION_BROWSER and temporary caffeinate -i.
-- [ ] Require19 gates and signature/ZIP/SHA/private scans; use finalApp isolated synthetic session for native Markdown/math display then restore original data.
-- [ ] Update stable App link, preserve old releasedApp and failed logs; clear known generated caches only after success, restore regenerated historical evidence; commit completion evidence locally.
+- [x] Fresh whole-branch review against spec, resolve material findings with meaningful failing regressions.
+- [x] Update2.9.2/version/docs/progress. Gracefully quit currentApp for5173 isolated checks, preserve data identity.
+- [x] Run scripts/release-macos.py --version2.9.2 --workspace /Users/czy/ProjectManagement with existing validated PET_EXTENSION_BROWSER and temporary caffeinate -i.
+- [x] Require19 gates and signature/ZIP/SHA/private scans; use finalApp isolated synthetic session for native Markdown/math display then restore original data.
+- [x] Update stable App link, preserve old releasedApp and failed logs; clear known generated caches only after success, restore regenerated historical evidence; commit completion evidence locally.

@@ -11,6 +11,7 @@
 | macOS桌面端 | Swift、AppKit、WebKit / WKWebView | 原生窗口、桌宠、Dock/菜单栏、系统多图选择与后台生命周期 |
 | App内嵌界面 | React 19、TypeScript、Vite 8、Tailwind CSS 4、Radix UI | 页面、表单与简洁对话交互，无需单独使用日常网页端 |
 | 聊天与日历 | assistant-ui、TanStack Query、FullCalendar、Luxon | 对话运行时、请求状态刷新、日历与时区 |
+| 回答排版 | assistant-ui Markdown、remark-gfm、remark-math/rehype-katex、KaTeX | Markdown表格/代码块和本地数学公式 |
 | 本机后端 | Python 3.12、FastAPI、Uvicorn、Pydantic | 业务API、数据校验、同源界面服务和SSE事件流 |
 | 数据与迁移 | SQLite、SQLAlchemy异步ORM、aiosqlite、Alembic | 课程、任务、档案、记忆的持久化及事务/版本/幂等控制 |
 | Agent | Deep Agents、LangChain、LangGraph、MCP时间工具 | 工具调用、审批与恢复、对话上下文、实际日期查询 |
@@ -53,7 +54,7 @@
 
 App与安装包由本地发布流程生成；本地最新版入口见工作区README。历史版本已备份到既有私有GitHub Releases，需登录有权限的账号下载，见[云端归档与恢复](docs/releases/历史版本云端归档.md)。源码构建见下方说明。
 
-最新版本 **2.9.2 助手Markdown与数学公式**，分支`codex/chat-markdown-math`。支持格式化回答、表格、代码复制和本地公式，兼容历史与流式消息。[本版说明](docs/releases/Demo2.9.2.md)。正式结果以本版发布目录验证记录为准。
+最新版本 **2.9.2 助手Markdown与数学公式**，分支`codex/chat-markdown-math`。支持格式化回答、表格、代码复制和本地公式，兼容历史与流式消息。[本版说明](docs/releases/Demo2.9.2.md) · [验收记录](docs/validation/demo2.9.2/README.md)。19项发布门禁、116项界面与正式App原生显示验收通过，原资料已恢复。
 
 历史补丁 **2.9.1 检索设置排版修复**，分支`codex/research-settings-layout`。复选框与“启用语义检索”同行，补充搜索服务地址说明。[本版说明](docs/releases/Demo2.9.1.md) · [验收记录](docs/validation/demo2.9.1/README.md)。19项发布检查、803后台+20子项、114前端、111界面及正式App设置页目视验收通过；原资料已恢复。
 

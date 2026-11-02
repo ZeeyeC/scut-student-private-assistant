@@ -1,0 +1,15 @@
+# SDD ledger — plan: docs/superpowers/plans/2026-11-02-chat-markdown-math.md
+
+Spec approved by user request to implement the immediately preceding open-source rendering proposal.
+Existing linked worktree verified; isolated feature branch codex/chat-markdown-math starts at7e8bbf1. Baseline114 frontend tests passed.
+Pre-flight: Task1 exports AssistantMarkdown text-part renderer; Task2 consumes built frontend with no backend schema changes — compatible.
+Task1: wrote4 integration tests using realChatPage with synthetic SSE transport; RED running against old built frontend.
+Dependencies: pinned @assistant-ui/react-markdown0.14.24, remark-gfm4.0.1, remark-math6.0.0, rehype-katex7.0.1, katex0.19.1. npm reported existing/new transitive advisories; assess affected runtime before release, do not force-upgrade unrelated dependencies.
+Task1 RED: all4 browser integration cases failed on missing strong/table/math rendering in baseline2.9.1; feature absence verified, no model calls.
+Task1 dependency decision: rehype-katex7 depends on older vulnerable KaTeX0.16; override to pinned root0.19.1 to align rendering with CSS and remove GHSA-238p-pmpm-9mq7. Compatibility is covered by actual math DOM integration tests.
+Antigravity Argon Medium/medium invoked with sanitized contract and structured JSON output, no tools/real data requested.
+Antigravity produced renderer311/CSS442 lines without personal data or tools. Integrated with local adjustments: no parent-message width overrides (preserve embedded85%); inherit existing typography; light code background; copy status visually hidden to avoid duplicate text. Built-in open-source delimiter preprocessing reused.
+Task1 GREEN: actual new frontend4/4 E2E passed (7.0s),114/114 unit tests, TypeScript + Vite production build passed onNode22.23.3. Runtime npm audit0 vulnerabilities. Earlier attempted E2E ran baseline after an FC weak-prop typecheck failure; not counted as feature validation. Renderer signature corrected to context-only no-prop function; successful build gates later tests.
+Task 1: complete (commits 7e8bbf1..f6603c3, tests: frontend/node_modules/.bin/playwright test --config=frontend/playwright.pet.config.ts chat-markdown.spec.ts →   4 passed (7.8s))
+Task 2: complete (commits f6603c3..73a56a0, tests: backend/.venv/bin/python .superpowers/sdd/2026-11-02-chat-markdown-math/verify-release.py → {"passed": true, "version": "2.9.2", "checks": 19, "sha256_files": 39, "source_runtime_files_compared": 255, "recursive_zip_audit": "passed", "known_private_values_scan_roots": 3, "runtime_id": "42c8734ef9d4fd50b844e163281b2382abde4bb797eb057a140d706eab8d1500", "scope": "Final local release; synthetic Markdown/math messages; no paid model requests"})
+Task2 final closure: final2.9.2 CUA native Markdown/math synthetic history passed, original database/runtime restored and main assistant visible. Stable alias updated toDemo2.9.2.19 gates,39SHA,ZIP/privacy and255runtime-source comparison passed. Historical evidence regenerated this round is retained separately and originals restored. No model calls; no remote push.

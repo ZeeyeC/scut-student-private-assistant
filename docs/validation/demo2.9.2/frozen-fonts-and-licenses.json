@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "katex_font_files": 59,
+  "woff2_files": 19,
+  "font_source_bytes_match": true,
+  "license_files": [
+    "katex-LICENSE.txt",
+    "assistant-ui-markdown-LICENSE.txt",
+    "remark-math-rehype-katex-LICENSE.txt",
+    "react-markdown-LICENSE.txt",
+    "remark-gfm-LICENSE.txt"
+  ]
+}

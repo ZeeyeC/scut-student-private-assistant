@@ -1,0 +1,27 @@
+{
+  "historical_files_regenerated_and_restored": [
+    "docs/validation/demo2.9/e2e/b-interaction/chat-conflict-review.png",
+    "docs/validation/demo2.9/e2e/b-interaction/negotiation-confirmed.png",
+    "docs/validation/demo2.9/e2e/b-interaction/weekly-confirmed.png",
+    "docs/validation/demo2.9/e2e/independent/goal-paused.png",
+    "docs/validation/demo2.9/e2e/independent/profile-confirmed.png",
+    "docs/validation/demo2.9/e2e/independent/timer-paused.png",
+    "docs/validation/demo2.9/e2e/independent/weekly-intent.png",
+    "docs/validation/demo2.9/e2e/planning-workbench.png",
+    "docs/validation/demo2.9/e2e/semester-batch-preview.png",
+    "docs/validation/demo2.9/e2e/timetable-text-review.png",
+    "docs/validation/demo2.9/visual/assistant-desktop.png",
+    "docs/validation/demo2.9/visual/comparison.json"
+  ],
+  "preserved": [
+    "personal data/private configuration/backups",
+    "old formal releases",
+    "installed dependencies",
+    "source and task materials"
+  ],
+  "remaining_cleanup": "none",
+  "own_isolated_native_profile_removed": true,
+  "own_misplaced_development_image_removed": true,
+  "own_sanitized_generation_context_removed": true,
+  "own_plan_scratch_removed": true
+}
