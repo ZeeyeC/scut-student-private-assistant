@@ -123,3 +123,18 @@ test('long tables code and formulas scroll inside narrow chat; copy preserves co
  await page.getByLabel('给助手的消息').fill('继续');await expect(page.getByRole('button',{name:'发送',exact:true})).toBeEnabled();
  await page.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9.2/markdown-narrow.png',import.meta.url)),fullPage:true});
 });
+
+
+test('unbreakable inline and bracket math stay inside the answer on narrow screens',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await reply(page,['长行内公式 $'+'x'.repeat(120)+'$。\n\n括号公式 \\('+'y'.repeat(120)+'\\)。']);
+ await enter(page);await send(page,'长行内公式');
+ const answer=page.locator('.message.assistant');await expect(answer.locator('.katex')).toHaveCount(2);
+ const bounds=await answer.evaluate(n=>({right:n.getBoundingClientRect().right,viewport:innerWidth,chat:document.querySelector('.chat-viewport')!.scrollWidth,available:document.querySelector('.chat-viewport')!.clientWidth}));
+ expect(bounds.right).toBeLessThanOrEqual(bounds.viewport);expect(bounds.chat).toBeLessThanOrEqual(bounds.available);
+ const formulaBoxes=await answer.locator('.katex').evaluateAll(ns=>ns.map(n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,width:r.width}}));
+ expect(formulaBoxes.every(b=>b.right<=bounds.viewport&&b.width>0)).toBe(true);
+ await answer.locator('.katex').first().hover();await page.mouse.wheel(250,0);
+ await expect.poll(()=>answer.locator('.katex').first().evaluate(n=>n.scrollLeft)).toBeGreaterThan(0);
+ await expect(page.getByLabel('给助手的消息')).toBeVisible();
+});

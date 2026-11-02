@@ -31,11 +31,11 @@
 
 **Interfaces:** AssistantMarkdown(): JSX element consumes assistant-ui text-part context; exposed only as AssistantMessage Text renderer. URL policy and math preprocessing remain local.
 
-- [ ] Write isolated E2E tests injecting synthetic SSE message events into real ChatPage: strong/list/table/code/math, original user text, streaming chunk completion, paused animation frames, unsafe content/no requests, narrow overflow, history replay and code copy.
-- [ ] Run against baseline build and observe missing-format assertions fail.
-- [ ] Install pinned compatible dependencies; Antigravity generates narrow renderer/CSS with sanitized context and no data/keys. Main assistant reviews and integrates, retaining smooth=false.
-- [ ] Run targeted E2E, frontend typecheck/unit suite and build; require all pass. Review code/libraries and exercise delimiter/code boundaries.
-- [ ] Commit implementation with tests and license materials.
+- [x] Write isolated E2E tests injecting synthetic SSE message events into real ChatPage: strong/list/table/code/math, original user text, streaming chunk completion, paused animation frames, unsafe content/no requests, narrow overflow, history replay and code copy.
+- [x] Run against baseline build and observe missing-format assertions fail.
+- [x] Install pinned compatible dependencies; Antigravity generates narrow renderer/CSS with sanitized context and no data/keys. Main assistant reviews and integrates, retaining smooth=false.
+- [x] Run targeted E2E, frontend typecheck/unit suite and build; require all pass. Review code/libraries and exercise delimiter/code boundaries.
+- [x] Commit implementation with tests and license materials.
 
 ### Task 2: Review, native acceptance and release
 
