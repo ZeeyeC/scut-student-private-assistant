@@ -35,24 +35,27 @@ test('fresh Chromium profile loads the bundled real extension and returns a synt
  try {
   await context.route('http://127.0.0.1:5173/**',async route=>{const headers={...route.request().headers()};if(headers.origin)headers.origin=headers.origin.replace(':5173',':5290');if(headers.referer)headers.referer=headers.referer.replace(':5173',':5290');const response=await route.fetch({url:route.request().url().replace('http://127.0.0.1:5173','http://127.0.0.1:5290'),headers});await route.fulfill({response});});
   await context.route('http://xsjw2018.jw.scut.edu.cn/**',route=>route.fulfill({contentType:'text/html',body:`<!doctype html><meta charset="utf-8"><h1>合成学校页面</h1><select id="xnm"><option>2026-2027</option></select><select id="xqm"><option>1</option></select><button id="search_go" onclick="setTimeout(()=>document.querySelector('#kblist_table').append(document.createTextNode('已查询')),100)">查询课表</button><table id="kblist_table"><tr><td><div class="timetable_title"><h6 class="pull-left">2026-2027学年第1学期</h6></div></td></tr><tr><td id="jc_1-1-2">1-2</td><td><div class="timetable_con"><span class="title"><font color="blue">真实扩展合成数学</font></span><p><font>周数：1-8周</font><font>校区:大学城校区 上课地点：A101</font><font>教师：测试教师</font></p></div></td></tr></table>`}));
+  let worker=context.serviceWorkers()[0];if(!worker)worker=await context.waitForEvent('serviceworker');
+  // Observe intent and the real API result; never substitute a tab or response.
+  await worker.evaluate(()=>{
+    const g=globalThis as any,api=g.browser?.runtime?.id?g.browser:g.chrome;
+    const create=api.tabs.create.bind(api.tabs);g.__observedTabCreations=[];
+    api.tabs.create=async(properties:any)=>{const tab=await create(properties);g.__observedTabCreations.push({url:properties.url,id:tab.id});return tab;};
+  });
   const external=await context.newPage();
   const initialPages=new Set(context.pages());
   await external.goto('http://127.0.0.1:5173'+issued.grant.bridge_path+'#grant='+issued.grant.grant_id+'.'+issued.secret);
-  let worker=context.serviceWorkers()[0];if(!worker)worker=await context.waitForEvent('serviceworker');
   expect(await worker.evaluate(()=>(globalThis as any).chrome.runtime.getManifest().name)).toBe('课间 · 华工课表桥接');
   await expect.poll(async()=>{const alert=external.getByRole('alert');if(await alert.count())throw new Error(await alert.innerText());return await external.getByRole('status').innerText();},{timeout:15000}).toContain('请本人登录学校');
-  // Chrome reports the created extension tab before Playwright necessarily exposes
-  // its Page. Assert the requested school destination through the actual browser
-  // API, then attach to that same tab without depending on its first navigation.
-  const schoolTabs=()=>worker.evaluate(async()=>{
-    const tabs=await (globalThis as any).chrome.tabs.query({});
-    return tabs.filter((t:any)=>[t.url,t.pendingUrl].some(u=>typeof u==='string'&&u.startsWith('http://xsjw2018.jw.scut.edu.cn/'))).map((t:any)=>({id:t.id}));
-  });
-  try{await expect.poll(async()=>(await schoolTabs()).length,{timeout:15000}).toBe(1);}catch(error){
-    const tabs=await worker.evaluate(async()=>(await (globalThis as any).chrome.tabs.query({})).map((t:any)=>({id:t.id,url:t.url?.split(/[?#]/)[0],pendingUrl:t.pendingUrl?.split(/[?#]/)[0]})));
-    console.log('School tab attachment diagnostics:',JSON.stringify(tabs));throw error;
-  }
-  const [{id:schoolTabID}]=await schoolTabs();
+  // With scoped permissions, url/pendingUrl may be absent while a tab starts.
+  // The extension records the actual tabs.create id before reporting ready;
+  // follow that owned session binding instead of depending on transient URLs.
+  const binding=()=>worker.evaluate(async id=>((await (globalThis as any).chrome.storage.session.get('bindings')).bindings||{})[id],issued.session.id);
+  await expect.poll(async()=>(await binding())?.schoolTab,{timeout:15000}).toEqual(expect.any(Number));
+  const bound=await binding();expect(bound.events.some((e:any)=>e.kind==='opened')).toBe(true);
+  const schoolTabID=bound.schoolTab;
+  expect(await worker.evaluate(()=>(globalThis as any).__observedTabCreations)).toEqual([{url:'http://xsjw2018.jw.scut.edu.cn/',id:schoolTabID}]);
+  expect(await worker.evaluate(async id=>(await (globalThis as any).chrome.tabs.query({})).some((t:any)=>t.id===id),schoolTabID)).toBe(true);
   let school=context.pages().find(p=>!initialPages.has(p));
   if(!school){
     const attached=context.waitForEvent('page',p=>!initialPages.has(p));
@@ -62,9 +65,11 @@ test('fresh Chromium profile loads the bundled real extension and returns a synt
     school=await attached;
   }
   await school.goto('http://xsjw2018.jw.scut.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default');
+  expect(await worker.evaluate(async id=>(await (globalThis as any).chrome.tabs.get(id)).url,schoolTabID)).toContain('http://xsjw2018.jw.scut.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html');
   await school.getByRole('button',{name:'查询课表'}).click();
   await expect(external.getByRole('status')).toContainText('已回传',{timeout:20000});
   const session=await(await page.request.get(`/api/browser-imports/${issued.session.id}`)).json();expect(session.data.status).toBe('preview_ready');
+  const draft=await(await page.request.get('/api/drafts/'+session.data.draft_id)).json();expect(JSON.stringify(draft.data)).toContain('真实扩展合成数学');
   expect(await(await page.request.get('/api/courses')).json()).toEqual([]);
  }finally{await context.close();await rm(profile,{recursive:true,force:true});}
 });

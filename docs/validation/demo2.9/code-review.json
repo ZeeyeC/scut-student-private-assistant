@@ -22,5 +22,12 @@
       "wait for mouse release in idle-animation test"
     ],
     "real_app_global_outside_click": "pending final CUA acceptance"
+  },
+  "extension_attachment_review": {
+    "important_remaining": 0,
+    "real_initial_create_url_and_id_observed": true,
+    "same_bound_tab_and_real_draft_content_checked": true,
+    "permissions_expanded": false,
+    "fresh_profile_passes": 5
   }
 }

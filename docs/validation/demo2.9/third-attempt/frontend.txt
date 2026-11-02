@@ -1,0 +1,15 @@
+
+> campus-assistant-web@0.1.0 test
+> vitest run src
+
+
+ RUN  v5.0.4 /Users/czy/.codex/worktrees/demo24-execution/agentbuild/frontend
+
+
+ Test Files  28 passed (28)
+      Tests  114 passed (114)
+   Start at  15:31:39
+   Duration  1.70s (import 48%, tests 35%, transform 14%, worker 3%)
+
+    Isolate  28 workers spawned · ~269ms startup each (spawn + environment, per file)
+             at least ~567ms faster with isolate: false — reuses workers across files instead of one per file

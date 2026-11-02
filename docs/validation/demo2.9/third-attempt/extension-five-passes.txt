@@ -1,0 +1,24 @@
+[WebServer] INFO:     Started server process [81122]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 5 tests using 1 worker
+
+(node:81123) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (9.2s)
+(node:81167) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (7.0s)
+(node:81273) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (5.8s)
+(node:81301) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (6.9s)
+(node:81335) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (6.8s)
+
+  5 passed (42.0s)
