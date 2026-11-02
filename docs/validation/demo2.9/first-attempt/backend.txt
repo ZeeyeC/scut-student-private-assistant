@@ -1,0 +1,19 @@
+........................................................................ [  8%]
+........................................................................ [ 17%]
+........................................................................ [ 26%]
+........................................................................ [ 35%]
+........................................................................ [ 44%]
+........................................................................ [ 53%]
+........................................................................ [ 62%]
+........................................................................ [ 71%]
+........................................................................ [ 80%]
+........................................................................ [ 89%]
+...................................................................................                                          [100%]
+=============================== warnings summary ===============================
+tests/test_web_research.py::test_read_webpage_pinning_html_redirects_and_limits
+tests/test_web_research.py::test_extraction_does_not_spawn_node_or_install_packages
+  /Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/readabilipy/simplifiers/html.py:86: DeprecationWarning: Call to deprecated method findAll. (Replaced by find_all) -- Deprecated since version 4.0.0.
+    for comment in soup.findAll(string=lambda text: any(isinstance(text, x) for x in [Comment, Doctype])):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+803 passed, 2 warnings, 20 subtests passed in 166.46s (0:02:46)

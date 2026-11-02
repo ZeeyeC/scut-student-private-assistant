@@ -28,7 +28,7 @@ test('replacement previews deletions and recovers a concurrent settings change w
  await panel.getByLabel('课程',{exact:true}).fill('已校对的新课程');
  const replace=panel.getByRole('checkbox',{name:'替换当前课表'});await expect(replace).not.toBeChecked();await replace.check();
  await panel.getByRole('button',{name:'校对完成，准备保存',exact:true}).click();await expect(panel).toContainText('将移除 1 条旧课程');
- await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.3/覆盖保存确认.png',import.meta.url))});
+ await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/覆盖保存确认.png',import.meta.url))});
  await replace.uncheck();await expect(panel.getByRole('button',{name:'确认保存',exact:true})).toHaveCount(0);await replace.check();
  await panel.getByRole('button',{name:'校对完成，准备保存',exact:true}).click();
  await page.evaluate(async()=>{const csrf=(await(await fetch('/api/csrf')).json()).csrf_token;const s=await(await fetch('/api/settings')).json();s.data.week_count=27;await fetch('/api/settings',{method:'PUT',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify(s)});});

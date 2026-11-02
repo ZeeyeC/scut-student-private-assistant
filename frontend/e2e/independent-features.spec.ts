@@ -3,7 +3,7 @@ import {test,expect,type Page} from "@playwright/test";
 import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
 
-const evidence=(name:string)=>fileURLToPath(new URL(`../../docs/validation/demo2.5.1/e2e/independent/${name}.png`,import.meta.url));
+const evidence=(name:string)=>fileURLToPath(new URL(`../../docs/validation/demo2.9/e2e/independent/${name}.png`,import.meta.url));
 
 test('compact desktop bridge opens goals and weekly review',async({page})=>{
   await enter(page);

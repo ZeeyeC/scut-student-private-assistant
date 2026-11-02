@@ -56,7 +56,7 @@ test('practice range previews four actual classes then atomically saves and rest
   await section.getByRole('button',{name:'预览批量调整',exact:true}).click();
   const review=page.getByRole('region',{name:'校历批量调整草稿',exact:true});
   await expect(review).toContainText('共 4 次课程');
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/semester-batch-preview.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/semester-batch-preview.png',import.meta.url))});
   expect(await(await page.request.get('/api/course-changes')).json()).toHaveLength(0);
   await confirm(page);
   await expect.poll(async()=> (await(await page.request.get('/api/course-changes')).json()).length).toBe(4);
@@ -81,7 +81,7 @@ test('mobile makeup requires explicit mapping and keeps nonconsecutive periods a
   await section.getByRole('button',{name:'预览批量调整',exact:true}).click();
   const review=page.getByRole('region',{name:'校历批量调整草稿',exact:true});
   await expect(review).toContainText('保留 2 段授课');
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/makeup-mobile-preview.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/makeup-mobile-preview.png',import.meta.url))});
   await confirm(page);
   const occurrences=await(await page.request.get('/api/occurrences?start=2026-10-18&end=2026-10-18')).json();
   expect(occurrences).toHaveLength(1);

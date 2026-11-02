@@ -142,7 +142,7 @@ test('weekly protection previews dates, survives reload and guides today and sev
   await expect(review.getByLabel('禁排发生预览').locator('p')).toHaveCount(4);
   await expect(review).toContainText('每周三、五');
   expect(await(await page.request.get('/api/scheduling-constraints')).json()).toHaveLength(0);
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/weekly-constraints-review.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/weekly-constraints-review.png',import.meta.url))});
   await save(page);
   await page.reload();await workspace(page,'planning');
   await expect(page.getByRole('heading',{name:'每周固定安排 · 已启用',exact:true})).toBeVisible();

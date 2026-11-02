@@ -25,7 +25,7 @@ test('sidebar stays left while long real task content scrolls and widths change'
     await page.setViewportSize({width,height:782});
     const sidebar=page.locator('.workspace-sidebar'),content=page.locator('#workspace-content');
     const before=await sidebar.boundingBox();
-    expect(before?.x).toBe(0);expect(before?.width).toBe(width>=960?176:width>=640?144:56);
+    expect(before?.x).toBe(0);expect(before?.width).toBe(width>=960?168:width>=640?144:56);
     const settingsBefore=await sidebar.getByRole('button',{name:'设置',exact:true}).boundingBox();
     await content.evaluate(el=>{el.scrollTop=el.scrollHeight;});
     expect(await content.evaluate(el=>el.scrollTop)).toBeGreaterThan(50);

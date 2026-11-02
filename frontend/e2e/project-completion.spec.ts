@@ -41,7 +41,7 @@ test('explicit classification persists and a matching lab rule creates only a re
   await panel.getByRole('button',{name:'预览日常候选',exact:true}).click();
   const candidates=panel.getByLabel('日常候选列表');
   await expect(candidates).toContainText('合成实验课程 · 课前准备');
-  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/course-type-candidates.png',import.meta.url))});
+  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/course-type-candidates.png',import.meta.url))});
   expect(await(await page.request.get('/api/fixed-events')).json()).toEqual([]);
   await candidates.getByRole('button',{name:'校对此候选',exact:true}).click();
   await expect(page.getByText('合成实验课程 · 课前准备',{exact:true}).last()).toBeVisible();

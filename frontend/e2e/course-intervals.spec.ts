@@ -46,7 +46,7 @@ test('nonconsecutive courses leave usable gaps and adjacent breaks are explicitl
   await expect(detail.getByLabel('授课与课间休息')).toContainText('第1节 09:00–09:40');
   await expect(detail.getByLabel('授课与课间休息')).toContainText('第2节 10:00–10:40');
   await expect(detail).toContainText('课间休息（不安排任务）：09:40–10:00');
-  await detail.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/course-intervals-review.png',import.meta.url))});
+  await detail.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/course-intervals-review.png',import.meta.url))});
   await workspace(page,'planning');
   await page.getByRole('button',{name:'智能安排未来 7 天'}).click();
   await expect(page.getByRole('region',{name:'智能安排',exact:true}).getByRole('button',{name:'确认保存',exact:true})).toBeVisible();

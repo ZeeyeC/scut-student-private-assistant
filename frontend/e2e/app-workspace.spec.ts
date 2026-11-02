@@ -11,7 +11,7 @@ async function enter(page:Page) {
 }
 test('shared navigation keeps legacy goals, reminders and compact controls reachable',async({page})=>{
   await enter(page);
-  await expect(page.getByRole('navigation',{name:'主导航'}).getByRole('button')).toHaveText(['今日','日程','任务','助手']);
+  await expect(page.getByRole('navigation',{name:'主导航'}).getByRole('button')).toHaveText(['助手','今日','日程','任务','课程资料']);
   await page.addScriptTag({content:readFileSync(new URL('../../campus-pet/Resources/Bridge.js',import.meta.url),'utf8')});
   expect(await page.evaluate(()=>(window as any).__campusPet.navigate('目标与复盘'))).toBe(true);
   await expect(page.getByRole('region',{name:'长期目标',exact:true})).toBeVisible();

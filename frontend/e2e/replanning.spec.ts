@@ -46,7 +46,7 @@ test('repairs a calendar conflict after review while retaining the exact unaffec
   await panel.getByRole('button',{name:'生成重排草稿',exact:true}).click();
   expect((await (await page.request.get('/api/drafts')).json()).filter((d:any)=>d.data.draft_kind==='plan')).toHaveLength(1);
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual(old);
-  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/replanning.png',import.meta.url))});
+  await panel.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/replanning.png',import.meta.url))});
 
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect(review).toHaveCount(0);

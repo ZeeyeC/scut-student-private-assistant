@@ -57,7 +57,7 @@ test('today preview avoids fixed courses and protection, saves only after review
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual([]);
   await page.reload();await workspace(page,'records');
   await expect(review.getByRole('heading',{name:'2026-10-14 当日日程'})).toBeVisible();
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/today-plan-review.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/today-plan-review.png',import.meta.url))});
 
   expect(await (await page.request.get('/api/plan-blocks')).json()).toEqual([]);
   await review.getByRole('button',{name:'确认保存',exact:true}).click();

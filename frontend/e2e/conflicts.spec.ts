@@ -57,7 +57,7 @@ test('directional transfer shortfall is reviewed before a fixed fact is saved an
   await expect(review.getByRole('region',{name:'冲突检查'})).toContainText('需 40 分钟，实际间隔 10 分钟，不足 30 分钟');
   await expect(review.getByRole('button',{name:'确认保存',exact:true})).toBeDisabled();
   expect((await(await page.request.get('/api/courses')).json())).toHaveLength(1);
-  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.5.1/e2e/course-conflicts-review.png',import.meta.url))});
+  await review.screenshot({path:fileURLToPath(new URL('../../docs/validation/demo2.9/e2e/course-conflicts-review.png',import.meta.url))});
   await review.getByRole('checkbox',{name:'我已核对上述提示，仍按已确认的课程或事项保存'}).check();
   await review.getByRole('button',{name:'确认保存',exact:true}).click();
   await expect(review).toHaveCount(0);

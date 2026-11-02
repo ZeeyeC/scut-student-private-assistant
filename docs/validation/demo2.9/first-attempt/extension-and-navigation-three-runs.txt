@@ -1,0 +1,36 @@
+[WebServer] INFO:     Started server process [73223]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 21 tests using 1 worker
+
+(node:73224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 e2e/app-workspace.spec.ts:12:1 › shared navigation keeps legacy goals, reminders and compact controls reachable (852ms)
+  ✓   2 e2e/app-workspace.spec.ts:31:1 › task creation keeps its unsaved input and requires review before storing a task (648ms)
+  ✓   3 e2e/app-workspace.spec.ts:50:1 › settings exposes five summaries and opens the original preference controls on demand (518ms)
+  ✓   4 e2e/app-workspace.spec.ts:62:1 › native navigation during review cannot leave the workspace permanently inert (635ms)
+  ✓   5 e2e/app-workspace.spec.ts:79:1 › bridge loaded before login keeps its initial native navigation until React is ready (572ms)
+  ✓   6 e2e/app-workspace.spec.ts:90:1 › mounted calendar switches views across main-window and compact widths without losing its date (648ms)
+  ✓   7 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (6.4s)
+(node:73308) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 e2e/app-workspace.spec.ts:12:1 › shared navigation keeps legacy goals, reminders and compact controls reachable (1.2s)
+  ✓   9 e2e/app-workspace.spec.ts:31:1 › task creation keeps its unsaved input and requires review before storing a task (634ms)
+  ✓  10 e2e/app-workspace.spec.ts:50:1 › settings exposes five summaries and opens the original preference controls on demand (680ms)
+  ✓  11 e2e/app-workspace.spec.ts:62:1 › native navigation during review cannot leave the workspace permanently inert (1.5s)
+  ✓  12 e2e/app-workspace.spec.ts:79:1 › bridge loaded before login keeps its initial native navigation until React is ready (508ms)
+  ✓  13 e2e/app-workspace.spec.ts:90:1 › mounted calendar switches views across main-window and compact widths without losing its date (1.5s)
+  ✓  14 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (6.7s)
+(node:73385) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 e2e/app-workspace.spec.ts:12:1 › shared navigation keeps legacy goals, reminders and compact controls reachable (716ms)
+  ✓  16 e2e/app-workspace.spec.ts:31:1 › task creation keeps its unsaved input and requires review before storing a task (641ms)
+  ✓  17 e2e/app-workspace.spec.ts:50:1 › settings exposes five summaries and opens the original preference controls on demand (605ms)
+  ✓  18 e2e/app-workspace.spec.ts:62:1 › native navigation during review cannot leave the workspace permanently inert (1.5s)
+  ✓  19 e2e/app-workspace.spec.ts:79:1 › bridge loaded before login keeps its initial native navigation until React is ready (580ms)
+  ✓  20 e2e/app-workspace.spec.ts:90:1 › mounted calendar switches views across main-window and compact widths without losing its date (1.4s)
+  ✓  21 e2e/extension-onboarding-real.spec.ts:30:1 › fresh Chromium profile loads the bundled real extension and returns a synthetic school timetable (6.8s)
+
+  21 passed (39.1s)

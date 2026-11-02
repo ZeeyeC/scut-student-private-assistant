@@ -94,7 +94,7 @@ test('multiple screenshots append at top left and save together without deadline
  expect(uploads).toBe(0);await expect(page.locator('.composer input[type=checkbox],.composer input[type=datetime-local]')).toHaveCount(0);
  const boxes=await page.locator('.composer img').evaluateAll(ns=>ns.map(n=>{const b=n.getBoundingClientRect();return {x:b.x,y:b.y}}));expect(boxes[0].x).toBeLessThan(boxes[1].x);expect(Math.abs(boxes[0].y-boxes[1].y)).toBeLessThan(3);
  await page.getByRole('heading',{name:'助手',exact:true}).click();
- await page.screenshot({path:'../docs/validation/demo2.6.1/chat-images-before-send.png',fullPage:true});
+ await page.screenshot({path:'../docs/validation/demo2.9/chat-images-before-send.png',fullPage:true});
  await send(page);
  const review=page.getByRole('region',{name:'对话作业草稿'});
  await expect(review).toBeVisible();await expect(page.locator('.assistant-layout.has-review')).toHaveCount(0);
@@ -104,7 +104,7 @@ test('multiple screenshots append at top left and save together without deadline
  await expect(review.getByRole('button',{name:'暂不填写',exact:true})).toBeEnabled();await review.getByRole('button',{name:'暂不填写',exact:true}).click();
  await expect.poll(()=>page.request.get('/api/drafts').then(r=>r.json()).then(ds=>ds.find((x:any)=>x.id===d.id)?.data.source.deadline_followup)).toBe('deferred');
  await expect(review.getByText('截止日期先留空，之后可以补充。',{exact:true})).toBeVisible();
- await page.screenshot({path:'../docs/validation/demo2.6.1/chat-images-inline-review.png',fullPage:true});
+ await page.screenshot({path:'../docs/validation/demo2.9/chat-images-inline-review.png',fullPage:true});
  await review.getByRole('button',{name:'确认保存 4 项',exact:true}).click();
  await expect.poll(()=>page.request.get('/api/tasks').then(r=>r.json()).then(ts=>ts.length)).toBe(4);
  const tasks=await page.request.get('/api/tasks').then(r=>r.json());expect(tasks.every((t:any)=>t.data.due_at===null)).toBe(true);

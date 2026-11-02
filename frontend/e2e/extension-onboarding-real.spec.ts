@@ -48,7 +48,10 @@ test('fresh Chromium profile loads the bundled real extension and returns a synt
     const tabs=await (globalThis as any).chrome.tabs.query({});
     return tabs.filter((t:any)=>[t.url,t.pendingUrl].some(u=>typeof u==='string'&&u.startsWith('http://xsjw2018.jw.scut.edu.cn/'))).map((t:any)=>({id:t.id}));
   });
-  await expect.poll(async()=>(await schoolTabs()).length,{timeout:15000}).toBe(1);
+  try{await expect.poll(async()=>(await schoolTabs()).length,{timeout:15000}).toBe(1);}catch(error){
+    const tabs=await worker.evaluate(async()=>(await (globalThis as any).chrome.tabs.query({})).map((t:any)=>({id:t.id,url:t.url?.split(/[?#]/)[0],pendingUrl:t.pendingUrl?.split(/[?#]/)[0]})));
+    console.log('School tab attachment diagnostics:',JSON.stringify(tabs));throw error;
+  }
   const [{id:schoolTabID}]=await schoolTabs();
   let school=context.pages().find(p=>!initialPages.has(p));
   if(!school){
