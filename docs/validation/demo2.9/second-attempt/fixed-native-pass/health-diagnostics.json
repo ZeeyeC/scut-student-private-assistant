@@ -1,0 +1,156 @@
+[
+  {
+    "elapsedMilliseconds" : 29,
+    "port" : 5189,
+    "probeID" : "18B66875-9CAF-4877-B31D-05240E5F95A8",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 4,
+    "port" : 5189,
+    "probeID" : "EFC8808D-2F63-4531-82F8-2F3BEF1F8348",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 7,
+    "port" : 5189,
+    "probeID" : "2183DE5D-C939-4A3C-84E6-3A0BF6FB7F4F",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 28,
+    "port" : 5189,
+    "probeID" : "E8525501-79C1-4F7B-858B-102A730EF958",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 2,
+    "port" : 5189,
+    "probeID" : "ED73E69A-B043-4EDF-8202-B05433D325ED",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 4,
+    "port" : 5189,
+    "probeID" : "78FB2768-0B34-40FE-9780-721AAA0482ED",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 7,
+    "errorCode" : -1004,
+    "errorDomain" : "NSURLErrorDomain",
+    "port" : 5189,
+    "probeID" : "6B38216A-E0AF-4204-8423-E378C76E93F8",
+    "transactions" : [
+      {
+        "connectStarted" : false,
+        "connected" : false,
+        "connectionReused" : false,
+        "dnsStarted" : false,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : false,
+        "resourceFetchType" : 1,
+        "responseStarted" : false
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 1,
+    "errorCode" : -1004,
+    "errorDomain" : "NSURLErrorDomain",
+    "port" : 5189,
+    "probeID" : "ACEE7C22-108C-4525-AD83-37AD015EFD5E",
+    "transactions" : [
+      {
+        "connectStarted" : false,
+        "connected" : false,
+        "connectionReused" : false,
+        "dnsStarted" : false,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : false,
+        "resourceFetchType" : 1,
+        "responseStarted" : false
+      }
+    ]
+  }
+]

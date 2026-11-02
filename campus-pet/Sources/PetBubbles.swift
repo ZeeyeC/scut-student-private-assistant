@@ -21,7 +21,12 @@ extension AppDelegate {
             }
             return consumed ? nil : event
         }
-        bubbleGlobalMonitor=NSEvent.addGlobalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown]) { [weak self] _ in MainActor.assumeIsolated {self?.hidePetBubbles()} }
+        // The isolated smoke runner drives its own controlled outside event.
+        // Unrelated desktop activity must not close its synthetic test panel.
+        bubbleGlobalMonitor=NSEvent.addGlobalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown]) { [weak self] _ in MainActor.assumeIsolated {
+            guard let self, self.options.smokeDirectory == nil else {return}
+            self.hidePetBubbles()
+        } }
         Task {await refreshTaskRing()}
     }
     func positionTodoPanel() {

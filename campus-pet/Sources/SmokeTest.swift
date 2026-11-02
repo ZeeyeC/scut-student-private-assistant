@@ -4,7 +4,8 @@ import Darwin
 
 extension AppDelegate {
     func js(_ body: String) async throws -> Any? {
-        try await webView.callAsyncJavaScript(body, arguments: [:], in: nil, contentWorld: .page)
+        do { return try await webView.callAsyncJavaScript(body, arguments: [:], in: nil, contentWorld: .page) }
+        catch { throw ServiceError.message("SMOKE main JavaScript: \(body.prefix(180)) · \((error as NSError).userInfo["WKJavaScriptExceptionMessage"] ?? error.localizedDescription)") }
     }
 
     func waitFor(_ expression: String) async throws {
@@ -212,7 +213,8 @@ extension AppDelegate {
     }
     func todoJS(_ code:String) async throws -> Any? {
         guard let todoPanel else {throw ServiceError.message("待办窗口尚未创建")}
-        return try await todoPanel.renderer.callAsyncJavaScript(code,arguments:[:],in:nil,contentWorld:.page)
+        do { return try await todoPanel.renderer.callAsyncJavaScript(code,arguments:[:],in:nil,contentWorld:.page) }
+        catch { throw ServiceError.message("SMOKE todo JavaScript: \(code.prefix(180)) · \((error as NSError).userInfo["WKJavaScriptExceptionMessage"] ?? error.localizedDescription)") }
     }
     func waitForTodo(_ expression:String) async throws {
         for _ in 0..<100 {if (try? await todoJS("return Boolean("+expression+")")) as? Bool == true{return};try await Task.sleep(nanoseconds:100_000_000)}
@@ -281,8 +283,13 @@ extension AppDelegate {
         try await waitFor("document.querySelector('.detail-panel[aria-label=高数习题]') && !document.querySelector('.detail-panel[aria-label=高数习题]').closest('[hidden]')")
         guard requestedTaskID=="ring-task-0" else{throw ServiceError.message("原生精确任务ID丢失")}
         closePanel();_=pet.accessibilityPerformPress();try await waitForNative("精确跳转后重开") {!loadingTaskRing && todayTasks.count==8}
+        // Simulate a slow renderer in this isolated smoke fixture; native state
+        // can settle before the visible controls are committed by WebKit.
+        _=try await todoJS("window.__smokeRenderTodo=window.renderTodo;window.renderTodo=s=>{const render=window.__smokeRenderTodo;setTimeout(()=>render(s),250)};return true")
         showTaskDetails(todayTasks.first{$0.id=="ring-task-0"}!)
         try await waitForNative("恢复同面板详情") {todoDetail != nil}
+        try await waitForTodo("document.querySelector('.detail h3')?.textContent.includes('高数习题') && document.querySelector('.detail button')")
+        _=try await todoJS("window.renderTodo=window.__smokeRenderTodo;delete window.__smokeRenderTodo;return true")
         _=try await todoJS("document.querySelector('.detail button').click();return true")
         try await waitForTodo("document.querySelectorAll('.row').length===8")
         _=try await todoJS("const c=document.querySelector('.row input');c.click();c.click();return true")
@@ -518,8 +525,9 @@ extension AppDelegate {
         }
         pet.playAction(pet.availableActions[0].id); pet.mood = .approval
         guard !pet.hasActiveAction else { throw ServiceError.message("审批未打断表演") }
+        try await waitForNative("随机表演测试等待鼠标释放") {NSEvent.pressedMouseButtons == 0}
         pet.mood = .idle; automaticActions = true; nextPerformanceAt = 0; animate()
-        if !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion { guard pet.hasActiveAction else { throw ServiceError.message("空闲表演未启动") } }
+        if !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion { guard pet.hasActiveAction else { throw ServiceError.message("空闲表演未启动：mouse=\(NSEvent.pressedMouseButtons), visible=\(panel.isVisible), todo=\(taskRingOpen), reminder=\(pet.reminderText != nil), sleeping=\(sleeping)") } }
         let decoded = pet.decodedFrameCount
         hidePet(); animate()
         guard pet.decodedFrameCount == decoded else { throw ServiceError.message("隐藏后仍解码") }
@@ -632,7 +640,7 @@ extension AppDelegate {
             let assetURL = Bundle.main.resourceURL?.appendingPathComponent("NaiWa/asset-pack.json")
             let assetData = assetURL.flatMap { try? Data(contentsOf:$0) }
             let assetInfo = assetData.flatMap { (try? JSONSerialization.jsonObject(with:$0)) as? [String:Any] }
-            let result: [String: Any] = ["qa_asset_fixture": assetInfo?["qa_fixture"] as? Bool ?? false, "passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls", "checks": ["regular Dock application persists while all windows hidden and restores on reopen", "local session", "chat composer", "real draft confirmation", "task/settings navigation", "preference profile entry", "goals and weekly review entry", "full window default and narrow left navigation", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "manifest actions and original frame timing", "bounded lazy frame cache", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown", "silent purple schedule reminder", "reminder stays accessible inside todo panel", "disabled reminder restores original character", "pet click opens a single today todo panel", "scheduled tasks only and task deduplication", "all tasks scroll in one 328x360 panel", "repeat click collapses todo panel", "same panel reads current task details and steps", "explicit checkbox persists completion once", "completion synchronizes existing task UI", "completed rows stay struck through until reopen", "revision conflict retains task and reloads", "complete remaining tasks and empty state", "future and due-only tasks remain unchanged", "drag and hide collapse todo panel", "outside click collapses todo panel"]]
+            let result: [String: Any] = ["qa_asset_fixture": assetInfo?["qa_fixture"] as? Bool ?? false, "passed": error == nil, "error": error ?? "", "scope": "native AppKit/WebKit + real Deep Agents with explicit test model + isolated real SQLite/API; no paid model calls; unrelated global desktop clicks ignored in smoke only, controlled outside event tested", "checks": ["regular Dock application persists while all windows hidden and restores on reopen", "local session", "chat composer", "real draft confirmation", "task/settings navigation", "preference profile entry", "goals and weekly review entry", "full window default and narrow left navigation", "streaming chat", "busy backend rejects native shutdown", "natural-language draft", "no task write before approval", "real graph interrupt and approval", "persisted agent state animation bridge", "approval across page navigation", "paused state retains approval", "after-class opening dialog", "homework form to real calendar blocks", "no repeated completed check-in", "blank calendar cell defaults", "cancel course without draft", "course approval before save", "saved course calendar rendering", "existing event details", "original manual course entry", "manifest actions and original frame timing", "bounded lazy frame cache", "animated alpha hit testing", "action pause and reduced motion", "idle random performance", "no random action while busy", "hidden animation suspension", "pause/resume", "hide/restore", "screen bounds", "panel close", "native snapshots", "exit submenu", "cancel shutdown", "shared web backend health", "authenticated graceful backend shutdown", "silent purple schedule reminder", "reminder stays accessible inside todo panel", "disabled reminder restores original character", "pet click opens a single today todo panel", "scheduled tasks only and task deduplication", "all tasks scroll in one 328x360 panel", "repeat click collapses todo panel", "same panel reads current task details and steps", "explicit checkbox persists completion once", "completion synchronizes existing task UI", "completed rows stay struck through until reopen", "revision conflict retains task and reloads", "complete remaining tasks and empty state", "future and due-only tasks remain unchanged", "drag and hide collapse todo panel", "outside click collapses todo panel"]]
             if let data = try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]) {
                 try? data.write(to: output.appendingPathComponent("result.json"))
             }

@@ -1,0 +1,2126 @@
+INFO:     Started server process [76374]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:5189 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60131 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60132 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /assets/index-BBvugNSF.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /assets/DetailPanel-CDHjw-9f.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /assets/index-Ox50kJl0.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/pet-state HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60134 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/occurrences?start=2026-11-02&end=2026-11-02 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/calendar-events?start=2026-11-02&end=2026-11-02 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /assets/Chat-hcHnL1Dz.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /assets/chat-documents-BYYIvh9f.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /assets/chat-documents-CWYloPRS.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60139 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "POST /api/drafts/assignment HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/drafts/a4365ce5-c1c7-4989-88ba-a88228f9d176/confirm HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/goals HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/goal-capacity?week_start=2026-11-09&timezone=Asia%2FShanghai&expected_source_revision=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/weekly-review?week_start=2026-11-02&timezone=Asia%2FShanghai HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/agent/threads/de002d42-4cce-4fab-93cf-fe76684247e8/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "POST /api/agent/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/local/shutdown HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:60138 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "POST /api/agent/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60137 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/agent/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/approvals/77aeb8ad-eef9-458f-8ed3-423b80bf31a9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts/d9bce899-ef87-4241-b576-b135ee8b3a46 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60134 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60138 - "GET /api/agent/threads/de002d42-4cce-4fab-93cf-fe76684247e8/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/threads/de002d42-4cce-4fab-93cf-fe76684247e8/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts/d9bce899-ef87-4241-b576-b135ee8b3a46 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/approvals/77aeb8ad-eef9-458f-8ed3-423b80bf31a9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/resume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/approvals/77aeb8ad-eef9-458f-8ed3-423b80bf31a9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts/d9bce899-ef87-4241-b576-b135ee8b3a46 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads/de002d42-4cce-4fab-93cf-fe76684247e8/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06/events?after=5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88/events?after=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60133 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60141 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "PUT /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/drafts/timetable HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/drafts/c6a49c07-5c6f-4a57-af5b-560d4b0d19ae/confirm HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/after-class/bbd0b417-7a5e-57e3-b5d1-479ff1f69f6b/submit HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /assets/Calendar-DRKdz07X.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /assets/upload-Cp5plrpN.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/calendar-events?start=2026-11-02&end=2026-11-09 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/threads/de002d42-4cce-4fab-93cf-fe76684247e8/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60141 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/drafts/timetable HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/drafts/1a42adb5-2d63-498c-83ab-156bcadb02f8/conflict-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/drafts/1a42adb5-2d63-498c-83ab-156bcadb02f8/confirm HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60135 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/schedule-shortcut?event_id=dc742b76-6e17-4f46-bd83-5c1e8bd829bb%3A2026-10-15&starts_at=2026-10-15T09%3A00%3A00%2B08%3A00 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/threads/de002d42-4cce-4fab-93cf-fe76684247e8/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60137 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/schedule-shortcut?event_id=dc742b76-6e17-4f46-bd83-5c1e8bd829bb%3A2026-10-15&starts_at=2026-10-15T09%3A00%3A00%2B08%3A00 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-options HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/calendar-events?start=2026-10-12&end=2026-10-19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/schedule-shortcut?event_id=dc742b76-6e17-4f46-bd83-5c1e8bd829bb%3A2026-10-15&starts_at=2026-10-15T09%3A00%3A00%2B08%3A00 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/schedule-shortcut?event_id=dc742b76-6e17-4f46-bd83-5c1e8bd829bb%3A2026-10-15&starts_at=2026-10-15T09%3A00%3A00%2B08%3A00 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /__test__/task-ring HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-1/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-1/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-2/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-5/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-3/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-4/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-1/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "PATCH /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60141 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-1/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-2/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-4/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-5/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-3/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "PATCH /api/tasks/ring-task-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "PATCH /api/tasks/ring-task-1 HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:60133 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "PATCH /api/tasks/ring-task-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60136 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-1/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-2/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-3/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-4/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-5/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "PATCH /api/tasks/ring-task-2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60137 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-2/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-3/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-4/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-5/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "PATCH /api/tasks/ring-task-3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-5/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-4/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks/ring-task-3/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "PATCH /api/tasks/ring-task-4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-5/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-4/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60135 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "PATCH /api/tasks/ring-task-5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-5/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "PATCH /api/tasks/ring-task-6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-6/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60137 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "PATCH /api/tasks/ring-task-7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60137 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/42a25326-4b4b-4c75-997c-de06a4d76005/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/study-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/9a53ba1c-863e-4b38-a5d0-39fadce1fcb7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-0/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/b441af91-b858-4a1a-b140-f30ac4cae438/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-8/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-9/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-11/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/execution-summary?step_id=ring-step-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks/ring-task-0/executions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/tasks/ring-task-0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks/ring-task-7/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/after-class/open HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/threads/de002d42-4cce-4fab-93cf-fe76684247e8/runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60141 - "GET /api/planning-options HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 104, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    |     return await self.app(scope, receive, send)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    |     await effective_context.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    |     return compare_plans(inputs)
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    |     {k: b[k] for k in ReplanAddition.model_fields}
+    |         ~^^^
+    | KeyError: 'title'
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    await effective_context.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    return compare_plans(inputs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    {k: b[k] for k in ReplanAddition.model_fields}
+        ~^^^
+KeyError: 'title'
+INFO:     127.0.0.1:60133 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/agent/runs/385c8580-9402-4898-99bb-ab9d736fbe06/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60133 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60137 - "GET /api/planning-options HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 104, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    |     return await self.app(scope, receive, send)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    |     await effective_context.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    |     return compare_plans(inputs)
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    |     {k: b[k] for k in ReplanAddition.model_fields}
+    |         ~^^^
+    | KeyError: 'title'
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    await effective_context.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    return compare_plans(inputs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    {k: b[k] for k in ReplanAddition.model_fields}
+        ~^^^
+KeyError: 'title'
+INFO:     127.0.0.1:60140 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/calendar-events?start=2026-11-02&end=2026-11-09 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/agent/runs/d233dc9f-1c34-46db-b6e0-7ade28e1bf88/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60140 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60136 - "GET /api/planning-options HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 104, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    |     return await self.app(scope, receive, send)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    |     await effective_context.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    |     return compare_plans(inputs)
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    |     {k: b[k] for k in ReplanAddition.model_fields}
+    |         ~^^^
+    | KeyError: 'title'
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    await effective_context.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    return compare_plans(inputs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    {k: b[k] for k in ReplanAddition.model_fields}
+        ~^^^
+KeyError: 'title'
+INFO:     127.0.0.1:60162 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/calendar-events?start=2026-11-02&end=2026-11-09 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/agent/runs/2863a358-e886-4dca-ad42-db524c577403/events?after=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/calendar-events?start=2026-11-02&end=2026-11-09 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60135 - "GET /api/planning-options HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 104, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    |     return await self.app(scope, receive, send)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    |     await effective_context.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    |     return compare_plans(inputs)
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    |     {k: b[k] for k in ReplanAddition.model_fields}
+    |         ~^^^
+    | KeyError: 'title'
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    await effective_context.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    return compare_plans(inputs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    {k: b[k] for k in ReplanAddition.model_fields}
+        ~^^^
+KeyError: 'title'
+INFO:     127.0.0.1:60163 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/calendar-events?start=2026-11-02&end=2026-11-09 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "POST /api/local/session HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60163 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60161 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60164 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/app-mode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/drafts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60161 - "GET /api/execution-timers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/browser-imports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60165 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/local/extension-installation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/timetable-jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/scheduling-constraints HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/planning-capacity?scope=today HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60158 - "GET /api/planning-options HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 104, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    |     return await self.app(scope, receive, send)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    |     await effective_context.app(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    |     return compare_plans(inputs)
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    |     {k: b[k] for k in ReplanAddition.model_fields}
+    |         ~^^^
+    | KeyError: 'title'
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1216, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/campus-pet/tests/smoke_server.py", line 50, in release_after_busy_shutdown
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/main.py", line 205, in csrf
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2788, in app
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1830, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1819, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2871, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1845, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    await effective_context.app(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 245, in options
+    return compare_plans(inputs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/czy/.codex/worktrees/demo24-execution/agentbuild/backend/app/planning_options.py", line 163, in compare_plans
+    {k: b[k] for k in ReplanAddition.model_fields}
+        ~^^^
+KeyError: 'title'
+INFO:     127.0.0.1:60162 - "GET /api/local/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/knowledge/library?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/agent/threads HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/constraint-intents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/proactive/suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/semester-calendars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/duration-suggestions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/course-change-history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/course-changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/planning-risks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/calendar-events?start=2026-11-02&end=2026-11-09 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "POST /api/fixed-events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60166 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "PUT /api/schedule-shortcut HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60166 - "POST /api/schedule-reminders/ack HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/plan-blocks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "GET /api/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60161 - "GET /api/memories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/replanning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60166 - "GET /api/agent/pet-state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60162 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60133 - "POST /api/replanning/changes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60161 - "PUT /api/schedule-shortcut HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60163 - "GET /api/schedule-reminders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60140 - "GET /api/csrf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60166 - "POST /api/local/shutdown HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60167 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60168 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60169 - "GET /api/healthz HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [76374]

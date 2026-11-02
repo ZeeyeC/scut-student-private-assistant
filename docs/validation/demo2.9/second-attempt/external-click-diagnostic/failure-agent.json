@@ -1,0 +1,67 @@
+[
+  {
+    "runs" : [
+      {
+        "run" : {
+          "revision" : 6,
+          "id" : "448a07f4-0168-4032-9a89-bca20581cf1c",
+          "data" : {
+            "status" : "done",
+            "pet_phase" : "replying",
+            "event_counter" : 5,
+            "message" : "流式测试",
+            "approval_id" : null,
+            "attachments" : [
+
+            ],
+            "thread_id" : "d1809cba-c574-4d21-bc43-63142d4712d7",
+            "checkpoint_id" : "d1809cba-c574-4d21-bc43-63142d4712d7"
+          },
+          "kind" : "agent_run"
+        },
+        "events" : "id: 1\nevent: message\ndata: {\"run_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c\", \"seq\": 1, \"type\": \"message\", \"payload\": {\"role\": \"user\", \"content\": \"流式测试\", \"message_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c:user\", \"source_ids\": []}}\n\nid: 2\nevent: message_delta\ndata: {\"run_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c\", \"seq\": 2, \"type\": \"message_delta\", \"payload\": {\"message_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c:assistant:cccd1e11-93de-4867-93c2-0ba95bfaaa3e\", \"delta\": \"第一段\"}}\n\nid: 3\nevent: message_delta\ndata: {\"run_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c\", \"seq\": 3, \"type\": \"message_delta\", \"payload\": {\"message_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c:assistant:cccd1e11-93de-4867-93c2-0ba95bfaaa3e\", \"delta\": \"第二段\"}}\n\nid: 4\nevent: message\ndata: {\"run_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c\", \"seq\": 4, \"type\": \"message\", \"payload\": {\"role\": \"assistant\", \"content\": \"第一段第二段\", \"message_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c:assistant:cccd1e11-93de-4867-93c2-0ba95bfaaa3e\"}}\n\nid: 5\nevent: done\ndata: {\"run_id\": \"448a07f4-0168-4032-9a89-bca20581cf1c\", \"seq\": 5, \"type\": \"done\", \"payload\": {}}\n\n"
+      },
+      {
+        "run" : {
+          "revision" : 8,
+          "id" : "e794bfbf-7c6c-4e71-a880-7bc91beba0f9",
+          "data" : {
+            "status" : "done",
+            "pet_phase" : "replying",
+            "event_counter" : 7,
+            "message" : "帮我增加一个任务：明天阅读文献",
+            "approval_id" : null,
+            "attachments" : [
+
+            ],
+            "thread_id" : "d1809cba-c574-4d21-bc43-63142d4712d7",
+            "checkpoint_id" : "d1809cba-c574-4d21-bc43-63142d4712d7"
+          },
+          "kind" : "agent_run"
+        },
+        "events" : "id: 1\nevent: message\ndata: {\"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"seq\": 1, \"type\": \"message\", \"payload\": {\"role\": \"user\", \"content\": \"帮我增加一个任务：明天阅读文献\", \"message_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9:user\", \"source_ids\": []}}\n\nid: 2\nevent: tool_started\ndata: {\"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"seq\": 2, \"type\": \"tool_started\", \"payload\": {\"name\": \"create_assignment_draft\", \"call_id\": \"natural-task\"}}\n\nid: 3\nevent: tool_finished\ndata: {\"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"seq\": 3, \"type\": \"tool_finished\", \"payload\": {\"name\": \"create_assignment_draft\", \"call_id\": \"natural-task\"}}\n\nid: 4\nevent: draft_ready\ndata: {\"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"seq\": 4, \"type\": \"draft_ready\", \"payload\": {\"id\": \"b13966f4-f125-4894-8d13-91dc5c86511c\", \"kind\": \"draft\", \"revision\": 1, \"data\": {\"draft_kind\": \"assignment\", \"payload\": {\"items\": [{\"title\": \"阅读文献\", \"course_id\": null, \"requirements\": [], \"due_at\": null, \"due_text\": \"明天\", \"deadline_basis\": null, \"submission_method\": null, \"source_asset_id\": null, \"evidence\": [], \"uncertain_fields\": [\"due_at\"], \"priority\": 2}], \"warnings\": [], \"asset_id\": null, \"asset_ids\": []}, \"source_revision\": 2, \"source\": {\"thread_id\": \"d1809cba-c574-4d21-bc43-63142d4712d7\", \"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"reference_time\": \"2026-11-02T07:20:51.658630+00:00\"}, \"status\": \"pending\", \"summary\": null}}}\n\nid: 5\nevent: message_delta\ndata: {\"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"seq\": 5, \"type\": \"message_delta\", \"payload\": {\"message_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9:assistant:65430e59-38b1-4e07-b524-9af3b4ee7b8c\", \"delta\": \"已生成待校对草稿，确认后保存。\"}}\n\nid: 6\nevent: message\ndata: {\"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"seq\": 6, \"type\": \"message\", \"payload\": {\"role\": \"assistant\", \"content\": \"已生成待校对草稿，确认后保存。\", \"message_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9:assistant:65430e59-38b1-4e07-b524-9af3b4ee7b8c\"}}\n\nid: 7\nevent: done\ndata: {\"run_id\": \"e794bfbf-7c6c-4e71-a880-7bc91beba0f9\", \"seq\": 7, \"type\": \"done\", \"payload\": {}}\n\n"
+      },
+      {
+        "run" : {
+          "revision" : 9,
+          "id" : "dff275b2-c9ed-4893-8935-1c970900bf7c",
+          "kind" : "agent_run",
+          "data" : {
+            "status" : "done",
+            "pet_phase" : "replying",
+            "event_counter" : 8,
+            "message" : "commit:b13966f4-f125-4894-8d13-91dc5c86511c",
+            "approval_id" : "82f8ccc2-71dc-4faf-a292-4302c54e30f6",
+            "thread_id" : "d1809cba-c574-4d21-bc43-63142d4712d7",
+            "attachments" : [
+
+            ],
+            "checkpoint_id" : "d1809cba-c574-4d21-bc43-63142d4712d7"
+          }
+        },
+        "events" : "id: 1\nevent: message\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 1, \"type\": \"message\", \"payload\": {\"role\": \"user\", \"content\": \"commit:b13966f4-f125-4894-8d13-91dc5c86511c\", \"message_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c:user\", \"source_ids\": []}}\n\nid: 2\nevent: tool_started\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 2, \"type\": \"tool_started\", \"payload\": {\"name\": \"commit_import\", \"call_id\": \"commit-1\"}}\n\nid: 3\nevent: approval_required\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 3, \"type\": \"approval_required\", \"payload\": {\"approval_id\": \"82f8ccc2-71dc-4faf-a292-4302c54e30f6\", \"actions\": [{\"name\": \"commit_import\", \"args\": {\"draft_id\": \"b13966f4-f125-4894-8d13-91dc5c86511c\", \"revision\": 1}}]}}\n\nid: 4\nevent: tool_started\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 4, \"type\": \"tool_started\", \"payload\": {\"name\": \"commit_import\", \"call_id\": \"commit-1\"}}\n\nid: 5\nevent: tool_finished\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 5, \"type\": \"tool_finished\", \"payload\": {\"name\": \"commit_import\", \"call_id\": \"commit-1\"}}\n\nid: 6\nevent: message_delta\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 6, \"type\": \"message_delta\", \"payload\": {\"message_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c:assistant:5882fb8e-dc3b-4bea-ad24-97d79fe1dd8f\", \"delta\": \"已生成待校对草稿，确认后保存。\"}}\n\nid: 7\nevent: message\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 7, \"type\": \"message\", \"payload\": {\"role\": \"assistant\", \"content\": \"已生成待校对草稿，确认后保存。\", \"message_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c:assistant:5882fb8e-dc3b-4bea-ad24-97d79fe1dd8f\"}}\n\nid: 8\nevent: done\ndata: {\"run_id\": \"dff275b2-c9ed-4893-8935-1c970900bf7c\", \"seq\": 8, \"type\": \"done\", \"payload\": {}}\n\n"
+      }
+    ],
+    "thread" : "d1809cba-c574-4d21-bc43-63142d4712d7"
+  }
+]

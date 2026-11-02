@@ -1,0 +1,12 @@
+{
+  "fixture" : "synthetic; actual native NSPanel\/WKWebView and original fixed idle PNG",
+  "logicalSize" : [
+    1280,
+    470
+  ],
+  "panelSize" : [
+    328,
+    360
+  ],
+  "physicalDisplaysTested" : 1
+}

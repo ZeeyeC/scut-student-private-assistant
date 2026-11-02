@@ -1,0 +1,26 @@
+{
+  "scope": "independent read-only code review and targeted regression verification",
+  "critical_remaining": 0,
+  "important_remaining": 0,
+  "fixed": [
+    "successful web-save operation key refresh",
+    "last-page deletion offset clamp",
+    "stale text-search response rejection",
+    "source handoff invalidated on conversation switch",
+    "course locked after uncertain upload result",
+    "unclassified text-search scope applied before ranking"
+  ],
+  "reviewer_backend_regression": "1 passed",
+  "paid_model_calls": false,
+  "native_test_review": {
+    "critical_remaining": 0,
+    "important_remaining": 0,
+    "changes": [
+      "wait for actual WebKit detail controls",
+      "slow renderer fixture restores before input",
+      "ignore unrelated global desktop clicks in isolated smoke only",
+      "wait for mouse release in idle-animation test"
+    ],
+    "real_app_global_outside_click": "pending final CUA acceptance"
+  }
+}

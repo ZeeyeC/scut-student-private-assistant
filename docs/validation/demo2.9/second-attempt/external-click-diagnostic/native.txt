@@ -1,0 +1,46 @@
+SMOKE wait: document.querySelector('.composer textarea')
+SMOKE wait: document.body.textContent.includes('桌宠验收 · 阅读一篇论文')
+SMOKE wait: document.body.textContent.includes('模型连接')
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["学习偏好"][0] || b.textContent.trim()===["学习偏好"][0]))
+SMOKE wait: document.querySelector('[aria-label=用户偏好与精力档案]')
+SMOKE wait: document.querySelector('[aria-label=长期目标]')
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["复盘"][0] || b.textContent.trim()===["复盘"][0]))
+SMOKE wait: document.querySelector('[aria-label=每周复盘]')
+SMOKE wait: document.querySelector('.composer textarea')
+SMOKE wait: document.querySelector('.composer .workspace-button')?.disabled === false
+SMOKE wait: document.querySelector('.message.assistant')?.textContent.includes('第一段')
+SMOKE wait: document.querySelector('.message.assistant')?.textContent.includes('第一段第二段')
+SMOKE wait: document.querySelector('.chat-toolbar button')?.disabled === false
+SMOKE wait: document.querySelector('.composer .workspace-button')?.disabled === false
+SMOKE wait: document.querySelector('.review-panel')?.textContent.includes('核对任务草稿')
+SMOKE wait: document.querySelector('.chat-toolbar button')?.disabled === false
+SMOKE wait: document.querySelector('.composer .workspace-button')?.disabled === false
+SMOKE wait: document.querySelector('.confirm')?.textContent.includes('批准并执行')
+SMOKE wait: document.body.textContent.includes('模型连接')
+SMOKE wait: document.querySelector('.review-panel')?.getBoundingClientRect().top < innerHeight / 2
+SMOKE wait: [...document.querySelectorAll('.confirm button')].some(b => b.textContent.trim() === '批准并执行' && !b.disabled)
+SMOKE wait: (await (await fetch('/api/tasks')).json()).length === 2
+SMOKE wait: !document.querySelector('.review-panel')
+SMOKE wait: document.querySelector('.chat [role=status]')?.textContent === ''
+SMOKE wait: document.querySelector('[data-after-class-form] select')
+SMOKE wait: document.querySelector('[data-after-class-result]')?.textContent.includes('已保存 1 项作业')
+SMOKE wait: !document.querySelector('[data-after-class-result]')
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["课程与学期"][0] || b.textContent.trim()===["课程与学期"][0]))
+SMOKE wait: document.querySelector('[name=week1_monday]')?.value === '2026-10-12'
+SMOKE wait: document.querySelector('.fc')
+SMOKE wait: document.querySelector('.fc-timegrid-col[data-date="2026-10-15"]')
+SMOKE wait: document.querySelector('.course-slot-dialog input[name=name]')
+SMOKE wait: !document.querySelector('.course-slot-dialog')
+SMOKE wait: document.querySelector('.course-slot-dialog input[name=name]')
+SMOKE wait: !document.querySelector('.course-slot-dialog') && document.body.textContent.includes('课表预览')
+SMOKE wait: document.querySelector('.confirm')
+SMOKE wait: [...document.querySelectorAll('.fc-event')].some(e=>e.textContent.includes('空白格验收课程'))
+SMOKE wait: !document.querySelector('.workspace-shell')?.inert
+SMOKE wait: document.querySelector('[aria-label=日程详情]')
+SMOKE wait: !document.querySelector('.workspace-shell')?.inert
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["导入课表"][0] || b.textContent.trim()===["导入课表"][0]))
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["文字导入"][0] || b.textContent.trim()===["文字导入"][0]))
+SMOKE wait: [...document.querySelectorAll('button')].find(b=>b.getClientRects().length && !b.closest('[inert]') && (b.getAttribute('aria-label')===["手工添加课程"][0] || b.textContent.trim()===["手工添加课程"][0]))
+SMOKE wait: [...document.querySelectorAll('h2')].some(e=>e.textContent==='添加一门课程')
+SMOKE wait: document.querySelector('.detail-panel[aria-label=高数习题]') && !document.querySelector('.detail-panel[aria-label=高数习题]').closest('[hidden]')
+SMOKE TODO CLOSED: global outside click

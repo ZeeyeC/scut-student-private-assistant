@@ -1,0 +1,175 @@
+[
+  {
+    "elapsedMilliseconds" : 49,
+    "port" : 5189,
+    "probeID" : "41B3E367-71A2-416A-8C04-25F1AE542E67",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 4,
+    "port" : 5189,
+    "probeID" : "97FC6E3D-BEB2-461B-9B37-4C817F8E004D",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 4,
+    "port" : 5189,
+    "probeID" : "C7C9FB20-BF0D-4AED-9197-AFB51AB924BA",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 25,
+    "port" : 5189,
+    "probeID" : "FA0EC2EB-CADF-49ED-8171-CFABC5603921",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 2,
+    "port" : 5189,
+    "probeID" : "5C2F3ADA-1F44-4B3D-B7D4-9326F1A952D8",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 7,
+    "port" : 5189,
+    "probeID" : "1AA46339-E95A-42E4-9311-60AB709CAE36",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 4,
+    "port" : 5189,
+    "probeID" : "E570AAA0-9A31-43D0-B116-2FEC9B25971A",
+    "statusCode" : 200,
+    "transactions" : [
+      {
+        "connectStarted" : true,
+        "connected" : true,
+        "connectionReused" : false,
+        "dnsStarted" : true,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : true,
+        "resourceFetchType" : 1,
+        "responseStarted" : true
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 2,
+    "errorCode" : -1004,
+    "errorDomain" : "NSURLErrorDomain",
+    "port" : 5189,
+    "probeID" : "929BB53C-5F56-45F5-9609-A0DF74813C02",
+    "transactions" : [
+      {
+        "connectStarted" : false,
+        "connected" : false,
+        "connectionReused" : false,
+        "dnsStarted" : false,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : false,
+        "resourceFetchType" : 1,
+        "responseStarted" : false
+      }
+    ]
+  },
+  {
+    "elapsedMilliseconds" : 1,
+    "errorCode" : -1004,
+    "errorDomain" : "NSURLErrorDomain",
+    "port" : 5189,
+    "probeID" : "65905841-2D2B-4192-9BBA-762FC9E71345",
+    "transactions" : [
+      {
+        "connectStarted" : false,
+        "connected" : false,
+        "connectionReused" : false,
+        "dnsStarted" : false,
+        "fetchStarted" : true,
+        "proxyConnection" : false,
+        "requestStarted" : false,
+        "resourceFetchType" : 1,
+        "responseStarted" : false
+      }
+    ]
+  }
+]

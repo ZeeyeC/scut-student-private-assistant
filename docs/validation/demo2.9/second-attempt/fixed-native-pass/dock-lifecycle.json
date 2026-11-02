@@ -1,0 +1,10 @@
+{
+  "all_windows_hidden_keeps_dock_and_service" : true,
+  "application_icon_available" : true,
+  "menu_bar_retained" : true,
+  "normal_app_bundle" : true,
+  "passed" : true,
+  "regular_activation_policy" : true,
+  "reopen_callback_restores_both_windows" : true,
+  "scope" : "actual AppKit lifecycle; system reopen delegate invoked; no physical Dock click automation"
+}
