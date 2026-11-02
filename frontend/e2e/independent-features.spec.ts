@@ -133,7 +133,9 @@ test('weekly review reads actual25 and accepts an intent without changing the pl
   await review.getByLabel('选择周内日期').fill('2026-10-12');
   await expect(review).toContainText('25 分钟');
   await review.getByLabel('这周遇到的情况，或下周想怎样调整').fill('下周希望将练习拆成两次，先核对可用时间。');
+  await page.route('**/api/weekly-review/actions',async route=>{await new Promise(resolve=>setTimeout(resolve,1000));await route.continue();});
   await review.getByRole('button',{name:'接受这项调整意向',exact:true}).click();
+  await expect(review.getByRole('status')).toContainText('调整意向已保存',{timeout:15000});
   const report=await(await page.request.get('/api/weekly-review?week_start=2026-10-12&timezone=Asia%2FShanghai')).json();
   expect(report.execution.actual_seconds).toBe(1500);
   expect(report.review.data.status).toBe('accepted_pending_integration');

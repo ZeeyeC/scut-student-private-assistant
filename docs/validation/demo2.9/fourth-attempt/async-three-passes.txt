@@ -1,0 +1,21 @@
+[WebServer] INFO:     Started server process [83579]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:5290 (Press CTRL+C to quit)
+
+Running 6 tests using 1 worker
+
+(node:83589) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/chat-images.spec.ts:20:1 › image-only chat identifies two items, corrects original, explicitly saves and replays image history (11.2s)
+  ✓  2 e2e/independent-features.spec.ts:123:1 › weekly review reads actual25 and accepts an intent without changing the plan (2.0s)
+(node:83636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 e2e/chat-images.spec.ts:20:1 › image-only chat identifies two items, corrects original, explicitly saves and replays image history (9.9s)
+  ✓  4 e2e/independent-features.spec.ts:123:1 › weekly review reads actual25 and accepts an intent without changing the plan (2.0s)
+(node:83670) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 e2e/chat-images.spec.ts:20:1 › image-only chat identifies two items, corrects original, explicitly saves and replays image history (9.9s)
+  ✓  6 e2e/independent-features.spec.ts:123:1 › weekly review reads actual25 and accepts an intent without changing the plan (2.1s)
+
+  6 passed (45.9s)

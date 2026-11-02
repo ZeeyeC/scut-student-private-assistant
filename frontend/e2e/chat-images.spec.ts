@@ -25,8 +25,10 @@ test('image-only chat identifies two items, corrects original, explicitly saves 
  await expect(review.getByRole('heading',{name:'核对原图和识别结果'})).toBeVisible();
  await expect.poll(()=>review.getByRole('textbox',{name:'标题',exact:true}).evaluateAll(nodes=>nodes.map(n=>(n as HTMLInputElement).value))).toEqual(['高数作业','英语作业']);
  expect(await page.request.get('/api/tasks').then(r=>r.json())).toEqual([]);
+ // A real model/tool request can complete beyond the generic five-second UI wait.
+ await page.route('**/api/agent/runs',async route=>{if(route.request().method()==='POST'&&route.request().postDataJSON().message==='修改第二项为英语听力')await new Promise(resolve=>setTimeout(resolve,6000));await route.continue();});
  await page.getByLabel('给助手的消息').fill('修改第二项为英语听力');await expect(page.locator('.composer-bottom button')).toBeEnabled();await page.getByLabel('给助手的消息').press('Enter');
- await expect.poll(()=>review.getByRole('textbox',{name:'标题',exact:true}).evaluateAll(nodes=>nodes.map(n=>(n as HTMLInputElement).value))).toEqual(['高数作业','英语听力']);
+ await expect.poll(()=>review.getByRole('textbox',{name:'标题',exact:true}).evaluateAll(nodes=>nodes.map(n=>(n as HTMLInputElement).value)),{timeout:15000}).toEqual(['高数作业','英语听力']);
  await expect(review.getByAltText('待校对的作业原图')).toBeVisible();
  await review.getByRole('button',{name:'确认保存',exact:true}).click();
  await expect.poll(()=>page.request.get('/api/tasks').then(r=>r.json()).then(x=>x.length)).toBe(2);
