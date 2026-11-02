@@ -10,6 +10,7 @@ import {
   type AppendMessage,
 } from "@assistant-ui/react";
 import { api } from "./api";
+import { AssistantMarkdown } from "./AssistantMarkdown";
 import { applyMessage, messageAssetIds, type ChatMessage as Message } from "./chat-messages";
 import { replayEvents, type PublicEvent } from "./sse";
 import type { Resource } from "./types";
@@ -434,7 +435,7 @@ function UserMessage() {
 function AssistantMessage() {
   return (
     <MessagePrimitive.Root className="message assistant">
-      <MessagePrimitive.Parts components={{Text:PlainMessageText}} />
+      <MessagePrimitive.Parts components={{Text:AssistantMarkdown}} />
     </MessagePrimitive.Root>
   );
 }

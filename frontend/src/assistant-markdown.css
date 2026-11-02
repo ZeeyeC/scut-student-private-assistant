@@ -1,0 +1,431 @@
+.assistant-markdown,
+.assistant-markdown .aui-md-root {
+  white-space: normal;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  color: #1e293b;
+  font-size: inherit;
+  line-height: inherit;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.assistant-markdown > *:first-child,
+.assistant-markdown .aui-md-root > *:first-child {
+  margin-top: 0;
+}
+
+.assistant-markdown > *:last-child,
+.assistant-markdown .aui-md-root > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Paragraphs */
+.assistant-markdown p {
+  margin: 0.65rem 0;
+  white-space: normal;
+  line-height: inherit;
+}
+
+/* Restrained blue-gray headings */
+.assistant-markdown h1,
+.assistant-markdown h2,
+.assistant-markdown h3,
+.assistant-markdown h4,
+.assistant-markdown h5,
+.assistant-markdown h6 {
+  color: #0f172a;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 1.15rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.assistant-markdown h1 {
+  font-size: 1.3rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.3rem;
+}
+
+.assistant-markdown h2 {
+  font-size: 1.18rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.25rem;
+}
+
+.assistant-markdown h3 {
+  font-size: 1.08rem;
+}
+
+.assistant-markdown h4,
+.assistant-markdown h5,
+.assistant-markdown h6 {
+  font-size: 1rem;
+  color: #334155;
+}
+
+/* Lists (explicitly restored after Tailwind preflight reset) */
+.assistant-markdown ul,
+.assistant-markdown ol {
+  margin: 0.65rem 0;
+  padding-left: 1.5rem;
+  white-space: normal;
+}
+
+.assistant-markdown ul {
+  list-style-type: disc;
+}
+
+.assistant-markdown ul ul {
+  list-style-type: circle;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.assistant-markdown ul ul ul {
+  list-style-type: square;
+}
+
+.assistant-markdown ol {
+  list-style-type: decimal;
+}
+
+.assistant-markdown ol ol {
+  list-style-type: lower-alpha;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.assistant-markdown li {
+  margin: 0.25rem 0;
+  line-height: 1.6;
+}
+
+.assistant-markdown li > p {
+  margin: 0.25rem 0;
+}
+
+.assistant-markdown li.task-list-item,
+.assistant-markdown li:has(> .assistant-markdown__checkbox) {
+  list-style-type: none;
+  margin-left: -1.25rem;
+}
+
+.assistant-markdown__checkbox {
+  appearance: auto;
+  width: 0.95rem;
+  height: 0.95rem;
+  margin: 0 0.45rem 0 0;
+  vertical-align: -0.12rem;
+  accent-color: #3b82f6;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Blockquotes & Horizontal Rules */
+.assistant-markdown blockquote {
+  margin: 0.8rem 0;
+  padding: 0.5rem 0.9rem;
+  border-left: 3px solid #94a3b8;
+  background-color: #f8fafc;
+  color: #334155;
+  border-radius: 0 0.375rem 0.375rem 0;
+}
+
+.assistant-markdown blockquote > *:first-child {
+  margin-top: 0;
+}
+
+.assistant-markdown blockquote > *:last-child {
+  margin-bottom: 0;
+}
+
+.assistant-markdown hr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 1rem 0;
+}
+
+/* Links & long URLs */
+.assistant-markdown a,
+.assistant-markdown__link {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.assistant-markdown a:hover,
+.assistant-markdown__link:hover {
+  color: #1d4ed8;
+}
+
+.assistant-markdown__unsafe-link {
+  color: #475569;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.assistant-markdown__image-fallback {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  margin: 0.15rem 0;
+  font-size: 0.875rem;
+  color: #475569;
+  background-color: #f1f5f9;
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.375rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* Inline code */
+.assistant-markdown :not(pre) > code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875em;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  padding: 0.15rem 0.38rem;
+  border-radius: 0.3rem;
+  border: 1px solid #e2e8f0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Code blocks and custom CodeHeader */
+.assistant-markdown__code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  margin-top: 0.75rem;
+  background-color: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.assistant-markdown__code-lang {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 600;
+  color: #334155;
+  text-transform: lowercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assistant-markdown__code-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.assistant-markdown__copy-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.assistant-markdown__copy-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #1e293b;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.325rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.assistant-markdown__copy-btn:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.assistant-markdown__copy-btn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+
+.assistant-markdown__copy-btn--copied {
+  color: #166534;
+  background-color: #f0fdf4;
+  border-color: #86efac;
+}
+
+.assistant-markdown__copy-btn--error {
+  color: #991b1b;
+  background-color: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.assistant-markdown pre {
+  margin: 0.75rem 0;
+  padding: 0.8rem 0.95rem;
+  background-color: #f6f7fa;
+  color: #283241;
+  border: 1px solid #dfe3ec;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  -webkit-overflow-scrolling: touch;
+}
+
+.assistant-markdown__code-header + pre {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.assistant-markdown pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* Semantic tables with horizontal scroll wrapper */
+.assistant-markdown__table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  margin: 0.8rem 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+.assistant-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.assistant-markdown thead {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.assistant-markdown th,
+.assistant-markdown td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+
+.assistant-markdown th:last-child,
+.assistant-markdown td:last-child {
+  border-right: none;
+}
+
+.assistant-markdown tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.assistant-markdown tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.assistant-markdown th {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* KaTeX math layout & overflow protection */
+.assistant-markdown .katex {
+  font-size: 1.04em;
+  max-width: 100%;
+}
+
+.assistant-markdown .katex-display {
+  display: block;
+  margin: 0.8rem 0;
+  padding: 0.25rem 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+.assistant-markdown .katex-display > .katex {
+  display: inline-block;
+  white-space: nowrap;
+  max-width: none;
+}
+
+.assistant-markdown .katex-error {
+  color: #b91c1c;
+  background-color: #fef2f2;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* 390px mobile viewport tightening */
+@media (max-width: 480px) {
+  .assistant-markdown,
+  .assistant-markdown .aui-md-root {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  .assistant-markdown pre {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .assistant-markdown th,
+  .assistant-markdown td {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.84rem;
+  }
+}
