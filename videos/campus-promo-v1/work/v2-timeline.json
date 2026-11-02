@@ -1,0 +1,207 @@
+{
+  "seconds": 62,
+  "fps": 30,
+  "frames": 1860,
+  "scenes": [
+    {
+      "name": "01 快速大字开场",
+      "start": 0,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "02 品牌与完整窗口",
+      "start": 90,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "03 原图左右分屏",
+      "start": 180,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "04 全屏草稿近景",
+      "start": 270,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "05 日期错位构图",
+      "start": 390,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "06 待办落地",
+      "start": 480,
+      "core_frames": 60,
+      "mounted_frames": 68
+    },
+    {
+      "name": "07 课程节奏卡",
+      "start": 540,
+      "core_frames": 60,
+      "mounted_frames": 68
+    },
+    {
+      "name": "08 课程窗口推镜",
+      "start": 600,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "09 时间与安排分屏",
+      "start": 690,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "10 全幅今日安排",
+      "start": 810,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "11 文件层次与课程分类",
+      "start": 930,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "12 答案与原文来源",
+      "start": 1020,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "13 记忆数字节奏卡",
+      "start": 1140,
+      "core_frames": 60,
+      "mounted_frames": 68
+    },
+    {
+      "name": "14 人工确认大近景",
+      "start": 1200,
+      "core_frames": 150,
+      "mounted_frames": 158
+    },
+    {
+      "name": "15 新会话召回",
+      "start": 1350,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "16 桌宠留在桌面",
+      "start": 1470,
+      "core_frames": 150,
+      "mounted_frames": 158
+    },
+    {
+      "name": "17 卡片交叠蒙太奇",
+      "start": 1620,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "18 品牌收束",
+      "start": 1710,
+      "core_frames": 150,
+      "mounted_frames": 150
+    }
+  ],
+  "sample_frames": [
+    0,
+    1,
+    45,
+    89,
+    90,
+    94,
+    98,
+    135,
+    179,
+    180,
+    184,
+    188,
+    225,
+    269,
+    270,
+    274,
+    278,
+    330,
+    389,
+    390,
+    394,
+    398,
+    435,
+    479,
+    480,
+    484,
+    488,
+    510,
+    539,
+    540,
+    544,
+    548,
+    570,
+    599,
+    600,
+    604,
+    608,
+    645,
+    689,
+    690,
+    694,
+    698,
+    750,
+    809,
+    810,
+    814,
+    818,
+    870,
+    929,
+    930,
+    934,
+    938,
+    975,
+    1019,
+    1020,
+    1024,
+    1028,
+    1080,
+    1139,
+    1140,
+    1144,
+    1148,
+    1170,
+    1199,
+    1200,
+    1204,
+    1208,
+    1275,
+    1349,
+    1350,
+    1354,
+    1358,
+    1410,
+    1469,
+    1470,
+    1474,
+    1478,
+    1545,
+    1619,
+    1620,
+    1624,
+    1628,
+    1665,
+    1709,
+    1710,
+    1714,
+    1718,
+    1785,
+    1858,
+    1859
+  ]
+}

@@ -1,13 +1,14 @@
 # 课间宣传片制作工程
 
-主版目标 75 秒，1920 × 1080 / 30fps。真实 App 操作，业务内容全部虚构。
+V2 主版 62 秒，1920 × 1080 / 30fps。真实 App 操作，业务内容全部虚构。V1 的75秒版本保留作对照。
 
 当前已提供两个可编辑预览：
 
-- `http://localhost:3010/HomeworkPreview`：15 秒真实截图整理样段。
-- `http://localhost:3010/CampusPromoV1`：75 秒无声粗剪。
+- `http://localhost:3010/StylePreview` 或 `/CampusPromoV2`：62 秒 V2 无声审片版，18 个镜头与17处转场。
+- `http://localhost:3010/HomeworkPreview`：15 秒 V2 截图整理样段。
+- V1 在 Studio 的 `Earlier` 文件夹保留。
 
-运行：进入 `remotion-app/`，执行 `npm ci`、`npm run dev -- --port 3010`。当前尚未制作旁白、字幕和音乐，也没有最终 MP4。录屏切片先完成了实际结果核对、CFR 转换与黑帧检查；部分点击动作未完整收录，仍需按审片意见补录。详情见 `docs/video/campus-promo-v1/执行进度.md`。
+运行：进入 `remotion-app/`，执行 `npm ci`、`npm run dev -- --port 3010`。用户只在浏览器审阅，不需要导出。本轮未制作旁白、字幕和音乐，也没有最终 MP4。录屏切片先完成了实际结果核对、CFR 转换与黑帧检查；部分点击动作未完整收录。详情见 `docs/video/campus-promo-v1/V2-节奏与视觉修改.md`。
 
 - `materials/`：原创虚构作业截图、课程讲义、演示数据清单。
 - `source/`：本轮真实录屏原件，只读保留，不自动提交 Git。

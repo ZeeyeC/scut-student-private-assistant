@@ -1,5 +1,5 @@
 {
-  "stage": "silent_editorial_review_requested_by_user",
+  "stage": "V2_browser_review_ready",
   "main_video_complete": false,
   "fictional_business_content": true,
   "style_preview": {
@@ -94,5 +94,13 @@
     "black_intervals": 0,
     "main_frame_samples": 15,
     "visual_review": "passed after correcting black intervals and cropping"
-  }
+  },
+  "current_preview": {
+    "composition": "CampusPromoV2",
+    "alias": "StylePreview",
+    "frames": 1860,
+    "seconds": 62,
+    "fps": 30
+  },
+  "v2_validation": "work/v2-validation.json"
 }

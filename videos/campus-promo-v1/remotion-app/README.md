@@ -1,8 +1,8 @@
 # 课间宣传片 · Remotion 工程
 
-本轮入口为 `HomeworkPreview`（15秒真实截图整理样段）与 `CampusPromoV1`（75秒无声粗剪），均为1920×1080、30fps；`StylePreview` 保留最初的风格与虚构材料预览。当前已有真实模型响应和确认结果，尚未加入旁白、字幕、音乐或导出最终宣传片。
+当前入口为 `StylePreview` / `CampusPromoV2`（62秒V2）与 `HomeworkPreview`（15秒V2样段），均为1920×1080、30fps。采用18镜头、深浅场景交替、动态大字、错位卡片、左右分屏与全幅界面。V1位于`Earlier`文件夹。用户只在浏览器审阅，不需要导出；当前尚未加入旁白、字幕或音乐。
 
-运行 `npm run dev -- --port 3010`，打开 `/HomeworkPreview` 或 `/CampusPromoV1`。`npm run lint` 检查 TypeScript 和 ESLint。运行依赖仅用于视频制作，与 App 产品依赖分离。
+运行 `npm run dev -- --port 3010`，打开 `/StylePreview` 或 `/HomeworkPreview`。`npm run lint` 检查 TypeScript 和 ESLint。运行依赖仅用于视频制作，与 App 产品依赖分离。
 
 原始录屏、隔离 profile 和凭据不放入 `public/`。只将检查通过的虚构业务录屏切片放入 `public/footage/`，原始时间码与裁切记录在上级 `work/cuts.json` 和 `edit/edit-spec.json`。当前未导出最终 MP4；切片 MP4 只是本地编辑素材。
 

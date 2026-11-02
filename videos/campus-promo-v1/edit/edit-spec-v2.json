@@ -1,0 +1,128 @@
+{
+  "status": "silent_browser_review",
+  "revision": "V2",
+  "durationInFrames": 1860,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "timeline_source": "remotion-app/src/PromoV2.tsx",
+  "entry_alias": "StylePreview",
+  "scenes": [
+    {
+      "name": "01 快速大字开场",
+      "start": 0,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "02 品牌与完整窗口",
+      "start": 90,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "03 原图左右分屏",
+      "start": 180,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "04 全屏草稿近景",
+      "start": 270,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "05 日期错位构图",
+      "start": 390,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "06 待办落地",
+      "start": 480,
+      "core_frames": 60,
+      "mounted_frames": 68
+    },
+    {
+      "name": "07 课程节奏卡",
+      "start": 540,
+      "core_frames": 60,
+      "mounted_frames": 68
+    },
+    {
+      "name": "08 课程窗口推镜",
+      "start": 600,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "09 时间与安排分屏",
+      "start": 690,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "10 全幅今日安排",
+      "start": 810,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "11 文件层次与课程分类",
+      "start": 930,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "12 答案与原文来源",
+      "start": 1020,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "13 记忆数字节奏卡",
+      "start": 1140,
+      "core_frames": 60,
+      "mounted_frames": 68
+    },
+    {
+      "name": "14 人工确认大近景",
+      "start": 1200,
+      "core_frames": 150,
+      "mounted_frames": 158
+    },
+    {
+      "name": "15 新会话召回",
+      "start": 1350,
+      "core_frames": 120,
+      "mounted_frames": 128
+    },
+    {
+      "name": "16 桌宠留在桌面",
+      "start": 1470,
+      "core_frames": 150,
+      "mounted_frames": 158
+    },
+    {
+      "name": "17 卡片交叠蒙太奇",
+      "start": 1620,
+      "core_frames": 90,
+      "mounted_frames": 98
+    },
+    {
+      "name": "18 品牌收束",
+      "start": 1710,
+      "core_frames": 150,
+      "mounted_frames": 150
+    }
+  ],
+  "footage_cuts": "work/cuts.json",
+  "source_intervals_changed": false,
+  "transitions": {
+    "count": 17,
+    "frames_each": 8,
+    "overlap_compensated": true
+  },
+  "user_constraint": "browser preview only, do not export video"
+}
