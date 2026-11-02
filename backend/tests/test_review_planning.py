@@ -5,12 +5,25 @@ from copy import deepcopy
 import pytest
 
 from tests.test_goal_capacity import (
+    clock,  # Import the shared autouse fixture along with its fixed-date helpers.
     headers,
     linked_client,
     resources,
     seed,
     settings,
 )
+
+
+def test_elapsed_next_week_still_rejects_generation_without_creating_draft(tmp_path, monkeypatch):
+    from datetime import datetime
+    from app import weekly_review
+    with linked_client(tmp_path) as c:
+        work(c)
+        action(c)
+        monkeypatch.setattr(weekly_review, "now", lambda: datetime.fromisoformat("2026-11-02T00:00:00+08:00"))
+        response = generate(c)
+        assert response.status_code == 422
+        assert resources(c, "draft") == []
 
 
 def report(c, week="2026-10-26", owner="alice", zone="Asia/Shanghai"):
