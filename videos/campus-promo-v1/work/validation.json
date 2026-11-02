@@ -1,0 +1,98 @@
+{
+  "stage": "silent_editorial_review_requested_by_user",
+  "main_video_complete": false,
+  "fictional_business_content": true,
+  "style_preview": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "frames": 450,
+    "studio": "http://localhost:3010/StylePreview",
+    "lint": "passed",
+    "visual_review": "passed"
+  },
+  "single_window_capture": {
+    "compiled": true,
+    "still_verified": true,
+    "video_verified": true,
+    "fallback_to_full_screen": false,
+    "application_only_capture": true
+  },
+  "model_requests_used": 8,
+  "model_request_limit": 8,
+  "blocker": null,
+  "sources_retained": 5,
+  "files": [
+    {
+      "path": "materials/作业通知.png",
+      "bytes": 95781,
+      "sha256": "5ccb5f2701846bb91645df56751c231d010d4fb571e0ce4119aa1e865c06971a"
+    },
+    {
+      "path": "materials/微积分-导数应用练习.pdf",
+      "bytes": 251195,
+      "sha256": "8fd5f755d626b698488efd1b471979c45f1a7c25efc1386ccd0a123bfa3bd9b8"
+    },
+    {
+      "path": "materials/微积分-导数应用练习.md",
+      "bytes": 938,
+      "sha256": "1a46bf3c815c429e665de56e4191eb97ccbfb4a5957167c9a2459312156865d9"
+    },
+    {
+      "path": "materials/fictional-data.json",
+      "bytes": 2159,
+      "sha256": "b18cdbc6441f26dc6f784ab1d4d212a1013d2a142c0c685c6d9df7e13cbc5e79"
+    },
+    {
+      "path": "edit/intro-preview.png",
+      "bytes": 108677,
+      "sha256": "fba770112c5895fd6f90f408aa531d96cb103d86620c711bcb7b0c8d5764a2d4"
+    },
+    {
+      "path": "edit/style-preview.png",
+      "bytes": 185896,
+      "sha256": "e9693c1f9831a493b822dbdfff56089a4d38b20e32a862df718e911cc5dd5cef"
+    }
+  ],
+  "font_license": "full official Noto CJK Sans OFL saved",
+  "model_configuration": "user updated and isolated identity verified",
+  "model_request_outcomes": {
+    "failed": 2,
+    "successful": 6
+  },
+  "personal_profile_restored": true,
+  "final_mp4_exported": false,
+  "audio_added": false,
+  "full_playback_review": "pending user review",
+  "actual_results": {
+    "tasks_saved": 2,
+    "planned_blocks": 2,
+    "study_minutes_each": 25,
+    "knowledge_answer": 10,
+    "knowledge_source": "original PDF page 1",
+    "memory_human_confirmed": true,
+    "memory_new_conversation_recall": "25 minutes",
+    "pet_today_tasks": 2
+  },
+  "previews": {
+    "homework": {
+      "composition": "HomeworkPreview",
+      "frames": 450,
+      "fps": 30
+    },
+    "main": {
+      "composition": "CampusPromoV1",
+      "frames": 2250,
+      "fps": 30
+    }
+  },
+  "technical_checks": {
+    "eslint_typescript": "passed",
+    "cut_count": 13,
+    "cut_frame_counts": "passed",
+    "decode_errors": 0,
+    "black_intervals": 0,
+    "main_frame_samples": 15,
+    "visual_review": "passed after correcting black intervals and cropping"
+  }
+}

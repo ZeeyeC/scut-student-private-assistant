@@ -1,0 +1,117 @@
+[
+  {
+    "file": "source/R02-homework-window-01.mp4",
+    "bytes": 7934139,
+    "sha256": "72e87f1c8a97a960ea7b4d4123bf05aa719741b34d917d8c4f67ae12b27cfb74",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 2560,
+          "height": 1628,
+          "r_frame_rate": "88/3"
+        }
+      ],
+      "format": {
+        "duration": "117.245000",
+        "tags": {
+          "creation_time": "2026-11-02T11:03:42.000000Z"
+        }
+      }
+    },
+    "scope": "only CampusCompanion windows with fictional business data"
+  },
+  {
+    "file": "source/R03-planning-window-01.mp4",
+    "bytes": 18174849,
+    "sha256": "94782127ede27f6e89f39afa9ff48dd0eeaa288a2244a3ed37450c4cf831d91f",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 2560,
+          "height": 1628,
+          "r_frame_rate": "353/12"
+        }
+      ],
+      "format": {
+        "duration": "191.885000",
+        "tags": {
+          "creation_time": "2026-11-02T11:07:14.000000Z"
+        }
+      }
+    },
+    "scope": "only CampusCompanion windows with fictional business data"
+  },
+  {
+    "file": "source/R04-library-details-window-02.mp4",
+    "bytes": 9022805,
+    "sha256": "5d685f985ea66eccfb0fbe18e6731d9ed0618ba12e6fac735364956c22228b76",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1470,
+          "height": 956,
+          "r_frame_rate": "60/1"
+        }
+      ],
+      "format": {
+        "duration": "144.756667",
+        "tags": {
+          "creation_time": "2026-11-02T11:19:35.000000Z"
+        }
+      }
+    },
+    "scope": "only CampusCompanion windows with fictional business data"
+  },
+  {
+    "file": "source/R04-library-window-01.mp4",
+    "bytes": 2248823,
+    "sha256": "9b03210ce5bdcd13f0a36606be27641f2d21f27539e3726fb87f0f0508c9bb0b",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 2560,
+          "height": 1628,
+          "r_frame_rate": "88/3"
+        }
+      ],
+      "format": {
+        "duration": "37.065000",
+        "tags": {
+          "creation_time": "2026-11-02T11:09:49.000000Z"
+        }
+      }
+    },
+    "scope": "only CampusCompanion windows with fictional business data"
+  },
+  {
+    "file": "source/R05-memory-pet-window-01.mp4",
+    "bytes": 13516155,
+    "sha256": "658c869eed913a95e1658a2370338f508d66fbd02112a9c0c6b3fc8cf135d5e9",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1470,
+          "height": 956,
+          "r_frame_rate": "60/1"
+        }
+      ],
+      "format": {
+        "duration": "189.228333",
+        "tags": {
+          "creation_time": "2026-11-02T11:14:17.000000Z"
+        }
+      }
+    },
+    "scope": "only CampusCompanion windows with fictional business data"
+  }
+]

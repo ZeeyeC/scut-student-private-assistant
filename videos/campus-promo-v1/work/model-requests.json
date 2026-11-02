@@ -1,0 +1,58 @@
+{
+  "authorized_maximum": 8,
+  "used": 8,
+  "fictional_materials_only": true,
+  "requests": [
+    {
+      "number": 1,
+      "purpose": "截图整理两项虚构作业",
+      "started": "2026-11-02T18:49:56.858698",
+      "status": "failed_or_timed_out"
+    },
+    {
+      "number": 2,
+      "purpose": "诊断真实截图识别失败类别",
+      "started": "2026-11-02T18:51:42.157846",
+      "status": "failed",
+      "exception_type": "OpenAIAuthenticationError",
+      "http_status": 401,
+      "provider_error_code": 401
+    },
+    {
+      "number": 3,
+      "purpose": "更新配置后重试虚构作业识别",
+      "started": "2026-11-02T19:03:43.252758",
+      "status": "success_two_items_drafted"
+    },
+    {
+      "number": 4,
+      "purpose": "确认虚构作业日期和时区，第二项留空",
+      "started": "2026-11-02T19:04:57.379311",
+      "status": "success_draft_updated_and_confirmed"
+    },
+    {
+      "number": 5,
+      "purpose": "两项虚构作业各25分钟的今晚安排草稿",
+      "started": "2026-11-02T19:08:38.930339",
+      "status": "success_plan_drafted_and_confirmed"
+    },
+    {
+      "number": 6,
+      "purpose": "原创微积分讲义真实问答与来源",
+      "started": "2026-11-02T19:10:39.193424",
+      "status": "success_answer_10_with_pdf_page1_source"
+    },
+    {
+      "number": 7,
+      "purpose": "明确提出虚构学习偏好，先生成记忆候选",
+      "started": "2026-11-02T19:12:29.834124",
+      "status": "success_candidate_created_and_human_confirmed"
+    },
+    {
+      "number": 8,
+      "purpose": "新会话真实召回已确认专注偏好",
+      "started": "2026-11-02T19:15:13.907146",
+      "status": "success_new_conversation_recalled_25_minutes"
+    }
+  ]
+}

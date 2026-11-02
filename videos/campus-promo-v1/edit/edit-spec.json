@@ -1,0 +1,545 @@
+{
+  "status": "silent_rough_cut_ready_for_user_review",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "main_frames": 2250,
+  "sample_frames": 450,
+  "source_intervals_locked": true,
+  "sources": [
+    {
+      "file": "source/R02-homework-window-01.mp4",
+      "bytes": 7934139,
+      "sha256": "72e87f1c8a97a960ea7b4d4123bf05aa719741b34d917d8c4f67ae12b27cfb74",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 2560,
+            "height": 1628,
+            "r_frame_rate": "88/3"
+          }
+        ],
+        "format": {
+          "duration": "117.245000",
+          "tags": {
+            "creation_time": "2026-11-02T11:03:42.000000Z"
+          }
+        }
+      },
+      "scope": "only CampusCompanion windows with fictional business data"
+    },
+    {
+      "file": "source/R03-planning-window-01.mp4",
+      "bytes": 18174849,
+      "sha256": "94782127ede27f6e89f39afa9ff48dd0eeaa288a2244a3ed37450c4cf831d91f",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 2560,
+            "height": 1628,
+            "r_frame_rate": "353/12"
+          }
+        ],
+        "format": {
+          "duration": "191.885000",
+          "tags": {
+            "creation_time": "2026-11-02T11:07:14.000000Z"
+          }
+        }
+      },
+      "scope": "only CampusCompanion windows with fictional business data"
+    },
+    {
+      "file": "source/R04-library-details-window-02.mp4",
+      "bytes": 9022805,
+      "sha256": "5d685f985ea66eccfb0fbe18e6731d9ed0618ba12e6fac735364956c22228b76",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1470,
+            "height": 956,
+            "r_frame_rate": "60/1"
+          }
+        ],
+        "format": {
+          "duration": "144.756667",
+          "tags": {
+            "creation_time": "2026-11-02T11:19:35.000000Z"
+          }
+        }
+      },
+      "scope": "only CampusCompanion windows with fictional business data"
+    },
+    {
+      "file": "source/R04-library-window-01.mp4",
+      "bytes": 2248823,
+      "sha256": "9b03210ce5bdcd13f0a36606be27641f2d21f27539e3726fb87f0f0508c9bb0b",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 2560,
+            "height": 1628,
+            "r_frame_rate": "88/3"
+          }
+        ],
+        "format": {
+          "duration": "37.065000",
+          "tags": {
+            "creation_time": "2026-11-02T11:09:49.000000Z"
+          }
+        }
+      },
+      "scope": "only CampusCompanion windows with fictional business data"
+    },
+    {
+      "file": "source/R05-memory-pet-window-01.mp4",
+      "bytes": 13516155,
+      "sha256": "658c869eed913a95e1658a2370338f508d66fbd02112a9c0c6b3fc8cf135d5e9",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1470,
+            "height": 956,
+            "r_frame_rate": "60/1"
+          }
+        ],
+        "format": {
+          "duration": "189.228333",
+          "tags": {
+            "creation_time": "2026-11-02T11:14:17.000000Z"
+          }
+        }
+      },
+      "scope": "only CampusCompanion windows with fictional business data"
+    }
+  ],
+  "cuts": [
+    {
+      "id": "image-input",
+      "source": "R02-homework-window-01.mp4",
+      "source_start_seconds": 1,
+      "source_end_seconds": 5,
+      "crop": [
+        1300,
+        310,
+        1200,
+        780
+      ],
+      "output": "remotion-app/public/footage/image-input.mp4",
+      "frames": 120,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 832,
+            "r_frame_rate": "30/1",
+            "nb_frames": "120"
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "image-draft",
+      "source": "R02-homework-window-01.mp4",
+      "source_start_seconds": 17,
+      "source_end_seconds": 22,
+      "crop": [
+        640,
+        380,
+        1800,
+        670
+      ],
+      "output": "remotion-app/public/footage/image-draft.mp4",
+      "frames": 150,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 476,
+            "r_frame_rate": "30/1",
+            "nb_frames": "150"
+          }
+        ],
+        "format": {
+          "duration": "5.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "image-deadline",
+      "source": "R02-homework-window-01.mp4",
+      "source_start_seconds": 96,
+      "source_end_seconds": 100,
+      "crop": [
+        640,
+        380,
+        1800,
+        670
+      ],
+      "output": "remotion-app/public/footage/image-deadline.mp4",
+      "frames": 120,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 476,
+            "r_frame_rate": "30/1",
+            "nb_frames": "120"
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "task-results",
+      "source": "R03-planning-window-01.mp4",
+      "source_start_seconds": 7,
+      "source_end_seconds": 12,
+      "crop": [
+        360,
+        440,
+        2100,
+        600
+      ],
+      "output": "remotion-app/public/footage/task-results.mp4",
+      "frames": 150,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 366,
+            "r_frame_rate": "30/1",
+            "nb_frames": "150"
+          }
+        ],
+        "format": {
+          "duration": "5.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "calendar-context",
+      "source": "R04-library-window-01.mp4",
+      "source_start_seconds": 1,
+      "source_end_seconds": 4,
+      "crop": [
+        310,
+        120,
+        2200,
+        1400
+      ],
+      "output": "remotion-app/public/footage/calendar-context.mp4",
+      "frames": 90,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 814,
+            "r_frame_rate": "30/1",
+            "nb_frames": "90"
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "planning-draft",
+      "source": "R03-planning-window-01.mp4",
+      "source_start_seconds": 122,
+      "source_end_seconds": 128,
+      "crop": [
+        400,
+        600,
+        2120,
+        1000
+      ],
+      "output": "remotion-app/public/footage/planning-draft.mp4",
+      "frames": 180,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 604,
+            "r_frame_rate": "30/1",
+            "nb_frames": "180"
+          }
+        ],
+        "format": {
+          "duration": "6.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "today-results",
+      "source": "R04-library-details-window-02.mp4",
+      "source_start_seconds": 83,
+      "source_end_seconds": 90,
+      "crop": [
+        244,
+        145,
+        1070,
+        430
+      ],
+      "output": "remotion-app/public/footage/today-results.mp4",
+      "frames": 210,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 514,
+            "r_frame_rate": "30/1",
+            "nb_frames": "210"
+          }
+        ],
+        "format": {
+          "duration": "7.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "library-list",
+      "source": "R04-library-window-01.mp4",
+      "source_start_seconds": 22,
+      "source_end_seconds": 27,
+      "crop": [
+        330,
+        100,
+        2200,
+        1000
+      ],
+      "output": "remotion-app/public/footage/library-list.mp4",
+      "frames": 150,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 582,
+            "r_frame_rate": "30/1",
+            "nb_frames": "150"
+          }
+        ],
+        "format": {
+          "duration": "5.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "knowledge-answer",
+      "source": "R05-memory-pet-window-01.mp4",
+      "source_start_seconds": 135,
+      "source_end_seconds": 142,
+      "crop": [
+        410,
+        430,
+        870,
+        230
+      ],
+      "output": "remotion-app/public/footage/knowledge-answer.mp4",
+      "frames": 210,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 338,
+            "r_frame_rate": "30/1",
+            "nb_frames": "210"
+          }
+        ],
+        "format": {
+          "duration": "7.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "memory-confirm",
+      "source": "R05-memory-pet-window-01.mp4",
+      "source_start_seconds": 29,
+      "source_end_seconds": 36,
+      "crop": [
+        900,
+        200,
+        420,
+        250
+      ],
+      "output": "remotion-app/public/footage/memory-confirm.mp4",
+      "frames": 210,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 762,
+            "r_frame_rate": "30/1",
+            "nb_frames": "210"
+          }
+        ],
+        "format": {
+          "duration": "7.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "memory-recall",
+      "source": "R05-memory-pet-window-01.mp4",
+      "source_start_seconds": 74,
+      "source_end_seconds": 78,
+      "crop": [
+        245,
+        245,
+        1020,
+        220
+      ],
+      "output": "remotion-app/public/footage/memory-recall.mp4",
+      "frames": 120,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 276,
+            "r_frame_rate": "30/1",
+            "nb_frames": "120"
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "pet-reveal",
+      "source": "R05-memory-pet-window-01.mp4",
+      "source_start_seconds": 147,
+      "source_end_seconds": 150,
+      "crop": [
+        900,
+        400,
+        570,
+        556
+      ],
+      "output": "remotion-app/public/footage/pet-reveal.mp4",
+      "frames": 90,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1248,
+            "r_frame_rate": "30/1",
+            "nb_frames": "90"
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    },
+    {
+      "id": "pet-result",
+      "source": "R05-memory-pet-window-01.mp4",
+      "source_start_seconds": 150,
+      "source_end_seconds": 155,
+      "crop": [
+        900,
+        400,
+        570,
+        556
+      ],
+      "output": "remotion-app/public/footage/pet-result.mp4",
+      "frames": 150,
+      "fps": 30,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1248,
+            "r_frame_rate": "30/1",
+            "nb_frames": "150"
+          }
+        ],
+        "format": {
+          "duration": "5.000000"
+        }
+      },
+      "status": "duration_decode_and_visual_review_passed"
+    }
+  ],
+  "timeline_source": "remotion-app/src/Promo.tsx",
+  "remaining": [
+    "visual pacing review",
+    "any missing click shot pickup",
+    "voiceover selection and production",
+    "captions and music",
+    "final export confirmation and full video QA"
+  ],
+  "coverage_notes": [
+    "Real recognition, date amendment, task confirmation, planning confirmation, source-based answer, memory confirmation/recall and pet results were actually performed.",
+    "Some clicks and upload gestures were not completely captured. The rough cut uses genuine before/after results; no synthetic UI response or test model fixture was used.",
+    "Two early window streams ended with recording errors; only decodable and checked intervals were selected.",
+    "Original source timestamps are preserved; CFR normalization can hold the final observed frame for up to one frame."
+  ]
+}

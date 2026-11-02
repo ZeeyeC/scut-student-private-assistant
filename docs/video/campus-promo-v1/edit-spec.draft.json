@@ -1,0 +1,47 @@
+{
+  "status": "superseded_by_video_project_edit_spec",
+  "compositionId": "CampusPromoV1",
+  "fps": 30,
+  "durationInFrames": 2250,
+  "sources": [
+    {
+      "id": "R01",
+      "file": null,
+      "duration": null,
+      "reviewed": false
+    },
+    {
+      "id": "R02",
+      "file": null,
+      "duration": null,
+      "reviewed": false
+    },
+    {
+      "id": "R03",
+      "file": null,
+      "duration": null,
+      "reviewed": false
+    },
+    {
+      "id": "R04",
+      "file": null,
+      "duration": null,
+      "reviewed": false
+    },
+    {
+      "id": "R05",
+      "file": null,
+      "duration": null,
+      "reviewed": false
+    },
+    {
+      "id": "R06",
+      "file": null,
+      "duration": null,
+      "reviewed": false
+    }
+  ],
+  "clips": [],
+  "note": "镜头输出时段为方案目标，源视频入出点尚未锁定；不从旧2.2演示推断2.9片段。待审片后填真实时间点与速度，不用虚构素材制作完成片。",
+  "actual_spec": "videos/campus-promo-v1/edit/edit-spec.json"
+}

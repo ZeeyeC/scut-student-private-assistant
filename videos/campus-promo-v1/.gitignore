@@ -1,0 +1,14 @@
+source/*
+.DS_Store
+work/*-check.png
+work/font-characters.txt
+!source/.gitkeep
+work/profile/
+work/*.log
+work/*.mov
+work/*.mp4
+edit/*.mp4
+edit/*.mov
+remotion-app/public/footage/*
+!remotion-app/public/footage/.gitkeep
+remotion-app/.remotion/

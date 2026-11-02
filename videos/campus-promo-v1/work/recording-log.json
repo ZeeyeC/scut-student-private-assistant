@@ -1,0 +1,31 @@
+{
+  "R02-homework-window-01.mp4": {
+    "start_epoch": 1793617423.2530491,
+    "source_fps": 30,
+    "window_only": true,
+    "events": [
+      {
+        "event": "两项作业草稿成功，准备回复日期",
+        "elapsed_seconds": 74.127
+      },
+      {
+        "event": "补充截止时间后确认保存，任务列表2项可见",
+        "elapsed_seconds": 151.3
+      }
+    ]
+  },
+  "R05-memory-pet-window-01.mp4": {
+    "start_epoch": 1793618089.238088,
+    "filter": "application-only; no desktop or other applications",
+    "events": [
+      {
+        "event": "记忆已确认，新会话准备发送召回问题",
+        "elapsed_seconds": 24.67
+      },
+      {
+        "event": "新会话召回25分钟成功；已展示桌宠今日2项待办",
+        "elapsed_seconds": 139.331
+      }
+    ]
+  }
+}

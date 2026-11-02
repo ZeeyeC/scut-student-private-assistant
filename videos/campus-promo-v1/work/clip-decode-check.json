@@ -1,0 +1,67 @@
+[
+  {
+    "clip": "calendar-context",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "image-deadline",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "image-draft",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "image-input",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "knowledge-answer",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "library-list",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "memory-confirm",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "memory-recall",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "pet-result",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "pet-reveal",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "planning-draft",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "task-results",
+    "decode_ok": true,
+    "black_intervals": []
+  },
+  {
+    "clip": "today-results",
+    "decode_ok": true,
+    "black_intervals": []
+  }
+]

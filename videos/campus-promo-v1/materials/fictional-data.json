@@ -1,0 +1,117 @@
+{
+  "fictional": true,
+  "generated_date": "2026-11-02",
+  "timezone": "Asia/Shanghai",
+  "semester_week1_monday": "2026-11-02",
+  "due": "2026-11-05T20:00:00+08:00",
+  "courses": [
+    {
+      "source_key": "promo-calculus",
+      "name": "微积分",
+      "weekday": 1,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "periods": [
+        1,
+        2
+      ],
+      "location": "示例楼 A101"
+    },
+    {
+      "source_key": "promo-english",
+      "name": "学术英语",
+      "weekday": 3,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "periods": [
+        3,
+        4
+      ],
+      "location": "示例楼 B203"
+    },
+    {
+      "source_key": "promo-programming",
+      "name": "程序设计",
+      "weekday": 5,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "periods": [
+        5,
+        6
+      ],
+      "location": "示例楼 C302"
+    }
+  ],
+  "expected_tasks": [
+    {
+      "title": "导数应用练习",
+      "course": "微积分",
+      "duration_minutes": 25,
+      "due": "2026-11-05T20:00:00+08:00"
+    },
+    {
+      "title": "准备两分钟英文自我介绍",
+      "course": "学术英语",
+      "duration_minutes": 25,
+      "due": null
+    }
+  ],
+  "unconfirmed_preference": "我希望每次专注25分钟。",
+  "knowledge_question": "请根据这份讲义，解释怎样求 f(x)=x³−2x+1 在 x=2 时的导数。",
+  "expected_knowledge_answer": "先逐项求导得到 3x²−2，再代入 x=2，结果为10；对应讲义第2节。",
+  "provenance": "课程、教室、通知与讲义均为本轮原创虚构内容，不取自个人资料。"
+}
