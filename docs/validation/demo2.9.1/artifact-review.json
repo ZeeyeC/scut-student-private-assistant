@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "version": "2.9.1",
+  "checks": 19,
+  "sha256_files": 39,
+  "source_runtime_files_compared": 253,
+  "recursive_zip_audit": "passed",
+  "known_private_values_scan_roots": 3,
+  "runtime_id": "f3dc75675a1ceaa1dbe93f0960081843b76c2a3cc257ca17113f23515ce9a556",
+  "scope": "Final local release; no model requests; public SearXNG endpoint not configured or tested"
+}

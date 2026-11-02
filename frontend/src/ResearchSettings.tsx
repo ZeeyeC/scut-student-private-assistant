@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./api";
 import { Button } from "./components/ui/button";
+import "./research-settings.css";
 
 export type IntegrationsView = {
   semantic: { enabled: boolean; available: boolean; status: string; model: string; error?: string | null };
@@ -50,7 +51,7 @@ export function ResearchSettings() {
   const isPreparing = sem?.status === "preparing";
 
   return (
-    <section className="card" aria-label="检索与语义扩展" style={{ maxWidth: "100%" }}>
+    <section className="card research-settings" aria-label="检索与语义扩展" style={{ maxWidth: "100%" }}>
       <h2>检索与语义模型</h2>
       <p className="muted">语义检索为可选扩展：未准备、不可用或关闭时，记忆和资料检索会自动回退为本地关键词匹配，不会自动后台下载模型。</p>
       {(integrations.error || error || sem?.error) && <p role="alert">{error || sem?.error || String(integrations.error)}</p>}
@@ -63,8 +64,8 @@ export function ResearchSettings() {
             <p className="muted">模型：{sem.model || "未指定"} · 状态：{sem.status} · {sem.available ? "已就绪" : "未就绪（当前回退为关键词检索）"}</p>
             <p className="muted">首次准备需下载并加载本地向量模型，可能耗时并占用网络与磁盘空间；仅在手动确认后开始准备。</p>
             {isPreparing && <p role="status">正在下载并准备语义模型，请稍候…</p>}
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 6 }}>
-              <label style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+            <div className="research-settings-actions">
+              <label className="research-semantic-toggle">
                 <input
                   type="checkbox"
                   checked={sem.enabled}
@@ -76,7 +77,7 @@ export function ResearchSettings() {
                     );
                   }}
                 />
-                启用语义检索
+                <span>启用语义检索</span>
               </label>
               <Button
                 type="button"

@@ -1,0 +1,13 @@
+{
+  "removed_own_failed_candidate_apps": [
+    "/Users/czy/ProjectManagement/.Demo2.9.1-staging-attempt1-browser-cache/课间桌宠.app",
+    "/Users/czy/ProjectManagement/.Demo2.9.1-staging-attempt2-sleep/课间桌宠.app"
+  ],
+  "preserved": [
+    "both failed-attempt logs",
+    "Demo2.9 previous release",
+    "Demo2.9.1 final release",
+    "personal data and private configuration",
+    "dependencies and source"
+  ]
+}
