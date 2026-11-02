@@ -177,7 +177,18 @@
       "bytes": 16411,
       "remote_verified": true,
       "local_old_copy_removed": true
+    },
+    {
+      "release": "Demo2.8.1",
+      "repo": "ZeeyeC/scut-student-private-assistant",
+      "tag": "archive/demo2.8.1-20261102",
+      "url": "https://github.com/ZeeyeC/scut-student-private-assistant/releases/tag/archive/demo2.8.1-20261102",
+      "asset": "Demo2.8.1-full-archive.zip",
+      "sha256": "b498376c9dc81439e254f86b3bff855a3c1ec2e4cb685083f10fbf5a17fa9066",
+      "bytes": 367217457,
+      "remote_verified": true,
+      "local_old_copy_removed": true
     }
   ],
-  "local_latest": "Demo2.8.1"
+  "local_latest": "Demo2.9"
 }

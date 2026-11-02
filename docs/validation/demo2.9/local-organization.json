@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "previous_release": "Demo2.8.1",
+  "private_cloud_download_sha_verified": true,
+  "local_previous_release_removed": true,
+  "local_latest": "Demo2.9",
+  "stable_entry_updated": true,
+  "private_data_configuration_dependencies_preserved": true,
+  "failed_and_diagnostic_app_directories_removed": 9,
+  "temporary_cloud_upload_copy_removed": true,
+  "visible_synthetic_fixture_folder_removed": true
+}

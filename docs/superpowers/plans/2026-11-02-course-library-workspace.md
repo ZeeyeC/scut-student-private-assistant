@@ -46,6 +46,6 @@
 ### Task 4: 设计对照与发布
 **Files:** 新设计参考manifest/视觉验证脚本、frontend/e2e/knowledge-library.spec.ts及现有视觉用例、scripts/release-macos.py、VERSION、README、docs/releases/Demo2.9.md。
 - [x] 从批准预览生成独立只读参考截图，不从实现截图反向建立参考。旧页面仅导航区域按新参考验收，正文与桌宠继续对照旧已接受参考；禁止忽略未批准的正文变化。
-- [ ] 完成一次独立代码审查并修复Important/Critical；前后端针对检查与完整门禁通过后独立发布2.9。
-- [ ] 实际WKWebView验证上传/分类/选用/侧栏滚动，原资料无参数恢复与私密值扫描；不把合成模型当真实识别效果。
+- [x] 完成一次独立代码审查并修复Important/Critical；前后端针对检查与完整门禁通过后独立发布2.9。
+- [x] 实际WKWebView验证上传/分类/选用/侧栏滚动，原资料无参数恢复与私密值扫描；不把合成模型当真实识别效果。
 - [ ] GitHub同步源码与验收，旧2.8.1完整包上传原私有Releases并下载SHA校验后清理旧副本；固定入口切换2.9，保留源码/配置/资料/备份/依赖。

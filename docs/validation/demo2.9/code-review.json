@@ -21,7 +21,7 @@
       "ignore unrelated global desktop clicks in isolated smoke only",
       "wait for mouse release in idle-animation test"
     ],
-    "real_app_global_outside_click": "pending final CUA acceptance"
+    "real_app_global_outside_click": "passed; regular final App, CUA pet panel then Finder outside click"
   },
   "extension_attachment_review": {
     "important_remaining": 0,

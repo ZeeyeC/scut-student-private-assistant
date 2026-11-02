@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "app_version": "2.9.0",
+  "scope": "final portable App, regular non-smoke mode, explicit isolated local data; CUA + real frozen backend",
+  "checks": [
+    "native standalone library and assistant-first navigation",
+    "existing saved source visible",
+    "real NSOpenPanel file selection and preview",
+    "upload selected course and persist original text",
+    "detail shows parsed original location",
+    "save classification change persisted at revision 2",
+    "use saved source opens assistant attachment",
+    "zero agent runs before manual send",
+    "20-file list scrolls while sidebar and bottom settings stay fixed",
+    "close main window retains visible pet",
+    "pet click opens todo panel",
+    "switch to Finder and outside click closes todo in regular mode",
+    "Command-Q stops isolated service"
+  ],
+  "automated_smoke_and_manual_global_click_scopes_separate": true,
+  "private_original_database_used": false,
+  "paid_model_calls": false,
+  "limits": [
+    "cross-window file dragging in this new library dialog was not separately manually exercised",
+    "no paid model or genuine school/Zotero accuracy acceptance in this iteration"
+  ]
+}

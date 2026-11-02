@@ -51,7 +51,7 @@
 
 App与安装包由本地发布流程生成；本地最新版入口见工作区README。历史版本已备份到既有私有GitHub Releases，需登录有权限的账号下载，见[云端归档与恢复](docs/releases/历史版本云端归档.md)。源码构建见下方说明。
 
-当前构建 **2.9.0 课程资料工作区**，分支`codex/course-library-workspace`。最终进度见[本版记录](docs/validation/demo2.9/README.md)。
+最新发布 **2.9.0 课程资料工作区**，分支`codex/course-library-workspace`。19门禁、803后台+20子项、114前端、111界面与最终App原生上传/分类/选用/固定侧栏验收通过，签名/39哈希/双ZIP/252运行源码核对通过。[本版记录](docs/validation/demo2.9/README.md)。
 
 历史发布 **2.8.1 启动交接修复**，分支`codex/demo2.8.1-startup-handoff`。19门禁、796后台+20子项、113前端、102界面通过，正式包实际旧版→新版原生交接通过；签名/39哈希/246运行源码核对通过。[本版说明](docs/releases/Demo2.8.1.md) · [验收记录](docs/validation/demo2.8.1/README.md)。
 

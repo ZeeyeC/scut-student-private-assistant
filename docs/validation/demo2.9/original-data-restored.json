@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "scope": "final App reopened without data-directory arguments; read-only check",
+  "app_version": "2.9.0",
+  "original_selected_database_identity_matched": true,
+  "private_config_files_unchanged": true,
+  "original_course_task_step_profile_memory_settings_source_rows_unchanged": true,
+  "model_configured": true,
+  "vision_configured": true,
+  "paid_model_calls": false
+}
