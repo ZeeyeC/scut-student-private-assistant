@@ -1,0 +1,8 @@
+{
+  "diagnostic": "Chrome had a real created school tab with an empty committed URL and correct pendingUrl; Playwright had not surfaced its Page",
+  "original_isolated_reproduction": "3 repeated runs failed",
+  "fix": "Assert destination through actual chrome.tabs API; attach the same existing tab with a local blank navigation only when pending, then navigate the controlled synthetic timetable",
+  "corrected_isolated_reproduction": "3 repeated complete capture-and-return runs passed",
+  "product_extension_changed": false,
+  "school_credentials_used": false
+}

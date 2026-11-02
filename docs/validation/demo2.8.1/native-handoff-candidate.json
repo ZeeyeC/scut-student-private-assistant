@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scope": "CUA actual 2.5.4 App + first2.8.1 candidate, both empty isolated data; candidate is not final release",
+  "cancel_preserves_old_service": true,
+  "disconnected_command_q_exits": true,
+  "reopen_shows_switch_sheet": true,
+  "confirmed_switch_quits_old_gui_and_gracefully_stops_old_service": true,
+  "replacement_selected_database_and_runtime_verified": true,
+  "replacement_native_workspace_visible": true,
+  "new_command_q_stops_backend": true,
+  "personal_data_touched": false,
+  "paid_model_calls": false
+}
