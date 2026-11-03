@@ -60,6 +60,7 @@ const labels: Record<string, string> = {
   commit_import: "确认保存",
   commit_plan: "确认保存计划",
   set_task_status: "更新作业状态",
+  delete_fixed_event: "删除固定事项",
   set_task_deadline: "更新截止时间",
 };
 export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=false, focusThreadId, focusSourceId, focusRequest = 0 }: { embedded?: boolean; courseEntry?: boolean; reviewOutside?:boolean;focusThreadId?: string; focusSourceId?:string; focusRequest?: number }) {

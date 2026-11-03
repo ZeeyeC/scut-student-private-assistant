@@ -100,3 +100,30 @@ test('mounted calendar switches views across main-window and compact widths with
   expect(await page.locator('.fc-toolbar-title').textContent()).toBe(heading);
   expect(await page.evaluate(()=>(window as any).__originalCalendar===document.querySelector('.fc'))).toBe(true);
 });
+
+test('fixed event chat fits the panel and calendar details delete after confirmation',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await enter(page);
+  const start='2026-11-04T12:00:00+08:00';
+  const token=await (await page.request.get('/api/csrf')).json();
+  const response=await page.request.post('/api/fixed-events',{
+    headers:{'Origin':new URL(page.url()).origin,'X-CSRF-Token':token.csrf_token,'Idempotency-Key':crypto.randomUUID()},
+    data:{title:'固定事项删除测试',starts_at:start,ends_at:'2026-11-04T14:00:00+08:00'},
+  });
+  expect(response.ok(),await response.text()).toBe(true);
+  await page.evaluate(date=>window.dispatchEvent(new CustomEvent('campus-calendar-saved',{detail:date})),start);
+  await page.getByRole('button',{name:'固定事项',exact:true}).click();
+  const input=page.getByRole('textbox',{name:'给助手的消息'});
+  await expect(input).toBeVisible();
+  expect((await input.boundingBox())?.width).toBeGreaterThan(200);
+  await page.keyboard.press('Escape');
+  await page.locator('.fc-event').filter({hasText:'固定事项删除测试'}).click();
+  const detail=page.getByRole('dialog',{name:'固定事项删除测试',exact:true});
+  await detail.getByRole('button',{name:'删除事项',exact:true}).click();
+  await detail.getByRole('button',{name:'取消',exact:true}).click();
+  await expect(detail.getByRole('button',{name:'删除事项',exact:true})).toBeVisible();
+  await detail.getByRole('button',{name:'删除事项',exact:true}).click();
+  await detail.getByRole('button',{name:'确认删除事项',exact:true}).click();
+  await expect(detail).toBeHidden();
+  await expect(page.locator('.fc-event').filter({hasText:'固定事项删除测试'})).toHaveCount(0);
+});

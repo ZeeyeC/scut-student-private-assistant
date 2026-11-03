@@ -174,11 +174,11 @@ input[type=checkbox]{accent-color:var(--workspace-accent);width:16px;height:16px
 .assistant-page:not(.embedded) .message.assistant{align-self:flex-start;padding:0;border-radius:0;background:transparent;width:100%;max-width:100%;color:var(--workspace-ink);}
 .assistant-page:not(.embedded) .message.assistant:before{content:'课间';display:block;font-size:11px;color:var(--workspace-muted);margin-bottom:8px;}
 .assistant-page:not(.embedded) .message p{font:inherit;color:inherit;margin:0;line-height:inherit;}
-.assistant-page:not(.embedded) .composer{display:flex;flex-direction:column;gap:0;padding:13px 14px 10px;border:1px solid var(--workspace-button-border);border-radius:8px;background:var(--workspace-paper);}
-.assistant-page:not(.embedded) .composer textarea{width:100%;min-height:56px;max-height:180px;border:0;background:transparent;padding:0;resize:none;font-size:14px;}
+.assistant-page:not(.embedded) .composer,.fixed-event-chat .assistant-page .composer{display:flex;flex-direction:column;gap:0;padding:13px 14px 10px;border:1px solid var(--workspace-button-border);border-radius:8px;background:var(--workspace-paper);}
+.assistant-page:not(.embedded) .composer textarea,.fixed-event-chat .assistant-page .composer textarea{width:100%;min-height:56px;max-height:180px;border:0;background:transparent;padding:0;resize:none;font-size:14px;}
 .composer-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin-top:5.6875px;}
 .composer .workspace-text-button{background:transparent;border:0;border-radius:0;padding:0;min-height:18px;color:var(--workspace-accent);align-self:center;}
-.assistant-page:not(.embedded) .composer .workspace-button{background:var(--workspace-accent);border-radius:6px;padding:8px 13px;min-height:35px;font-size:13px;line-height:1.4;color:var(--workspace-on-accent);}
+.assistant-page:not(.embedded) .composer .workspace-button,.fixed-event-chat .assistant-page .composer .workspace-button{background:var(--workspace-accent);border-radius:6px;padding:8px 13px;min-height:35px;font-size:13px;line-height:1.4;color:var(--workspace-on-accent);}
 .thread-history-row{display:block;width:100%;padding:20px 0;text-align:left;border:0;border-bottom:1px solid var(--workspace-line);background:transparent;font-size:13px;}
 .import-school-primary{padding:20px;background:var(--workspace-focus);border:1px solid var(--workspace-line);border-radius:8px;}
 .import-school-heading{display:flex;align-items:center;gap:12px;margin-bottom:17px;}
@@ -265,3 +265,5 @@ input[type=checkbox]{accent-color:var(--workspace-accent);width:16px;height:16px
 
 .extension-setup{padding-top:12px;color:var(--workspace-ink)}.extension-setup ol{display:grid;gap:18px}.extension-setup li p{margin:6px 0;font-size:12px}.extension-setup .workspace-button{margin:5px 8px 0 0;font-size:12px}.extension-setup .directory{color:var(--workspace-muted);overflow-wrap:anywhere}
 .workspace-sidebar{line-height:1.5;}
+
+.fixed-event-chat .assistant-layout.has-review{grid-template-columns:minmax(0,1fr);}

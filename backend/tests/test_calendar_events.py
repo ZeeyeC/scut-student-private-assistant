@@ -214,3 +214,50 @@ def test_course_configuration_warning_does_not_hide_fixed_events(tmp_path):
             c.get("/api/calendar-events?start=2026-10-16&end=2026-10-15").status_code
             == 422
         )
+
+
+class DeleteFixedEventModel(ToolModel):
+    def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+        import json
+
+        last = messages[-1]
+        if isinstance(last, ToolMessage) and last.name == "delete_fixed_event":
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="操作结束"))])
+        if isinstance(last, ToolMessage) and last.name == "list_calendar_events":
+            event = json.loads(last.content)["events"][0]
+            name, args = "delete_fixed_event", {"event_id": event["id"], "revision": event["revision"]}
+        else:
+            name, args = "list_calendar_events", {"start_date": "2026-10-16", "end_date": "2026-10-16"}
+        message = AIMessage(content="", tool_calls=[{"name": name, "args": args, "id": name}])
+        return ChatResult(generations=[ChatGeneration(message=message)])
+
+
+def test_fixed_event_delete_requires_approval(tmp_path):
+    with make_client(tmp_path) as c:
+        h = register_login(c)
+        event = post(c, h, "/api/fixed-events", {
+            "title": "测试事项", "starts_at": "2026-10-16T17:30:00+08:00",
+            "ends_at": "2026-10-16T19:00:00+08:00",
+        }, "fixed").json()
+        url = f"/api/fixed-events/{event['id']}"
+        c.app.state.agent_model_factory = DeleteFixedEventModel
+        for choice in ("reject", "approve"):
+            thread = post(c, h, "/api/agent/threads", {}, f"thread-{choice}").json()
+            run = post(c, h, "/api/agent/runs", {
+                "thread_id": thread["id"], "message": "删除测试事项",
+            }, f"run-{choice}").json()
+            pending = wait_run(c, run["id"])
+            assert pending["data"]["status"] == "waiting_approval"
+            assert c.get(url).json() == event
+            approval_id = pending["data"]["approval_id"]
+            approval = c.get(f"/api/agent/approvals/{approval_id}").json()
+            assert approval["data"]["actions"] == [{
+                "name": "delete_fixed_event",
+                "args": {"event_id": event["id"], "revision": event["revision"]},
+            }]
+            response = post(c, h, f"/api/agent/runs/{run['id']}/resume", {
+                "approval_id": approval_id, "revision": approval["revision"], "decision": choice,
+            }, f"resume-{choice}")
+            assert response.status_code == 200
+            assert wait_run(c, run["id"])["data"]["status"] == "done"
+            assert c.get(url).status_code == (404 if choice == "approve" else 200)

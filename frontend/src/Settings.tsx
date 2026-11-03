@@ -1,3 +1,4 @@
+import {DeleteFixedEvent} from "./DeleteFixedEvent";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -413,26 +414,12 @@ export function FixedEvents() {
         </div>
         <Button>确认添加固定事项</Button>
       </form>
+      {events.error && <p role="alert">{String(events.error)}</p>}
       {events.data?.map((e) => (
-        <p key={e.id}>
-          {e.data.title} · {new Date(e.data.starts_at).toLocaleString("zh-CN")}{" "}
-          <Button
-            variant="outline"
-            onClick={async () => {
-              try {
-                await api("/fixed-events/" + e.id, {
-                  method: "DELETE",
-                  body: JSON.stringify({ revision: e.revision }),
-                });
-                q.invalidateQueries();
-              } catch (x) {
-                setError(String(x));
-              }
-            }}
-          >
-            删除事项
-          </Button>
-        </p>
+        <div key={e.id}>
+          <p>{e.data.title} · {new Date(e.data.starts_at).toLocaleString("zh-CN")}</p>
+          <DeleteFixedEvent id={e.id} revision={e.revision} title={e.data.title}/>
+        </div>
       ))}
       {error && <p role="alert">{error}</p>}
     </section>

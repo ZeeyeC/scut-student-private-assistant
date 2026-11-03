@@ -54,7 +54,7 @@
 
 App与安装包由本地发布流程生成；本地最新版入口见工作区README。历史版本已备份到既有私有GitHub Releases，需登录有权限的账号下载，见[云端归档与恢复](docs/releases/历史版本云端归档.md)。源码构建见下方说明。
 
-最新版本 **2.9.2 助手Markdown与数学公式**，分支`codex/chat-markdown-math`。支持格式化回答、表格、代码复制和本地公式，兼容历史与流式消息。[本版说明](docs/releases/Demo2.9.2.md) · [验收记录](docs/validation/demo2.9.2/README.md)。19项发布门禁、116项界面与正式App原生显示验收通过，原资料已恢复。
+当前源码 **2.9.3 固定事项删除**。固定事项列表、日程详情和助手支持逐项确认删除，并修复固定事项面板的输入框宽度。[本版说明](docs/releases/Demo2.9.3.md)。上一版 2.9.2 发布验证见[验收记录](docs/validation/demo2.9.2/README.md)。
 
 历史补丁 **2.9.1 检索设置排版修复**，分支`codex/research-settings-layout`。复选框与“启用语义检索”同行，补充搜索服务地址说明。[本版说明](docs/releases/Demo2.9.1.md) · [验收记录](docs/validation/demo2.9.1/README.md)。19项发布检查、803后台+20子项、114前端、111界面及正式App设置页目视验收通过；原资料已恢复。
 

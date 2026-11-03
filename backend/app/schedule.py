@@ -11,6 +11,14 @@ from app.constraints import expand_constraints
 from app.conflicts import detect_conflicts
 
 
+async def remove_fixed_event(db, owner, event_id, revision):
+    event = await store.owned(db, owner, event_id, "fixed_event")
+    store.revision(event, revision)
+    await db.delete(event)
+    await store.bump(db, owner)
+    return {"deleted": True}
+
+
 async def calendar_events(db, owner, start, end):
     if end < start or (end - start).days > 366:
         raise HTTPException(422, "日期范围应在一年内")
@@ -45,6 +53,7 @@ async def calendar_events(db, owner, start, end):
                 events.append(
                     {
                         "id": row.id,
+                        "revision": row.revision,
                         "kind": kind,
                         "title": data.get("title")
                         or tasks.get(data.get("task_id"), "学习安排"),

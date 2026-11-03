@@ -15,7 +15,7 @@ from app.contracts import (
 )
 from app.db import Resource
 from app.deletion import delete_draft
-from app.schedule import calendar_events
+from app.schedule import calendar_events, remove_fixed_event
 
 
 def business_router(get_db, current_user):
@@ -186,6 +186,10 @@ def business_router(get_db, current_user):
             store.view(r) for r in await store.rows(db, str(user.id), "fixed_event")
         ]
 
+    @router.get("/fixed-events/{rid}", response_model=ResourceView)
+    async def fixed_detail(rid: str, user=Depends(current_user), db=Depends(get_db)):
+        return store.view(await store.owned(db, str(user.id), rid, "fixed_event"))
+
     @router.delete("/fixed-events/{rid}")
     async def fixed_delete(
         rid: str,
@@ -195,11 +199,7 @@ def business_router(get_db, current_user):
         db=Depends(get_db),
     ):
         async def op():
-            r = await store.owned(db, str(user.id), rid, "fixed_event")
-            store.revision(r, body.revision)
-            await db.delete(r)
-            await store.bump(db, str(user.id))
-            return {"deleted": True}
+            return await remove_fixed_event(db, str(user.id), rid, body.revision)
 
         return await store.mutate(
             db, str(user.id), f"fixed-delete:{rid}", key, body.model_dump(), op

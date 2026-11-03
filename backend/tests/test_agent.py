@@ -108,6 +108,7 @@ def test_actual_tools_restricted_and_real_service_query(tmp_path):
                 "resolve_academic_deadline",
                 "create_calendar_event_draft",
                 "list_calendar_events",
+                "delete_fixed_event",
                 "propose_decomposition",
                 "propose_daily_plan",
                 "commit_import",

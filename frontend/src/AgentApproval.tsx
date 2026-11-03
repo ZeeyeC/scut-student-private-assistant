@@ -6,7 +6,7 @@ import {Button} from './components/ui/button';
 import {ConflictReview, type ConflictReport} from './ConflictReview';
 import {constraintInput} from './constraint-time';
 
-const labels:Record<string,string>={commit_import:'确认保存',commit_plan:'确认保存计划',set_task_status:'更新作业状态',set_task_deadline:'更新截止时间'};
+const labels:Record<string,string>={commit_import:'确认保存',commit_plan:'确认保存计划',set_task_status:'更新作业状态',set_task_deadline:'更新截止时间',delete_fixed_event:'删除固定事项'};
 const conflictKinds=new Set(['calendar_event','timetable','timetable_recognition','timetable_text','course_change']);
 type ApprovalAction={name:string;args:Record<string,any>};
 type ConstraintPreview={windows:Resource[];affected_plans:Resource[];active_after_save:boolean};
@@ -58,7 +58,9 @@ export function approvalOperation(approval:Resource,runId:string,decision:Decisi
       if(JSON.stringify(entry.action)!==JSON.stringify(action))throw new Error('待确认参数已变化，请刷新核对');
       if(entry.fetching || entry.error || !resource)throw new Error('准确内容尚未读取，无法批准');
       if(resource.revision!==action.args.revision)throw new Error('内容版本已变化，请拒绝后重新提出请求');
-      if(action.args.draft_id) {
+      if(action.name==='delete_fixed_event') {
+        if(actions.length!==1 || resource.kind!=='fixed_event' || resource.id!==action.args.event_id || !resource.data.title)throw new Error('请逐项核对要删除的固定事项');
+      } else if(action.args.draft_id) {
         if(!['commit_import','commit_plan'].includes(action.name))throw new Error('尚不支持批准这项操作');
         if(resource.kind!=='draft' || resource.id!==action.args.draft_id || resource.data.status!=='pending' || !hasContent(resource))throw new Error('草稿内容缺失或已失效，无法批准');
         const kind=resource.data.draft_kind;
@@ -99,7 +101,12 @@ function ApprovalContent({id,runId,onResume}:ApprovalProps) {
   const busyRef=useRef(false);
   const approval=useQuery({queryKey:['approval',id],queryFn:()=>api<Resource>('/agent/approvals/'+id),refetchInterval:15000});
   const actions:ApprovalAction[]=Array.isArray(approval.data?.data.actions)?approval.data.data.actions:[];
-  const sources=useQueries({queries:actions.map(action=>({queryKey:[action.args.draft_id?'approval-draft':'approval-task',action.args.draft_id || action.args.task_id],queryFn:()=>api<Resource>((action.args.draft_id?'/drafts/':'/tasks/')+(action.args.draft_id || action.args.task_id)),enabled:!!(action.args.draft_id || action.args.task_id),refetchInterval:15000}))});
+  const sources=useQueries({queries:actions.map(action=>{
+    const [kind, target]=action.name==='delete_fixed_event'
+      ? ['fixed-events',action.args.event_id]
+      : action.args.draft_id ? ['drafts',action.args.draft_id] : ['tasks',action.args.task_id];
+    return {queryKey:[kind==='fixed-events'?'approval-fixed-event':kind==='drafts'?'approval-draft':'approval-task',target],queryFn:()=>api<Resource>(`/${kind}/${target}`),enabled:!!target,refetchInterval:15000};
+  })});
   const conflicts=useQueries({queries:actions.map((action,i)=>{
     const draft=sources[i].data;
     return {queryKey:['approval-conflict',id,action.args.draft_id,draft?.revision],queryFn:()=>api<ConflictReport>(`/drafts/${draft!.id}/conflict-preview`,{method:'POST',body:JSON.stringify({revision:draft!.revision,payload:draft!.data.payload})}),enabled:!!draft && !sources[i].error && draft.revision===action.args.revision && conflictKinds.has(draft.data.draft_kind),refetchInterval:15000};
@@ -133,9 +140,9 @@ function ApprovalContent({id,runId,onResume}:ApprovalProps) {
   }
   return <section className="card confirm" aria-label="助手操作确认">
     <h2>这一步需要你确认</h2>
-    <p>批准后才会保存或更新；拒绝不会写入业务数据。</p>
+    <p>批准后才会执行所列操作。</p>
     {approval.error && <p role="alert">确认请求读取失败：{String(approval.error)}</p>}
-    {evidence.map((entry,i)=><div key={`${entry.action.name}:${entry.action.args.draft_id || entry.action.args.task_id}:${i}`}>
+    {evidence.map((entry,i)=><div key={`${entry.action.name}:${entry.action.args.draft_id || entry.action.args.task_id || entry.action.args.event_id}:${i}`}>
       <h3>{labels[entry.action.name] || entry.action.name}</h3>
       {!!entry.error && <p role="alert">准确内容读取失败：{String(entry.error)}</p>}
       {!entry.resource?<p role="status">正在读取准确内容…</p>:<>
@@ -190,6 +197,7 @@ function ApprovalDraft({draft}:{draft:Resource}) {
 }
 function ApprovalTask({resource:task,args,name,timezone}:{resource:Resource;args:Record<string,any>;name:string;timezone:string}) {
   function deadline(value:string|null|undefined) {return value?when(value,timezone):'待确认';}
+  if(name==='delete_fixed_event') return <p>删除「{task.data.title}」 · {when(task.data.starts_at,timezone)} 至 {when(task.data.ends_at,timezone)}</p>;
   if(name==='set_task_deadline') {
     const recovery=args.deadline_type==='remedy_due_at';
     return <div><p>{task.data.title} · 版本 {args.revision}</p><p>原{recovery?'补救':''}截止时间：{deadline(task.data[args.deadline_type])}</p><p>新{recovery?'补救':''}截止时间：{deadline(args.due_at)}</p><p>时区：{timezone}</p>{!recovery && task.data.remedy_due_at && <p>确认后清除原补救截止时间：{deadline(task.data.remedy_due_at)}</p>}<p>已有步骤和学习安排保留；旧计划与拆解草稿会失效，请重新生成。</p></div>;

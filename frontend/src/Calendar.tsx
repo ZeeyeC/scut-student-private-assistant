@@ -22,6 +22,7 @@ import {CampusTransfers, ConflictReview, type ConflictReport} from "./ConflictRe
 
 import {DetailPanel} from "./layout/DetailPanel";
 import type {CalendarFilter} from "./layout/navigation";
+import {DeleteFixedEvent} from "./DeleteFixedEvent";
 import {FixedEvents} from "./Settings";
 import {StudyTypes} from "./StudyTypes";
 import { SemesterCalendar } from "./SemesterCalendar";
@@ -163,13 +164,14 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
         {selected.kind === "course" && <CourseIntervals event={selected} timezone={settings.data?.data.timezone ?? "Asia/Shanghai"} />}
         {selected.course_id&&<StudyTypes targetId={selected.course_id}/>}
         {timetable && selected.kind === "course" && selected.course_id && <CourseCampusEditor key={selected.course_id} courseId={selected.course_id} onCreated={async id=>{setNewDraft(id);setDetailOpen(false);window.dispatchEvent(new Event('campus-start-import'));setSelected(null);await q.invalidateQueries({queryKey:["drafts"]});}} />}
+        {selected.kind === "fixed_event" && selected.revision !== undefined && <DeleteFixedEvent key={selected.id} id={selected.id} revision={selected.revision} title={selected.title} onDeleted={()=>{setDetailOpen(false);setSelected(null);}} />}
         {selected.kind !== "scheduling_constraint" && <ScheduleShortcut key={`${selected.id}:${selected.starts_at}`} event={selected} />}
         {selected.kind === "course" && <><p>{selected.adjusted ? "本次课程已调整 · " : ""}原课日期 {selected.original_date}</p><Button variant="outline" onClick={()=>setAdjustCourse(!adjustCourse)}>调课或停课</Button></>}
 
         {selected.kind === "course" && adjustCourse && <CourseChangeForm key={selected.id} event={selected} timezone={settings.data?.data.timezone??"Asia/Shanghai"} onClose={()=>{setAdjustCourse(false);window.dispatchEvent(new Event("campus-open-review"));setDetailOpen(false);}} />}
       </section>}</DetailPanel>
       <DetailPanel open={panel==='plan'} title="安排学习" onClose={()=>setPanel(null)}><SmartSchedule/></DetailPanel>
-      <DetailPanel open={panel==='fixed'} title="固定事项" onClose={()=>setPanel(null)}><FixedEvents/><ChatPage embedded/></DetailPanel>
+      <DetailPanel open={panel==='fixed'} title="固定事项" onClose={()=>setPanel(null)}><FixedEvents/><div className="fixed-event-chat"><ChatPage embedded/></div></DetailPanel>
       <DetailPanel open={panel==='rules'} title="课程规则" onClose={()=>setPanel(null)}><CampusTransfers/>
 
       <SemesterCalendar timezone={settings.data?.data.timezone??"Asia/Shanghai"} />

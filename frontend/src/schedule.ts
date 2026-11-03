@@ -16,6 +16,7 @@ export type ScheduleEvent = CourseIntervalsData & {
   id: string;
   kind: 'course' | 'fixed_event' | 'plan_block' | 'scheduling_constraint';
   title: string;
+  revision?: number;
   starts_at: string;
   ends_at: string;
   location?: string | null;
