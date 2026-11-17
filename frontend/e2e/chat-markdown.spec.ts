@@ -138,3 +138,43 @@ test('unbreakable inline and bracket math stay inside the answer on narrow scree
  await expect.poll(()=>answer.locator('.katex').first().evaluate(n=>n.scrollLeft)).toBeGreaterThan(0);
  await expect(page.getByLabel('给助手的消息')).toBeVisible();
 });
+
+test('assistant composer stays above the window edge while history and review scroll', async ({ page }) => {
+  const history = Array.from({ length: 60 }, (_, i) => `测试回复第 ${i + 1} 段。`).join('\n\n');
+  await reply(page, [history]);
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await enter(page);
+
+  const composer = page.locator('.composer');
+  const viewport = page.locator('.chat-viewport');
+  const bottomGap = () => composer.evaluate(el => innerHeight - el.getBoundingClientRect().bottom);
+  const expectComposerAtBottom = async () => {
+    await expect.poll(bottomGap).toBeCloseTo(24, 0);
+    await expect(page.getByRole('button', { name: '发送', exact: true })).toBeInViewport();
+  };
+
+  await expectComposerAtBottom();
+  await send(page, '窗口布局测试');
+  await expect(page.locator('.message.assistant')).toContainText('测试回复第 60 段。');
+  await expect(page.getByRole('button', { name: '新会话', exact: true })).toBeEnabled();
+
+  for (const size of [{ width: 1440, height: 950 }, { width: 960, height: 580 }, { width: 440, height: 475 }]) {
+    await page.setViewportSize(size);
+    await expectComposerAtBottom();
+    await viewport.evaluate(el => { el.scrollTop = 0; });
+    await viewport.hover();
+    await page.mouse.wheel(0, 250);
+    await expect.poll(() => viewport.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+    expect(await page.locator('#workspace-content').evaluate(el => el.scrollTop)).toBe(0);
+    await expectComposerAtBottom();
+  }
+
+  await page.getByRole('button', { name: '安排持续约束', exact: true }).click();
+  await expect(page.getByRole('complementary', { name: '草稿校对区' })).toBeInViewport();
+  await expectComposerAtBottom();
+  await page.getByLabel('选择作业截图').setInputFiles(
+    fileURLToPath(new URL('./fixtures/chat-images/homework.png', import.meta.url)),
+  );
+  await expect(page.getByAltText('待发送的作业截图')).toBeInViewport();
+  await expectComposerAtBottom();
+});

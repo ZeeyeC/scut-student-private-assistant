@@ -311,6 +311,24 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
   const hasIntents = constraintIntents.data?.some(r=>["clarifying","ready_for_review"].includes(r.data.status));
   useEffect(()=>{if(hasIntents)setShowConstraints(true);},[hasIntents]);
   const hasReview = pendingMemoryCount>0 || !!approvalId || pendingDrafts.length > 0 || showConstraints || !!hasIntents;
+  const errorNotice = error && (
+    <div className="chat-error" role="alert">
+      <p>{error}</p>
+      <Button
+        variant="outline"
+        onClick={() => {
+          setError("");
+          setEpoch((e) => e + 1);
+        }}
+      >
+        重新连接历史
+      </Button>
+    </div>
+  );
+  const attachmentNotice = !!(image.images.length || documents.totalCount) && (
+    <p className="chat-image-disclosure">发送附件的相关内容将交给已配置的模型</p>
+  );
+
   return (
     <div className={embedded ? "assistant-page embedded" : "assistant-page"}>
       <DetailPanel open={knowledgeOpen} title="课程资料" onClose={()=>setKnowledgeOpen(false)}><KnowledgeManager disabled={running||!!approvalId||navigating} onSelect={source=>documents.toggleSource(source)} selectedIds={documents.selectedSources.map(s=>s.id)}/></DetailPanel>
@@ -371,6 +389,8 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
             {imageRun.data.status==='failed'&&<button type="button" onClick={()=>void actOnImage('retry')}>重试图片识别</button>}
             {running&&imageRun.id===runId&&<button type="button" onClick={()=>void actOnImage('cancel')}>取消图片识别</button>}
           </div>}
+          {!embedded && errorNotice}
+          {!embedded && attachmentNotice}
           <ComposerPrimitive.Root className="composer">
             <ChatImageControls state={image} disabled={running||!!approvalId||navigating} onPickDocuments={()=>documentInput.current?.click()}/>
             <ChatDocumentControls state={documents} disabled={running||!!approvalId||navigating} onPickFiles={()=>documentInput.current?.click()}/>
@@ -384,23 +404,10 @@ export function ChatPage({ embedded = false, courseEntry = false, reviewOutside=
             />
             <div className="composer-bottom"><span/>{(image.images.length||documents.totalCount)?<button type="button" className="workspace-button" aria-label="发送" disabled={running||!!approvalId||navigating} onClick={()=>void sendMessage(composerInput.current?.value??'')}><ArrowUp size={16}/>发送</button>:<ComposerPrimitive.Send className="workspace-button" disabled={!!approvalId||navigating}><ArrowUp size={16}/>发送</ComposerPrimitive.Send>}</div>
           </ComposerPrimitive.Root>
-          {!!(image.images.length||documents.totalCount)&&<p className="chat-image-disclosure">发送附件的相关内容将交给已配置的模型</p>}
+          {embedded && attachmentNotice}
         </ThreadPrimitive.Root></ImageDropArea>
       </AssistantRuntimeProvider>
-      {error && (
-        <div role="alert">
-          <p>{error}</p>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setError("");
-              setEpoch((e) => e + 1);
-            }}
-          >
-            重新连接历史
-          </Button>
-        </div>
-      )}
+      {embedded && errorNotice}
         </div>
       {hasReview && <div className="review-panel" role="complementary" aria-label="草稿校对区">
       <h2 className="review-panel-title">待校对 · {pendingDrafts.length + pendingMemoryCount + (approvalId ? 1 : 0)}</h2>

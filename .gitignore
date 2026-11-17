@@ -33,3 +33,16 @@ node_modules
 
 .connector-secrets/
 knowledge-index/
+
+# Local reports, presentation deliverables and media production projects.
+/docs/report/
+/docs/video/
+/videos/
+/diagram/
+/exports/
+/outputs/
+/课间汇报与展示材料/
+/docs/demo2.2/*.mp4
+/第三组大作业报告-*.docx
+/第三组大作业报告-*.zip
+/附件1-项目分工与技术贡献表.xlsx

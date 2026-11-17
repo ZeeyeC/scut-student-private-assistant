@@ -2,7 +2,7 @@
 
 课间是一款面向华工学生的个人学习助手，整合课表导入、作业截图整理、待办、学习排程、桌宠和可确认的长期偏好记忆。日常在独立App内使用，学校课表导入按需唤起Chrome/Edge。
 
-宣传片制作工程见 [videos/campus-promo-v1](videos/campus-promo-v1/README.md)：采用完全虚构的业务资料、真实 App 录屏与 Remotion 动画。62秒V2有声版已由用户通过并授权导出，成片为1080p/30fps的H.264/AAC MP4，检查通过；便于访达访问的副本位于`/Users/czy/ProjectManagement/agentbuild/exports/课间宣传片-V2/`。
+汇报、宣传片和制作工程单独保存于本地展示材料目录。
 
 ## 技术栈
 
@@ -54,7 +54,7 @@
 
 App与安装包由本地发布流程生成；本地最新版入口见工作区README。历史版本已备份到既有私有GitHub Releases，需登录有权限的账号下载，见[云端归档与恢复](docs/releases/历史版本云端归档.md)。源码构建见下方说明。
 
-当前源码 **2.9.3 固定事项删除**。固定事项列表、日程详情和助手支持逐项确认删除，并修复固定事项面板的输入框宽度。[本版说明](docs/releases/Demo2.9.3.md)。上一版 2.9.2 发布验证见[验收记录](docs/validation/demo2.9.2/README.md)。
+当前源码 **2.9.4 助手窗口自适应**。助手输入区随窗口缩放保持固定底距，消息独立滚动，窄窗可同时查看校对区和附件预览。[本版说明](docs/releases/Demo2.9.4.md) · [2.9.3 固定事项删除](docs/releases/Demo2.9.3.md)。
 
 历史补丁 **2.9.1 检索设置排版修复**，分支`codex/research-settings-layout`。复选框与“启用语义检索”同行，补充搜索服务地址说明。[本版说明](docs/releases/Demo2.9.1.md) · [验收记录](docs/validation/demo2.9.1/README.md)。19项发布检查、803后台+20子项、114前端、111界面及正式App设置页目视验收通过；原资料已恢复。
 
@@ -88,7 +88,7 @@ App与安装包由本地发布流程生成；本地最新版入口见工作区RE
 
 已发布基线为 **Demo2.4.9 项目收尾与联合交付版**，在甲乙接通基准 `05e7981` 上开发，本地分支 `codex/demo2.4.9-project-completion`。现已增加学校校历批量停课/明确补课/精确撤销、显式课程与任务分类、匹配 deep/review 的偏好与课程类型准备规则，以及独立OCR准确率评测工具。原执行、档案、目标、复盘、计时、协商与权威规划链路继续共用。
 
-[本版说明](docs/releases/Demo2.4.9.md) · [完整项目汇报与甲乙实现清单](docs/report/项目汇报-Demo2.4.9.md) · [汇报讲述提纲](docs/report/项目汇报讲述提纲-Demo2.4.9.md) · [GitHub历史与贡献证据](docs/report/项目历史与甲乙贡献证据-2026-10-30.md)
+[本版说明](docs/releases/Demo2.4.9.md)
 
 当前版本按 [发布流程](docs/releases/发布流程.md) 从源码独立构建、验证和打包，不要求任何历史基线。发布是否通过，以归档 `manifest.json` 和 `验证结果.json` 为准。真实OCR目前没有30份匿名标注/5种布局/完整输入覆盖，不能宣称95%；学校校历内容、实地转移耗时、Windows/Intel与长期使用仍需真实验收。[OCR评测说明](docs/validation/课表准确率评测说明.md)与[当前状态](docs/validation/ocr-acceptance-status.json)明确记录缺口。
 
