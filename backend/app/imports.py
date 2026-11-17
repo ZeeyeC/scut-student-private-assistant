@@ -88,6 +88,9 @@ async def create_draft(db, owner, kind, payload, source=None):
         payload = {**payload, "campus_preset": s.data["campus_preset"]}
     source = dict(source or {})
     if kind == "assignment":
+        from app.course_homework import assignment_snapshots
+
+        source["course_occurrence_snapshots"] = await assignment_snapshots(db, owner, payload)
         image_ids = payload.get("asset_ids") or ([payload["asset_id"]] if payload.get("asset_id") else [])
         if len(image_ids) != len(set(image_ids)):
             raise HTTPException(422, "作业原图列表不能重复")
@@ -248,7 +251,12 @@ async def edit_draft(db, owner, rid, expected, payload):
         for item in validated["items"]:
             if item.get("course_id"):
                 await store.owned(db, owner, item["course_id"], "course")
-    r.data = {**r.data, "payload": validated}
+    source = dict(r.data.get("source", {}))
+    if r.data["draft_kind"] == "assignment":
+        from app.course_homework import assignment_snapshots
+
+        source["course_occurrence_snapshots"] = await assignment_snapshots(db, owner, validated)
+    r.data = {**r.data, "payload": validated, "source": source}
     r.revision += 1
     return store.view(r)
 
@@ -333,6 +341,12 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
 
         ids = await save_steps(db, owner, payload)
     if d.data["draft_kind"] == "assignment":
+        from app.course_homework import assignment_snapshots, invalidate_open_review
+
+        snapshots = await assignment_snapshots(db, owner, payload)
+        expected_snapshots = d.data.get("source", {}).get("course_occurrence_snapshots")
+        if any(snapshots) and snapshots != expected_snapshots:
+            raise HTTPException(409, "课程发生已变化，请重新校对作业草稿")
         for aid in {
             *(payload.get("asset_ids") or []),
             *([payload["asset_id"]] if payload.get("asset_id") else []),
@@ -343,7 +357,7 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
             ),
         }:
             await store.owned(db, owner, aid, "asset")
-        for candidate in payload["items"]:
+        for index, candidate in enumerate(payload["items"]):
             validate_deadline_basis(candidate, s.data)
             if candidate.get("course_id"):
                 await store.owned(db, owner, candidate["course_id"], "course")
@@ -362,6 +376,18 @@ async def commit_draft(db, owner, draft_id, expected, conflict_token=None):
             )
             db.add(r)
             ids.append(r.id)
+            if snapshots[index]:
+                r.data = {**r.data, "course_occurrence_snapshot": snapshots[index]}
+                await invalidate_open_review(db, owner, snapshots[index])
+            if candidate.get("estimated_minutes") is not None:
+                db.add(Resource(id=str(uuid4()), owner_id=owner, kind="step", data={
+                    "key": "homework", "task_id": r.id, "title": "完成作业",
+                    "description": "\n".join(candidate["requirements"]),
+                    "estimated_minutes": candidate["estimated_minutes"],
+                    "dependency_keys": [], "dependency_ids": [],
+                    "acceptance_criteria": ["完成并检查所填写的作业内容"],
+                    "status": "open", "spent_minutes": 0,
+                }))
     if d.data["draft_kind"] == "timetable":
         if payload.get("campus_preset"):
             for course in payload["courses"]:

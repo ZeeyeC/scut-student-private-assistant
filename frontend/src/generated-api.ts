@@ -2216,6 +2216,11 @@ export interface components {
              * @default 2
              */
             priority: number;
+            course_occurrence?: components["schemas"]["CourseOccurrenceReference"] | null;
+            /** Estimated Minutes */
+            estimated_minutes?: number | null;
+            /** Source Asset Id */
+            source_asset_id?: string | null;
         };
         /** AssignmentExtraction */
         AssignmentExtraction: {
@@ -2539,12 +2544,32 @@ export interface components {
             /** Answers */
             answers: components["schemas"]["DraftAnswer"][];
         };
+        /** CheckinOpen */
+        CheckinOpen: {
+            /** Date */
+            date?: string | null;
+        };
+        /** CourseOccurrenceReference */
+        CourseOccurrenceReference: {
+            /** Course Id */
+            course_id: string;
+            /**
+             * Original Date
+             * Format: date
+             */
+            original_date: string;
+        };
         /** CheckinSubmission */
         CheckinSubmission: {
             /** Revision */
             revision: number;
             /** Answers */
             answers: components["schemas"]["CourseAnswer"][];
+            /**
+             * Manual
+             * @default false
+             */
+            manual: boolean;
         };
         /** Confirm */
         Confirm: {
@@ -9165,7 +9190,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CheckinOpen"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {
@@ -9174,6 +9203,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

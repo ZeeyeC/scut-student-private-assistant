@@ -139,3 +139,45 @@ test("a removed course retains unsaved input outside the submission until explic
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect((await (await page.request.get("/api/tasks")).json()).length).toBe(0);
 });
+
+test('calendar course details create and display homework linked to that lesson', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-10-14T10:30:00Z'));
+  await setup(page);
+  await page.getByRole('button', { name: '放弃本次输入并关闭' }).click();
+  await page.getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '日程', exact: true }).click();
+  await page.locator('.fc-v-event').filter({ hasText: '数学' }).first().click({ position: { x: 4, y: 15 } });
+  const homework = page.getByRole('region', { name: '这次课的作业' });
+  // A named section is exposed as a region in the accessibility tree.
+  await homework.getByRole('button', { name: '补记作业', exact: true }).click();
+  await homework.getByLabel('作业内容', { exact: true }).fill('补记课程练习');
+  await homework.getByLabel('预计用时（分钟，可留空）').fill('40');
+  await homework.getByRole('button', { name: '生成作业草稿', exact: true }).click();
+  await expect(homework.getByText(/来源课次/)).toContainText('数学');
+  expect(await page.request.get('/api/tasks').then(r => r.json())).toEqual([]);
+  await homework.getByRole('button', { name: '确认保存', exact: true }).click();
+  await expect(homework.getByRole('button', { name: '数学 · 补记课程练习 · 未完成' })).toBeVisible();
+  const tasks = await page.request.get('/api/tasks').then(r => r.json());
+  expect(tasks).toHaveLength(1);
+  expect(tasks[0].data.course_occurrence.original_date).toBe('2026-10-14');
+  const steps = await page.request.get(`/api/tasks/${tasks[0].id}/steps`).then(r => r.json());
+  expect(steps[0].data.estimated_minutes).toBe(40);
+});
+
+test('automatic check-in closes at midnight and its typed homework can be restored manually', async ({ page }) => {
+  await page.clock.install();
+  await page.route('**/api/after-class/open', async route => {
+    const response = await route.fetch();
+    const data = await response.json();
+    if (data.due && data.automatic) data.expires_at = new Date(Date.parse(data.server_now) + 60000).toISOString();
+    await route.fulfill({ response, json: data });
+  });
+  await setup(page);
+  await page.getByLabel('物理的作业情况').selectOption('homework');
+  await page.getByRole('textbox', { name: '作业内容', exact: true }).fill('跨天仍可恢复的练习');
+  await page.clock.fastForward(61000);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.getByRole('button', { name: '恢复历史课后草稿', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '补记课程作业', exact: true })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: '作业内容', exact: true })).toHaveValue('跨天仍可恢复的练习');
+  expect(await page.request.get('/api/tasks').then(r => r.json())).toEqual([]);
+});

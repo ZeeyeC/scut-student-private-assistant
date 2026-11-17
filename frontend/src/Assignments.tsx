@@ -268,7 +268,7 @@ export function AssignmentReview({ draft }: { draft: Resource }) {
                 <select
                   value={item.course_id ?? ""}
                   onChange={(e) =>
-                    change(i, "course_id", e.target.value || null)
+                    setPayload({ ...payload, items: payload.items.map((x: Record<string, unknown>, j: number) => i === j ? { ...x, course_id: e.target.value || null, course_occurrence: null } : x) })
                   }
                 >
                   <option value="">待确认 / 不关联课程</option>
@@ -279,6 +279,8 @@ export function AssignmentReview({ draft }: { draft: Resource }) {
                   ))}
                 </select>
               </label>
+              {item.course_occurrence && <p className="field-wide">来源课次 {draft.data.source?.course_occurrence_snapshots?.[i]?.name ?? '课程'} · {draft.data.source?.course_occurrence_snapshots?.[i]?.starts_at ? new Date(draft.data.source.course_occurrence_snapshots[i].starts_at).toLocaleString('zh-CN', { timeZone: draft.data.source.course_occurrence_snapshots[i].timezone }) : item.course_occurrence.original_date}</p>}
+              <label>预计用时（分钟，可留空）<input type="number" min={5} max={240} value={item.estimated_minutes ?? ''} onChange={e => change(i, 'estimated_minutes', e.target.value ? Number(e.target.value) : null)}/></label>
               <label>
                 提交方式
                 <input

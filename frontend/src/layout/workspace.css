@@ -286,3 +286,8 @@ input[type=checkbox]{accent-color:var(--workspace-accent);width:16px;height:16px
 .workspace-sidebar{line-height:1.5;}
 
 .fixed-event-chat .assistant-layout.has-review{grid-template-columns:minmax(0,1fr);}
+
+.course-homework{margin-top:20px;border-top:1px solid var(--workspace-line);padding-top:18px;}
+.course-homework .guide-actions{margin-top:12px;}
+.after-class-notices{position:fixed;top:16px;right:20px;z-index:90;width:min(420px,calc(100vw - 40px));}
+.after-class-notices .card{margin:0 0 8px;box-shadow:0 4px 18px #18203b18;}

@@ -230,7 +230,7 @@ def test_owner_and_course_isolation(tmp_path, monkeypatch):
         assert submit(c, h, ctx, [answer(ctx)]).status_code == 404
 
 
-def test_later_open_catches_up_without_backfill(tmp_path, monkeypatch):
+def test_later_open_only_checks_today_without_backfill(tmp_path, monkeypatch):
     current = clock(monkeypatch, "2026-10-14T18:00:00+08:00")
     with make_client(tmp_path) as c:
         h = register_login(c)
@@ -238,7 +238,7 @@ def test_later_open_catches_up_without_backfill(tmp_path, monkeypatch):
         assert not opened(c, h)["due"]
         current[0] = datetime.fromisoformat("2026-10-15T09:00:00+08:00")
         ctx = opened(c, h)
-        assert ctx["due"] and ctx["date"] == "2026-10-14"
+        assert ctx["due"] is False
         assert (
             c.get("/api/after-class/preferences").json()["data"]["started_on"]
             == "2026-10-14"

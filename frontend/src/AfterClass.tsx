@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Dialog from "@radix-ui/react-dialog";
+import { createPortal } from "react-dom";
 import { api, ApiError } from "./api";
 import { Button } from "./components/ui/button";
 import type { Resource } from "./types";
 import { draftAnswers, itemPayload, mergePendingAnswers, newItem, type Answer, type Item } from "./after-class-state";
 
-type Checkin = { due: boolean; reason: string; date?: string; available_at?: string; timezone?: string;
+type Checkin = { automatic?: boolean; expires_at?: string; server_now?: string; due: boolean; reason: string; date?: string; available_at?: string; timezone?: string;
   courses?: { key: string; name: string; course_id: string }[]; review?: Resource };
 type Saved = { review: Resource; task_ids: string[]; complete: boolean; timezone: string;
   blocks: { id: string; title: string; starts_at: string; ends_at: string }[];
@@ -18,6 +19,13 @@ const timeText = (value: string, timezone?: string) => new Date(value).toLocaleS
 /** Opens only on application opening/foreground events. No clock interval. */
 export function AfterClassCheckin() {
   const q = useQueryClient();
+  const owner = q.getQueryData<{ id: string }>(["me"])?.id ?? 'local';
+  const recoveryKey = `campus-after-class-recovery:${owner}`;
+  const [recovery, setRecovery] = useState<{ date: string; answers: Answer[] } | undefined>(() => {
+    try { return JSON.parse(sessionStorage.getItem(recoveryKey) ?? 'null') ?? undefined; }
+    catch { return undefined; }
+  });
+  const [expiresAt, setExpiresAt] = useState<number>();
   const [context, setContext] = useState<Checkin>();
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [visible, setVisible] = useState(false);
@@ -35,17 +43,19 @@ export function AfterClassCheckin() {
     if (!value) { suppressFocusUntil.current = Date.now() + 1000; generation.current++; operation.current?.abort(); setBusy(false); }
     visibleRef.current = value; setVisible(value);
   }
-  const check = useCallback(async (manual = false) => {
+  const check = useCallback(async (manual = false, date?: string, recovered?: Answer[]) => {
     if (checking.current || visibleRef.current) return;
     checking.current = true;
     try {
-      const result = await api<Checkin>("/after-class/open", { method: "POST", body: "{}" });
+      const result = await api<Checkin>("/after-class/open", { method: "POST", body: JSON.stringify(date ? { date } : {}) });
       if (!result.due || !result.review) {
         if (manual) setNotice(result.reason + (result.available_at ? `；可询问时间：${timeText(result.available_at, result.timezone)}` : ""));
         return;
       }
+      setExpiresAt(result.automatic !== false && result.expires_at && result.server_now
+        ? Date.now() + Date.parse(result.expires_at) - Date.parse(result.server_now) : undefined);
       setContext(result); setSaved(undefined); setRetained([]); setError(""); setNotice(""); setConflict(false); setBlocked(false);
-      const next = mergePendingAnswers(result.courses!, result.review.data.draft_answers ?? [], []);
+      const next = mergePendingAnswers(result.courses!, result.review.data.draft_answers ?? [], recovered ?? []);
       initialAnswers.current = JSON.stringify(next); setAnswers(next);
       visibleRef.current = true; setVisible(true);
       // Native bridge may reveal the panel; it receives no homework text.
@@ -57,7 +67,7 @@ export function AfterClassCheckin() {
   useEffect(() => {
     const opened = (e: Event) => {
       const manual = Boolean((e as CustomEvent)?.detail?.manual);
-      if (manual || Date.now() >= suppressFocusUntil.current) void check(manual);
+      if (manual || Date.now() >= suppressFocusUntil.current) void check(manual, (e as CustomEvent)?.detail?.date);
     };
     const focused = () => {
       // Native app emits an explicit event when its panel is opened. Browser
@@ -96,7 +106,7 @@ export function AfterClassCheckin() {
     if (busy) return;
     const { token, signal } = beginOperation();
     try {
-      const result = await api<Checkin>("/after-class/open", { method: "POST", body: "{}", signal });
+      const result = await api<Checkin>("/after-class/open", { method: "POST", body: JSON.stringify(context?.automatic === false ? { date: context.date } : {}), signal });
       if (token !== generation.current) return;
       // Do not merge a catch-up review for another day into the visible day's form.
       if (!result.due || !result.review || result.review.id !== context?.review?.id) {
@@ -129,21 +139,55 @@ export function AfterClassCheckin() {
         method: "PUT", signal, body: JSON.stringify({ revision: context.review.revision, answers: draftAnswers(answers) }),
       });
       if (token !== generation.current) return;
-      setContext({ ...context, review }); show(false);
+      setContext({ ...context, review });
+      if (recovery?.date === context.date) { setRecovery(undefined); sessionStorage.removeItem(recoveryKey); }
+      show(false);
     } catch (e) { if (token === generation.current) failure(e); }
     finally { if (token === generation.current) setBusy(false); }
   }
+  const currentForm = useRef({ context, answers });
+  currentForm.current = { context, answers };
+  useEffect(() => {
+    if (!visible || expiresAt === undefined || saved || busy) return;
+    const expire = async () => {
+      if (!visibleRef.current) return;
+      const form = currentForm.current;
+      if (!form.context?.review || !form.context.date) return;
+      const backup = { date: form.context.date, answers: form.answers };
+      sessionStorage.setItem(recoveryKey, JSON.stringify(backup));
+      setRecovery(backup);
+      show(false);
+      setExpiresAt(undefined);
+      try {
+        await api(`/after-class/${form.context.review.id}/draft`, {
+          method: 'PUT', body: JSON.stringify({ revision: form.context.review.revision, answers: draftAnswers(form.answers) }),
+        });
+        setNotice('昨日课后询问已结束，已保存输入，可从对应课程详情继续补记。');
+      } catch {
+        setNotice('昨日课后询问已结束，未提交输入已暂存在本次会话中，可恢复后保存。');
+      }
+    };
+    const remaining = () => Math.max(0, expiresAt - Date.now());
+    const timer = window.setTimeout(() => void expire(), remaining());
+    const foreground = () => { if (remaining() === 0) void expire(); };
+    window.addEventListener('focus', foreground);
+    window.addEventListener('pageshow', foreground);
+    return () => { clearTimeout(timer); window.removeEventListener('focus', foreground); window.removeEventListener('pageshow', foreground); };
+  }, [visible, expiresAt, saved, busy, recoveryKey]);
   return <>
+    {(recovery || notice) && createPortal(<div className="after-class-notices">
+    {recovery && <section className="card after-class-notice" role="status"><p>{recovery.date} 的课后输入可恢复。</p><Button variant="outline" onClick={() => void check(true, recovery.date, recovery.answers)}>恢复历史课后草稿</Button></section>}
     {notice && <section className="card after-class-notice" role="status"><p>{notice}</p><Button variant="outline" onClick={() => setNotice("")}>知道了</Button></section>}
+    </div>, document.body)}
     <Dialog.Root open={visible} onOpenChange={value => { if (!value) void defer(); }}>
       <Dialog.Portal><Dialog.Overlay className="dialog-overlay" />
         <Dialog.Content className="import-dialog after-class-dialog" onInteractOutside={e => e.preventDefault()}>
           <header><div><p className="eyebrow">课间奶娃 · 课后小结</p>
-            <Dialog.Title asChild><h2>{saved ? "作业已记下" : "今天这些课，布置了什么作业？"}</h2></Dialog.Title></div>
+            <Dialog.Title asChild><h2>{saved ? "作业已记下" : context?.automatic === false ? "补记课程作业" : "今天这些课，布置了什么作业？"}</h2></Dialog.Title></div>
             <Button type="button" variant="outline" disabled={busy} onClick={() => void defer()}>{saved ? "完成" : "稍后填写"}</Button>
           </header>
           <Dialog.Description>{saved ? "已填写的科目不会重复询问。作业和学习安排都可以继续修改。"
-            : `${context?.date ?? ""} · 全部课程结束后再一起回顾。稍后填写会保留已填内容，下次打开时继续。`}</Dialog.Description>
+            : `${context?.date ?? ""} · 稍后填写会保存草稿。自动询问在当天结束，历史草稿可从对应课程详情主动打开。`}</Dialog.Description>
           {error && <p role="alert">{error}</p>}
           {(!saved || retained.length > 0) && <div className="guide-actions">
             {conflict && <Button type="button" variant="outline" disabled={busy} onClick={() => void reload()}>重新载入并保留未提交内容</Button>}
@@ -163,14 +207,14 @@ export function AfterClassCheckin() {
             <div className="guide-actions"><Button onClick={() => { if (!confirmRetained()) return; show(false); window.dispatchEvent(new CustomEvent("campus-calendar-saved", {
               detail: saved.blocks[0] ? new Date(saved.blocks[0].starts_at).toLocaleDateString("en-CA", { timeZone: saved.timezone }) : context?.date,
             })); }}>查看日程</Button>
-              {!saved.complete && <Button variant="outline" onClick={() => { if (!confirmRetained()) return; show(false); void check(true); }}>继续填写其他科目</Button>}</div>
+              {!saved.complete && <Button variant="outline" onClick={() => { if (!confirmRetained()) return; show(false); void check(true, context?.automatic === false ? context.date : undefined); }}>继续填写其他科目</Button>}</div>
           </div> : <form data-after-class-form onSubmit={async e => {
             e.preventDefault(); if (!context?.review || busy || blocked || conflict) return;
             const selected = answers.filter(a => a.status !== "pending");
             if (!selected.length) { setError("请至少填写一门课，或选择这门课没有作业。"); return; }
             const { token, signal } = beginOperation();
             try {
-              const payload = JSON.stringify({ revision: context.review.revision,
+              const payload = JSON.stringify({ revision: context.review.revision, manual: context.automatic === false,
                 answers: selected.map(a => ({ ...a, items: a.status === "none" ? [] : a.items.map(itemPayload) })) });
               const identity = context.review.id + payload;
               if (receipt.current.payload !== identity) receipt.current = { payload: identity, key: crypto.randomUUID() };
@@ -179,6 +223,7 @@ export function AfterClassCheckin() {
               });
               if (token !== generation.current) return;
               setSaved(result); setContext({ ...context, review: result.review });
+              if (recovery?.date === context.date) { setRecovery(undefined); sessionStorage.removeItem(recoveryKey); }
               void q.invalidateQueries();
             } catch (err) { if (token === generation.current) failure(err); }
             finally { if (token === generation.current) setBusy(false); }

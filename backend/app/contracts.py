@@ -269,9 +269,16 @@ class CalendarDeadlineBasis(StrictModel):
     timezone: str
 
 
+class CourseOccurrenceReference(StrictModel):
+    course_id: str
+    original_date: date
+
+
 class AssignmentCandidate(StrictModel):
     title: str = Field(min_length=1, max_length=200)
     course_id: str | None = None
+    course_occurrence: CourseOccurrenceReference | None = None
+    estimated_minutes: int | None = Field(default=None, ge=5, le=240)
     requirements: list[str] = Field(default_factory=list, max_length=50)
     due_at: datetime | None = Field(
         default=None,
@@ -327,6 +334,8 @@ class AssignmentImageAttachment(StrictModel):
 class AssignmentItemChanges(StrictModel):
     title: str | None = Field(default=None, min_length=1, max_length=200)
     course_id: str | None = None
+    course_occurrence: CourseOccurrenceReference | None = None
+    estimated_minutes: int | None = Field(default=None, ge=5, le=240)
     requirements: list[str] | None = Field(default=None, max_length=50)
     due_at: datetime | None = None
     due_text: str | None = None

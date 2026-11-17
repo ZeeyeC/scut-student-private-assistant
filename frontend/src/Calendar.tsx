@@ -8,6 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "./components/ui/button";
 import { CourseIntervals } from "./CourseIntervals";
+import { CourseHomework } from "./CourseHomework";
 import { api } from "./api";
 import type { Resource, Course, SettingsData } from "./types";
 import { DraftReview } from "./DraftReview";
@@ -162,6 +163,10 @@ export function CalendarPage({focusDate,filter:requestedFilter,focusRequest=0}: 
         <p>{new Date(selected.starts_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}–{new Date(selected.ends_at).toLocaleString("zh-CN",{timeZone: settings.data?.data.timezone ?? "Asia/Shanghai"})}</p>
         <p>{selected.kind === "course" ? "课程" : selected.kind === "fixed_event" ? "固定事项" : selected.kind === "scheduling_constraint" ? "禁排时段 · 仅约束后续任务规划，不触发提醒" : "学习安排"} {selected.location}</p>
         {selected.kind === "course" && <CourseIntervals event={selected} timezone={settings.data?.data.timezone ?? "Asia/Shanghai"} />}
+        {selected.kind === "course" && selected.course_id && selected.original_date && <CourseHomework key={selected.id} event={selected} timezone={settings.data?.data.timezone ?? 'Asia/Shanghai'} onResume={date => {
+          setDetailOpen(false);
+          window.dispatchEvent(new CustomEvent('campus-after-class-open', { detail: { manual: true, date } }));
+        }} onPlan={() => { setDetailOpen(false); setPanel('plan'); }}/>}
         {selected.course_id&&<StudyTypes targetId={selected.course_id}/>}
         {timetable && selected.kind === "course" && selected.course_id && <CourseCampusEditor key={selected.course_id} courseId={selected.course_id} onCreated={async id=>{setNewDraft(id);setDetailOpen(false);window.dispatchEvent(new Event('campus-start-import'));setSelected(null);await q.invalidateQueries({queryKey:["drafts"]});}} />}
         {selected.kind === "fixed_event" && selected.revision !== undefined && <DeleteFixedEvent key={selected.id} id={selected.id} revision={selected.revision} title={selected.title} onDeleted={()=>{setDetailOpen(false);setSelected(null);}} />}

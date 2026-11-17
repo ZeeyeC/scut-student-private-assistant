@@ -4,7 +4,8 @@ Separate preferences, daily review state and append-only planning keep this firs
 version easy to evolve without changing the agent or timetable import pipeline.
 """
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
+from datetime import date as LocalDate
 from typing import Literal
 from uuid import NAMESPACE_URL, uuid4, uuid5
 from zoneinfo import ZoneInfo
@@ -17,6 +18,10 @@ from app.calendar import expand_calendar
 from app.contracts import AssignmentCandidate, StrictModel
 from app.db import Resource, now
 from app.planner import build_plan, instant
+
+
+class CheckinOpen(StrictModel):
+    date: LocalDate | None = None
 
 
 class CheckinPreferences(StrictModel):
@@ -57,6 +62,7 @@ class CourseAnswer(StrictModel):
 
 class CheckinSubmission(StrictModel):
     revision: int
+    manual: bool = False
     answers: list[CourseAnswer] = Field(min_length=1, max_length=50)
 
     @model_validator(mode="after")
@@ -113,6 +119,7 @@ async def preferences(db, owner):
 
 
 async def day_context(db, owner, settings, day, delay):
+    from app.course_homework import occurrence_snapshot
     try:
         occurrences = expand_calendar(
             settings.data,
@@ -130,7 +137,8 @@ async def day_context(db, owner, settings, day, delay):
         name = event["title"].strip()
         key = str(uuid5(NAMESPACE_URL, name.casefold()))
         if key not in groups:
-            groups[key] = {"key": key, "name": name, "course_id": event["course_id"]}
+            groups[key] = {"key": key, "name": name, "course_id": event["course_id"], "occurrences": []}
+        groups[key]["occurrences"].append(occurrence_snapshot(event, settings.data["timezone"]))
     available = max(instant(e["ends_at"]) for e in occurrences) + timedelta(
         minutes=delay
     )
@@ -146,57 +154,45 @@ async def day_context(db, owner, settings, day, delay):
     }
 
 
-async def open_checkin(db, owner):
+async def open_checkin(db, owner, requested_date=None):
+    from app.course_homework import recorded_occurrences
+
     pref = await preferences(db, owner)
-    if not pref.data["enabled"]:
+    automatic = requested_date is None
+    if automatic and not pref.data["enabled"]:
         return {"due": False, "reason": "课后作业询问已关闭"}
     settings = await store.settings(db, owner)
-    today = now().astimezone(ZoneInfo(settings.data["timezone"])).date()
-    # Catch up after a closed app / overnight class; do not backfill before first use.
-    first = max(date.fromisoformat(pref.data["started_on"]), today - timedelta(days=6))
-    for offset in range((today - first).days + 1):
-        day = first + timedelta(days=offset)
-        record = await db.get(Resource, review_id(owner, day))
-        if record and record.data["status"] == "completed":
-            continue
-        context = await day_context(
-            db, owner, settings, day, pref.data["delay_minutes"]
-        )
-        if not context["due"]:
-            if day == today:
-                return context
-            continue
-        if record is None:
-            record = Resource(
-                id=review_id(owner, day),
-                owner_id=owner,
-                kind="after_class_review",
-                data={
-                    "date": day.isoformat(),
-                    "status": "pending",
-                    "answers": {},
-                    "fingerprint": context["fingerprint"],
-                    "courses": context["courses"],
-                },
-            )
-            db.add(record)
-            await db.flush()
-        elif record.data["fingerprint"] != context["fingerprint"]:
-            record.data = {
-                **record.data,
-                "fingerprint": context["fingerprint"],
-                "courses": context["courses"],
-            }
-            record.revision += 1
-        pending = [
-            c for c in context["courses"] if c["key"] not in record.data["answers"]
-        ]
-        if not pending:
-            record.data = {**record.data, "status": "completed"}
-            record.revision += 1
-            continue
-        return {**context, "courses": pending, "review": store.view(record)}
-    return {"due": False, "reason": "没有待填写的课后作业"}
+    tz = ZoneInfo(settings.data["timezone"])
+    today = now().astimezone(tz).date()
+    day = requested_date or today
+    context = await day_context(db, owner, settings, day, pref.data["delay_minutes"] if automatic else 0)
+    context.update(automatic=automatic, server_now=now().isoformat(),
+                   expires_at=datetime.combine(today + timedelta(days=1), time.min, tz).isoformat())
+    if not context["due"]:
+        return context
+    record = await db.get(Resource, review_id(owner, day))
+    if record and record.data["status"] == "completed":
+        return {**context, "due": False, "reason": "这一天已经填写完成，可从课程详情继续添加作业"}
+    if record is None:
+        record = Resource(id=review_id(owner, day), owner_id=owner, kind="after_class_review",
+            data={"date": day.isoformat(), "status": "pending", "answers": {},
+                  "fingerprint": context["fingerprint"], "courses": context["courses"]})
+        db.add(record)
+        await db.flush()
+    elif record.data["fingerprint"] != context["fingerprint"]:
+        record.data = {**record.data, "fingerprint": context["fingerprint"], "courses": context["courses"]}
+        record.revision += 1
+    recorded = await recorded_occurrences(db, owner)
+    pending = []
+    for group in context["courses"]:
+        remaining = [o for o in group["occurrences"] if o["id"] not in recorded]
+        if group["key"] not in record.data["answers"] and remaining:
+            pending.append({**group, "course_id": remaining[0]["course_id"], "occurrences": remaining})
+    if not pending:
+        record.data = {**record.data, "status": "completed"}
+        record.revision += 1
+        return {**context, "due": False, "reason": "当天课程已经记录作业"}
+    return {**context, "courses": pending, "review": store.view(record)}
 
 
 async def append_homework_plan(db, owner, tasks, steps, settings):
@@ -295,19 +291,28 @@ async def submit_checkin(db, owner, rid, body):
     if record.data["status"] != "pending":
         raise HTTPException(409, "这一天已经填写完成，请在待办中修改作业")
     pref = await preferences(db, owner)
-    if not pref.data["enabled"]:
-        raise HTTPException(409, "课后作业询问已关闭")
     settings = await store.settings(db, owner)
+    if not body.manual and (
+        not pref.data["enabled"] or record.data["date"] != now().astimezone(
+            ZoneInfo(settings.data["timezone"])).date().isoformat()
+    ):
+        raise HTTPException(409, "自动询问已结束，请从对应课程详情补记作业")
     context = await day_context(
         db,
         owner,
         settings,
         date.fromisoformat(record.data["date"]),
-        pref.data["delay_minutes"],
+        0 if body.manual else pref.data["delay_minutes"],
     )
     if not context["due"] or context["fingerprint"] != record.data["fingerprint"]:
         raise HTTPException(409, "课表或提醒时间已更新，请重新打开课后询问")
-    courses = {c["key"]: c for c in context["courses"]}
+    from app.course_homework import recorded_occurrences
+    recorded = await recorded_occurrences(db, owner)
+    courses = {}
+    for group in context["courses"]:
+        remaining = [o for o in group["occurrences"] if o["id"] not in recorded]
+        if remaining:
+            courses[group["key"]] = {**group, "course_id": remaining[0]["course_id"], "occurrences": remaining}
     answers = dict(record.data["answers"])
     tasks, steps = [], []
     for answer in body.answers:
@@ -333,6 +338,9 @@ async def submit_checkin(db, owner, rid, body):
                     "asset_id": None,
                     "remedy_due_at": None,
                     "after_class_review_id": rid,
+                    "course_occurrences": course["occurrences"],
+                    "course_occurrence": {"course_id": course["course_id"], "original_date": course["occurrences"][0]["original_date"]} if len(course["occurrences"]) == 1 else None,
+                    "course_occurrence_snapshot": course["occurrences"][0] if len(course["occurrences"]) == 1 else None,
                 },
             )
             step = Resource(
@@ -413,9 +421,9 @@ def after_class_router(get_db, current_user):
         )
 
     @router.post("/open")
-    async def open_review(user=Depends(current_user), db=Depends(get_db)):
+    async def open_review(body: CheckinOpen = CheckinOpen(), user=Depends(current_user), db=Depends(get_db)):
         # An opening is safe to repeat; the daily row has a deterministic identity.
-        return await open_checkin(db, str(user.id))
+        return await open_checkin(db, str(user.id), body.date)
 
     @router.post("/{rid}/submit")
     async def submit(
