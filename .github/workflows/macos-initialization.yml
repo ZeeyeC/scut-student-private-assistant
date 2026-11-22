@@ -7,7 +7,6 @@ on:
       - 'scripts/build-desktop.py'
       - 'scripts/desktop.spec'
       - 'scripts/tests/test_initialize_macos.py'
-      - '启动课间助手.command'
       - '.github/workflows/macos-initialization.yml'
   pull_request:
     paths:
@@ -16,7 +15,6 @@ on:
       - 'scripts/build-desktop.py'
       - 'scripts/desktop.spec'
       - 'scripts/tests/test_initialize_macos.py'
-      - '启动课间助手.command'
       - '.github/workflows/macos-initialization.yml'
   workflow_dispatch:
 jobs:
@@ -29,8 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check system shell syntax
-        run: |
-          /bin/bash -n scripts/initialize-macos.sh
-          /bin/sh -n 启动课间助手.command
+        run: /bin/bash -n scripts/initialize-macos.sh
       - name: Exercise initialization with isolated fixtures
         run: python3 -m unittest discover -s scripts/tests -p 'test_initialize_macos.py'
